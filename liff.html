@@ -99,7 +99,7 @@ svg.i{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .htop{background:var(--card);padding:10px 16px 18px}
 .prof{display:flex;align-items:center;gap:14px}
 .ava{width:48px;height:48px;border-radius:50%;flex:none;overflow:hidden;background:linear-gradient(160deg,#E6E6E6,#C9C9C9);display:grid;place-items:end center}
-.ava svg{width:84%;height:84%;fill:#7E97BE}
+.ava svg{width:84%;height:84%;fill:#9A9A9A}
 .ava.lg{width:72px;height:72px;border:3px solid rgba(255,255,255,.9)}
 .prof .nm{flex:1;min-width:0}
 .prof .nm b{display:block;font-size:17px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -216,7 +216,7 @@ input[type=date].inp,input[type=time].inp{min-width:0;display:block}
 .locbtn.busy svg{animation:sp 1s linear infinite}
 .sim{align-self:flex-end;font-size:12px;color:var(--text-3);text-decoration:underline;text-underline-offset:2px;margin-top:-6px}
 .opt{display:flex;align-items:center;gap:16px;width:100%;padding:16px 16px;border:1.5px solid var(--line);border-radius:16px;background:#fff;text-align:left}
-.opt[aria-checked="true"]{border-color:var(--blue);background:#EEF4FD}
+.opt[aria-checked="true"]{border-color:var(--blue);background:#F3F3F3}
 .opt b{display:block;font-size:17px;font-weight:700}
 .opt .s{display:flex;gap:6px;align-items:center;color:var(--text-2);font-size:15px}
 .opt .s svg.i{width:18px;height:18px}
@@ -246,7 +246,7 @@ input[type=date].inp,input[type=time].inp{min-width:0;display:block}
 .phead .who b{font-size:19px}
 .tabs{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;margin-right:-16px;padding-right:16px}
 .tabs::-webkit-scrollbar{display:none}
-.tabs .pill{white-space:nowrap;padding:10px 22px;font-size:16px;background:#D7E5FA}
+.tabs .pill{white-space:nowrap;padding:10px 22px;font-size:16px;background:#E4E4E4}
 .tabs .pill[aria-pressed="true"]{background:var(--blue)}
 .editb{width:56px;height:42px;border-radius:21px;background:var(--blue);color:#fff;display:grid;place-items:center}
 .editb svg.i{width:22px;height:22px}
@@ -272,14 +272,14 @@ input[type=date].inp,input[type=time].inp{min-width:0;display:block}
 
 /* ---------- drawer, sheet, toast ---------- */
 .scrim{position:absolute;inset:var(--top,0px) 0 0 0;background:rgba(32,40,52,.5);z-index:40;animation:fd .2s}
-.drawer{position:absolute;top:var(--top,0px);right:0;bottom:0;width:70%;background:#E6EEF9;z-index:41;display:flex;flex-direction:column;animation:inR .26s cubic-bezier(.2,.8,.2,1)}
-.drawer .logo{padding:24px 22px 18px;margin:0 18px;border-bottom:2px solid #9AA6B8}
+.drawer{position:absolute;top:var(--top,0px);right:0;bottom:0;width:70%;background:#EEEEEE;z-index:41;display:flex;flex-direction:column;animation:inR .26s cubic-bezier(.2,.8,.2,1)}
+.drawer .logo{padding:24px 22px 18px;margin:0 18px;border-bottom:2px solid #A3A3A3}
 .drawer .logo svg{display:block;width:100%;height:auto}
 .drawer nav{flex:1;overflow:auto;padding:10px 18px;scrollbar-width:thin}
 .drawer nav button{display:flex;gap:18px;align-items:center;width:100%;padding:12px 18px;border-radius:12px;font-size:16px;color:#2A313C}
 .drawer nav svg.i{width:26px;height:26px}
-.drawer nav button[aria-current="page"]{background:#C9DCF5;color:var(--blue)}
-.drawer footer{display:grid;grid-template-columns:1fr 1px 1fr;align-items:center;border-top:1px solid #CBD5E3;padding:14px 0 28px}
+.drawer nav button[aria-current="page"]{background:#D6D6D6;color:var(--blue)}
+.drawer footer{display:grid;grid-template-columns:1fr 1px 1fr;align-items:center;border-top:1px solid #D5D5D5;padding:14px 0 28px}
 .drawer footer i{height:34px;background:#C3CDDA}
 .drawer footer button{display:flex;justify-content:center;color:#2A313C}
 .drawer footer svg.i{width:28px;height:28px}
@@ -362,6 +362,11 @@ input[type=date].inp,input[type=time].inp{min-width:0;display:block}
 .steps .d{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--track);color:#fff;font-weight:600;font-size:12px}
 .steps .on{color:var(--text)}.steps .on .d{background:var(--blue)}.steps .ok .d{background:var(--green)}.steps .ln{flex:1;height:2px;background:var(--track);min-width:10px}.steps .ln.ok{background:var(--green)}
 .tl3{display:flex;flex-direction:column;gap:12px}.tl3 .r{display:flex;gap:12px;align-items:flex-start}.tl3 i{width:14px;height:14px;border-radius:50%;border:2.5px solid;flex:none;margin-top:4px}
+/* แก้ข้อมูลส่วนตัว + เปลี่ยนรูป */
+.ava-btn{position:relative;border:0;padding:0;background:none;border-radius:50%;flex:none}
+.ava-btn .cam{position:absolute;right:-2px;bottom:-2px;width:28px;height:28px;border-radius:50%;background:#fff;color:var(--text);display:grid;place-items:center;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+.ava-btn .cam svg.i{width:16px;height:16px}
+.ph-row{display:flex;gap:16px;align-items:center}.ph-row .ava.lg{border-color:var(--line)}
 </style>
 </head>
 <body>
@@ -401,8 +406,8 @@ function setTok(t){S.tok=t;if(t)LS.set("tok",t);else{["tok","today","leave"].for
 const api=(fn,...a)=>call(fn,S.tok,...a).catch(e=>{if(/SESSION_EXPIRED/.test(e.message)&&!S.relog){S.relog=1;setTok(null);startLine();}throw e});
 
 const S={tab:"home",stack:[],tok:null,idt:null,invite:Q.get("invite")||"",me:null,today:null,month:null,pos:null,opt:0,last:null,wym:null,ptab:0};
-const TITLE={home:"หน้าหลัก",clock:"ลงเวลาการทำงาน",done:"ลงเวลาการทำงาน",worktime:"เวลาการทำงาน",profile:"ข้อมูลพนักงาน",sched:"ตารางงาน",req:"เอกสาร",leave:"ยื่นเอกสาร",lvsum:"ยื่นเอกสาร",lvdone:"ยื่นเอกสาร",lvdetail:"คำขอลา",approve:"อนุมัติเอกสาร",apdetail:"อนุมัติเอกสาร",quota:"โควตาการลา",myreqs:"เอกสารของฉัน"};
-const NOTAB=["clock","done","leave","lvsum","lvdone","lvdetail","apdetail"];
+const TITLE={home:"หน้าหลัก",clock:"ลงเวลาการทำงาน",done:"ลงเวลาการทำงาน",worktime:"เวลาการทำงาน",profile:"ข้อมูลพนักงาน",pedit:"แก้ไขข้อมูลส่วนตัว",sched:"ตารางงาน",req:"เอกสาร",leave:"ยื่นเอกสาร",lvsum:"ยื่นเอกสาร",lvdone:"ยื่นเอกสาร",lvdetail:"คำขอลา",approve:"อนุมัติเอกสาร",apdetail:"อนุมัติเอกสาร",quota:"โควตาการลา",myreqs:"เอกสารของฉัน"};
+const NOTAB=["clock","done","pedit","leave","lvsum","lvdone","lvdetail","apdetail"];
 const band=t=>`<header class="band">${S.stack.length?`<button data-back aria-label="ย้อนกลับ">${ic("chevL")}</button>`:""}<h1>${t}</h1></header>`;
 const fl=(id,label,inner)=>`<label class="fl" for="${id}"><span>${label}</span>${inner}<span class="emsg" id="${id}-e" hidden></span></label>`;
 const sel=(id,opts,v)=>`<select class="sel" id="${id}">${opts.map(o=>`<option value="${o[0]}" ${String(o[0])===String(v)?"selected":""}>${o[1]}</option>`).join("")}</select>`;
@@ -464,10 +469,31 @@ V.profile=()=>{const p=S.prof;if(!p)return band("ข้อมูลพนัก�
   const D=[[["ข้อมูลส่วนตัว",[["คำนำหน้า",p.title],["ชื่อ",p.first_name],["นามสกุล",p.last_name],["ชื่อเล่น",p.nickname],["บัญชี LINE",p.line_name]]]],
    [["ข้อมูลการทำงาน",[["รหัสพนักงาน",p.code],["แผนก",p.department],["ทีม",p.team],["ตำแหน่ง",p.position],["หัวหน้าทีม",p.lead],["วันเริ่มงาน",fd(p.start_date)],["ประเภทการจ้าง",p.employment_type==="daily"?"รายวัน":p.employment_type==="monthly"?"รายเดือน":p.employment_type],["เวลาทำงาน",p.work_start==="00:00"?"เวลายืดหยุ่น":(p.work_start||"")+" - "+(p.work_end||"")],["การลงเวลา",{office:"สำนักงาน",field:"หน้างาน",both:"สำนักงาน + หน้างาน",none:"ไม่ต้องลงเวลา"}[p.checkin_type]||"—"]]]]][S.ptab];
   return `<header class="phead"><div class="top"><button data-back aria-label="ย้อนกลับ" style="color:#fff;display:flex">${ic("chevL","width:26px;height:26px;stroke-width:2.6")}</button><h1>ข้อมูลพนักงาน</h1></div>
-  <div class="who"><div class="ava lg">${p.photo_url?`<img src="${esc(p.photo_url)}" alt="" style="width:100%;height:100%;object-fit:cover">`:AVA}</div><div><b>${esc(p.name)}${p.nickname?` (${esc(p.nickname)})`:""}</b><br>ตำแหน่ง : ${esc(p.position||"—")}<br>เบอร์โทรศัพท์ : ${esc(p.phone||"—")}<br>อีเมล : ${esc(p.email||"—")}</div></div></header>
+  <div class="who"><button class="ava-btn" data-photo aria-label="เปลี่ยนรูปโปรไฟล์"><div class="ava lg">${p.photo_url?`<img src="${esc(p.photo_url)}" alt="" style="width:100%;height:100%;object-fit:cover">`:AVA}</div><span class="cam">${ic("edit")}</span></button><div><b>${esc(p.name)}${p.nickname?` (${esc(p.nickname)})`:""}</b><br>ตำแหน่ง : ${esc(p.position||"—")}<br>เบอร์โทรศัพท์ : ${esc(p.phone||"—")}<br>อีเมล : ${esc(p.email||"—")}</div></div></header>
   <div class="pad" style="padding-top:20px;gap:16px"><div class="tabs">${T.map((t,i)=>`<button class="pill" data-ptab="${i}" aria-pressed="${S.ptab===i}">${t}</button>`).join("")}</div>
   ${D.map(([h,rows])=>`<div class="sec"><h3>${h}</h3><div class="b">${rows.map(r=>`<div class="kv"><span>${r[0]}</span><b>${esc(r[1]||"—")}</b></div>`).join("")}</div></div>`).join("")}
-  <div class="note c-blue">${ic("info")}<span>ข้อมูลไม่ถูกต้อง แจ้ง HR เพื่อแก้ไข</span></div></div>`;};
+  <button class="btn out" data-act="go:pedit">แก้ไขข้อมูลส่วนตัว</button>
+  <div class="note c-blue">${ic("info")}<span>แก้ชื่อเล่น เบอร์ อีเมล และรูปได้เอง · ชื่อ–นามสกุล แผนก ตำแหน่ง แจ้ง HR เพื่อแก้ไข</span></div></div><input type="file" id="phf" accept="image/*" hidden>`;};
+V.pedit=()=>{const p=S.prof;if(!p)return band("แก้ไขข้อมูลส่วนตัว")+loadingV();const e=S.perr||{},v=S.pform||p;
+  const f=(id,label,o)=>fl(id,label,`<input class="inp${e[id]?" err":""}" id="${id}" value="${esc(v[id]||"")}" ${o||""}>`)+(e[id]?`<span class="cap" style="color:var(--red);margin-top:-6px">${esc(e[id])}</span>`:"");
+  return band("แก้ไขข้อมูลส่วนตัว")+`<form class="pad" id="pf" novalidate>
+  <div class="fcard"><div class="ph-row"><div class="ava lg">${p.photo_url?`<img src="${esc(p.photo_url)}" alt="" style="width:100%;height:100%;object-fit:cover">`:AVA}</div>
+  <div style="display:flex;flex-direction:column;gap:8px;flex:1"><b>${esc(p.name)}</b><div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="btn out sm" data-photo>เปลี่ยนรูป</button>${p.photo_url?`<button type="button" class="btn out sm" data-photodel style="color:var(--red);border-color:var(--red)">ลบรูป</button>`:""}</div></div></div></div>
+  <div class="fcard">${f("nickname","ชื่อเล่น",'maxlength="30"')}${f("phone","เบอร์มือถือ",'inputmode="tel" placeholder="08xxxxxxxx"')}${f("email","อีเมล",'type="email" inputmode="email" placeholder="name@pushmedia.co.th"')}</div>
+  <div class="note c-blue">${ic("info")}<span>ชื่อ–นามสกุล แผนก ตำแหน่ง และเวลาทำงาน แก้ได้โดย HR · ทุกการแก้ไขบันทึกประวัติ</span></div></form>
+  <span class="spacer"></span><div class="foot"><button class="btn pri" id="psv">บันทึก</button></div><input type="file" id="phf" accept="image/*" hidden>`};
+/* ย่อรูปในเครื่อง: ตัดกลางเป็นสี่เหลี่ยม 320px → JPEG (≤ ~45KB) แล้วส่งขึ้นระบบ */
+function shrinkPhoto(file){return new Promise((ok,no)=>{const img=new Image(),u=URL.createObjectURL(file);img.onload=()=>{const z=320,c=document.createElement("canvas");c.width=c.height=z;const k=Math.min(img.width,img.height),sx=(img.width-k)/2,sy=(img.height-k)/2;
+  c.getContext("2d").drawImage(img,sx,sy,k,k,0,0,z,z);URL.revokeObjectURL(u);let q=.82,d=c.toDataURL("image/jpeg",q);while(d.length>45000&&q>.4){q-=.1;d=c.toDataURL("image/jpeg",q)}ok(d)};img.onerror=()=>no(new Error("เปิดรูปนี้ไม่ได้ ลองรูปอื่น"));img.src=u})}
+function applyPhoto(url){if(S.prof)S.prof.photo_url=url;if(S.today&&S.today.me){S.today.me.photo_url=url;LS.set("today",{d:ISO(new Date()),t:S.today})}if(S.me)S.me.photo_url=url;repaint()}
+document.addEventListener("change",e=>{if(e.target.id!=="phf"||!e.target.files[0])return;const f=e.target.files[0];e.target.value="";toast("กำลังอัปโหลดรูป…");
+  shrinkPhoto(f).then(d=>api("setMyPhoto",d)).then(r=>{applyPhoto(r.photo_url);toast("เปลี่ยนรูปแล้ว")}).catch(er=>toast(er.message))});
+document.addEventListener("click",e=>{const t=e.target.closest("button");if(!t)return;
+  if(t.hasAttribute("data-photo")){e.preventDefault();const a=document.querySelectorAll("#phf"),i=a[a.length-1];if(i)i.click();return}
+  if(t.hasAttribute("data-photodel")){t.disabled=true;api("setMyPhoto","").then(r=>{applyPhoto(r.photo_url);toast("ลบรูปแล้ว")}).catch(er=>{t.disabled=false;toast(er.message)});return}
+  if(t.id==="psv"){const v={nickname:$("#nickname").value.trim(),phone:$("#phone").value.trim(),email:$("#email").value.trim()};t.disabled=true;t.innerHTML='<span class="spin"></span>กำลังบันทึก…';
+    api("updateMyProfile",v).then(r=>{if(!r.ok){S.perr=r.errors;S.pform=v;repaint();return}S.perr=null;S.pform=null;S.prof=r.profile;
+      if(S.today&&S.today.me){S.today.me.nickname=r.profile.nickname;LS.set("today",{d:ISO(new Date()),t:S.today})}toast(r.changed?"บันทึกแล้ว":"ไม่มีอะไรเปลี่ยน");back()}).catch(er=>{t.disabled=false;t.textContent="บันทึก";toast(er.message)})}},true);
 
 V.sched=()=>{const t=S.today;const jobs=t?t.targets.filter(x=>x.kind==="job"):[];const d=t?DT(t.date):new Date();
   return band("ตารางงาน")+`<div class="pad"><h2 style="margin:0;font-size:18px">วัน${TH_D[d.getDay()]} ${d.getDate()} ${TH_M[d.getMonth()]} ${d.getFullYear()+543}</h2>
@@ -586,7 +612,8 @@ function back(){if(!S.stack.length)return;const c=cur();S.stack.pop();if(c==="le
 function toTab(t){S.tab=t;S.stack=[];show("fade");onEnter();if(t==="home")loadLeave(true).then(()=>{if(cur()==="home")repaint()}).catch(()=>{})}
 function onEnter(){const n=cur();
   if(n==="worktime"){const now=new Date(),ym=S.wym||`${now.getFullYear()}-${p2(now.getMonth()+1)}`;S.wym=ym;api("myAttendance",ym).then(m=>{S.wdata=m;if(cur()==="worktime")repaint()}).catch(e=>toast(e.message))}
-  if(n==="profile"&&!S.prof)api("myProfile").then(p=>{S.prof=p;if(cur()==="profile")repaint()}).catch(e=>toast(e.message));
+  if(n==="pedit"){S.perr=null;S.pform=null}
+  if((n==="profile"||n==="pedit")&&!S.prof)api("myProfile").then(p=>{S.prof=p;if(["profile","pedit"].includes(cur()))repaint()}).catch(e=>toast(e.message));
   if(["quota","myreqs","lvdone"].includes(n))loadLeave(true).then(()=>{if(cur().split(":")[0]===n)repaint()}).catch(e=>toast(e.message));
   if(n==="approve")loadAps();
 }
