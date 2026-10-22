@@ -91,6 +91,23 @@ td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:middle}tr
 .copy{display:flex;gap:6px}.copy input{flex:1;min-width:0;border:1px solid var(--line);border-radius:7px;padding:7px 10px;background:var(--sf2);font:12px var(--mono)}
 .otab{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-bottom:12px}.otab button{border:0;background:none;padding:9px 14px;color:var(--mut);border-bottom:2px solid transparent}.otab button[aria-selected=true]{color:var(--fg);font-weight:600;border-bottom-color:var(--acc)}
 .qa{border:0;background:none;color:var(--acc);font:inherit;font-size:12.5px;font-weight:600;cursor:pointer;padding:0 0 0 6px}.qa:hover{text-decoration:underline}
+/* ===== หลังบ้านตาม Figma หน้า 03 ===== */
+.brand .mk{width:30px;height:30px;color:#fff;display:grid;place-items:center}.brand .mk svg{width:30px;height:30px}
+.side a svg{width:17px;height:17px;flex:none}.side a .soon{margin-left:auto;font-size:10.5px;color:var(--fnt);white-space:nowrap}
+.crumb{font-size:12px;color:var(--fnt)}
+.grid{display:grid;gap:14px}.g5{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}.g4{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.g2{grid-template-columns:repeat(auto-fit,minmax(340px,1fr))}.g3-1{grid-template-columns:minmax(0,2fr) minmax(0,1fr)}@media(max-width:1000px){.g3-1{grid-template-columns:1fr}}
+.kpi{padding:14px 16px;display:flex;flex-direction:column;gap:2px;text-align:left;border:1px solid var(--line);background:var(--sf);border-radius:var(--r);min-width:0}
+button.kpi:hover{border-color:var(--fnt)}.kpi .l{color:var(--mut);font-size:13px}.kpi .v{font-size:28px;font-weight:600;line-height:1.25}.kpi .v.warn{color:var(--warn)}.kpi .v.bad{color:var(--bad)}.kpi .v.ok{color:var(--ok)}.kpi .d{font-size:12px;color:var(--fnt)}
+.list{display:flex;flex-direction:column}.li{display:flex;gap:10px;align-items:center;padding:11px 16px;border-bottom:1px solid var(--line)}.li:last-child{border-bottom:0}.sev{width:4px;align-self:stretch;border-radius:2px;flex:none}
+.bars{display:flex;align-items:flex-end;gap:6px;height:150px}.bars div{flex:1;max-width:56px;background:#2B2B2B;border-radius:4px 4px 0 0;min-width:6px}.bars div.hi{background:#000}
+.xl{display:flex;gap:6px;font-size:11px;color:var(--fnt);margin-top:4px}.xl span{flex:1;max-width:56px;text-align:center}
+.meter{height:8px;background:var(--sf2);border:1px solid var(--line);border-radius:99px;overflow:hidden}.meter i{display:block;height:100%;background:#111}
+.segt{display:inline-flex;background:var(--sf);border:1px solid var(--line);border-radius:9px;padding:3px;flex-wrap:wrap}.segt button{border:0;background:none;padding:6px 12px;border-radius:7px;color:var(--mut);white-space:nowrap}.segt button[aria-pressed=true]{background:var(--nav);color:#fff}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.chip{border:1px solid var(--line);background:var(--sf);border-radius:99px;padding:4px 13px;font-size:13px}.chip[aria-pressed=true]{border-color:var(--fg);box-shadow:inset 0 0 0 1px var(--fg)}.chip:disabled{opacity:.45;cursor:not-allowed}
+.state{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:48px 16px;color:var(--mut)}.state b{color:var(--fg);font-size:16px}
+.f.bad textarea{border-color:var(--bad)}tfoot td{border-bottom:0}
 </style>
 </head>
 <body>
@@ -110,7 +127,7 @@ function call(fn){var args=Array.prototype.slice.call(arguments,1);
 function aCall(fn){return call.apply(null,[fn,A.tok].concat(Array.prototype.slice.call(arguments,1)))}
 var tT;function toast(m,bad){var t=$('.toast');if(t)t.remove();t=document.createElement('div');t.className='toast'+(bad?' bad':'');t.setAttribute('role','status');t.textContent=m;document.body.appendChild(t);clearTimeout(tT);tT=setTimeout(function(){t.remove()},bad?6000:3000)}
 function busy(btn,on){if(btn){btn.disabled=on}}
-var A={tok:store('hr_tok'),d:null,view:'list',id:null,q:'',dept:'all',chk:'all',line:'all',st:'all',sum:'all',sel:[],page:1,f:null,err:{},otab:'departments'};
+var A={tok:store('hr_tok'),d:null,view:'dash',id:null,q:'',dept:'all',chk:'all',line:'all',st:'all',sum:'all',sel:[],page:1,f:null,err:{},otab:'departments'};
 var ROLE={employee:'พนักงาน',lead:'หัวหน้าทีม',manager:'ผู้จัดการแผนก',hr:'HR',exec:'ผู้บริหาร',admin:'ผู้ดูแลระบบ'};
 var ST={active:['ทำงาน','b-ok'],probation:['ทดลองงาน','b-info'],leave:['ลาระยะยาว','b-warn'],resigned:['ลาออก','b-mute']};
 var CHK={office:['Office','ลงเวลาเฉพาะจุดสำนักงาน (GPS)','b-info'],field:['Field','ลงเวลาที่หน้างานตามตารางงาน','b-ok'],both:['Office + Field','สำนักงาน หรือหน้างานตามตาราง','b-warn'],none:['ไม่ต้องลงเวลา','ผู้บริหาร / ยกเว้นการลงเวลา','b-mute']};
@@ -151,28 +168,167 @@ function reload(keep){return aCall('adminBootstrap').then(function(d){A.d=d;if(k
 
 /* ───────── shell ───────── */
 function render(){
-  var me=A.d.me,lr=A.d.linkRequests.length;
-  var nav=[['att','ลงเวลาวันนี้'],['lv','การลา'],['list','พนักงาน'],['req','คำขอเชื่อม LINE',lr],['org','โครงสร้างองค์กร']].filter(function(n){return isHR()||n[0]==='list'||n[0]==='att'||n[0]==='lv'});
-  var body=A.view==='profile'?vProfile():A.view==='form'?vForm():A.view==='req'?vReq():A.view==='org'?vOrg():A.view==='att'?vAtt():A.view==='lv'?vLv():vList();
-  $('#app').innerHTML='<div class="shell"><nav class="side" aria-label="เมนู"><div class="brand"><i>PM</i>'+esc(A.d.company||'Push Media HR')+'</div>'+
-   nav.map(function(n){return '<a data-nav="'+n[0]+'" class="'+((A.view===n[0]||(n[0]==='list'&&/profile|form/.test(A.view)))?'on':'')+'">'+n[1]+(n[2]?'<span class="cnt">'+n[2]+'</span>':'')+'</a>'}).join('')+
-   '<div class="who">เข้าสู่ระบบเป็น<b>'+esc(me.name)+'</b>'+ROLE[me.role]+'<br><a id="out" style="padding:6px 0;color:#fff;text-decoration:underline">ออกจากระบบ</a></div></nav><main class="main">'+body+'</main></div>';
+  var me=A.d.me,lr=A.d.linkRequests.length,allowed=ROLE_NAV[me.role]||ROLE_NAV.lead,cur=NAVOF[A.view]||A.view;
+  if(allowed.indexOf(cur)<0&&!(cur==='list'&&me.role!=='exec')){A.view=allowed[0];cur=A.view}
+  var V={dash:[vDash,bDash],list:[vList,bList],profile:[vProfile,bProfile],form:[vForm,bForm],req:[vReq,bReq],org:[vOrg,bOrg],att:[vAtt,bAtt],lv:[vLv,bLv],appr:[vAppr,bAppr],set:[vSet,bSet],audit:[vAudit,bAudit],sched:[vSoon,bNone],ot:[vSoon,bNone],rep:[vSoon,bNone]}[A.view]||[vDash,bDash];
+  var body=V[0]().replace('<div class="ph"><div>','<div class="ph"><div><div class="crumb">Push Media HR / '+esc(navTitle(A.view))+'</div>');
+  $('#app').innerHTML='<div class="shell"><nav class="side" aria-label="เมนูหลัก"><div class="brand"><span class="mk">'+MARK+'</span>Push Media HR</div>'+
+   NAV.filter(function(n){return allowed.indexOf(n[0])>=0}).map(function(n){var c=n[0]==='appr'?(A.d.pendingCount||0)+lr:0;return '<a data-nav="'+n[0]+'" class="'+(cur===n[0]?'on':'')+'"'+(cur===n[0]?' aria-current="page"':'')+'>'+ic(n[2])+'<span>'+n[1]+'</span>'+(SOON[n[0]]?'<span class="soon">เร็ว ๆ นี้</span>':c?'<span class="cnt">'+c+'</span>':'')+'</a>'}).join('')+
+   '<div class="who">เข้าสู่ระบบเป็น<b>คุณ'+esc(me.name)+' · '+ROLE[me.role]+'</b><a id="out" style="padding:6px 0;color:#fff;text-decoration:underline">ออกจากระบบ</a></div></nav><main class="main">'+body+'</main></div>';
   $$('[data-nav]').forEach(function(a){a.onclick=function(){go(a.dataset.nav)}});
   $('#out').onclick=function(){call('logout',A.tok);store('hr_tok',null);A.tok=null;renderLogin()};
-  ({list:bList,profile:bProfile,form:bForm,req:bReq,org:bOrg,att:bAtt,lv:bLv})[A.view]();
+  V[1]();
 }
 function go(v,id){A.view=v;A.id=id||null;if(v!=='form'){A.f=null;A.err={}}closeD();render();scrollTo(0,0)}
+
+/* ───────── เมนูตาม Figma หน้า 03 (ไอคอนจาก prototype/index.html) ───────── */
+var ICON={dash:'<path d="M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z"/>',emp:'<circle cx="9" cy="8" r="4"/><path d="M2 21c0-4 3-6 7-6s7 2 7 6M17 11a3 3 0 1 0 0-6M22 21c0-3-2-5-5-5"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',cal:'<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/>',leave:'<path d="M4 20c4-1 6-4 6-9V4M10 4c5 0 9 3 10 8-5 1-9-1-10-8z"/>',ot:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4h3M9 2h6"/>',check:'<path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',org:'<rect x="9" y="2" width="6" height="5"/><rect x="2" y="17" width="6" height="5"/><rect x="16" y="17" width="6" height="5"/><path d="M12 7v5M5 17v-5h14v5"/>',rep:'<path d="M3 21h18M6 17V10M11 17V5M16 17v-8M21 17v-4"/>',set:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-2.7-1.1l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.6 1.6 0 0 0 3.6 15H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.1-2.7l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.6 1.6 0 0 0 9 4.6V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 2.7 1.1l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0 1.1 2.7H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/>',log:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/>'};
+function ic(k){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+ICON[k]+'</svg>'}
+var MARK='<svg viewBox="0 0 64 64" aria-hidden="true"><path fill="currentColor" d="M10 4h13v19a9 9 0 0 0 18 0V4h13a6 6 0 0 1 6 6v44a6 6 0 0 1-6 6H10a6 6 0 0 1-6-6V10a6 6 0 0 1 6-6z"/></svg>';
+var NAV=[['dash','Dashboard','dash'],['list','พนักงาน','emp'],['att','ลงเวลา','clock'],['sched','ตารางงาน','cal'],['lv','การลา','leave'],['ot','OT','ot'],['appr','ศูนย์อนุมัติ','check'],['org','โครงสร้างองค์กร','org'],['rep','รายงาน','rep'],['set','ตั้งค่าระบบ','set'],['audit','Audit Log','log']];
+var ROLE_NAV={hr:['dash','list','att','sched','lv','ot','appr','org','rep','set','audit'],admin:['dash','list','att','sched','lv','ot','appr','org','rep','set','audit'],manager:['dash','list','att','sched','lv','ot','appr','rep'],lead:['dash','list','att','sched','lv','ot','appr'],exec:['dash','appr','rep','sched']};
+var SOON={sched:['ตารางงาน','จัดงานรายสัปดาห์ รายทีม รายเดือน และสร้างงาน (เชื่อมข้อมูลจาก Workforce Task Manager)'],ot:['OT','คำขอ OT และเทียบกับเวลาลงเวลาจริง'],rep:['รายงาน','รายงานการลงเวลา การลา OT และส่งออก Excel']};
+var NAVOF={profile:'list',form:'list',req:'appr'};
+function navTitle(v){var n=NAV.filter(function(x){return x[0]===(NAVOF[v]||v)})[0];return n?n[1]:''}
+function vSoon(){var s=SOON[A.view];return '<div class="ph"><div><h1>'+s[0]+'</h1><div class="sub">'+s[1]+'</div></div></div><section class="card state"><b>อยู่ระหว่างพัฒนา</b><span>หน้านี้ออกแบบไว้แล้วใน Figma (หน้า 03) · จะเปิดใช้ในรอบถัดไป</span></section>'}
+function bNone(){}
+function pct(a,b){return b?Math.round(a/b*100):0}
+
+/* ───────── Dashboard ───────── */
+function vDash(){return '<div class="ph"><div><h1>Dashboard</h1><div class="sub" id="db-sub">กำลังโหลด…</div></div><span class="sp"></span><button class="btn" id="db-re">รีเฟรช</button></div><div id="db-body"><div class="loading"><span class="spin"></span>กำลังโหลด…</div></div>'}
+function bDash(){var load=function(){aCall('hrDashboard').then(function(d){A.db=d;drawDash()}).catch(function(e){if($('#db-body'))$('#db-body').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})};$('#db-re').onclick=load;load()}
+function drawDash(){if(!$('#db-body'))return;var d=A.db,k=d.kpi,dt=new Date(d.date+'T12:00:00'),TD=['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'],TM=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  $('#db-sub').textContent='ขอบเขตข้อมูล: '+d.scope+' · '+TD[dt.getDay()]+' '+dt.getDate()+' '+TM[dt.getMonth()]+' '+(dt.getFullYear()+543)+' · อัปเดต '+new Date().toTimeString().slice(0,5)+' น.';
+  var kpi=function(go,l,v,sub,cls){return '<button class="kpi" data-go="'+go+'"><span class="l">'+l+'</span><span class="v num '+(cls||'')+'">'+v+'</span><span class="d">'+sub+'</span></button>'};
+  var sev={bad:'var(--bad)',warn:'var(--warn)'};
+  $('#db-body').innerHTML='<div class="grid g5">'+
+    kpi('list','พนักงานทั้งหมด',k.total,'ทดลองงาน '+k.probation+' · ลาระยะยาว '+k.longLeave)+
+    kpi('att','เข้างานวันนี้',k.present+' / '+k.expected,pct(k.present,k.expected)+'% · ลา '+k.leaveToday+' คน')+
+    kpi('att','มาสาย',k.late,k.late?'เฉลี่ย '+k.lateAvg+' นาที':'ไม่มีคนมาสาย',k.late?'warn':'')+
+    kpi('att','ยังไม่ลงเวลา / ลืมลงเวลา',k.absent+' / '+k.missing,'ต้องตรวจสอบ',k.absent||k.missing?'bad':'')+
+    kpi('appr','รออนุมัติ',k.pending,'คำขอที่รอคุณ')+'</div>'+
+   '<div class="grid g3-1" style="margin-top:14px"><section class="card"><div class="ch"><h3>รายการผิดปกติที่ต้องตรวจสอบ</h3><span class="sp"></span><button class="btn sm" data-go="att">ดูทั้งหมด'+(d.anomalyCount>8?' ('+d.anomalyCount+')':'')+'</button></div><div class="list">'+
+    (d.anomalies.length?d.anomalies.map(function(a){return '<div class="li"><span class="sev" style="background:'+sev[a.sev]+'"></span><div style="flex:1;min-width:0"><b>'+esc(a.title)+'</b><div class="muted" style="font-size:13px">'+esc(a.sub)+'</div></div><button class="btn sm" data-go="att">ตรวจสอบ</button></div>'}).join(''):'<div class="li muted">ไม่มีรายการผิดปกติวันนี้</div>')+'</div></section>'+
+   '<section class="card"><div class="ch"><h3>คำขอรออนุมัติ</h3><span class="sp"></span><button class="btn sm" data-go="appr">ศูนย์อนุมัติ</button></div><div class="list">'+
+    (d.pending.length?d.pending.map(function(p){return '<div class="li"><span class="av" style="width:30px;height:30px;font-size:11.5px;background:var(--nav)">'+esc((p.employee||'?').slice(0,2))+'</span><div style="flex:1;min-width:0"><b style="font-weight:500">'+esc(p.title)+'</b><div class="muted" style="font-size:12.5px">'+esc(p.sub)+'</div></div><span class="badge '+(p.kind==='line'?'b-ok':'b-mute')+'">'+(p.kind==='line'?'เชื่อม LINE':'คำขอลา')+'</span></div>'}).join(''):'<div class="li muted">ไม่มีคำขอรออนุมัติ</div>')+'</div></section></div>'+
+   '<div class="grid g2" style="margin-top:14px"><section class="card"><div class="ch"><h3>อัตราเข้างาน '+d.trend.length+' วันล่าสุด (%)</h3></div><div class="cb">'+
+    (d.trend.length?'<div class="bars">'+d.trend.map(function(t,i){return '<div class="'+(i===d.trend.length-1?'hi':'')+'" style="height:'+Math.max(4,t.pct)+'%" title="'+t.date+' · '+t.pct+'%"></div>'}).join('')+'</div><div class="xl">'+d.trend.map(function(t){return '<span>'+(+t.date.slice(8))+'</span>'}).join('')+'</div><div class="faint" style="font-size:12px;margin-top:6px">ล่าสุด '+d.trend[d.trend.length-1].pct+'%'+(d.trend[d.trend.length-1].live?' (วันนี้ · ยังลงเวลาไม่ครบ)':'')+'</div>':'<div class="muted">ยังไม่มีข้อมูลสรุปรายวัน (ระบบสรุปทุกคืน 23:30)</div>')+'</div></section>'+
+   '<section class="card"><div class="ch"><h3>กำลังคนวันนี้ตามแผนก</h3></div><div class="cb" style="display:flex;flex-direction:column;gap:12px">'+
+    (d.departments.length?d.departments.map(function(x){return '<div><div style="display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:5px"><span>'+esc(x.name)+'</span><span class="muted num">มา '+x.in+'/'+x.total+(x.leave?' · ลา '+x.leave:'')+'</span></div><div class="meter"><i style="width:'+pct(x.in,x.total)+'%"></i></div></div>'}).join('')+'<div class="faint" style="font-size:12px">แถบ = สัดส่วนคนที่มาทำงาน</div>':'<div class="muted">ยังไม่มีพนักงาน</div>')+'</div></section></div>';
+  $$('#db-body [data-go]').forEach(function(b){b.onclick=function(){go(b.dataset.go)}});
+}
+
+/* ───────── ศูนย์อนุมัติ ───────── */
+function vAppr(){return '<div class="ph"><div><h1>ศูนย์อนุมัติ</h1><div class="sub">คุณเป็นผู้อนุมัติในฐานะ '+ROLE[A.d.me.role]+' · คำขอทุกประเภทรวมไว้ที่นี่</div></div></div><div id="ap-body"><div class="loading"><span class="spin"></span>กำลังโหลด…</div></div>'}
+function bAppr(){A.apTab=A.apTab||'pending';A.apType=A.apType||'all';loadAppr()}
+function loadAppr(){aCall('approvalCenter',A.apTab).then(function(d){A.ap=d;drawAppr()}).catch(function(e){if($('#ap-body'))$('#ap-body').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})}
+function drawAppr(){if(!$('#ap-body'))return;var d=A.ap,k=d.kpi,T=A.apType;
+  var items=d.items.filter(function(x){return T==='all'||x.kind===T});
+  var kpi=function(l,v,sub,cls){return '<div class="kpi"><span class="l">'+l+'</span><span class="v num '+(cls||'')+'">'+v+'</span><span class="d">'+(sub||'&nbsp;')+'</span></div>'};
+  var SB={wait:'b-warn',hr:'b-warn',chg:'b-info',ok:'b-ok',no:'b-bad',back:'b-warn',cancel:'b-mute'};
+  var chip=function(v,l,dis){return '<button class="chip" data-aty="'+v+'" aria-pressed="'+(T===v)+'"'+(dis?' disabled title="เร็ว ๆ นี้"':'')+'>'+l+'</button>'};
+  $('#ap-body').innerHTML='<div class="grid g4">'+kpi('คำขอทั้งหมดเดือนนี้',k.month)+kpi('รออนุมัติ',k.pending,'ของคุณ',k.pending?'warn':'')+kpi('อนุมัติแล้ว',k.approved,'เดือนนี้','ok')+kpi('ไม่อนุมัติ / ส่งกลับ',k.rejected+' / '+k.back,'เดือนนี้')+'</div>'+
+   '<div class="toolbar" style="margin-top:14px"><div class="segt"><button data-atab="pending" aria-pressed="'+(A.apTab==='pending')+'">รออนุมัติ'+(k.pending?' ('+k.pending+')':'')+'</button><button data-atab="done" aria-pressed="'+(A.apTab==='done')+'">ดำเนินการแล้ว</button></div>'+
+    chip('all','ทุกประเภท')+chip('leave','คำขอลา')+chip('line','เชื่อม LINE')+chip('ot','OT',1)+chip('time','แก้ไขเวลา',1)+chip('shift','เปลี่ยนตารางงาน',1)+'</div>'+
+   '<section class="card"><div class="tw"><table style="min-width:900px"><thead><tr><th>เลขที่</th><th>ผู้ขอ</th><th>ประเภท</th><th>รายละเอียด</th><th>ขั้นตอน</th><th>ยื่นเมื่อ</th><th>สถานะ</th></tr></thead><tbody>'+
+   (items.length?items.map(function(x,i){return '<tr class="ck" data-api="'+i+'"><td class="mono">'+esc(x.no)+'</td><td><div class="who-c"><span class="av" style="width:28px;height:28px;font-size:11px;background:var(--nav)">'+esc(x.employee.slice(0,2))+'</span><span>'+esc(x.employee)+'<small>'+esc(x.dept||'')+'</small></span></div></td>'+
+     '<td><span class="badge '+(x.kind==='line'?'b-ok':'b-mute')+'">'+esc(x.type)+'</span></td><td>'+esc(x.title)+(x.edited?' <span class="badge b-info">แก้ไขแล้ว</span>':'')+'<div style="font-size:12.5px;color:'+(x.flags.length?'var(--bad)':'var(--fnt)')+'">'+esc(x.detail)+(x.flags.length?' · '+esc(x.flags[0]):'')+'</div></td>'+
+     '<td>'+(x.stepText?esc(x.stepText):'—')+'</td><td class="num">'+esc(fdt(x.created_at))+'</td><td><span class="badge '+(SB[x.status]||'b-mute')+'">'+esc(x.statusText)+'</span></td></tr>'}).join(''):'<tr><td colspan="7" class="muted" style="text-align:center;padding:28px">'+(A.apTab==='pending'?'ไม่มีคำขอรอคุณอนุมัติ':'ยังไม่มีรายการ')+'</td></tr>')+'</tbody></table></div></section>';
+  $$('[data-atab]').forEach(function(b){b.onclick=function(){A.apTab=b.dataset.atab;$('#ap-body').innerHTML='<div class="loading"><span class="spin"></span>กำลังโหลด…</div>';loadAppr()}});
+  $$('[data-aty]').forEach(function(b){b.onclick=function(){A.apType=b.dataset.aty;drawAppr()}});
+  $$('[data-api]').forEach(function(tr){tr.onclick=function(){apDetail(items[+tr.dataset.api])}});
+}
+function fdt(s){if(!s)return '';var d=new Date(s);if(isNaN(d))return s;var TM=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];return d.getDate()+' '+TM[d.getMonth()]+' '+('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)}
+function apDetail(x){var PART={full:'เต็มวัน',am:'ครึ่งเช้า',pm:'ครึ่งบ่าย'},ACT={ok:'อนุมัติ',partial:'อนุมัติบางวัน',no:'ไม่อนุมัติ',back:'ส่งกลับแก้ไข',ack:'HR รับทราบ'};
+  var body='<dl class="kv"><dt>เลขที่</dt><dd class="mono">'+esc(x.no)+'</dd><dt>ผู้ขอ</dt><dd>'+esc(x.code)+' '+esc(x.employee)+' · '+esc(x.dept||'')+'</dd><dt>ประเภท</dt><dd>'+esc(x.type)+'</dd><dt>รายละเอียด</dt><dd>'+esc(x.title)+'<br>'+esc(x.detail)+'</dd>'+(x.reason?'<dt>เหตุผล</dt><dd>'+esc(x.reason)+'</dd>':'')+'<dt>สถานะ</dt><dd>'+esc(x.statusText)+'</dd></dl>'+
+   (x.days.length?'<h4 style="margin:14px 0 6px">วันลา</h4><ul class="tl">'+x.days.map(function(d){return '<li>'+esc(d.date)+' · '+(PART[d.part]||d.part)+(d.status==='no'?' · ไม่อนุมัติ':'')+'</li>'}).join('')+'</ul>':'')+
+   (x.flags.length?'<div class="alert" style="margin-top:12px;background:var(--warn-s);color:var(--warn)">'+x.flags.map(esc).join('<br>')+'</div>':'')+
+   (x.history.length?'<h4 style="margin:14px 0 6px">ประวัติ</h4><ul class="tl">'+x.history.map(function(h){return '<li>'+(h.step==='hr'?'HR':'หัวหน้าทีม')+' · '+(ACT[h.action]||h.action)+' · '+esc(h.by)+' · '+esc(fdt(h.at))+(h.note?' · '+esc(h.note):'')+'</li>'}).join('')+'</ul>':'')+
+   (x.mine&&x.kind==='leave'?'<label class="f" style="margin-top:14px">หมายเหตุ (จำเป็นเมื่อไม่อนุมัติ/ส่งกลับ · ผู้ขอจะเห็น)<textarea id="apn" rows="3" style="width:100%;border:1px solid var(--line);border-radius:7px;padding:8px"></textarea></label>':'');
+  var foot=!x.mine?'':x.kind==='line'?'<button class="btn ok" id="ap-ok">ยืนยันว่าเป็นพนักงานคนนี้</button><button class="btn bad" id="ap-no">ไม่ใช่</button>':
+    '<button class="btn ok" id="ap-ok">'+(x.status==='chg'?'อนุมัติการยกเลิก':'อนุมัติ')+'</button>'+(x.status==='chg'?'':'<button class="btn" id="ap-back">ส่งกลับแก้ไข</button>')+'<button class="btn bad" id="ap-no">ไม่อนุมัติ</button>';
+  drawer(x.type+' · '+x.no,body,foot);
+  var after=function(m){closeD();toast(m);reload(false).then(function(){render()})};
+  var dec=function(a){var n=($('#apn')||{}).value||'';if((a==='no'||a==='back')&&!n.trim()){toast('กรอกหมายเหตุ',1);return}
+    aCall('decideLeave',x.id,a,n.trim(),[]).then(function(r){after({ok:'อนุมัติแล้ว',no:'ไม่อนุมัติแล้ว',back:'ส่งกลับแก้ไขแล้ว'}[a]+(r&&r.status==='hr'?' · ส่งต่อ HR':''))}).catch(function(e){toast(e.message,1)})};
+  if(!x.mine)return;
+  if(x.kind==='line'){$('#ap-ok').onclick=function(){aCall('decideLink',x.id,true).then(function(){after('เชื่อม LINE แล้ว')}).catch(function(e){toast(e.message,1)})};$('#ap-no').onclick=function(){aCall('decideLink',x.id,false).then(function(){after('ปฏิเสธคำขอแล้ว')}).catch(function(e){toast(e.message,1)})};return}
+  $('#ap-ok').onclick=function(){dec('ok')};$('#ap-no').onclick=function(){dec('no')};if($('#ap-back'))$('#ap-back').onclick=function(){dec('back')};
+}
+
+/* ───────── ตั้งค่าระบบ ───────── */
+var SETT=[['leave','การลา'],['time','เวลาทำงาน'],['roles','บทบาทและสิทธิ์'],['flow','Workflow อนุมัติ'],['notify','การแจ้งเตือน'],['integ','Integration']];
+function vSet(){return '<div class="ph"><div><h1>ตั้งค่าระบบ</h1><div class="sub">เฉพาะ HR / ผู้ดูแลระบบ · ทุกการเปลี่ยนแปลงบันทึกใน Audit Log · สิทธิ์ตรวจซ้ำที่เซิร์ฟเวอร์ทุกครั้ง</div></div></div><div class="segt" style="margin-bottom:14px">'+SETT.map(function(t){return '<button data-stab="'+t[0]+'" aria-pressed="'+((A.stab||'leave')===t[0])+'">'+t[1]+'</button>'}).join('')+'</div><div id="st-body"><div class="loading"><span class="spin"></span>กำลังโหลด…</div></div>'}
+function bSet(){$$('[data-stab]').forEach(function(b){b.onclick=function(){A.stab=b.dataset.stab;$$('[data-stab]').forEach(function(x){x.setAttribute('aria-pressed',x===b)});drawSet()}});
+  aCall('getSettings').then(function(d){A.st=d;drawSet()}).catch(function(e){if($('#st-body'))$('#st-body').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})}
+function sv(k){return (A.st.settings[k]||{}).value||''}
+function drawSet(){if(!$('#st-body'))return;var t=A.stab||'leave',d=A.st,h='';if(!d)return;
+  var fld=function(k,l,hint,type,opts){return '<label class="f" data-sk="'+k+'"><span>'+l+'</span>'+(opts?'<select data-sv="'+k+'">'+opts.map(function(o){return '<option value="'+o[0]+'"'+(sv(k)===o[0]?' selected':'')+'>'+o[1]+'</option>'}).join('')+'</select>':'<input data-sv="'+k+'" value="'+esc(sv(k))+'"'+(type?' type="'+type+'"':'')+'>')+'<span class="h">'+(hint||'')+'</span><span class="er"></span></label>'};
+  var saveBtn='<div style="display:flex;gap:8px;margin-top:14px"><button class="btn pri" id="st-save">บันทึกการตั้งค่า</button></div>';
+  if(t==='leave'){var OQ={block:'ไม่ให้ลาเกินโควตา',unpaid:'ลาได้ · ไม่รับค่าจ้าง',warn:'ลาได้ · เตือน'};
+    h='<section class="card"><div class="ch"><h3>ประเภทการลาและโควตา (ต่อปี)</h3><span class="sp"></span><button class="btn sm" id="lt-add">+ เพิ่มประเภท</button></div><div class="tw"><table style="min-width:860px"><thead><tr><th>ประเภท</th><th>โควตา (วัน)</th><th>ยื่นล่วงหน้า</th><th>ยื่นย้อนหลังได้</th><th>ใบแพทย์ตั้งแต่</th><th>ครึ่งวัน</th><th>เกินโควตา</th><th>ส่ง HR ทุกใบ</th><th>สถานะ</th><th></th></tr></thead><tbody>'+
+     d.leaveTypes.map(function(l,i){return '<tr><td><b>'+esc(l.name)+'</b></td><td class="num">'+esc(l.quota_days||'ไม่จำกัด')+'</td><td class="num">'+(l.advance_days||0)+' วัน</td><td class="num">'+(l.backdate_days||0)+' วัน</td><td class="num">'+(l.cert_required_from_days?l.cert_required_from_days+' วัน':'—')+'</td><td>'+(l.half_day_allowed==='TRUE'?'ได้':'—')+'</td><td>'+(OQ[l.over_quota]||l.over_quota)+'</td><td>'+(l.needs_hr==='TRUE'?'ใช่':'—')+'</td><td><span class="badge '+(l.active==='FALSE'?'b-mute':'b-ok')+'">'+(l.active==='FALSE'?'ปิด':'ใช้งาน')+'</span></td><td><button class="btn sm" data-lte="'+i+'">แก้ไข</button></td></tr>'}).join('')+'</tbody></table></div></section>'+
+     '<section class="card" style="margin-top:14px"><div class="ch"><h3>การอนุมัติวันลา</h3></div><div class="cb"><div class="g">'+fld('leave_hr_role','บทบาท HR หลังหัวหน้าอนุมัติ','ack = HR รับทราบอย่างเดียว · approve = HR ต้องอนุมัติอีกขั้น','',[['ack','รับทราบ (ack)'],['approve','ต้องอนุมัติ (approve)']])+fld('leave_hr_when_days_over','ส่งต่อ HR เมื่อลาเกิน (วันต่อใบ)','0 = ทุกใบ')+'</div>'+saveBtn+'</div></section>'}
+  if(t==='time')h='<section class="card"><div class="ch"><h3>เวลาทำงานและเกณฑ์สาย</h3></div><div class="cb"><div class="g">'+fld('company_name','ชื่อบริษัท')+fld('work_start','เวลาเข้างานค่าเริ่มต้น','ใช้กับพนักงานใหม่','time')+fld('work_end','เวลาเลิกงานค่าเริ่มต้น','','time')+fld('late_after','กะเช้า: นับสายหลังเวลา','','time')+fld('late_after_night','กะดึก (เริ่ม 18:00 ขึ้นไป): นับสายหลังเวลา','','time')+fld('late_grace_min','ผ่อนผันสาย (นาที)')+fld('job_radius_m','รัศมีลงเวลาที่หน้างาน (เมตร)','เมื่องานไม่ได้กำหนดรัศมีเอง')+fld('invite_days','ลิงก์เชิญเชื่อม LINE ใช้ได้ (วัน)')+'</div>'+saveBtn+'</div></section>'+
+    '<div class="faint" style="font-size:12.5px;margin-top:10px">เวลาทำงานรายคน (เช่น กะดึก หรือเวลายืดหยุ่น) ตั้งที่หน้าพนักงาน · OT ค่าแรง ค่ารถ และ KPI จะเพิ่มในรอบถัดไปตาม SETTINGS-DESIGN</div>';
+  if(t==='roles'){var R=[['ดูข้อมูลพนักงาน','ตัวเอง','ทีม','แผนก','ทั้งหมด','ทั้งหมด','ทั้งหมด'],['แก้ข้อมูลพนักงาน','ชื่อเล่น เบอร์ อีเมล รูป','—','—','✓','✓','—'],['ดูเลขบัญชีธนาคาร','—','—','—','✓ (บันทึก Audit)','✓','—'],['ลงเวลา','✓','✓','✓','✓','—','ตามตั้งค่า'],['ดูการลงเวลาของคนอื่น','—','ทีม','แผนก','ทั้งหมด','ทั้งหมด','ทั้งหมด'],['อนุมัติลาขั้นที่ 1','—','ทีม','แผนก','✓','✓','—'],['อนุมัติลาขั้น HR','—','—','—','✓','✓','—'],['ยืนยันการเชื่อม LINE','—','—','—','✓','✓','—'],['ตั้งค่าระบบ / Audit Log','—','—','—','✓','✓','—']];
+    var rc=d.roleCounts||{};
+    h='<section class="card"><div class="ch"><h3>ตารางสิทธิ์ตามบทบาท (ขอบเขต: ตัวเอง / ทีม / แผนก / ทั้งหมด)</h3></div><div class="tw"><table style="min-width:820px"><thead><tr><th>สิทธิ์</th><th>พนักงาน</th><th>หัวหน้าทีม</th><th>ผู้จัดการแผนก</th><th>HR</th><th>ผู้ดูแลระบบ</th><th>ผู้บริหาร</th></tr></thead><tbody>'+
+     R.map(function(r){return '<tr><td>'+r[0]+'</td>'+r.slice(1).map(function(c){return '<td'+(c.indexOf('✓')===0?' style="color:var(--ok);font-weight:600"':'')+'>'+c+'</td>'}).join('')+'</tr>'}).join('')+'</tbody><tfoot><tr><td class="muted">จำนวนผู้ใช้</td>'+['employee','lead','manager','hr','admin','exec'].map(function(k){return '<td class="num muted">'+(rc[k]||0)+' คน</td>'}).join('')+'</tr></tfoot></table></div></section>'+
+     '<div class="faint" style="font-size:12.5px;margin-top:10px">กำหนดบทบาทของแต่ละคนที่หน้าพนักงาน › แก้ไข › สิทธิ์ในระบบ · ผู้ดูแลระบบ (รหัสผ่าน) ใช้สำหรับตั้งค่าครั้งแรก</div>'}
+  if(t==='flow'){var o=sv('leave_hr_when_days_over'),hr=sv('leave_hr_role')==='approve'?'HR อนุมัติ':'HR รับทราบ';
+    h='<section class="card"><div class="ch"><h3>Workflow อนุมัติ (ตามค่าที่ตั้งไว้ตอนนี้)</h3><span class="sp"></span><button class="btn sm" data-stab2="leave">แก้ไขเงื่อนไขการลา</button></div><div class="tw"><table style="min-width:700px"><thead><tr><th>ประเภทคำขอ</th><th>ขั้น 1</th><th>ขั้น 2</th><th>หลังอนุมัติ</th></tr></thead><tbody>'+
+     '<tr><td>ลา ≤ '+o+' วัน</td><td>หัวหน้าทีม (ไม่มีหัวหน้า → ผู้จัดการ/HR)</td><td>—</td><td>อัปเดตตารางงาน + การลงเวลา · แจ้งผลทาง LINE</td></tr>'+
+     '<tr><td>ลา > '+o+' วัน หรือประเภทที่ตั้ง “ส่ง HR ทุกใบ”</td><td>หัวหน้าทีม</td><td>'+hr+'</td><td>เหมือนด้านบน</td></tr>'+
+     '<tr><td>ขอยกเลิกวันลาที่อนุมัติแล้ว</td><td>หัวหน้าทีม</td><td>—</td><td>คืนโควตา · คืนงานในตาราง</td></tr>'+
+     '<tr><td>เชื่อมบัญชี LINE (ไม่มีลิงก์เชิญ)</td><td>HR</td><td>—</td><td>พนักงานเข้าแอปได้</td></tr>'+
+     '<tr class="muted"><td>OT · แก้ไขเวลา · เปลี่ยนตารางงาน</td><td colspan="3">เร็ว ๆ นี้</td></tr></tbody></table></div></section>'}
+  if(t==='notify'){var n=d.notify;
+    h='<section class="card"><div class="ch"><h3>แจ้งเตือนผ่าน LINE</h3><span class="sp"></span><span class="badge '+(n.lineToken?'b-ok':'b-warn')+'">'+(n.lineToken?'เชื่อม LINE OA แล้ว':'ยังไม่เชื่อม LINE OA')+'</span></div><div class="cb">'+
+     (n.lineToken?'<p class="muted" style="margin-top:0">ระบบส่งข้อความแจ้งผลการอนุมัติ / คำขอใหม่ ถึงพนักงานและหัวหน้าทาง LINE</p>':'<p class="muted" style="margin-top:0">ตอนนี้ระบบบันทึกข้อความแจ้งเตือนไว้ในแท็บ notify_log อย่างเดียว · เมื่อมี Channel access token ของ LINE OA บริษัท (Messaging API อยู่ใน Provider เดียวกับแอป) ให้ผู้ดูแลตั้ง Script Property <code>LINE_MSG_TOKEN</code></p>')+
+     '<div class="g">'+fld('hr_line_group','LINE Group ID ของ HR (ไม่บังคับ)','รับแจ้งเตือนคำขอที่ต้อง HR ดำเนินการ')+'</div>'+saveBtn+'</div></section>'+
+     '<section class="card" style="margin-top:14px"><div class="ch"><h3>ข้อความล่าสุด</h3></div><div class="tw"><table style="min-width:640px"><thead><tr><th>เวลา</th><th>เหตุการณ์</th><th>ช่องทาง</th><th>สถานะ</th></tr></thead><tbody>'+
+     (n.recent.length?n.recent.map(function(r){return '<tr><td class="num">'+esc(fdt(r.at))+'</td><td>'+esc(r.event)+'</td><td>'+esc(r.channel)+'</td><td><span class="badge '+(r.status==='sent'?'b-ok':r.status==='error'?'b-bad':'b-mute')+'">'+esc(r.status)+'</span>'+(r.error?' <span class="faint">'+esc(r.error)+'</span>':'')+'</td></tr>'}).join(''):'<tr><td colspan="4" class="muted" style="text-align:center;padding:20px">ยังไม่มีข้อความ</td></tr>')+'</tbody></table></div></section>'}
+  if(t==='integ')h='<section class="card"><div class="ch"><h3>การเชื่อมต่อ</h3></div><div class="list">'+
+     [['LINE MINI App (แอปพนักงาน)','เชื่อมแล้ว','b-ok','Channel '+d.line.channels.join(' / ')+' · LIFF '+d.line.liff],['LINE Messaging API (แจ้งเตือน)',d.notify.lineToken?'เชื่อมแล้ว':'ยังไม่เชื่อม',d.notify.lineToken?'b-ok':'b-warn','ใช้ส่งผลอนุมัติและคำขอใหม่ทาง LINE'],
+      ['API Attendance (ระบบลงเวลาเดิม)','ยังไม่เชื่อม','b-mute','ระบบเดิมยังใช้งานแยก · ไม่แตะข้อมูลเดิมจนกว่าจะยืนยัน (INTEGRATION-DESIGN)'],['Workforce Task Manager (ตารางงาน)','ยังไม่เชื่อม','b-mute','เชื่อมเมื่อทำหน้าตารางงาน'],['HumanSoft / Express (เงินเดือน)','ยังไม่เชื่อม','b-mute','เก็บรหัสพนักงานของแต่ละระบบไว้ที่หน้าพนักงานแล้ว']]
+     .map(function(r){return '<div class="li"><div style="flex:1;min-width:0"><b>'+r[0]+'</b><div class="muted" style="font-size:12.5px;overflow-wrap:anywhere">'+esc(r[3])+'</div></div><span class="badge '+r[2]+'">'+r[1]+'</span></div>'}).join('')+'</div></section>';
+  $('#st-body').innerHTML=h;
+  var b=$('#st-save');if(b)b.onclick=function(){var p={};$$('[data-sv]').forEach(function(x){p[x.dataset.sv]=x.value});busy(b,1);$$('[data-sk]').forEach(function(l){l.classList.remove('bad');l.querySelector('.er').textContent=''});
+    aCall('saveSettings',p).then(function(r){busy(b,0);if(!r.ok){Object.keys(r.errors).forEach(function(k){var l=$('[data-sk="'+k+'"]');if(l){l.classList.add('bad');l.querySelector('.er').textContent=r.errors[k]}});toast('ยังบันทึกไม่ได้ · ตรวจช่องสีแดง',1);return}
+      Object.keys(p).forEach(function(k){(A.st.settings[k]=A.st.settings[k]||{}).value=p[k]});toast(r.changed?'บันทึกแล้ว '+r.changed+' ค่า':'ไม่มีค่าที่เปลี่ยน')}).catch(function(e){busy(b,0);toast(e.message,1)})};
+  $$('[data-lte]').forEach(function(x){x.onclick=function(){ltForm(d.leaveTypes[+x.dataset.lte])}});var la=$('#lt-add');if(la)la.onclick=function(){ltForm(null)};
+  $$('[data-stab2]').forEach(function(x){x.onclick=function(){A.stab=x.dataset.stab2;render()}});
+}
+function ltForm(l){l=l||{name:'',quota_days:'',advance_days:'0',backdate_days:'0',cert_required_from_days:'',half_day_allowed:'TRUE',over_quota:'block',needs_hr:'FALSE',active:'TRUE'};
+  var f=function(k,lab,hint){return '<label class="f" data-lk="'+k+'"><span>'+lab+'</span><input data-lv="'+k+'" value="'+esc(l[k]||'')+'"><span class="h">'+(hint||'')+'</span><span class="er"></span></label>'};
+  var s=function(k,lab,o){return '<label class="f"><span>'+lab+'</span><select data-lv="'+k+'">'+o.map(function(x){return '<option value="'+x[0]+'"'+(l[k]===x[0]?' selected':'')+'>'+x[1]+'</option>'}).join('')+'</select></label>'};
+  drawer(l.id?'แก้ไขประเภทการลา':'เพิ่มประเภทการลา','<div style="display:flex;flex-direction:column;gap:12px">'+f('name','ชื่อประเภท *')+f('quota_days','โควตาต่อปี (วัน)','เว้นว่าง = ไม่จำกัด')+f('advance_days','ต้องยื่นล่วงหน้า (วัน)')+f('backdate_days','ยื่นย้อนหลังได้ (วัน)')+f('cert_required_from_days','ต้องมีใบแพทย์เมื่อลาตั้งแต่ (วัน)','เว้นว่าง = ไม่ต้อง')+
+    s('half_day_allowed','ลาครึ่งวัน',[['TRUE','ได้'],['FALSE','ไม่ได้']])+s('over_quota','เมื่อเกินโควตา',[['block','ไม่ให้ลา'],['unpaid','ลาได้ · ไม่รับค่าจ้าง'],['warn','ลาได้ · เตือน']])+s('needs_hr','ส่ง HR ทุกใบ',[['FALSE','ไม่'],['TRUE','ใช่']])+s('active','สถานะ',[['TRUE','ใช้งาน'],['FALSE','ปิด']])+'<div class="faint" style="font-size:12px">มีผลกับคำขอใหม่ · คำขอที่อนุมัติแล้วไม่เปลี่ยน</div></div>','<button class="btn pri" id="lt-sv">บันทึก</button>');
+  $('#lt-sv').onclick=function(){var p={id:l.id};$$('[data-lv]').forEach(function(x){p[x.dataset.lv]=x.value});var b=this;busy(b,1);
+    aCall('saveLeaveType',p).then(function(r){busy(b,0);if(!r.ok){Object.keys(r.errors).forEach(function(k){var x=$('[data-lk="'+k+'"]');if(x){x.classList.add('bad');x.querySelector('.er').textContent=r.errors[k]}});return}
+      closeD();toast('บันทึกประเภทการลาแล้ว');aCall('getSettings').then(function(d){A.st=d;drawSet()})}).catch(function(e){busy(b,0);toast(e.message,1)})};
+}
+
+/* ───────── Audit Log ───────── */
+var AACT={create:'สร้าง',update:'แก้ไข',self_update:'แก้ไขเอง',self_photo:'เปลี่ยนรูป',self_photo_remove:'ลบรูป',line_link:'เชื่อม LINE',view_bank:'เปิดดูเลขบัญชี',reject:'ปฏิเสธ',unlink:'ยกเลิกเชื่อม LINE'};
+function vAudit(){return '<div class="ph"><div><h1>Audit Log</h1><div class="sub">ประวัติการเปลี่ยนแปลงข้อมูลทั้งหมด (500 รายการล่าสุด) · แก้ไขหรือลบไม่ได้</div></div></div><div class="tools"><input id="au-q" placeholder="ค้นหา ชื่อ / เรื่อง / เหตุผล" value="'+esc(A.auq||'')+'"><button class="btn" id="au-go">ค้นหา</button></div><div id="au-body"><div class="loading"><span class="spin"></span>กำลังโหลด…</div></div>'}
+function bAudit(){var load=function(){aCall('auditList',A.auq||'',500).then(function(rows){if(!$('#au-body'))return;
+    $('#au-body').innerHTML='<section class="card"><div class="tw"><table style="min-width:900px"><thead><tr><th>เวลา</th><th>ผู้ทำ</th><th>การกระทำ</th><th>เรื่อง</th><th>รายการ</th><th>รายละเอียด</th></tr></thead><tbody>'+
+     (rows.length?rows.map(function(a){var det='';try{var b=a.before?JSON.parse(a.before):null,f=a.after?JSON.parse(a.after):null;if(f&&typeof f==='object')det=Object.keys(f).slice(0,4).map(function(k){return k+': '+(b&&b[k]!==undefined?String(b[k]).slice(0,20)+' → ':'')+String(f[k]).slice(0,30)}).join(' · ')}catch(e){det=''}
+       return '<tr><td class="num" style="white-space:nowrap">'+esc(fdt(a.at))+'</td><td>'+esc(a.actor)+'</td><td>'+esc(AACT[a.action]||a.action)+'</td><td>'+esc(a.entity)+'</td><td>'+esc(a.target)+'</td><td style="font-size:12.5px;max-width:380px;overflow-wrap:anywhere">'+esc(det)+(a.reason?'<div class="faint">'+esc(a.reason)+'</div>':'')+'</td></tr>'}).join(''):'<tr><td colspan="6" class="muted" style="text-align:center;padding:24px">ไม่พบรายการ</td></tr>')+'</tbody></table></div></section>'}).catch(function(e){if($('#au-body'))$('#au-body').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})};
+  $('#au-go').onclick=function(){A.auq=$('#au-q').value.trim();load()};$('#au-q').onkeydown=function(e){if(e.key==='Enter')$('#au-go').click()};load()}
 
 /* ───────── ลงเวลาวันนี้ (Phase 2b) ───────── */
 var AST={ok:['ปกติ','b-ok'],late:['มาสาย','b-warn'],not_yet:['ยังไม่ลงเวลา','b-bad'],working:['กำลังทำงาน','b-info'],missing_out:['ไม่มีลงเวลาออก','b-warn'],missing_in:['ไม่มีลงเวลาเข้า','b-warn'],leave:['ลา','b-info'],leave_wait:['ลา (รออนุมัติ)','b-warn'],holiday:['วันหยุด','b-mute'],off:['วันหยุด','b-mute'],absent:['ขาดงาน','b-bad']};
 function vAtt(){return '<div class="ph"><div><h1>ลงเวลาวันนี้</h1><div class="sub" id="att-sub">กำลังโหลด…</div></div><span class="sp"></span>'+(isHR()?'<button class="btn" id="att-sync" title="ปกติระบบทำเองตอน 23:30">ย้ายเข้าแท็บเดือน + สรุปตอนนี้</button>':'')+'<button class="btn" id="att-re">รีเฟรช</button></div><div id="att-body"><div class="loading"><span class="spin"></span></div></div>'}
 function bAtt(){
-  var load=function(){aCall('attendanceToday').then(function(d){A.att=d;drawAtt()}).catch(function(e){$('#att-body').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})};
+  var load=function(){aCall('attendanceToday').then(function(d){A.att=d;drawAtt()}).catch(function(e){if($('#att-body'))$('#att-body').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})};
   $('#att-re').onclick=load;var sy=$('#att-sync');
   if(sy)sy.onclick=function(){sy.disabled=true;aCall('syncNow').then(function(r){toast('ย้าย '+r.moved+' รายการเข้าแท็บเดือน + สรุปแล้ว');sy.disabled=false;load()}).catch(function(e){sy.disabled=false;toast(e.message,1)})};
   load();
 }
-function drawAtt(){var d=A.att,c=d.counts,f=A.attF||'all';
+function drawAtt(){if(!$('#att-body'))return;var d=A.att,c=d.counts,f=A.attF||'all';
   $('#att-sub').textContent=d.date+' · '+c.total+' คน';
   var sb=function(k,l,n,w){return '<button data-af="'+k+'" class="'+(w&&n?'w':'')+'" aria-pressed="'+(f===k)+'"><b class="num">'+n+'</b><span>'+l+'</span></button>'};
   var rows=d.people.filter(function(p){return f==='all'||(f==='in'&&p.first_in)||(f==='late'&&p.status==='late')||(f==='leave'&&/leave/.test(p.status))||(f==='absent'&&p.status==='not_yet')||(f==='out'&&p.out_of_area)});
@@ -185,9 +341,9 @@ function drawAtt(){var d=A.att,c=d.counts,f=A.attF||'all';
 /* ───────── การลา (Phase 2c) ───────── */
 var LVS={wait:['รอหัวหน้า','b-warn'],hr:['รอ HR','b-warn'],ok:['อนุมัติแล้ว','b-ok'],chg:['ขอยกเลิก','b-info'],back:['ส่งกลับแก้ไข','b-warn'],no:['ไม่อนุมัติ','b-bad'],cancel:['ยกเลิก','b-mute']};
 function vLv(){return '<div class="ph"><div><h1>การลา</h1><div class="sub" id="lv-sub">กำลังโหลด…</div></div><span class="sp"></span><input type="month" id="lv-ym" class="btn" value="'+(A.lvym||'')+'" aria-label="เดือน"><button class="btn" id="lv-re">รีเฟรช</button></div><div id="lv-body"><div class="loading"><span class="spin"></span></div></div>'}
-function bLv(){var load=function(){aCall('leaveAdminList','all',A.lvym||'').then(function(d){A.lvd=d;drawLv()}).catch(function(e){$('#lv-body').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})};
+function bLv(){var load=function(){aCall('leaveAdminList','all',A.lvym||'').then(function(d){A.lvd=d;drawLv()}).catch(function(e){if($('#lv-body'))$('#lv-body').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})};
   $('#lv-re').onclick=load;$('#lv-ym').onchange=function(){A.lvym=this.value;load()};load()}
-function drawLv(){var d=A.lvd,f=A.lvf||'all',c={all:d.length,mine:0,wait:0,hr:0,ok:0,ack:0};
+function drawLv(){if(!$('#lv-body'))return;var d=A.lvd,f=A.lvf||'all',c={all:d.length,mine:0,wait:0,hr:0,ok:0,ack:0};
   d.forEach(function(r){if(r.step)c.mine++;if(r.status==='wait'||r.status==='chg')c.wait++;if(r.status==='hr')c.hr++;if(r.status==='ok')c.ok++;if(r.status==='ok'&&r.need_hr&&!r.hr_ack)c.ack++});
   $('#lv-sub').textContent=d.length+' ใบ'+(A.lvym?' · '+A.lvym:' · ทุกเดือน');
   var rows=d.filter(function(r){return f==='all'||(f==='mine'&&r.step)||(f==='wait'&&(r.status==='wait'||r.status==='chg'))||(f==='hr'&&r.status==='hr')||(f==='ok'&&r.status==='ok')||(f==='ack'&&r.status==='ok'&&r.need_hr&&!r.hr_ack)});
