@@ -1,0 +1,724 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Push Media HR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai+Looped:wght@400;500;600;700&display=swap">
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js" charset="utf-8"></script>
+<script src="config.js"></script>
+<style>
+/* หน้าตาตาม Figma หน้า 05 "Employee — LIFF (แบบ HumanSoft)" + section "โมดูลการลา" — CSS ชุดเดียวกับ prototype/liff.html
+   ระบบจริง: ไม่มีแถบ LINE จำลอง (LINE แสดงแถบของตัวเอง) · บนมือถือเต็มจอ · บนคอมแสดงในกรอบ iPhone ไว้ทดสอบ */
+
+/* Layout: an iPhone-sized LINE LIFF screen. Desktop shows it inside a device frame; a phone shows it full screen.
+   Visual language follows the HumanSoft LIFF app, recoloured with Push Media brand blue. Light-only on purpose (LINE in-app view). */
+:root{
+  --blue:#0550B5; --blue-2:#1F72D6; --blue-soft:#E3EDFB; --blue-tint:#F1F6FE; --blue-line:#B9D0F2;
+  --ink:#0D1B2E;
+  --bg:#E8EFF8; --bg-home:#F3F6FA; --card:#FFFFFF; --line:#E6EAF0;
+  --text:#1B1F27; --text-2:#6B7280; --text-3:#9AA3AF;
+  --green:#17A34A; --green-soft:#DDF7E6;
+  --red:#E5484D; --red-soft:#FFF0F0; --orange:#F2711C; --orange-soft:#FFF3EA; --yellow:#E8A400; --yellow-soft:#FFF9E6;
+  --track:#C9D2DF;
+  --font:"IBM Plex Sans Thai Looped",-apple-system,"Segoe UI",sans-serif;
+  --sh:0 4px 14px rgba(13,40,90,.08);
+  --sh-2:0 2px 6px rgba(13,40,90,.07);
+  color-scheme:light;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{margin:0;background:#C9D1DC;font-family:var(--font);color:var(--text);font-size:16px;line-height:1.45;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none;padding:0;text-align:inherit}
+button:active{transform:scale(.97);transition:transform .08s}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+svg.i{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+[hidden]{display:none!important}
+.tn{font-variant-numeric:tabular-nums}
+
+/* ---------- device ---------- */
+.stage{min-height:100%;display:flex;align-items:center;justify-content:center;gap:40px;padding-block:24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.device{position:relative;width:390px;height:844px;border-radius:54px;background:#0B0F14;padding:12px;box-shadow:0 30px 70px rgba(13,27,46,.35),inset 0 0 0 2px #2A2F37;flex:none;transform-origin:center}
+.screen{position:relative;width:100%;height:100%;border-radius:42px;overflow:hidden;background:var(--card);display:flex;flex-direction:column;isolation:isolate}
+.island{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:120px;height:34px;border-radius:20px;background:#000;z-index:90}
+.status{height:50px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:6px 30px 0 34px;font:600 16px/1 -apple-system,"SF Pro Text","Segoe UI",sans-serif;background:var(--card);z-index:80}
+.status svg{height:12px}
+.homebar{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:3px;background:#111;z-index:95;pointer-events:none}
+.side{max-width:280px;color:#33404F;font-size:14px;display:flex;flex-direction:column;gap:10px}
+.side h2{margin:0;font-size:20px;color:var(--ink)}
+.side .tag{align-self:flex-start;font-size:12px;background:var(--ink);color:#fff;padding:2px 10px;border-radius:99px}
+@media (max-width:760px){.side{display:none}}
+/* phone: full screen, no fake status bar or frame */
+@media (max-width:500px){
+  body{background:var(--card)}
+  .stage{padding:0;display:block;min-height:0;height:100%}
+  .device{width:100%;height:100%;border-radius:0;padding:0;box-shadow:none;background:none;transform:none!important}
+  .screen{border-radius:0}
+  .island,.status,.homebar{display:none}
+  .linebar{padding-top:env(safe-area-inset-top,0px)}
+}
+
+/* ---------- LINE in-app header ---------- */
+.linebar{flex:none;display:grid;grid-template-columns:44px 1fr 44px 44px;align-items:center;padding:4px 6px 6px;background:var(--card);border-bottom:1px solid #F0F2F5;z-index:70}
+.linebar .t{text-align:center;line-height:1.25}
+.linebar .t b{display:block;font-size:17px;font-weight:700}
+.linebar .t span{font-size:12px;color:var(--text-3)}
+.linebar button{height:40px;display:grid;place-items:center;color:var(--text)}
+.linebar svg.i{width:26px;height:26px;stroke-width:1.8}
+
+/* ---------- views & motion ---------- */
+.views{position:relative;flex:1;min-height:0;overflow:hidden}
+.view{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;background:var(--bg);display:flex;flex-direction:column;scrollbar-width:none}
+.view::-webkit-scrollbar{display:none}
+.view.home{background:var(--bg-home)}
+.view.white{background:var(--card)}
+.in-r{animation:inR .28s cubic-bezier(.2,.8,.2,1)}
+.out-r{animation:outR .24s ease-in forwards;z-index:3}
+.fade{animation:fd .2s ease}
+@keyframes inR{from{transform:translateX(100%)}to{transform:none}}
+@keyframes outR{to{transform:translateX(100%)}}
+@keyframes fd{from{opacity:.4}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.in-r,.out-r,.fade{animation:none}}
+.spacer{flex:1}
+
+/* ---------- sub-page band (HumanSoft blue header) ---------- */
+.band{flex:none;position:sticky;top:0;z-index:6;display:flex;align-items:center;height:64px;padding:0 20px 0 16px;background:linear-gradient(105deg,var(--blue) 0%,var(--blue-2) 100%);color:#fff}
+.band button{display:grid;place-items:center;width:36px;height:36px;margin-left:-6px}
+.band svg.i{width:26px;height:26px;stroke-width:2.6}
+.band h1{margin:0 0 0 auto;font-size:21px;font-weight:700;letter-spacing:.1px}
+.band .lock{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.9);color:var(--ink);display:grid;place-items:center;margin-left:12px}
+
+.pad{padding:18px 16px;display:flex;flex-direction:column;gap:12px}
+.card{background:var(--card);border-radius:16px;box-shadow:var(--sh)}
+.muted{color:var(--text-2)}
+.cap{font-size:13px;color:var(--text-2)}
+
+/* ---------- home ---------- */
+.htop{background:var(--card);padding:10px 16px 18px}
+.prof{display:flex;align-items:center;gap:14px}
+.ava{width:48px;height:48px;border-radius:50%;flex:none;overflow:hidden;background:linear-gradient(160deg,#DCE8F8,#B9CDEA);display:grid;place-items:end center}
+.ava svg{width:84%;height:84%;fill:#7E97BE}
+.ava.lg{width:72px;height:72px;border:3px solid rgba(255,255,255,.9)}
+.prof .nm{flex:1;min-width:0}
+.prof .nm b{display:block;font-size:17px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prof .nm span{font-size:16px;color:var(--text-2)}
+.bell{position:relative;width:40px;height:40px;display:grid;place-items:center;color:var(--text)}
+.bell svg.i{width:28px;height:28px}
+.bell i{position:absolute;top:-1px;right:-3px;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:var(--red);color:#fff;font:600 11px/17px var(--font);font-style:normal;text-align:center;border:2px solid #fff;box-sizing:content-box}
+.shorts{display:grid;grid-template-columns:repeat(5,1fr);margin:20px -12px 0}
+.shorts button{display:flex;flex-direction:column;align-items:center;gap:7px;font-size:11px;color:var(--text);text-align:center;line-height:1.2;white-space:nowrap;letter-spacing:-.4px;min-width:0}
+.shorts svg.i{width:30px;height:30px;stroke-width:1.5}
+.sec-h{display:flex;align-items:center;gap:8px;margin:2px 0 0}
+.sec-h h2{margin:0;font-size:18px;font-weight:700}
+.sec-h svg.i{width:22px;height:22px;color:var(--blue);stroke-width:1.8}
+.daily .r1{display:flex;align-items:center;gap:12px;padding:14px 12px 14px 12px;border-bottom:1px solid var(--line)}
+.daily .dt{width:68px;text-align:center;border-right:1px solid var(--line);padding-right:14px;flex:none}
+.daily .dt span{display:block;font-size:12px;color:var(--text-2);white-space:nowrap}
+.daily .dt b{display:block;font-size:34px;font-weight:700;line-height:1.1;margin:2px 0}
+.chip{display:inline-flex;align-items:center;padding:2px 12px;border-radius:99px;font-size:14px;font-weight:500}
+.c-green{background:var(--green-soft);color:var(--green)} .c-blue{background:var(--blue-soft);color:var(--blue)} .c-orange{background:var(--orange-soft);color:var(--orange)} .c-red{background:var(--red-soft);color:var(--red)} .c-grey{background:#EEF1F5;color:var(--text-2)}
+.shift{font-size:14px;font-weight:600;margin-top:6px;letter-spacing:-.3px;white-space:nowrap}
+.round{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;flex:none;color:var(--text);background:#fff;box-shadow:var(--sh-2)}
+.round svg.i{width:18px;height:18px;stroke-width:2.2}
+.daily .r2{padding:14px 18px 18px}
+.inout{display:grid;grid-template-columns:1fr 40px 1fr;align-items:end;text-align:center;margin-top:12px;padding:0 24px}
+.inout span{display:block;font-size:14px;color:var(--text-2);margin-bottom:10px}
+.inout b{font-size:18px;font-weight:600}
+.inout svg.i{width:22px;height:22px;color:var(--text-3);margin:0 auto 4px}
+.todayjob{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:12px;background:var(--blue-tint);border:1px solid var(--blue-soft);text-align:left;width:100%}
+.todayjob .bar{width:4px;align-self:stretch;border-radius:2px;background:var(--blue)}
+.mband{margin-top:6px;background:linear-gradient(105deg,var(--blue),var(--blue-2));color:#fff;border-radius:28px 28px 0 0;padding:20px 20px 50px;display:flex;align-items:center}
+.mband b{font-size:17px;font-weight:600;flex:1;white-space:nowrap}
+.mband span{font-size:12.5px;opacity:.9;white-space:nowrap;margin-left:8px}
+.sheet{background:var(--card);border-radius:28px 28px 0 0;margin-top:-30px;padding:22px 16px 28px;display:flex;flex-direction:column;gap:18px;position:relative}
+.sheet .h{display:flex;align-items:baseline;gap:8px}
+.sheet .h h2{margin:0;font-size:18px;font-weight:700;flex:1;white-space:nowrap}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.tile{border:1.5px solid;border-radius:12px;padding:14px 2px 12px;display:flex;flex-direction:column;align-items:center;gap:1px;text-align:center}
+.tile svg.i{width:30px;height:30px;stroke-width:1.7;margin-bottom:4px}
+.tile b{font-size:13px;font-weight:600}
+.tile strong{font-size:17px;font-weight:700;color:var(--text);margin-top:2px}
+.tile strong small{font-size:14px;font-weight:500}
+.tile span{font-size:11px;color:var(--text-2)}
+.t-red{border-color:#F3A3A5;background:linear-gradient(160deg,#FFE9EA,#fff 65%);color:var(--red)}
+.t-orange{border-color:#F7BE96;background:linear-gradient(160deg,#FFEEDF,#fff 65%);color:var(--orange)}
+.t-yellow{border-color:#F2D27A;background:linear-gradient(160deg,#FFF6D9,#fff 65%);color:var(--yellow)}
+.t-blue{border-color:#9DBEEA;background:linear-gradient(160deg,#E4EEFC,#fff 65%);color:var(--blue)}
+.docs{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.doc{display:flex;gap:12px;min-width:0;align-items:center;padding:16px 12px 16px 16px;text-align:left;border-radius:14px;background:#fff;box-shadow:var(--sh)}
+.doc .bar{width:3px;height:48px;border-radius:2px;flex:none}
+.doc .l{display:flex;gap:4px;align-items:center;font-size:13px;color:var(--text-2);white-space:nowrap}
+.doc .l svg.i{width:18px;height:18px}
+.doc strong{display:block;font-size:24px;font-weight:700;margin-top:2px}
+.doc strong small{font-size:18px;font-weight:500}
+
+/* ---------- bottom nav ---------- */
+.tabbar{flex:none;position:relative;z-index:20;display:grid;grid-template-columns:repeat(5,1fr);height:88px;padding:0 0 22px;background:#fff;box-shadow:0 -1px 0 #EDF0F4,0 -6px 18px rgba(13,40,90,.05)}
+.tabbar button{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;font-size:13px;color:#7A8290;padding-bottom:2px}
+.tabbar svg.i{width:28px;height:28px;stroke-width:1.6}
+.tabbar button[aria-current="page"]{color:var(--blue)}
+.fab{position:relative}
+.fab .ring{position:absolute;top:-38px;left:50%;transform:translateX(-50%);width:80px;height:80px;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 -4px 10px rgba(13,40,90,.06)}
+.fab .ring i{width:66px;height:66px;border-radius:50%;background:linear-gradient(160deg,var(--blue-2),var(--blue));display:grid;place-items:center;color:#fff;box-shadow:0 6px 14px rgba(5,80,181,.35)}
+.fab .ring svg.i{width:36px;height:36px;stroke-width:1.7}
+@media (max-width:500px){.foot{padding-bottom:calc(12px + env(safe-area-inset-bottom,0px))}.tabbar{height:calc(66px + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px)}}
+
+/* ---------- lists & forms ---------- */
+.mrow{display:flex;align-items:center;gap:16px;width:100%;padding:13px 18px;border-radius:26px;background:#fff;box-shadow:var(--sh);font-size:16px;text-align:left}
+.mrow svg.i{width:28px;height:28px;stroke-width:1.6}
+.mrow .chev{margin-left:auto;color:#8A93A0}
+.mrow .chev svg.i{width:20px;height:20px;stroke-width:2}
+.fcard{background:#fff;border-radius:14px;box-shadow:var(--sh);padding:16px 14px;display:flex;flex-direction:column;gap:12px}
+.fl{display:flex;flex-direction:column;gap:6px;min-width:0}
+.fl>.emsg{color:var(--red)}
+input[type=date].inp,input[type=time].inp{min-width:0;display:block}
+.fl>span{font-size:14px;color:var(--text-2)}
+.inp,.sel,.ta{width:100%;background:#fff;border:1.5px solid #D9DEE6;border-radius:8px;padding:11px 14px;font-size:16px;color:var(--text);appearance:none;-webkit-appearance:none;min-height:46px}
+.sel{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7'%3E%3Cpath d='M0 0h11L5.5 7z' fill='%23838B97'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;padding-right:38px}
+.ta{min-height:90px;resize:none}
+.ta::placeholder,.inp::placeholder{color:#A4ACB8}
+.err{border-color:var(--red)!important;background:#FFF8F8}
+.emsg{color:var(--red);font-size:13px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.acc{display:flex;align-items:center;justify-content:space-between;border:1.5px solid #D9DEE6;border-radius:8px;padding:11px 14px;font-weight:500}
+.acc svg.i{width:20px;height:20px;transition:transform .2s}
+.acc[aria-expanded="true"] svg.i{transform:rotate(180deg)}
+.pills{display:flex;gap:8px;flex-wrap:wrap}
+.pill{padding:8px 15px;border-radius:99px;background:var(--blue-soft);color:var(--blue);font-size:15px}
+.pill[aria-pressed="true"]{background:var(--blue);color:#fff}
+.attach{display:flex;align-items:center;gap:8px;padding:12px 14px;border:1.5px dashed var(--blue-line);border-radius:8px;color:var(--blue);background:var(--blue-tint)}
+.note{display:flex;gap:8px;align-items:flex-start;padding:11px 12px;border-radius:10px;font-size:14px}
+.note svg.i{width:18px;height:18px;margin-top:2px}
+.foot{flex:none;position:sticky;bottom:0;z-index:5;background:#fff;border-top:1px solid var(--line);padding:12px 16px 30px;display:flex;flex-direction:column;gap:10px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:48px;padding:12px;border-radius:10px;font-size:17px;font-weight:600}
+.btn.pri{background:var(--blue);color:#fff;box-shadow:0 4px 10px rgba(5,80,181,.22)}
+.btn.out{border:1.5px solid var(--blue);color:var(--blue);background:#fff}
+.btn.sm{min-height:42px;font-size:15px}
+.btn[disabled]{opacity:.7}
+.spin{width:18px;height:18px;border-radius:50%;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.empty{padding:30px 0;text-align:center;color:var(--text-2);background:#fff;border-radius:14px;box-shadow:var(--sh)}
+
+/* ---------- clock-in ---------- */
+.clk{text-align:center;padding:16px 16px 18px;border-bottom:1px solid var(--line);background:#fff}
+.clk .d{font-size:17px;color:var(--text-2)}
+.clk .t{font-size:52px;font-weight:700;color:#1FB25A;line-height:1.15;letter-spacing:1px;font-variant-numeric:tabular-nums}
+.clk .s{display:flex;justify-content:center;align-items:center;gap:6px;color:#1FB25A;font-size:16px}
+.clk .s svg.i{width:19px;height:19px;stroke-width:2}
+.lab{font-size:15px;font-weight:600;color:#4B5360}
+.loc{display:flex;align-items:center;gap:12px;padding:14px 12px 14px 16px;border:1px solid var(--line);border-radius:16px;background:#fff}
+.loc b{display:block;font-size:17px;font-weight:700}
+.loc .s{font-size:14px;color:var(--text-2);line-height:1.5}
+.locbtn{width:52px;height:52px;border-radius:14px;border:1px solid var(--line);display:grid;place-items:center;color:var(--blue);flex:none;box-shadow:var(--sh-2)}
+.locbtn svg.i{width:28px;height:28px;stroke-width:2}
+.locbtn.busy svg{animation:sp 1s linear infinite}
+.sim{align-self:flex-end;font-size:12px;color:var(--text-3);text-decoration:underline;text-underline-offset:2px;margin-top:-6px}
+.opt{display:flex;align-items:center;gap:16px;width:100%;padding:16px 16px;border:1.5px solid var(--line);border-radius:16px;background:#fff;text-align:left}
+.opt[aria-checked="true"]{border-color:var(--blue);background:#EEF4FD}
+.opt b{display:block;font-size:17px;font-weight:700}
+.opt .s{display:flex;gap:6px;align-items:center;color:var(--text-2);font-size:15px}
+.opt .s svg.i{width:18px;height:18px}
+.rad{width:26px;height:26px;border-radius:50%;border:2px solid #9AA3AF;display:grid;place-items:center;flex:none;background:#fff}
+.opt[aria-checked="true"] .rad{border:3px solid var(--blue)}
+.opt[aria-checked="true"] .rad::after{content:"";width:12px;height:12px;border-radius:50%;background:var(--blue)}
+.okv{display:flex;flex-direction:column;align-items:center;gap:10px;padding:36px 16px 24px;text-align:center}
+.okv .c{width:96px;height:96px;border-radius:50%;background:var(--green-soft);color:var(--green);display:grid;place-items:center;animation:pop .4s cubic-bezier(.2,1.4,.4,1)}
+.okv .c svg.i{width:58px;height:58px;stroke-width:2}
+.okv h2{margin:0;font-size:21px}
+@keyframes pop{from{transform:scale(.4);opacity:0}}
+.kv{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--line);font-size:16px}
+.kv:last-child{border-bottom:0}
+.kv span{color:var(--text-2);flex:1} .kv b{font-weight:600;text-align:right}
+
+/* ---------- other pages ---------- */
+.qcard{background:#fff;border-radius:22px;box-shadow:var(--sh);padding:14px 18px 18px}
+.qcard .r{display:flex;font-size:17px}
+.qcard .r span:last-child{margin-left:auto}
+.track{height:15px;border-radius:99px;background:var(--track);overflow:hidden;margin-top:12px}
+.track i{display:block;height:100%;border-radius:99px;background:var(--blue)}
+.phead{position:relative;color:#fff;background:linear-gradient(105deg,var(--blue),var(--blue-2));padding:0 20px 50px;border-radius:0 0 26px 120px / 0 0 26px 40px;flex:none}
+.phead .top{display:flex;align-items:center;height:60px}
+.phead .top h1{margin:0 0 0 auto;font-size:21px}
+.phead .who{display:flex;gap:16px;align-items:center}
+.phead .who div{font-size:15px;line-height:1.6}
+.phead .who b{font-size:19px}
+.tabs{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;margin-right:-16px;padding-right:16px}
+.tabs::-webkit-scrollbar{display:none}
+.tabs .pill{white-space:nowrap;padding:10px 22px;font-size:16px;background:#D7E5FA}
+.tabs .pill[aria-pressed="true"]{background:var(--blue)}
+.editb{width:56px;height:42px;border-radius:21px;background:var(--blue);color:#fff;display:grid;place-items:center}
+.editb svg.i{width:22px;height:22px}
+.sec{border-radius:14px;overflow:hidden;background:#fff;box-shadow:var(--sh)}
+.sec h3{margin:0;background:linear-gradient(105deg,var(--blue),var(--blue-2));color:#fff;font-size:17px;font-weight:600;padding:12px 18px}
+.sec .b{padding:0 18px}
+.day{display:flex;align-items:center;gap:14px;padding:12px 16px;background:#fff;border-radius:16px;box-shadow:var(--sh);width:100%;text-align:left}
+.day .n{text-align:center;padding-right:14px;border-right:1px solid var(--line);min-width:52px}
+.day .n b{display:block;font-size:22px;line-height:1.1}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;background:#fff;padding:12px 12px 14px;box-shadow:0 2px 6px rgba(13,40,90,.05);flex:none}
+.week button{display:flex;flex-direction:column;align-items:center;padding:8px 0 6px;border-radius:16px;font-size:12px;color:var(--text-2)}
+.week button b{font-size:18px;color:var(--text)}
+.week button[aria-pressed="true"]{background:var(--blue);color:#fff}
+.week button[aria-pressed="true"] b{color:#fff}
+.week i{width:6px;height:6px;border-radius:50%;margin-top:3px}
+.job{background:#fff;border-radius:16px;box-shadow:var(--sh);padding:14px 16px;display:flex;flex-direction:column;gap:7px;border-left:4px solid var(--blue)}
+.job .m{display:flex;gap:7px;align-items:center;font-size:14px;color:var(--text-2)}
+.job .m svg.i{width:17px;height:17px}
+.ap{background:#fff;border-radius:16px;box-shadow:var(--sh);padding:14px 16px;display:flex;flex-direction:column;gap:9px}
+.ap .r{display:flex;gap:12px;font-size:14px}
+.ap .r span:first-child{width:58px;flex:none;color:var(--text-2)}
+.av-sm{width:42px;height:42px}
+
+/* ---------- drawer, sheet, toast ---------- */
+.scrim{position:absolute;inset:var(--top,0px) 0 0 0;background:rgba(32,40,52,.5);z-index:40;animation:fd .2s}
+.drawer{position:absolute;top:var(--top,0px);right:0;bottom:0;width:70%;background:#E6EEF9;z-index:41;display:flex;flex-direction:column;animation:inR .26s cubic-bezier(.2,.8,.2,1)}
+.drawer .logo{padding:24px 22px 18px;margin:0 18px;border-bottom:2px solid #9AA6B8}
+.drawer .logo svg{display:block;width:100%;height:auto}
+.drawer nav{flex:1;overflow:auto;padding:10px 18px;scrollbar-width:thin}
+.drawer nav button{display:flex;gap:18px;align-items:center;width:100%;padding:12px 18px;border-radius:12px;font-size:16px;color:#2A313C}
+.drawer nav svg.i{width:26px;height:26px}
+.drawer nav button[aria-current="page"]{background:#C9DCF5;color:var(--blue)}
+.drawer footer{display:grid;grid-template-columns:1fr 1px 1fr;align-items:center;border-top:1px solid #CBD5E3;padding:14px 0 28px}
+.drawer footer i{height:34px;background:#C3CDDA}
+.drawer footer button{display:flex;justify-content:center;color:#2A313C}
+.drawer footer svg.i{width:28px;height:28px}
+.drawer .ver{text-align:center;font-size:11px;color:var(--text-3);padding-bottom:6px}
+.sheetm{position:absolute;left:0;right:0;bottom:0;z-index:51;background:#fff;border-radius:22px 22px 0 0;padding:10px 18px 26px;animation:up .26s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;gap:12px}
+.sheetm .grab{width:40px;height:5px;border-radius:3px;background:#D5DAE1;margin:0 auto 4px}
+.sheetm h3{margin:0;font-size:19px;text-align:center}
+@keyframes up{from{transform:translateY(100%)}}
+.toast{position:absolute;left:50%;bottom:110px;transform:translateX(-50%);background:rgba(20,27,38,.92);color:#fff;padding:11px 18px;border-radius:12px;font-size:15px;z-index:99;max-width:86%;text-align:center;animation:fd .2s}
+.skel{border-radius:8px;background:linear-gradient(90deg,#E9EDF2,#F5F7FA,#E9EDF2);background-size:200% 100%;animation:sk 1.1s infinite}
+@keyframes sk{to{background-position:-200% 0}}
+
+/* ---------- โมดูลการลา (21 ต.ค. 2569) ---------- */
+.c-yellow{background:var(--yellow-soft);color:#B07D00}
+.mini{font-size:12px!important;padding:1px 9px!important;gap:4px}
+.lv-step{display:flex;align-items:center;gap:10px;margin-top:6px}
+.lv-step .n{width:24px;height:24px;border-radius:50%;background:var(--blue);color:#fff;font-size:13px;font-weight:700;display:grid;place-items:center;flex:none}
+.lv-step b{font-size:16px}
+.lt-g{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ltc{background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:11px 12px;display:flex;flex-direction:column;gap:2px;box-shadow:var(--sh-2)}
+.ltc[aria-pressed="true"]{border-color:var(--blue);background:#EEF4FD;box-shadow:0 0 0 3px rgba(5,80,181,.1)}
+.ltc b{font-size:16px}.ltc .q{font-size:13px;color:var(--blue);font-weight:600}.ltc .q.z{color:var(--red)}
+.cal{background:#fff;border-radius:16px;box-shadow:var(--sh);padding:10px 8px 10px}
+.cal-h{display:flex;align-items:center;justify-content:space-between;padding:0 4px 6px}.cal-h b{font-size:16px}
+.cal-h button{width:36px;height:36px;display:grid;place-items:center;border-radius:50%;color:var(--blue)}.cal-h button:disabled{color:#C8CED6}
+.cal-g{display:grid;grid-template-columns:repeat(7,1fr);row-gap:2px}
+.cal-w{text-align:center;font-size:12px;color:var(--text-3);padding-bottom:4px}
+.cd{height:46px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:15px;position:relative}
+.cd b{font-weight:500;width:34px;height:30px;display:grid;place-items:center;border-radius:9px}
+.cd.wk b{color:var(--text-3)}.cd.hol b{color:var(--red)}
+.cd.om{visibility:hidden}
+.cd:disabled b{color:#CDD3DB}
+.cd.td b{box-shadow:inset 0 0 0 1.5px var(--blue)}
+.cd.rs b{background:var(--blue-soft);color:var(--blue)}
+.cd.edge b{background:var(--blue);color:#fff;font-weight:700}
+.cd.rs.off b{background:#F3F5F8;color:var(--text-3);text-decoration:line-through}
+.mk{display:flex;gap:2px;height:5px}
+.mk i,.cal-l i,.wm i{display:block;width:5px;height:5px;border-radius:50%;margin:0!important}
+.mj{background:var(--blue)}.ml{background:var(--green)}.ml.wait,.ml.hr,.ml.back,.ml.chg{background:var(--orange)}.mo{background:#A855F7}.hl{background:var(--red)}
+.cal-l{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:11.5px;color:var(--text-2);padding:9px 4px 0;border-top:1px solid var(--line);margin-top:6px}
+.cal-l span{display:flex;align-items:center;gap:5px}
+.dl{background:#fff;border-radius:16px;box-shadow:var(--sh);padding:2px 14px}
+.dr{padding:11px 0;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:8px}.dr:last-child{border-bottom:0}
+.dr .t{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.dr .t b{font-size:15px;min-width:74px}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;background:#EEF2F7;border-radius:10px;padding:3px}
+.seg button{padding:7px 2px;border-radius:8px;font-size:13.5px;text-align:center;color:var(--text-2);white-space:nowrap}
+.seg button[aria-pressed="true"]{background:#fff;color:var(--blue);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.sumc{background:linear-gradient(105deg,var(--blue),var(--blue-2));color:#fff;border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:9px}
+.sumc .big{font-size:30px;font-weight:700;line-height:1.05}
+.qb{height:8px;border-radius:99px;background:rgba(255,255,255,.25);display:flex;overflow:hidden}.qb i{display:block;height:100%}
+.tli{display:flex;gap:12px}.tlr{display:flex;flex-direction:column;align-items:center}
+.tlr i{width:14px;height:14px;border-radius:50%;border:3px solid;margin-top:4px;flex:none}
+.tlr em{flex:1;width:2px;background:#E2E6EC;margin-top:2px;min-height:12px}
+.tli>span:last-child{padding-bottom:12px;min-width:0}
+.lvh{font-size:15px;font-weight:700;margin:6px 0 -2px;color:#3A4250}
+.diff{display:grid;grid-template-columns:1fr 24px 1fr;gap:8px;align-items:center}
+.diff .o{text-decoration:line-through;color:var(--text-3)}
+.eff{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.45;color:#2E3540}
+.eff svg.i{width:19px;height:19px;color:var(--blue);margin-top:1px}
+.tm{display:grid;grid-template-columns:62px repeat(var(--n),minmax(0,1fr));gap:3px;font-size:11.5px}
+.tm .h{text-align:center;color:var(--text-2);font-weight:600;white-space:nowrap}
+.tm .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;align-self:center;font-size:12.5px}
+.tm .c{border-radius:6px;text-align:center;padding:5px 0;font-weight:600;white-space:nowrap;overflow:hidden}
+.c-w,.c-b{background:#E8F7EE;color:var(--green)}.c-j{background:var(--blue-soft);color:var(--blue)}.c-l{background:#F3E8FF;color:#7E22CE}
+.c-r{background:repeating-linear-gradient(45deg,#FFDDC2,#FFDDC2 4px,#FFF1E6 4px,#FFF1E6 8px);color:#C2410C}.c-o{background:#F1F3F6;color:var(--text-3)}
+.wkh{display:flex;align-items:center;justify-content:space-between;background:#fff;padding:8px 12px 0}
+.wkh b{font-size:15px}.wkh button{width:36px;height:36px;display:grid;place-items:center;color:var(--blue)}
+.week button.hol b{color:var(--red)}.week button[aria-pressed="true"].hol b{color:#fff}
+.wm{display:flex;gap:2px;height:6px;margin-top:3px;align-items:center}
+.week button[aria-pressed="true"] .wm i{box-shadow:0 0 0 1.5px #fff}
+.apck{accent-color:var(--blue)}
+
+.linebar{display:none}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="device" id="device">
+    <div class="screen" id="screen">
+      <div class="island" aria-hidden="true"></div>
+      <div class="status" aria-hidden="true"><span id="sbt" class="tn">9:41</span><svg viewBox="0 0 78 13" width="78"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="6" width="3" height="6" rx="1"/><rect x="10" y="3.5" width="3" height="8.5" rx="1"/><rect x="15" y="1" width="3" height="11" rx="1"/><path d="M32 3.2a10 10 0 0 1 13.4 0l-1.4 1.5a8 8 0 0 0-10.6 0z M34.5 6a6.4 6.4 0 0 1 8.4 0l-1.4 1.5a4.4 4.4 0 0 0-5.6 0z M37.1 8.9a2.6 2.6 0 0 1 3.2 0l-1.6 1.8z"/><rect x="52.5" y=".5" width="22" height="11.5" rx="3.5" fill="none" stroke="#111" opacity=".35"/><rect x="54.5" y="2.5" width="15" height="7.5" rx="2"/><rect x="75.5" y="4" width="1.6" height="4.5" rx=".8" opacity=".4"/></svg></div>
+      <div class="views" id="views"></div>
+      <nav class="tabbar" id="tabbar" aria-label="เมนูหลัก" hidden></nav>
+      <div id="ov"></div>
+      <div class="homebar" aria-hidden="true"></div>
+    </div>
+  </div>
+</div>
+<script>
+'use strict';
+const P={home:'<path d="M3.5 10.5L12 3.5l8.5 7V20a1 1 0 0 1-1 1h-5v-6h-5v6h-5a1 1 0 0 1-1-1z"/>',cal:'<rect x="3" y="4.5" width="18" height="16.5" rx="2.5"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/>',doc:'<path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5M8.5 13h7M8.5 17h5"/>',docOk:'<path d="M13 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2H11"/><path d="M13 2.5V8h5.5v3M8.5 13H12M8.5 9.5h2"/><circle cx="16.5" cy="17" r="4.5"/><path d="M14.7 17l1.3 1.3 2.3-2.4"/>',menu:'<path d="M3.5 6.5h17M3.5 12h17M3.5 17.5h17"/>',finger:'<path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"/><path d="M14 13.12c0 2.38 0 6.38-1 8.88"/><path d="M17.29 21.02c.12-.6.43-2.3.5-3.02"/><path d="M2 12a10 10 0 0 1 18-6"/><path d="M2 16h.01"/><path d="M21.8 16c.2-2 .131-5.354 0-6"/><path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2"/><path d="M8.65 22c.21-.66.45-1.32.57-2"/><path d="M9 6.8a6 6 0 0 1 9 5.2v2"/>',user:'<circle cx="12" cy="7.5" r="4"/><path d="M4.5 21c0-4.2 3.4-6.5 7.5-6.5s7.5 2.3 7.5 6.5"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/>',userClock:'<circle cx="10" cy="7.5" r="4"/><path d="M3 21c0-4 3-6.5 7-6.5 1 0 1.9.1 2.7.4"/><circle cx="17.5" cy="17.5" r="4"/><path d="M17.5 15.8v1.9l1.2.8"/>',bell:'<path d="M6 9a6 6 0 0 1 12 0c0 6.5 2.5 8.5 2.5 8.5h-17S6 15.5 6 9"/><path d="M10 21a2.2 2.2 0 0 0 4 0"/>',help:'<circle cx="12" cy="12" r="9.5"/><path d="M9.3 9.2a2.8 2.8 0 0 1 5.4.9c0 1.9-2.7 2.6-2.7 2.6M12 16.8h.01"/>',chevR:'<path d="M9 5.5l6.5 6.5L9 18.5"/>',chevL:'<path d="M15 5.5L8.5 12l6.5 6.5"/>',chevD:'<path d="M6 9.5l6 6 6-6"/>',arrowR:'<path d="M4.5 12h15M14 6.5l5.5 5.5-5.5 5.5"/>',pin:'<path d="M12 21.5s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="9.5" r="2.5"/>',target:'<circle cx="12" cy="12" r="6.5"/><circle cx="12" cy="12" r="2.6" fill="currentColor"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3"/>',calX:'<rect x="3" y="4.5" width="16" height="15.5" rx="2.5"/><path d="M3 9h16M7.5 2.5v4M14.5 2.5v4"/><circle cx="18" cy="18" r="3.8" fill="#fff"/><path d="M16.6 16.6l2.8 2.8M19.4 16.6l-2.8 2.8"/>',alarm:'<circle cx="12" cy="13" r="7.5"/><path d="M12 9.5V13l2.3 1.6M4.5 4l-2 2M19.5 4l2 2"/>',door:'<path d="M14 3.5H6.5v17H14"/><path d="M14 3.5l3 1.5v14l-3 1.5z"/><path d="M17 12h5M19.5 9.5L22 12l-2.5 2.5"/>',clockD:'<path d="M12 3a9 9 0 1 1-9 9"/><path d="M12 7.5V12l3 2"/><path d="M3.2 9.2h.01M4.6 6.4h.01M6.8 4.3h.01M9.5 3.3h.01"/>',calClock:'<rect x="3" y="4.5" width="15" height="15" rx="2.5"/><path d="M3 9h15M7.5 2.5v4M13.5 2.5v4"/><circle cx="17.5" cy="17.5" r="4" fill="#fff"/><path d="M17.5 15.8v1.9l1.2.8"/>',calGrid:'<rect x="3" y="4.5" width="15" height="15" rx="2.5"/><path d="M3 9h15M7.5 2.5v4M13.5 2.5v4M6.5 12.5h.01M9.5 12.5h.01M12.5 12.5h.01M6.5 15.5h.01M9.5 15.5h.01"/><circle cx="17.5" cy="17.5" r="4" fill="#fff"/><path d="M17.5 15.8v1.9l1.2.8"/>',hour:'<path d="M6 2.5h12M6 21.5h12M7.5 2.5v3.5c0 2.5 4.5 4 4.5 6s-4.5 3.5-4.5 6v3.5M16.5 2.5v3.5c0 2.5-4.5 4-4.5 6s4.5 3.5 4.5 6v3.5"/>',swap:'<path d="M7 4L3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/>',idc:'<rect x="2.5" y="5" width="19" height="14" rx="2.5"/><circle cx="8.5" cy="11" r="2.3"/><path d="M5.3 16c.6-1.5 1.8-2.1 3.2-2.1s2.6.6 3.2 2.1M14.5 10h4M14.5 13.5h3"/>',clip:'<path d="M20.5 11.5l-8.6 8.6a5.2 5.2 0 0 1-7.4-7.4l8.7-8.7a3.5 3.5 0 0 1 4.9 4.9l-8.7 8.7a1.7 1.7 0 0 1-2.5-2.5l8-8"/>',board:'<rect x="5" y="4" width="14" height="17.5" rx="2"/><path d="M9 4V2.5h6V4M8.5 10h7M8.5 13.5h4M12.5 17l1.5 1.5 3-3"/>',cash:'<path d="M12 3.5c-2 0-3 1-3 2.5 0 2.5 6 2 6 5 0 1.5-1.2 2.5-3 2.5s-3-1-3-2.2M12 2v1.5M12 13.5V15"/><path d="M5 11.5c-1.6 1.2-2.5 3-2.5 5 0 3.5 4 5.5 9.5 5.5s9.5-2 9.5-5.5c0-2-.9-3.8-2.5-5"/>',alert:'<path d="M10.3 4.2L2.6 17.5a2 2 0 0 0 1.7 3h15.4a2 2 0 0 0 1.7-3L13.7 4.2a2 2 0 0 0-3.4 0z"/><path d="M12 9.5v4M12 17h.01"/>',ok:'<circle cx="12" cy="12" r="9.5"/><path d="M7.8 12.2l2.8 2.8 5.6-5.8"/>',search:'<circle cx="11" cy="11" r="7"/><path d="M20.5 20.5L16 16"/>',mega:'<path d="M3.5 10v4a1 1 0 0 0 1 1H7l5.5 4V5L7 9H4.5a1 1 0 0 0-1 1z"/><path d="M16 9a4 4 0 0 1 0 6M18.6 6.5a7.8 7.8 0 0 1 0 11"/>',info:'<circle cx="12" cy="12" r="9.5"/><path d="M12 16.5v-5M12 8h.01"/>',gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>',x:'<path d="M5.5 5.5l13 13M18.5 5.5l-13 13"/>',dots:'<circle cx="12" cy="5" r="1.3" fill="currentColor"/><circle cx="12" cy="12" r="1.3" fill="currentColor"/><circle cx="12" cy="19" r="1.3" fill="currentColor"/>',edit:'<path d="M15.5 4.5l4 4L9 19l-5 1 1-5z"/><path d="M13 7l4 4"/>',lock:'<rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8.5 10.5V7.5a3.5 3.5 0 0 1 7 0v3"/><circle cx="12" cy="15.5" r="1.2" fill="currentColor"/>',qr:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M17 20h4v-3M14 20v.01"/>',people:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-5.5 6.5-5.5s6.5 1.9 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.7c2.2.6 3.5 2.4 3.5 5.3"/>',book:'<path d="M3 5.5c3-1.5 6-1.5 9 .5v14c-3-2-6-2-9-.5zM21 5.5c-3-1.5-6-1.5-9 .5v14c3-2 6-2 9-.5z"/>'};
+const ic=(k,st)=>`<svg class="i" viewBox="0 0 24 24" ${st?`style="${st}"`:""} aria-hidden="true">${P[k]}</svg>`;
+const AVA='<svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="18" r="9"/><path d="M6 48c0-11 8-17 18-17s18 6 18 17z"/></svg>';
+const LOGO=`<svg viewBox="86 86 728 130" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Push Media"><g fill="#0550B5"><path d="M248.78,178.24v33.97h-4.43v-33.97h4.43Z"/><path d="M256.8,194.41c0-2.56-.05-4.59-.21-6.6h3.94l.25,4.04h.1c1.21-2.27,4.03-4.54,8.07-4.54,3.37,0,8.62,2.01,8.62,10.38v14.51h-4.43v-14.05c0-3.93-1.47-7.22-5.66-7.22-2.87,0-5.14,2.08-5.95,4.55-.2.55-.3,1.3-.3,2.06v14.66h-4.43v-17.79Z"/><path d="M284.76,194.41c0-2.56-.04-4.59-.2-6.6h3.93l.25,4.04h.1c1.21-2.27,4.03-4.54,8.06-4.54,3.38,0,8.62,2.01,8.62,10.38v14.51h-4.43v-14.05c0-3.93-1.46-7.22-5.65-7.22-2.87,0-5.15,2.08-5.95,4.55-.19.55-.3,1.3-.3,2.06v14.66h-4.44v-17.79Z"/><path d="M334.81,199.8c0,9.03-6.3,12.96-12.16,12.96-6.54,0-11.69-4.83-11.69-12.56s5.39-12.89,12.1-12.89,11.75,5.08,11.75,12.49ZM315.51,200.07c0,5.34,3.02,9.37,7.35,9.37s7.4-3.97,7.4-9.48c0-4.14-2.06-9.33-7.29-9.33s-7.46,4.85-7.46,9.44Z"/><path d="M341.77,187.81l4.78,13.66c.8,2.27,1.47,4.28,1.97,6.3h.15c.56-2.01,1.26-4.03,2.06-6.3l4.74-13.66h4.64l-9.57,24.39h-4.22l-9.28-24.39h4.74Z"/><path d="M381.22,206.37c0,2.11.11,4.19.35,5.84h-3.98l-.35-3.06h-.15c-1.36,1.91-3.99,3.62-7.46,3.62-4.95,0-7.46-3.48-7.46-7,0-5.9,5.24-9.13,14.67-9.08v-.5c0-1.97-.56-5.66-5.55-5.61-2.32,0-4.68.66-6.41,1.82l-1-2.97c2-1.25,4.98-2.11,8.06-2.11,7.46,0,9.27,5.08,9.27,9.93v9.13ZM376.93,199.77c-4.84-.11-10.33.75-10.33,5.48,0,2.92,1.9,4.23,4.13,4.23,3.23,0,5.29-2.01,5.99-4.08.16-.51.21-1.01.21-1.41v-4.23Z"/><path d="M393.51,181.96v5.85h6.35v3.39h-6.35v13.14c0,3.03.86,4.74,3.32,4.74,1.21,0,1.92-.11,2.57-.32l.21,3.39c-.86.3-2.22.61-3.93.61-2.08,0-3.73-.69-4.79-1.87-1.2-1.35-1.71-3.52-1.71-6.38v-13.31h-3.79v-3.39h3.79v-4.54l4.33-1.31Z"/><path d="M409.78,180.96c0,1.5-1.06,2.72-2.81,2.72-1.61,0-2.68-1.21-2.68-2.72s1.12-2.77,2.78-2.77,2.72,1.21,2.72,2.77ZM404.85,212.2v-24.39h4.43v24.39h-4.43Z"/><path d="M418.36,187.81l4.78,13.66c.8,2.27,1.46,4.28,1.97,6.3h.16c.55-2.01,1.25-4.03,2.06-6.3l4.73-13.66h4.63l-9.57,24.39h-4.23l-9.27-24.39h4.74Z"/><path d="M442.84,200.82c.11,6.01,3.88,8.46,8.37,8.46,3.18,0,5.14-.55,6.76-1.26l.8,3.18c-1.57.72-4.28,1.57-8.17,1.57-7.5,0-12-4.99-12-12.34s4.34-13.11,11.45-13.11c8.01,0,10.08,6.94,10.08,11.43,0,.91-.05,1.57-.16,2.08h-17.15ZM455.85,197.64c.05-2.77-1.16-7.15-6.15-7.15-4.53,0-6.44,4.08-6.81,7.15h12.96Z"/><path d="M475.7,207.73c1.36.8,3.69,1.71,5.9,1.71,3.18,0,4.68-1.57,4.68-3.63s-1.25-3.23-4.48-4.43c-4.44-1.61-6.5-3.99-6.5-6.92,0-3.93,3.22-7.15,8.42-7.15,2.46,0,4.64.64,5.95,1.5l-1.07,3.23c-.96-.61-2.72-1.47-4.99-1.47-2.62,0-4.03,1.52-4.03,3.34,0,2.01,1.41,2.92,4.59,4.17,4.19,1.57,6.41,3.69,6.41,7.32,0,4.33-3.39,7.35-9.08,7.35-2.67,0-5.14-.69-6.86-1.71l1.06-3.33Z"/><path d="M647.05,207.73c1.37.8,3.69,1.71,5.9,1.71,3.18,0,4.7-1.57,4.7-3.63s-1.26-3.23-4.49-4.43c-4.43-1.61-6.5-3.99-6.5-6.92,0-3.93,3.23-7.15,8.42-7.15,2.48,0,4.64.64,5.95,1.5l-1.06,3.23c-.96-.61-2.73-1.47-5-1.47-2.62,0-4.03,1.52-4.03,3.34,0,2.01,1.41,2.92,4.59,4.17,4.19,1.57,6.41,3.69,6.41,7.32,0,4.33-3.39,7.35-9.08,7.35-2.67,0-5.15-.69-6.86-1.71l1.06-3.33Z"/><path d="M518.34,199.8c0,9.03-6.3,12.96-12.15,12.96-6.56,0-11.7-4.83-11.7-12.56s5.4-12.89,12.1-12.89,11.75,5.08,11.75,12.49ZM499.02,200.07c0,5.34,3.03,9.37,7.38,9.37s7.4-3.97,7.4-9.48c0-4.14-2.06-9.33-7.31-9.33s-7.47,4.85-7.47,9.44Z"/><path d="M523.92,176.42h4.44v35.79h-4.44v-35.79Z"/><path d="M556.24,205.5c0,2.57.05,4.79.21,6.7h-3.94l-.24-3.97h-.11c-1.1,1.95-3.73,4.53-8.06,4.53-3.83,0-8.42-2.16-8.42-10.68v-14.27h4.43v13.46c0,4.65,1.47,7.82,5.44,7.82,3,0,5.05-2.06,5.86-4.08.25-.61.4-1.41.4-2.27v-14.93h4.44v17.69Z"/><path d="M568.92,181.96v5.85h6.36v3.39h-6.36v13.14c0,3.03.87,4.74,3.34,4.74,1.21,0,1.92-.11,2.57-.32l.21,3.39c-.86.3-2.22.61-3.94.61-2.06,0-3.73-.69-4.78-1.87-1.21-1.35-1.71-3.52-1.71-6.38v-13.31h-3.77v-3.39h3.77v-4.54l4.32-1.31Z"/><path d="M585.2,180.96c0,1.5-1.06,2.72-2.82,2.72-1.61,0-2.67-1.21-2.67-2.72s1.1-2.77,2.75-2.77,2.73,1.21,2.73,2.77ZM580.26,212.2v-24.39h4.44v24.39h-4.44Z"/><path d="M614.13,199.8c0,9.03-6.3,12.96-12.15,12.96-6.55,0-11.7-4.83-11.7-12.56s5.4-12.89,12.1-12.89,11.75,5.08,11.75,12.49ZM594.82,200.07c0,5.34,3.03,9.37,7.37,9.37s7.4-3.97,7.4-9.48c0-4.14-2.06-9.33-7.31-9.33s-7.46,4.85-7.46,9.44Z"/><path d="M619.72,194.41c0-2.56-.06-4.59-.22-6.6h3.94l.26,4.04h.1c1.2-2.27,4.04-4.54,8.07-4.54,3.39,0,8.62,2.01,8.62,10.38v14.51h-4.43v-14.05c0-3.93-1.46-7.22-5.65-7.22-2.86,0-5.13,2.08-5.95,4.55-.21.55-.3,1.3-.3,2.06v14.66h-4.43v-17.79Z"/><path d="M244.35,89.16c4.74-.81,11.39-1.42,20.76-1.42s16.22,1.82,20.76,5.45c4.43,3.42,7.25,9.06,7.25,15.71s-2.11,12.39-6.24,16.11c-5.24,4.85-13.01,7.16-22.07,7.16-2.01,0-3.83-.1-5.24-.4v24.39h-15.22v-67.01ZM259.57,119.98c1.32.32,2.83.4,5.14.4,8.17,0,13.2-4.13,13.2-10.98,0-6.24-4.33-9.97-12.1-9.97-3.02,0-5.13.21-6.24.51v20.05Z"/><path d="M318.23,88.25v38.99c0,11.8,4.53,17.74,12.29,17.74s12.5-5.64,12.5-17.74v-38.99h15.31v38.08c0,20.97-10.58,30.94-28.31,30.94s-27.11-9.57-27.11-31.14v-37.88h15.32Z"/><path d="M372.14,140.34c4.03,2.11,10.48,4.22,17.03,4.22,7.05,0,10.79-2.91,10.79-7.34s-3.23-6.66-11.39-9.48c-11.29-4.04-18.75-10.28-18.75-20.16,0-11.59,9.78-20.35,25.71-20.35,7.75,0,13.3,1.5,17.33,3.42l-3.42,12.29c-2.62-1.31-7.56-3.22-14.11-3.22s-9.88,3.12-9.88,6.54c0,4.33,3.73,6.25,12.6,9.57,11.99,4.44,17.53,10.68,17.53,20.25,0,11.39-8.66,21.07-27.32,21.07-7.75,0-15.41-2.11-19.25-4.24l3.12-12.6Z"/><path d="M441.48,88.25v26.09h25.29v-26.09h15.33v67.92h-15.33v-28.42h-25.29v28.42h-15.33v-67.92h15.33Z"/><path d="M573.29,130.16c-.3-8.15-.61-18.03-.61-27.91h-.19c-2.21,8.66-5.05,18.35-7.66,26.3l-8.25,26.51h-12.01l-7.24-26.2c-2.22-8.07-4.43-17.74-6.15-26.61h-.21c-.3,9.16-.69,19.65-1.1,28.12l-1.3,25.8h-14.22l4.33-67.92h20.46l6.65,22.67c2.21,7.86,4.23,16.32,5.75,24.29h.41c1.8-7.86,4.11-16.83,6.44-24.4l7.15-22.56h20.16l3.63,67.92h-14.91l-1.12-26.01Z"/><path d="M641.52,127.44h-24.99v16.13h27.91v12.6h-43.22v-67.92h41.8v12.58h-26.49v14.11h24.99v12.5Z"/><path d="M654.93,89.25c5.64-.91,13.01-1.52,20.67-1.52,13,0,21.47,2.42,27.91,7.26,7.05,5.24,11.49,13.6,11.49,25.6,0,12.98-4.73,21.96-11.18,27.51-7.17,5.95-18.15,8.75-31.45,8.75-7.96,0-13.7-.5-17.44-1v-66.61ZM670.25,144.56c1.31.32,3.53.32,5.35.32,14,.1,23.18-7.57,23.18-23.78,0-14.1-8.28-21.56-21.58-21.56-3.33,0-5.64.29-6.95.61v44.43Z"/><path d="M740.5,88.25v67.92h-15.3v-67.92h15.3Z"/><path d="M769.62,138.73l-4.83,17.44h-15.82l20.65-67.92h20.16l21.16,67.92h-16.62l-5.24-17.44h-19.45ZM786.86,127.24l-4.24-14.4c-1.21-4.03-2.43-9.06-3.43-13.09h-.19c-1.02,4.03-2.01,9.16-3.12,13.09l-4.03,14.4h15.01Z"/><path d="M192.21,88.28h-23.09v40.14c0,9-7.29,16.29-16.29,16.29s-16.29-7.3-16.29-16.29v-40.14h-26.13c-11.79,0-21.34,9.56-21.34,21.34v81.8c0,11.79,9.56,21.34,21.34,21.34h81.8c11.79,0,21.34-9.55,21.34-21.34v-81.8c0-11.79-9.55-21.34-21.34-21.34Z"/></g></svg>`;
+/* ---------- แอปพนักงาน Push Media HR (LIFF / LINE MINI App) · หน้าตาตาม Figma หน้า 05 (แบบ HumanSoft) ----------
+ * GitHub Pages: window.HR_CONFIG = {api:'…/exec', liffId:'…'} · ทดสอบในเครื่อง: ?dev=<sub>|<ชื่อ> [&lat=&lng=] [&invite=] */
+const CFG=window.HR_CONFIG||{},API=CFG.api||"/api",Q=new URLSearchParams(location.search),DEV=Q.get("dev");
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const TH_M=["มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"];
+const TH_S=["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
+const TH_D=["อาทิตย์","จันทร์","อังคาร","พุธ","พฤหัสบดี","ศุกร์","เสาร์"],TH_DS=["อา.","จ.","อ.","พ.","พฤ.","ศ.","ส."];
+const p2=n=>String(n).padStart(2,"0");
+const DT=s=>new Date(s+"T12:00:00");
+function call(fn,...a){return fetch(API,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({fn,args:a})})
+  .then(r=>r.text()).then(t=>{let j;try{j=JSON.parse(t)}catch(e){throw new Error("เชื่อมต่อเซิร์ฟเวอร์ไม่สำเร็จ ลองใหม่อีกครั้ง")}if(!j.ok)throw new Error(j.error);return j.r})}
+const api=(fn,...a)=>call(fn,S.tok,...a).catch(e=>{if(/SESSION_EXPIRED/.test(e.message)){S.tok=null;start();}throw e});
+
+const S={tab:"home",stack:[],tok:null,idt:null,invite:Q.get("invite")||"",me:null,today:null,month:null,pos:null,opt:0,last:null,wym:null,ptab:0};
+const TITLE={home:"หน้าหลัก",clock:"ลงเวลาการทำงาน",done:"ลงเวลาการทำงาน",worktime:"เวลาการทำงาน",profile:"ข้อมูลพนักงาน",sched:"ตารางงาน",req:"เอกสาร",leave:"ยื่นเอกสาร",lvsum:"ยื่นเอกสาร",lvdone:"ยื่นเอกสาร",lvdetail:"คำขอลา",approve:"อนุมัติเอกสาร",apdetail:"อนุมัติเอกสาร",quota:"โควตาการลา",myreqs:"เอกสารของฉัน"};
+const NOTAB=["clock","done","leave","lvsum","lvdone","lvdetail","apdetail"];
+const band=t=>`<header class="band">${S.stack.length?`<button data-back aria-label="ย้อนกลับ">${ic("chevL")}</button>`:""}<h1>${t}</h1></header>`;
+const fl=(id,label,inner)=>`<label class="fl" for="${id}"><span>${label}</span>${inner}<span class="emsg" id="${id}-e" hidden></span></label>`;
+const sel=(id,opts,v)=>`<select class="sel" id="${id}">${opts.map(o=>`<option value="${o[0]}" ${String(o[0])===String(v)?"selected":""}>${o[1]}</option>`).join("")}</select>`;
+const loadingV=()=>`<div class="pad"><div class="skel" style="height:120px"></div><div class="skel" style="height:220px"></div><div class="skel" style="height:90px"></div></div>`;
+const shiftTxt=t=>t.workStart==="00:00"?"เวลายืดหยุ่น":`${t.workStart} - 12:00 - 13:00 - ${t.workEnd}`;
+const fmtDist=d=>d==null||d===""?"—":d>=1000?(d/1000).toFixed(1)+" กม.":d+" ม.";
+
+/* สถานะรายวัน → [ป้ายวัน, สีป้ายวัน, ข้อความสถานะ, สีสถานะ] */
+function dayLook(d){const st=d.status;
+  if(st==="holiday")return ["วันหยุด","grey",d.note||"วันหยุดบริษัท","grey"];
+  if(st==="off")return ["วันหยุด","grey","",""];
+  if(st==="leave"||st==="leave_wait")return ["วันลา","orange",(d.leave||"ลา")+(st==="leave_wait"?"":""),"blue"];
+  const m={ok:["ปกติ","green"],late:["มาสาย "+d.late_min+" นาที","orange"],absent:["ขาดงาน","red"],not_yet:["ยังไม่ลงเวลา","grey"],working:["กำลังทำงาน","blue"],missing_out:["ลืมลงเวลาออก","red"],missing_in:["ลืมลงเวลาเข้า","red"]}[st]||[st,"grey"];
+  if(st==="ok"&&d.early_min)return ["วันทำงาน","green","กลับก่อน "+d.early_min+" นาที","orange"];
+  return ["วันทำงาน","green",m[0],m[1]];
+}
+
+const V={};
+V.home=()=>{const t=S.today,me=S.me||{};if(!t)return loadingV();
+  const now=DT(t.date),last=t.records[t.records.length-1],ins=t.records.filter(r=>r.kind==="IN"),outs=t.records.filter(r=>r.kind==="OUT");
+  const dayChip=t.holiday?["วันหยุด","c-grey"]:t.leave?["วันลา","c-orange"]:["วันทำงาน","c-green"];
+  const jobs=t.targets.filter(x=>x.kind==="job");const mo=S.month;
+  const c=mo?mo.days.reduce((a,d)=>{if(d.status==="absent")a.abs++;if(d.status==="late"){a.late++;a.lm+=d.late_min}if(d.early_min&&d.status!=="late"){a.early++;a.em+=d.early_min}if(/leave/.test(d.status))a.lv++;return a},{abs:0,late:0,lm:0,early:0,em:0,lv:0}):null;
+  const isLead=["lead","manager","hr","exec","admin"].includes(me.role);
+  return `<section class="htop"><div class="prof"><div class="ava">${me.photo_url?`<img src="${esc(me.photo_url)}" alt="" style="width:100%;height:100%;object-fit:cover">`:AVA}</div><div class="nm"><b>${esc(me.name)}${me.nickname?` (${esc(me.nickname)})`:""}</b><span>${esc(me.position||me.team||"พนักงาน")}</span></div><button class="bell" data-toast="ยังไม่มีการแจ้งเตือน" aria-label="การแจ้งเตือน">${ic("bell")}</button></div>
+  <div class="shorts">${[["ข้อมูลพนักงาน","user","go:profile"],["เวลาการทำงาน","clock","go:worktime"],["ยื่นเอกสาร","doc","tab:req"],[isLead?"อนุมัติเอกสาร":"เอกสารของฉัน","docOk",isLead?"go:approve":"go:myreqs"],["โควตาการลา","userClock","go:quota"]].map(x=>`<button data-act="${x[2]}">${ic(x[1])}<span>${x[0]}</span></button>`).join("")}</div></section>
+  <div class="pad" style="padding-top:22px;gap:14px"><div class="sec-h"><h2>ข้อมูลประจำวัน</h2><button data-toast="ข้อมูลประจำวันมาจากเวลาทำงานและการลงเวลาของวันนี้" aria-label="คำอธิบาย">${ic("help")}</button></div>
+  <div class="card daily"><div class="r1"><div class="dt"><span>${TH_D[now.getDay()]}</span><b>${now.getDate()}</b><span>${TH_S[now.getMonth()]} ${now.getFullYear()+543}</span></div><div style="flex:1;min-width:0"><span class="chip ${dayChip[1]}">${dayChip[0]}</span><div class="shift">${t.holiday?esc(t.holiday):esc(shiftTxt(t))}</div></div><button class="round" data-act="go:worktime" aria-label="ดูเวลาการทำงาน">${ic("chevR")}</button></div>
+  <div class="r2"><span class="muted" style="font-size:15px">เวลาการทำงาน</span><div class="inout"><div><span>เวลาเข้า</span><b class="tn">${ins[0]?esc(ins[0].time):"--:--"}</b></div>${ic("arrowR")}<div><span>เวลาออก</span><b class="tn">${outs.length?esc(outs[outs.length-1].time):"--:--"}</b></div></div></div></div>
+  <div class="card" style="padding:14px 16px;display:flex;flex-direction:column;gap:10px"><span style="display:flex;align-items:center;gap:8px;width:100%"><span style="color:var(--blue);display:flex">${ic("cal","width:22px;height:22px")}</span><b style="flex:1;font-size:16px">งานวันนี้</b></span>
+  ${jobs.length?jobs.map(j=>`<span class="todayjob"><span class="bar"></span><span><b style="font-weight:600;display:block">${esc(j.title||j.name)}</b><span class="cap">${esc(j.name)}${j.job_no?" · "+esc(j.job_no):""}${me.lead?" · หัวหน้างาน "+esc(me.lead):""}</span></span></span>`).join(""):`<span class="cap">ไม่มีงานนอกสถานที่ · ทำงานที่${esc(t.targets[0]?t.targets[0].name:"สำนักงาน")}</span>`}</div></div>
+  <section><div class="mband"><b>สรุปข้อมูลเดือน ${TH_M[now.getMonth()]} ${now.getFullYear()+543}</b></div>
+  <div class="sheet"><div class="h"><h2>เวลาการทำงาน</h2><span class="cap" style="font-size:10.5px;white-space:nowrap">ถึงวันนี้ · ${p2(new Date().getHours())}:${p2(new Date().getMinutes())} น.</span></div>
+  <div class="tiles">${(c?[["t-red","calX","ขาดงาน",c.abs,"วัน"],["t-orange","alarm","มาสาย",c.late,`(รวม ${c.lm} นาที)`],["t-yellow","door","กลับก่อน",c.early,`(รวม ${c.em} นาที)`],["t-blue","calClock","ลา",c.lv,"วัน"]]:[["t-red","calX","ขาดงาน","…",""],["t-orange","alarm","มาสาย","…",""],["t-yellow","door","กลับก่อน","…",""],["t-blue","calClock","ลา","…",""]]).map(x=>`<button class="tile ${x[0]}" data-act="go:worktime">${ic(x[1])}<b>${x[2]}</b><strong>${x[3]} <small>วัน</small></strong><span>${x[4]==="วัน"?"":x[4]}</span></button>`).join("")}</div>
+  <h2 style="margin:6px 0 0;font-size:18px">เอกสาร</h2>${(()=>{const R=L.info?L.info.requests:null,w=R?R.filter(r=>["wait","hr","chg","back"].includes(r.status)).length:"…";return `<div class="docs"><button class="doc" data-act="go:myreqs"><span class="bar" style="background:var(--blue)"></span><span><span class="l"><span style="color:var(--blue);display:flex">${ic("doc")}</span>เอกสาร <b style="color:var(--blue)">ทั้งหมด</b></span><strong>${R?R.length:"…"} <small>ฉบับ</small></strong></span></button><button class="doc" data-act="go:myreqs"><span class="bar" style="background:var(--orange)"></span><span><span class="l"><span style="color:var(--orange);display:flex">${ic("doc")}</span>เอกสาร <b style="color:var(--orange)">รออนุมัติ</b></span><strong>${w} <small>ฉบับ</small></strong></span></button></div>`})()}</div></section>`;};
+
+V.clock=()=>{const t=S.today,p=S.pos;if(!t||!p)return `<section class="clk"><div class="d" id="cd"></div><div class="t" id="ct">--:--:--</div><div class="s">${ic("clock")}เวลาที่ใช้ในการบันทึก</div></section><div class="pad" style="background:#fff;flex:1"><div class="skel" style="height:90px"></div><div class="cap" style="text-align:center">กำลังหาตำแหน่งของคุณ…</div></div>`;
+  const last=t.records[t.records.length-1],out=last&&last.kind==="IN";
+  const tg=t.targets.map(g=>{const d=p.err||g.lat==null?null:dist(p.lat,p.lng,g.lat,g.lng);return {g,d,inside:d!=null&&d<=g.radius_m}}).sort((a,b)=>(a.d==null?1e9:a.d-a.g.radius_m)-(b.d==null?1e9:b.d-b.g.radius_m));
+  const inA=tg.some(x=>x.inside),near=tg[0];if(S.opt>=tg.length)S.opt=0;
+  return `<section class="clk"><div class="d" id="cd"></div><div class="t" id="ct">--:--:--</div><div class="s">${ic("clock")}เวลาที่ใช้ในการบันทึก</div></section>
+  <div class="pad" style="gap:12px;background:#fff;flex:1"><span class="lab">ตำแหน่งที่ลงเวลา</span>
+  <div class="loc"><div style="flex:1;min-width:0">${p.err?`<b style="color:var(--red)">หาตำแหน่งไม่ได้</b><div class="s">${esc(p.err)}</div>`:`<b style="color:${inA?"#1FB25A":"var(--red)"}">${inA?"สามารถลงเวลาได้":"อยู่นอกพื้นที่ลงเวลา"}</b><div class="s">${inA?"คุณอยู่ในพื้นที่ลงเวลา":near?"ห่างจุดลงเวลาที่ใกล้ที่สุด "+fmtDist(near.d):"วันนี้ไม่มีจุดหรืองานที่กำหนด"}<br>${inA?esc(near.g.name)+" · ห่าง "+fmtDist(near.d):"ต้องระบุเหตุผล หัวหน้าทีมจะตรวจสอบ"}</div>`}</div><button class="locbtn" data-loc aria-label="อัปเดตตำแหน่ง">${ic("target")}</button></div>
+  ${tg.length?`<span class="lab">กะการทำงาน</span>${tg.map((x,i)=>`<button class="opt" role="radio" aria-checked="${S.opt===i}" data-opt="${i}"><span class="rad"></span><span style="min-width:0"><b>${x.g.kind==="job"?"หน้างาน: "+esc(x.g.title||x.g.name):"กะปกติ ("+esc(x.g.name)+")"}</b><span class="s">${ic("clock")}${x.g.kind==="job"?esc(x.g.name)+" · จากตารางงานวันนี้":esc(shiftTxt(t))}</span></span></button>`).join("")}`:""}
+  <span class="lab" ${inA?"":'style="color:var(--red)"'}>${inA?"รายละเอียด":"เหตุผลที่ลงเวลานอกพื้นที่ *"}</span>
+  <textarea class="ta" id="cn" placeholder="${inA?"ระบุรายละเอียดเพิ่มเติม (ถ้ามี)":"เช่น เดินทางไปหน้างานโดยตรง"}"></textarea><span class="emsg" id="cn-e" hidden></span></div>
+  <div class="foot"><button class="btn pri" data-clock="${out?"out":"in"}" ${p.err?"disabled":""}>${out?"ลงเวลาออกงาน":"ลงเวลาการทำงาน"}</button>${out?"":`<button class="btn out" data-clock="out" ${p.err?"disabled":""}>ลงเวลาออกงาน</button>`}</div>`;};
+
+V.done=()=>{const d=S.last,now=new Date();return `<div class="okv" style="background:#fff"><div class="c">${ic("ok")}</div><h2>${d.kind==="IN"?"ลงเวลาเข้างานสำเร็จ":"ลงเวลาออกงานสำเร็จ"}</h2><span class="muted">${esc(d.time)} น. · ${esc(d.location)}</span></div>
+  <div class="pad" style="background:#fff;flex:1;padding-top:0"><div class="card" style="padding:2px 18px;box-shadow:none;border:1px solid var(--line)">${[["วันที่",`${TH_D[now.getDay()]} ${now.getDate()} ${TH_S[now.getMonth()]} ${now.getFullYear()+543}`],["สถานะ",!d.in_area?"นอกพื้นที่ (รอตรวจสอบ)":d.kind==="IN"?(d.late_min?"สาย "+d.late_min+" นาที":"ตรงเวลา"):"บันทึกแล้ว"],["สถานที่",d.location],["ระยะจากจุดลงเวลา",fmtDist(d.distance_m)]].map(r=>`<div class="kv"><span>${r[0]}</span><b ${r[1]==="ตรงเวลา"?'style="color:var(--green)"':/สาย|นอกพื้นที่/.test(r[1])?'style="color:var(--orange)"':""}>${esc(r[1])}</b></div>`).join("")}</div></div>
+  <div class="foot"><button class="btn pri" data-home>กลับหน้าหลัก</button></div>`;};
+
+V.worktime=()=>{const now=new Date(),ym=S.wym||`${now.getFullYear()}-${p2(now.getMonth()+1)}`,y=+ym.slice(0,4),m=+ym.slice(5,7),mo=S.wdata&&S.wdata.ym===ym?S.wdata:null;
+  return band("เวลาการทำงาน")+`<div class="pad"><div class="fcard"><div class="g2">${fl("wy","เลือกปี",sel("wy",[[now.getFullYear(),now.getFullYear()+543],[now.getFullYear()-1,now.getFullYear()+542]],y))}${fl("wm","เลือกเดือน",sel("wm",TH_M.map((n,i)=>[i+1,n]),m))}</div></div>
+  ${!mo?`<div class="skel" style="height:70px"></div><div class="skel" style="height:70px"></div>`:mo.days.length?mo.days.map(d=>{const L=dayLook(d),x=DT(d.date);return `<div class="day"><div class="n"><span class="cap">${TH_DS[x.getDay()]}</span><b>${x.getDate()}</b></div><div style="flex:1;min-width:0"><span class="chip c-${L[1]}" style="font-size:12px;padding:0 10px">${L[0]}</span><div class="tn" style="font-weight:600;font-size:17px;margin-top:3px;white-space:nowrap">${d.first_in||"--:--"} <span style="color:var(--text-3)">→</span> ${d.last_out||"--:--"}</div></div>${L[2]?`<span class="chip c-${L[3]}" style="font-size:12px;white-space:nowrap">${esc(L[2])}</span>`:""}</div>`}).join(""):`<div class="empty">ยังไม่มีข้อมูลเดือนนี้</div>`}</div>`;};
+
+V.profile=()=>{const p=S.prof;if(!p)return band("ข้อมูลพนักงาน")+loadingV();const T=["ข้อมูลพื้นฐาน","ข้อมูลการทำงาน"];
+  const fd=s=>{if(!s)return "—";const x=DT(s);return `${x.getDate()} ${TH_M[x.getMonth()]} ${x.getFullYear()+543}`};
+  const D=[[["ข้อมูลส่วนตัว",[["คำนำหน้า",p.title],["ชื่อ",p.first_name],["นามสกุล",p.last_name],["ชื่อเล่น",p.nickname],["บัญชี LINE",p.line_name]]]],
+   [["ข้อมูลการทำงาน",[["รหัสพนักงาน",p.code],["แผนก",p.department],["ทีม",p.team],["ตำแหน่ง",p.position],["หัวหน้าทีม",p.lead],["วันเริ่มงาน",fd(p.start_date)],["ประเภทการจ้าง",p.employment_type==="daily"?"รายวัน":p.employment_type==="monthly"?"รายเดือน":p.employment_type],["เวลาทำงาน",p.work_start==="00:00"?"เวลายืดหยุ่น":(p.work_start||"")+" - "+(p.work_end||"")],["การลงเวลา",{office:"สำนักงาน",field:"หน้างาน",both:"สำนักงาน + หน้างาน",none:"ไม่ต้องลงเวลา"}[p.checkin_type]||"—"]]]]][S.ptab];
+  return `<header class="phead"><div class="top"><button data-back aria-label="ย้อนกลับ" style="color:#fff;display:flex">${ic("chevL","width:26px;height:26px;stroke-width:2.6")}</button><h1>ข้อมูลพนักงาน</h1></div>
+  <div class="who"><div class="ava lg">${p.photo_url?`<img src="${esc(p.photo_url)}" alt="" style="width:100%;height:100%;object-fit:cover">`:AVA}</div><div><b>${esc(p.name)}${p.nickname?` (${esc(p.nickname)})`:""}</b><br>ตำแหน่ง : ${esc(p.position||"—")}<br>เบอร์โทรศัพท์ : ${esc(p.phone||"—")}<br>อีเมล : ${esc(p.email||"—")}</div></div></header>
+  <div class="pad" style="padding-top:20px;gap:16px"><div class="tabs">${T.map((t,i)=>`<button class="pill" data-ptab="${i}" aria-pressed="${S.ptab===i}">${t}</button>`).join("")}</div>
+  ${D.map(([h,rows])=>`<div class="sec"><h3>${h}</h3><div class="b">${rows.map(r=>`<div class="kv"><span>${r[0]}</span><b>${esc(r[1]||"—")}</b></div>`).join("")}</div></div>`).join("")}
+  <div class="note c-blue">${ic("info")}<span>ข้อมูลไม่ถูกต้อง แจ้ง HR เพื่อแก้ไข</span></div></div>`;};
+
+V.sched=()=>{const t=S.today;const jobs=t?t.targets.filter(x=>x.kind==="job"):[];const d=t?DT(t.date):new Date();
+  return band("ตารางงาน")+`<div class="pad"><h2 style="margin:0;font-size:18px">วัน${TH_D[d.getDay()]} ${d.getDate()} ${TH_M[d.getMonth()]} ${d.getFullYear()+543}</h2>
+  ${jobs.length?jobs.map(j=>`<div class="job"><div style="display:flex;align-items:center"><span class="chip c-blue" style="font-size:12px">งานวันนี้</span><span class="tn cap" style="margin-left:auto">${esc(j.job_no)}</span></div><b style="font-size:17px;font-weight:600">${esc(j.title||j.name)}</b><span class="m">${ic("pin")}${esc(j.name)}</span>${S.me&&S.me.lead?`<span class="m">${ic("user")}หัวหน้างาน: ${esc(S.me.lead)}</span>`:""}</div>`).join(""):`<div class="empty">${t&&t.holiday?"วันหยุด":"ไม่มีงานนอกสถานที่ · ทำงานที่สำนักงาน"}</div>`}
+  <div class="note c-blue">${ic("info")}<span>ตารางงานรายสัปดาห์จะเปิดใช้เมื่อย้ายตารางงานเข้าระบบใหม่</span></div></div>`;};
+
+V.req=()=>band("เอกสาร")+`<div class="pad" style="gap:12px">${[["ขอลางาน","doc","blue"],["ขอเพิ่ม/แก้ไขเวลา","clock","orange"],["ขอโอที","hour","blue"],["ขอเปลี่ยนกะการทำงาน","calClock","orange"]].map(r=>`<button class="mrow" data-act="soon"><span style="color:var(--${r[2]});display:flex">${ic(r[1])}</span><span>${r[0]}</span><span class="chip c-grey" style="margin-left:auto;font-size:12px">เร็ว ๆ นี้</span></button>`).join("")}</div>`;
+
+/* ---------- เชื่อมบัญชี LINE (ครั้งแรก) ---------- */
+function linkView(lineName,msg){const inv=!!S.invite;
+  $("#views").innerHTML=`<div class="view white">${band(inv?"ยืนยันตัวตน":"ลงทะเบียนพนักงาน")}<form class="pad" id="lf" novalidate><div class="fcard">
+  <b style="font-size:17px">${lineName?"สวัสดีคุณ "+esc(lineName):"เชื่อมบัญชี LINE"}</b><span class="cap">${inv?"กรอกข้อมูลให้ตรงกับที่ HR บันทึกไว้ ทำครั้งเดียวแล้วใช้แอปได้เลย":"ไม่มีลิงก์จาก HR ก็ได้ ระบบจะส่งคำขอให้ HR ยืนยันก่อน"}</span>
+  ${fl("code","รหัสพนักงาน (4 หลัก)",`<input class="inp" id="code" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="เช่น 0012">`)}
+  ${fl("p4","เบอร์มือถือ 4 ตัวท้าย",`<input class="inp" id="p4" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="••••">`)}
+  ${msg?`<div class="note c-red" role="alert">${ic("alert")}<span>${esc(msg)}</span></div>`:""}</div>
+  <div class="note c-blue">${ic("info")}<span>บัญชี LINE หนึ่งบัญชีผูกกับพนักงานได้คนเดียว · กรอกผิด 5 ครั้ง ระบบพัก 15 นาที</span></div></form>
+  <span class="spacer"></span><div class="foot"><button class="btn pri" id="go">${inv?"เชื่อมบัญชี":"ส่งคำขอให้ HR"}</button></div></div>`;
+  $("#tabbar").hidden=true;
+  const submit=ev=>{ev&&ev.preventDefault();const c=$("#code").value.trim(),p=$("#p4").value.trim();
+    if(!/^\d{4}$/.test(c)||!/^\d{4}$/.test(p))return linkView(lineName,"กรอกรหัสพนักงาน 4 หลัก และเบอร์ 4 ตัวท้าย");
+    const b=$("#go");b.disabled=true;b.innerHTML='<span class="spin"></span>กำลังตรวจสอบ…';
+    (inv?call("redeemInvite",S.idt,S.invite,c,p):call("requestLink",S.idt,c,p)).then(r=>{
+      if(r.linked){S.tok=r.token;history.replaceState(null,"",location.pathname+(DEV?"?dev="+encodeURIComponent(DEV):""));toast("เชื่อมบัญชี LINE สำเร็จ");boot()}else waitingView();
+    }).catch(e=>{linkView(lineName,e.message);$("#code").value=c})};
+  $("#lf").onsubmit=submit;$("#go").onclick=submit;
+}
+function waitingView(){$("#views").innerHTML=`<div class="view white"><div class="okv"><div class="c" style="background:var(--blue-soft);color:var(--blue)">${ic("clock")}</div><h2>ส่งคำขอแล้ว</h2><span class="muted">รอ HR ยืนยันว่าเป็นคุณ<br>เมื่อยืนยันแล้วเปิดแอปนี้อีกครั้งได้เลย</span></div><div class="pad"><button class="btn out" onclick="location.reload()">ตรวจสอบอีกครั้ง</button></div></div>`;$("#tabbar").hidden=true}
+function fatal(e){$("#views").innerHTML=`<div class="view white"><div class="okv"><div class="c" style="background:var(--red-soft);color:var(--red)">${ic("alert")}</div><h2>เปิดแอปไม่สำเร็จ</h2><span class="muted">${esc(e.message)}</span></div><div class="pad"><button class="btn pri" onclick="location.reload()">ลองใหม่</button></div></div>`;$("#tabbar").hidden=true}
+
+/* ---------- เข้าระบบ ---------- */
+function getIdToken(){
+  if(DEV)return Promise.resolve("dev|"+DEV);
+  if(!window.liff||!CFG.liffId)return Promise.reject(new Error("ยังไม่ได้ตั้งค่า LIFF ID"));
+  return liff.init({liffId:CFG.liffId}).then(()=>{if(!liff.isLoggedIn()){liff.login({redirectUri:location.href});return new Promise(()=>{})}return liff.getIDToken()});
+}
+function start(){getIdToken().then(t=>{S.idt=t;return call("loginLine",t)}).then(r=>{if(r.linked){S.tok=r.token;boot()}else linkView(r.lineName)}).catch(fatal)}
+function boot(){S.tab="home";S.stack=[];S.today=null;show("fade");refreshToday();loadLeave(true).then(()=>{if(cur()==="home")repaint()}).catch(()=>{});
+  const now=new Date();api("myAttendance",`${now.getFullYear()}-${p2(now.getMonth()+1)}`).then(m=>{S.month=m;if(cur()==="home")repaint()}).catch(()=>{})}
+function refreshToday(){return api("todayInfo").then(t=>{S.today=t;S.me=t.me;if(["home","clock","sched"].includes(cur()))repaint();return t}).catch(e=>{toast(e.message)})}
+
+/* ---------- ตำแหน่ง GPS (LIFF / LINE MINI App) · ทดสอบในเครื่อง ?lat=&lng= ---------- */
+function getPos(){
+  if(Q.get("lat"))return Promise.resolve({lat:+Q.get("lat"),lng:+Q.get("lng"),acc:+(Q.get("acc")||10)});
+  return new Promise(ok=>{if(!navigator.geolocation)return ok({err:"มือถือไม่รองรับการระบุตำแหน่ง"});
+    navigator.geolocation.getCurrentPosition(p=>ok({lat:p.coords.latitude,lng:p.coords.longitude,acc:p.coords.accuracy}),
+      ()=>ok({err:"ไม่ได้รับอนุญาตให้ใช้ตำแหน่ง กรุณาเปิดตำแหน่งที่ตั้ง (GPS) แล้วกดปุ่มอัปเดตตำแหน่ง"}),{enableHighAccuracy:true,timeout:15000,maximumAge:0})});
+}
+function dist(a,b,c,d){const R=6371000,r=Math.PI/180,x=Math.sin((c-a)*r/2),y=Math.sin((d-b)*r/2),h=x*x+Math.cos(a*r)*Math.cos(c*r)*y*y;return Math.round(2*R*Math.atan2(Math.sqrt(h),Math.sqrt(1-h)))}
+function openClock(){S.pos=null;S.opt=0;go("clock");Promise.all([S.today?Promise.resolve(S.today):refreshToday(),getPos()]).then(x=>{S.pos=x[1];if(cur()==="clock"){repaint();startClock()}})}
+
+/* ---------- navigation (เหมือนต้นแบบ) ---------- */
+const TABS=[["home","หน้าหลัก","home"],["sched","ตารางงาน","cal"],["clock","ลงเวลางาน","finger"],["req","เอกสาร","doc"],["menu","เมนู","menu"]];
+let tick=null;
+const cur=()=>S.stack.length?S.stack[S.stack.length-1]:S.tab;
+function paintChrome(){const [n]=cur().split(":");document.title=(TITLE[n]||"Push Media HR")+" · Push Media HR";
+  const tb=$("#tabbar");tb.hidden=NOTAB.includes(n);
+  tb.innerHTML=TABS.map(x=>x[0]==="clock"?`<button class="fab" data-tab="clock"><span class="ring"><i>${ic("finger")}</i></span>${x[1]}</button>`:`<button data-tab="${x[0]}" ${S.tab===x[0]&&!S.stack.length?'aria-current="page"':""}>${ic(x[2])}${x[1]}</button>`).join("");}
+function build(anim){const [n,arg]=cur().split(":");const v=document.createElement("div");v.className="view "+(n==="home"?"home":["clock","done","lvdone"].includes(n)?"white":"");v.innerHTML=V[n](arg);if(anim)v.classList.add(anim);return v;}
+function repaint(){const box=$("#views"),v=box.lastElementChild;if(!v)return show("fade");const st=v.scrollTop,[n,arg]=cur().split(":");v.innerHTML=V[n](arg);v.scrollTop=st;if(cur()==="clock")startClock();if(n==="leave")paintLeaveChecks()}
+function show(mode){const box=$("#views");const old=box.lastElementChild;clearInterval(tick);
+  if(mode==="back"&&old&&old.classList.contains("view")){const v=build();box.insertBefore(v,old);old.classList.add("out-r");old.addEventListener("animationend",()=>old.remove(),{once:true});setTimeout(()=>old.remove(),400);}
+  else{const v=build(mode==="push"?"in-r":"fade");box.appendChild(v);if(old){if(mode==="push")setTimeout(()=>old.remove(),300);else old.remove();}}
+  paintChrome();if(cur()==="clock")startClock();}
+function startClock(){clearInterval(tick);const up=()=>{const d=new Date(),t=$("#ct"),c=$("#cd");if(!t)return clearInterval(tick);t.textContent=`${p2(d.getHours())}:${p2(d.getMinutes())}:${p2(d.getSeconds())}`;c.textContent=`วัน${TH_D[d.getDay()]}ที่ ${d.getDate()} ${TH_M[d.getMonth()]} ${d.getFullYear()+543}`;};up();tick=setInterval(up,1000);}
+function go(s){S.stack.push(s);show("push");onEnter()}
+function back(){if(!S.stack.length)return;const c=cur();S.stack.pop();if(c==="leave")L.f=null;show("back");if(cur()==="leave")setTimeout(paintLeaveChecks,0)}
+function toTab(t){S.tab=t;S.stack=[];show("fade");onEnter();if(t==="home")loadLeave(true).then(()=>{if(cur()==="home")repaint()}).catch(()=>{})}
+function onEnter(){const n=cur();
+  if(n==="worktime"){const now=new Date(),ym=S.wym||`${now.getFullYear()}-${p2(now.getMonth()+1)}`;S.wym=ym;api("myAttendance",ym).then(m=>{S.wdata=m;if(cur()==="worktime")repaint()}).catch(e=>toast(e.message))}
+  if(n==="profile"&&!S.prof)api("myProfile").then(p=>{S.prof=p;if(cur()==="profile")repaint()}).catch(e=>toast(e.message));
+  if(["quota","myreqs","lvdone"].includes(n))loadLeave(true).then(()=>{if(cur().split(":")[0]===n)repaint()}).catch(e=>toast(e.message));
+  if(n==="approve")loadAps();
+}
+function toast(m){const t=document.createElement("div");t.className="toast";t.textContent=m;$("#screen").appendChild(t);setTimeout(()=>t.remove(),2300)}
+function drawer(open){const o=$("#ov");if(!open){o.innerHTML="";return}$("#screen").style.setProperty("--top","0px");
+  const lead=L.info&&L.info.isLead||S.me&&["lead","manager","hr","exec","admin"].includes(S.me.role);const M=[["หน้าหลัก","home","tab:home"],["ข้อมูลพนักงาน","idc","go:profile"],["เวลาการทำงาน","cal","go:worktime"],["ตารางงาน","calGrid","tab:sched"],["ลงเวลาการทำงาน","pin","clock"],["ยื่นเอกสาร","doc","tab:req"],["เอกสารของฉัน","docOk","go:myreqs"],...(lead?[["อนุมัติเอกสาร","docOk","go:approve"]]:[]),["โควตาการลา","search","go:quota"],["การแจ้งเตือน","bell","soon"]];
+  o.innerHTML=`<div class="scrim" data-dclose></div><aside class="drawer" role="dialog" aria-label="เมนู"><div class="logo">${LOGO}</div><nav>${M.map((m,i)=>`<button data-dgo="${m[2]}" ${i===0?'aria-current="page"':""}>${ic(m[1])}${m[0]}</button>`).join("")}</nav><div class="ver">${S.me?esc(S.me.code)+" · ":""}Push Media HR</div><footer><button data-dlogout aria-label="ออกจากระบบ">${ic("door")}</button><i></i><button data-dclose aria-label="ปิดเมนู">${ic("x")}</button></footer></aside>`;}
+
+/* ---------- actions ---------- */
+function act(a){if(a==="soon"){toast("เมนูนี้กำลังพัฒนา จะเปิดใช้เร็ว ๆ นี้");return}if(a==="clock"){openClock();return}if(a==="lv:leave"){openLeave();return}
+  if(a.startsWith("go:"))go(a.slice(3));else if(a.startsWith("tab:"))toTab(a.slice(4));}
+document.addEventListener("click",e=>{const t=e.target.closest("button,[data-dclose]");if(!t)return;const d=t.dataset||{};
+  if(d.dclose!==undefined){drawer(false);return}
+  if(d.dlogout!==undefined){drawer(false);call("logout",S.tok);S.tok=null;if(window.liff&&liff.closeWindow&&!DEV){try{liff.closeWindow()}catch(_){}}toast("ออกจากระบบแล้ว");return}
+  if(d.toast){toast(d.toast);return}
+  if(d.dgo){drawer(false);act(d.dgo);return}
+  if(d.act){act(d.act);return}
+  if(d.tab){if(d.tab==="menu"){drawer(true);return}if(d.tab==="clock"){openClock();return}toTab(d.tab);return}
+  if(d.back!==undefined){back();return}
+  if(d.home!==undefined){S.tab="home";S.stack=[];show("fade");return}
+  if(d.loc!==undefined){t.classList.add("busy");getPos().then(p=>{S.pos=p;t.classList.remove("busy");if(cur()==="clock")repaint();toast(p.err?p.err:"อัปเดตตำแหน่งแล้ว · ความแม่นยำ ±"+Math.round(p.acc||0)+" ม.")});return}
+  if(d.opt){document.querySelectorAll(".opt").forEach(o=>o.setAttribute("aria-checked",o===t));S.opt=+d.opt;return}
+  if(d.clock){const n=$("#cn"),note=n.value.trim(),p=S.pos;
+    t.disabled=true;const old=t.innerHTML;t.innerHTML='<span class="spin"></span>กำลังบันทึก…';
+    api("clock",d.clock,p.lat,p.lng,p.acc,note,navigator.userAgent.slice(0,60)).then(r=>{
+      if(!r.ok&&r.need_note){t.disabled=false;t.innerHTML=old;n.classList.add("err");const er=$("#cn-e");er.hidden=false;er.textContent="อยู่นอกพื้นที่"+(r.target?" (ห่าง "+r.target+" "+fmtDist(r.distance_m)+")":"")+" กรุณาระบุเหตุผล";n.focus();return}
+      S.last=r;S.today=null;S.month=null;S.stack[S.stack.length-1]="done";show("fade");refreshToday();
+      const now=new Date();api("myAttendance",`${now.getFullYear()}-${p2(now.getMonth()+1)}`).then(m=>{S.month=m}).catch(()=>{});
+    }).catch(err=>{t.disabled=false;t.innerHTML=old;toast(err.message)});return}
+  if(d.ptab){S.ptab=+d.ptab;repaint();return}
+});
+document.addEventListener("change",e=>{const id=e.target.id;
+  if(id==="wy"||id==="wm"){S.wym=`${$("#wy").value}-${p2($("#wm").value)}`;S.wdata=null;repaint();onEnter()}});
+document.addEventListener("input",e=>{if(e.target.classList.contains("err")){e.target.classList.remove("err");const er=$("#"+e.target.id+"-e");if(er)er.hidden=true}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")drawer(false)});
+function fit(){const d=$("#device");if(innerWidth<=500){d.style.transform="";d.style.margin="";return}const s=Math.min(1,(innerHeight-48)/868);d.style.transform=s<1?`scale(${s})`:"";d.style.margin=s<1?`${-(1-s)*434}px 0`:"";}
+addEventListener("resize",fit);fit();
+const sb=()=>{const d=new Date(),el=$("#sbt");if(el)el.textContent=`${d.getHours()}:${p2(d.getMinutes())}`};sb();setInterval(sb,20000);
+$("#views").innerHTML=`<div class="view white"><div class="okv"><span class="spin" style="width:34px;height:34px;border-color:var(--blue-soft);border-top-color:var(--blue)"></span><span class="muted">กำลังเปิดแอป…</span></div></div>`;
+/* ===== โมดูลการลา (Phase 2c) · หน้าตาตาม Figma หน้า 05 section "LIFF · โมดูลการลา" ===== */
+const PART={full:"เต็มวัน",am:"ครึ่งวันเช้า",pm:"ครึ่งวันบ่าย"};
+const LST={wait:["รอหัวหน้าอนุมัติ","c-orange"],hr:["รอ HR อนุมัติ","c-orange"],ok:["อนุมัติแล้ว","c-green"],chg:["รออนุมัติการยกเลิก","c-blue"],back:["ส่งกลับแก้ไข","c-yellow"],no:["ไม่อนุมัติ","c-red"],cancel:["ยกเลิกแล้ว","c-grey"]};
+const lchip=(st,ap)=>`<span class="chip ${(LST[st]||["",""])[1]} mini" style="white-space:nowrap">${ap&&st==="wait"?"รออนุมัติ":(LST[st]||[st])[0]}</span>`;
+const nt=(c,i,t)=>`<div class="note ${c}">${ic(i)}<span>${t}</span></div>`;
+const er=(i,t)=>`<div class="eff">${ic(i)}<span>${t}</span></div>`;
+const ISO=d=>`${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`;
+const addD=(s,n)=>{const d=DT(s);d.setDate(d.getDate()+n);return ISO(d)};
+const fD=s=>{const d=DT(s);return `${TH_DS[d.getDay()]} ${d.getDate()} ${TH_S[d.getMonth()]}`};
+const fDY=s=>{const d=DT(s);return `${d.getDate()} ${TH_S[d.getMonth()]} ${d.getFullYear()+543}`};
+const nd=n=>(n%1?n.toFixed(1):n)+" วัน";
+const rangeTxt=(a,b)=>!a?"—":a===b||!b?fDY(a):(a.slice(0,7)===b.slice(0,7)?`${DT(a).getDate()}–${fDY(b)}`:`${fDY(a)} – ${fDY(b)}`);
+const tl=steps=>steps.map((s,i,a)=>`<div class="tli"><span class="tlr"><i style="background:${s[3]?s[0]:"#fff"};border-color:${s[0]}"></i>${i<a.length-1?"<em></em>":""}</span><span><span style="display:block">${s[1]}</span><span class="cap">${s[2]}</span></span></div>`).join("");
+const ACT={ok:"อนุมัติ",partial:"อนุมัติบางวัน",no:"ไม่อนุมัติ",back:"ส่งกลับแก้ไข",ack:"HR รับทราบ"};
+function stepsOf(r){const A=[["var(--green)","ยื่นคำขอ",esc(r.employee||"คุณ")+" · "+fAt(r.created_at),true]];
+  (r.history||[]).forEach(h=>A.push([h.action==="no"?"var(--red)":h.action==="back"?"var(--yellow)":"var(--green)",(h.step==="hr"?"HR":"หัวหน้าทีม")+" · "+(ACT[h.action]||h.action),esc(h.by)+" · "+fAt(h.at)+(h.note?" · "+esc(h.note):""),true]));
+  if(r.status==="wait")A.push(["var(--orange)","หัวหน้าทีม"+(L.info&&L.info.lead&&!r.mine_lead?" · "+esc(L.info.lead):""),"รอพิจารณา",false]);
+  if(r.status==="hr")A.push(["var(--orange)","ฝ่ายบุคคล (HR)","รออนุมัติ",false]);
+  if(r.status==="chg")A.push(["var(--orange)","หัวหน้าทีม","รอพิจารณาการยกเลิก · วันลาเดิมยังมีผล",false]);
+  if(r.status==="back")A.push(["var(--yellow)","รอคุณแก้ไขแล้วส่งใหม่","",false]);return A}
+const fAt=s=>{if(!s)return "";const d=new Date(s);return isNaN(d)?s:`${d.getDate()} ${TH_S[d.getMonth()]} · ${p2(d.getHours())}:${p2(d.getMinutes())}`};
+
+const L={info:null,f:null,pv:null,pvT:null,det:{},aps:null,apf:"wait",mrf:"all"};
+function loadLeave(force){if(L.info&&!force)return Promise.resolve(L.info);return api("leaveInfo").then(i=>{L.info=i;return i})}
+const curV=()=>cur().split(":")[0];
+const lvRepaint=()=>{if(["leave","lvsum","lvdetail","approve","apdetail","quota","myreqs","home","req","sched"].includes(curV()))repaint()};
+
+/* ---------- ฟอร์มขอลา ---------- */
+function newLeaveForm(edit){const i=L.info,t0=i.types[0];
+  L.f=edit?{edit_id:edit.id,type_id:edit.type_id,a:edit.days[0].date,b:edit.days[edit.days.length-1].date,parts:Object.fromEntries(edit.days.map(x=>[x.date,x.part])),reason:edit.reason,substitute_id:"",mon:edit.days[0].date.slice(0,7),pick:0}
+    :{type_id:t0?t0.id:"",a:null,b:null,parts:{},reason:"",substitute_id:"",mon:i.today.slice(0,7),pick:0};L.pv=null}
+const offDay=s=>{const i=L.info;return !!i.holidays.find(h=>h.date===s)||i.workDays.indexOf(DT(s).getDay())<0};
+function fDays(f){if(!f.a)return [];const o=[];for(let s=f.a;s<=(f.b||f.a);s=addD(s,1))if(!offDay(s))o.push({date:s,part:f.parts[s]||"full"});return o}
+function reqObj(){const f=L.f;return {type_id:f.type_id,date_from:f.a,date_to:f.b||f.a,parts:f.parts,reason:f.reason,substitute_id:f.substitute_id,edit_id:f.edit_id||""}}
+function runPreview(){clearTimeout(L.pvT);const f=L.f;if(!f||!f.a){L.pv=null;return}
+  L.pvT=setTimeout(()=>{api("previewLeave",reqObj()).then(p=>{L.pv=p;if(curV()==="leave")paintLeaveChecks()}).catch(()=>{})},250)}
+function cal(f){const [y,m]=f.mon.split("-").map(Number),first=new Date(y,m-1,1),start=addD(ISO(first),-first.getDay()),dim=new Date(y,m,0).getDate(),cells=Math.ceil((first.getDay()+dim)/7)*7,i=L.info;
+  const minMon=i.today.slice(0,7)<=f.mon&&false;
+  let h=`<div class="cal"><div class="cal-h"><button type="button" data-lvmon="-1" aria-label="เดือนก่อน">${ic("chevL")}</button><b>${TH_M[m-1]} ${y+543}</b><button type="button" data-lvmon="1" aria-label="เดือนถัดไป">${ic("chevR")}</button></div><div class="cal-g">${TH_DS.map(x=>`<span class="cal-w">${x}</span>`).join("")}`;
+  for(let k=0;k<cells;k++){const s=addD(start,k),d=DT(s),inM=d.getMonth()===m-1,sel=f.a&&s>=f.a&&s<=(f.b||f.a),edge=s===f.a||s===(f.b||f.a),hol=i.holidays.find(x=>x.date===s),mine=i.myDays.find(x=>x.date===s),job=i.jobDays.find(x=>x.date===s),wk=i.workDays.indexOf(d.getDay())<0;
+    const past=s<addD(i.today,-7);
+    h+=`<button type="button" class="cd ${inM?"":"om"} ${wk?"wk off":""} ${hol?"hol off":""} ${sel?"rs":""} ${edge&&!offDay(s)?"edge":""} ${s===i.today?"td":""}" data-lvday="${s}" ${past||!inM?"disabled":""} aria-label="${fDY(s)}${hol?" "+esc(hol.name):""}${job?" มีงาน":""}${mine?" มีคำขอลาแล้ว":""}" aria-pressed="${!!sel}"><b>${d.getDate()}</b><span class="mk">${job?'<i class="mj"></i>':""}${mine?`<i class="ml ${mine.status}"></i>`:""}${hol?'<i class="hl"></i>':""}</span></button>`}
+  return h+`</div><div class="cal-l"><span><i class="mj"></i>มีงาน</span><span><i class="ml"></i>วันลาของคุณ</span><span><i class="ml wait"></i>รออนุมัติ</span><span><i class="hl"></i>วันหยุด</span></div></div>`}
+V.leave=()=>{const i=L.info;if(!i)return band("ขอลางาน")+loadingV();if(!L.f)newLeaveForm();const f=L.f,ds=fDays(f),t=i.types.find(x=>x.id===f.type_id)||{},jobs=ds.filter(x=>i.jobDays.find(j=>j.date===x.date));
+  return band(f.edit_id?"แก้ไขคำขอลา":"ขอลางาน")+`<form class="pad" id="f" novalidate>
+  ${f.edit_id?nt("c-blue","info","คำขอนี้ยังไม่ได้รับอนุมัติ แก้ไขได้ทันที หัวหน้าทีมจะเห็นป้าย “แก้ไขแล้ว”"):""}
+  <div class="lv-step"><span class="n">1</span><b>ประเภทการลา</b></div>
+  <div class="lt-g">${i.types.map(x=>`<button type="button" class="ltc" data-lvtype="${x.id}" aria-pressed="${f.type_id===x.id}"><b>${esc(x.name)}</b><span class="q ${x.left!=null&&x.left<=0?"z":""}">${x.left==null?"ไม่จำกัด":"คงเหลือ "+nd(x.left)}${x.reserved?` · รอ ${nd(x.reserved)}`:""}</span><span class="cap" style="font-size:11.5px;line-height:1.35">${x.advance_days?"ยื่นล่วงหน้า "+x.advance_days+" วัน":x.backdate_days?"ยื่นย้อนหลังได้ "+x.backdate_days+" วัน":"ยื่นได้ทุกเมื่อ"}</span></button>`).join("")}</div>
+  <div class="lv-step"><span class="n">2</span><b>เลือกวันลา</b><span class="cap" style="margin-left:auto">แตะวันแรก แล้วแตะวันสุดท้าย</span></div>
+  ${cal(f)}
+  ${ds.length?`<div class="dl">${ds.map(x=>{const j=i.jobDays.find(z=>z.date===x.date);return `<div class="dr"><div class="t"><b>${fD(x.date)}</b>${j?`<span class="chip c-blue mini">${ic("cal","width:13px;height:13px")}งาน ${esc(j.site||j.job)}</span>`:`<span class="chip c-grey mini">ทำงานปกติ</span>`}</div>${t.half_day?`<div class="seg" role="group" aria-label="ช่วงเวลา ${fD(x.date)}">${Object.keys(PART).map(p=>`<button type="button" data-lvpart="${x.date}|${p}" aria-pressed="${x.part===p}">${PART[p]}</button>`).join("")}</div>`:""}</div>`}).join("")}</div>`:""}
+  <div id="lvchk"></div>
+  <div class="lv-step"><span class="n">${ds.length?4:3}</span><b>รายละเอียด</b></div>
+  <div class="fcard">${fl("lr","เหตุผลการลา *",`<textarea class="ta" id="lr" placeholder="ระบุเหตุผลการลา">${esc(f.reason)}</textarea>`)}
+  ${jobs.length?fl("lsub","เสนอผู้รับงานแทน (หัวหน้าทีมเป็นผู้ตัดสิน)",`<select class="sel" id="lsub"><option value="">ให้หัวหน้าทีมเลือก</option>${i.team.map(x=>`<option value="${x.id}" ${f.substitute_id===x.id?"selected":""}>${esc(x.name)}${x.nickname?" ("+esc(x.nickname)+")":""}</option>`).join("")}</select>`):""}</div>
+  <div class="lv-step"><span class="n">${ds.length?5:4}</span><b>ผู้อนุมัติ</b></div>
+  <div class="fcard" style="gap:0;padding-bottom:4px" id="lvappr">${tl([["var(--orange)","หัวหน้าทีม"+(i.lead?" · "+esc(i.lead):""),"อนุมัติ / ส่งกลับแก้ไข / ไม่อนุมัติ",false],["#C5CCD6","แจ้งผลทาง LINE + อัปเดตตารางงานและการลงเวลา","อัตโนมัติเมื่ออนุมัติ",false]])}</div>
+  </form><span class="spacer"></span><div class="foot"><button class="btn pri" data-lvnext>ตรวจสอบก่อนส่ง</button></div>`};
+function paintLeaveChecks(){const box=$("#lvchk"),p=L.pv,f=L.f,i=L.info;if(!box)return;const t=i.types.find(x=>x.id===f.type_id)||{};
+  if(!p||!f.a){box.innerHTML="";return}
+  const q=t.quota||0,used=t.used||0,res=t.reserved||0;
+  box.innerHTML=(p.total?`<div class="lv-step"><span class="n">3</span><b>สรุปจำนวนวัน</b></div><div class="sumc"><div style="display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap"><span class="big">${nd(p.total)}</span><span style="opacity:.92;padding-bottom:2px">${esc(p.type)} · ${rangeTxt(p.days[0].date,p.days[p.days.length-1].date)}</span></div>
+   ${q?`<div class="qb"><i style="width:${used/q*100}%;background:#fff"></i><i style="width:${res/q*100}%;background:rgba(255,255,255,.55)"></i><i style="width:${Math.min(p.total,Math.max(0,q-used-res))/q*100}%;background:#FFC48F"></i></div>`:""}
+   <div style="display:flex;justify-content:space-between;font-size:12.5px;gap:8px"><span>ใช้แล้ว ${nd(used)}${res?` · รออนุมัติ ${nd(res)}`:""}</span><span style="white-space:nowrap">คงเหลือหลังลา <b>${p.left_after==null?"ไม่จำกัด":nd(p.left_after)}</b></span></div></div>`:"")+
+   (p.errors||[]).map(x=>nt("c-red","alert",esc(x))).join("")+(p.warns||[]).map(x=>nt("c-orange","alert",esc(x))).join("");
+  const ap=$("#lvappr");if(ap&&p.approvers)ap.innerHTML=tl(p.approvers.map((a,k)=>[k?"#C5CCD6":"var(--orange)",esc(a),k?"อนุมัติ/รับทราบหลังหัวหน้าอนุมัติ":"อนุมัติ / ส่งกลับแก้ไข / ไม่อนุมัติ",false]).concat([["#C5CCD6","แจ้งผลทาง LINE + อัปเดตตารางงานและการลงเวลา","อัตโนมัติเมื่ออนุมัติ",false]]));
+}
+V.lvsum=()=>{const p=L.pv,f=L.f;if(!p)return band("ตรวจสอบคำขอ")+`<div class="pad"><div class="empty">ไม่มีข้อมูล</div></div>`;
+  const sub=f.substitute_id&&L.info.team.find(x=>x.id===f.substitute_id);
+  return band("ตรวจสอบคำขอ")+`<div class="pad">
+  <div class="fcard" style="gap:0;padding:2px 16px">${[["ประเภท",esc(p.type)],["วันที่",p.days.map(x=>fD(x.date)+(x.part!=="full"?` (${PART[x.part]})`:"")).join("<br>")],["จำนวน",nd(p.total)],["คงเหลือหลังลา",p.left_after==null?"ไม่จำกัด":nd(p.left_after)],["เหตุผล",esc(f.reason)],...(p.jobs.length?[["ผู้รับงานแทนที่เสนอ",sub?esc(sub.name):"ให้หัวหน้าทีมเลือก"]]:[])].map(r=>`<div class="kv"><span>${r[0]}</span><b>${r[1]}</b></div>`).join("")}</div>
+  <h3 class="lvh">เมื่อได้รับอนุมัติ ระบบจะ</h3><div class="fcard" style="gap:10px">${[er("cal","ตารางงาน: ทำเครื่องหมาย “ลา” "+rangeTxt(p.days[0].date,p.days[p.days.length-1].date)),...p.jobs.map(j=>er("swap",`งาน${esc(j.job)} ${fD(j.date)} → ${sub?"ย้ายให้ "+esc(sub.name)+" (หัวหน้าทีมยืนยัน)":"หัวหน้าทีมจัดคนแทน"}`)),...p.effects.map(x=>er("finger",esc(x))),er("bell","แจ้งผลทาง LINE")].join("")}</div>
+  ${(p.warns||[]).map(x=>nt("c-orange","alert",esc(x))).join("")}
+  <h3 class="lvh">ผู้อนุมัติ</h3><div class="fcard" style="gap:0;padding-bottom:4px">${tl(p.approvers.map((a,k)=>[k?"#C5CCD6":"var(--orange)",esc(a),k?"หลังหัวหน้าอนุมัติ":"รอพิจารณา",false]))}</div></div>
+  <span class="spacer"></span><div class="foot"><button class="btn pri" data-lvsend>${f.edit_id?"บันทึกและส่งใหม่":"ยืนยันส่งคำขอลา"}</button><button class="btn out" data-back>กลับไปแก้</button></div>`};
+V.lvdone=()=>{const d=L.done||{};return `<div class="okv" style="background:#fff"><div class="c">${ic("ok")}</div><h2>${d.edit?"ส่งคำขอที่แก้ไขแล้ว":"ส่งคำขอลาเรียบร้อย"}</h2><span class="muted">${esc(d.req_no||"")}<br>รอหัวหน้าทีมอนุมัติ</span></div>
+  <div class="pad" style="background:#fff;flex:1;padding-top:0">${(d.warns||[]).map(x=>nt("c-orange","alert",esc(x))).join("")}${nt("c-blue","info","แจ้งหัวหน้าทีมแล้ว · ผลการอนุมัติจะส่งถึงคุณทาง LINE")}</div>
+  <div class="foot"><button class="btn pri" data-lvopen="${esc(d.id||"")}">ดูคำขอลา</button><button class="btn out" data-home>กลับหน้าหลัก</button></div>`};
+
+/* ---------- รายละเอียดคำขอ ---------- */
+V.lvdetail=id=>{const r=L.det[id];if(!r)return band("คำขอลา")+loadingV();const back=(r.history||[]).filter(h=>h.action==="back").pop(),no=(r.history||[]).filter(h=>h.action==="no").pop();
+  const btns=[];if(r.can.edit)btns.push([r.status==="back"?"แก้ไขแล้วส่งใหม่":"แก้ไขคำขอ",`data-lvedit="${r.id}"`,"pri"]);if(r.can.cancel)btns.push(["ยกเลิกคำขอ",`data-lvcancel="${r.id}"`,"out"]);if(r.can.request_cancel)btns.push([r.date_from<L.info.today?"ขอยกเลิกวันที่เหลือ (กลับมาทำงาน)":"ขอยกเลิกวันลา",`data-lvcancel="${r.id}"`,"out"]);
+  return band("คำขอลา")+`<div class="pad">
+  <div class="fcard" style="gap:6px"><div style="display:flex;align-items:center;gap:8px"><b style="font-size:19px;flex:1">${esc(r.type)}</b>${lchip(r.status)}</div><span>${rangeTxt(r.date_from,r.date_to)} · <b>${nd(r.days_total)}</b></span><span class="cap">${esc(r.req_no)} · ยื่นเมื่อ ${fAt(r.created_at)}${r.edited?" · แก้ไขแล้ว":""}</span></div>
+  ${r.change?nt("c-blue","info","ขอยกเลิกวันลา · รอหัวหน้าทีมอนุมัติ · เหตุผล: "+esc(r.change.reason)):""}
+  ${r.status==="back"&&back?nt("c-orange","alert","หัวหน้าทีมส่งกลับ: "+esc(back.note)):""}${r.status==="no"&&no?nt("c-red","alert","เหตุผลที่ไม่อนุมัติ: "+esc(no.note)):""}
+  <h3 class="lvh">วันลา</h3><div class="dl">${r.days.map(x=>`<div class="dr"><div class="t"><b>${fD(x.date)}</b><span class="chip c-grey mini">${PART[x.part]}</span>${x.status==="no"?'<span class="chip c-red mini">ไม่อนุมัติ</span>':x.status==="cancel"?'<span class="chip c-grey mini">ยกเลิก</span>':""}</div></div>`).join("")}</div>
+  <div class="fcard" style="gap:0;padding:2px 16px">${[["เหตุผล",esc(r.reason)],["ผู้รับงานแทน",r.substitute?esc(r.substitute):"—"]].map(x=>`<div class="kv"><span>${x[0]}</span><b>${x[1]}</b></div>`).join("")}</div>
+  <h3 class="lvh">ประวัติ</h3><div class="fcard" style="gap:0;padding-bottom:4px">${tl(stepsOf(r))}</div></div>
+  <div class="foot">${btns.length?btns.map(b=>`<button class="btn ${b[2]}" ${b[1]}>${b[0]}</button>`).join(""):nt("c-blue","info",r.status==="ok"&&r.date_to<L.info.today?"วันลานี้ผ่านไปแล้ว แก้ไขได้โดยฝ่ายบุคคล (HR) เท่านั้น ระบบบันทึกประวัติทุกครั้ง":"ไม่มีการดำเนินการ")}</div>`};
+function openDetail(id){L.det[id]=null;go("lvdetail:"+id);api("leaveDetail",id).then(r=>{L.det[id]=r;if(cur()==="lvdetail:"+id)repaint()}).catch(e=>toast(e.message))}
+
+/* ---------- เอกสาร / โควตา / เอกสารของฉัน ---------- */
+V.req=()=>band("เอกสาร")+`<div class="pad" style="gap:12px">${[["ขอลางาน","doc","blue","leave"],["ขอเพิ่ม/แก้ไขเวลา","clock","orange",""],["ขอโอที","hour","blue",""],["ขอเปลี่ยนกะการทำงาน","calClock","orange",""]].map(r=>`<button class="mrow" data-act="${r[3]?"lv:"+r[3]:"soon"}"><span style="color:var(--${r[2]});display:flex">${ic(r[1])}</span><span>${r[0]}</span>${r[3]?`<span class="chev">${ic("chevR")}</span>`:`<span class="chip c-grey" style="margin-left:auto;font-size:12px">เร็ว ๆ นี้</span>`}</button>`).join("")}
+  <button class="mrow" data-act="go:myreqs"><span style="color:var(--blue);display:flex">${ic("docOk")}</span><span>เอกสารของฉัน</span><span class="chev">${ic("chevR")}</span></button></div>`;
+V.quota=()=>{const i=L.info;if(!i)return band("โควตาการลา")+loadingV();return band("โควตาการลา")+`<div class="pad"><span class="muted" style="font-size:16px;margin-top:4px">โควตาปี ${i.year+543} · รออนุมัติถูกจองไว้</span>
+  ${i.types.map(q=>`<div class="qcard"><div class="r"><span>${esc(q.name)}</span><span class="tn">${q.quota==null?"ไม่จำกัด":`คงเหลือ <b>${nd(q.left)}</b> / ${q.quota}`}</span></div>${q.quota?`<div class="track" style="display:flex"><i style="width:${q.used/q.quota*100}%;border-radius:99px 0 0 99px"></i><i style="width:${q.reserved/q.quota*100}%;background:var(--orange);opacity:.6;border-radius:0"></i></div>`:""}<div class="cap" style="margin-top:8px;display:flex;gap:14px"><span>ใช้แล้ว ${nd(q.used)}</span>${q.reserved?`<span style="color:var(--orange)">รออนุมัติ ${nd(q.reserved)}</span>`:""}</div></div>`).join("")}
+  <button class="btn out" data-act="go:myreqs">ดูคำขอลาของฉัน</button></div>`};
+V.myreqs=()=>{const i=L.info;if(!i)return band("เอกสารของฉัน")+loadingV();const F={all:()=>1,wait:l=>["wait","hr","chg","back"].includes(l.status),ok:l=>l.status==="ok"},rows=i.requests.filter(F[L.mrf]);
+  return band("เอกสารของฉัน")+`<div class="pad"><div class="seg" style="background:#fff;box-shadow:var(--sh-2)">${[["all","ทั้งหมด"],["wait","รอดำเนินการ"],["ok","อนุมัติแล้ว"]].map(x=>`<button type="button" data-mrf="${x[0]}" aria-pressed="${L.mrf===x[0]}">${x[1]}</button>`).join("")}</div>
+  ${rows.length?rows.map(l=>`<button class="card" data-lvopen="${l.id}" style="padding:14px 14px 14px 16px;display:flex;align-items:center;gap:12px;text-align:left;width:100%"><span style="color:${["wait","hr","chg","back"].includes(l.status)?"var(--orange)":"var(--blue)"};display:flex">${ic("doc")}</span><span style="flex:1;min-width:0"><span style="display:block">${esc(l.type)} ${rangeTxt(l.date_from,l.date_to)}</span><span class="cap">ยื่นเมื่อ ${fAt(l.created_at).split(" ·")[0]}${l.edited?" · แก้ไขแล้ว":""}</span></span>${lchip(l.status)}<span style="color:var(--text-3);display:flex">${ic("chevR","width:18px;height:18px")}</span></button>`).join(""):`<div class="empty">ยังไม่มีเอกสาร</div>`}
+  <button class="btn pri" data-act="lv:leave">ยื่นคำขอลา</button></div>`};
+
+/* ---------- หัวหน้าทีม / HR: อนุมัติ ---------- */
+function loadAps(){L.aps=null;return api("approvalsList",L.apf).then(a=>{L.aps=a;if(["approve","apdetail"].includes(curV()))repaint()}).catch(e=>toast(e.message))}
+V.approve=()=>{const A=L.aps;return band("อนุมัติเอกสาร")+`<div class="pad"><div class="seg" style="background:#fff;box-shadow:var(--sh-2)">${[["wait","รออนุมัติ"],["ok","อนุมัติแล้ว"],["all","ทั้งหมด"]].map(x=>`<button type="button" data-apf="${x[0]}" aria-pressed="${L.apf===x[0]}">${x[1]}</button>`).join("")}</div>
+  ${!A?`<div class="skel" style="height:120px"></div>`:A.length?A.map(a=>`<button class="ap" data-apopen="${a.id}" style="text-align:left;width:100%"><div style="display:flex;gap:12px;align-items:center"><div class="ava av-sm">${AVA}</div><div style="flex:1;min-width:0"><b style="font-weight:600">${esc(a.employee)}</b><div class="cap">${esc(a.team)} · ยื่น ${fAt(a.created_at)}</div></div>${lchip(a.status,1)}</div>
+   <div class="r"><span>ประเภท</span><span>${esc(a.type)}${a.status==="chg"?" · ขอยกเลิก":""}</span></div><div class="r"><span>วันที่</span><span>${rangeTxt(a.date_from,a.date_to)} · ${nd(a.days_total)}</span></div>
+   ${(a.edited||a.flags.length)?`<div style="display:flex;gap:6px;flex-wrap:wrap">${a.edited?'<span class="chip c-blue mini">แก้ไขแล้ว</span>':""}${a.flags.map(x=>`<span class="chip c-red mini">${esc(x.split(" ·")[0])}</span>`).join("")}</div>`:""}
+   <span style="color:var(--blue);font-weight:600;font-size:14px">${a.step?"พิจารณา":"ดูรายละเอียด"} ›</span></button>`).join(""):`<div class="empty">ไม่มีเอกสารในรายการนี้</div>`}</div>`};
+V.apdetail=id=>{const a=(L.aps||[]).find(x=>x.id===id);if(!a)return band("พิจารณาคำขอลา")+loadingV();
+  return band(a.status==="chg"?"พิจารณาการยกเลิก":"พิจารณาคำขอลา")+`<div class="pad">
+  <div class="fcard" style="gap:10px"><div style="display:flex;gap:12px;align-items:center"><div class="ava av-sm">${AVA}</div><div style="flex:1;min-width:0"><b>${esc(a.employee)}</b><div class="cap">${esc(a.team)} · ${esc(a.req_no)}</div></div>${lchip(a.status,1)}</div>
+  <div class="ap" style="box-shadow:none;padding:0;gap:8px">${[["ประเภท",esc(a.type)],["วันที่",a.days.map(x=>fD(x.date)+(x.part!=="full"?` (${PART[x.part]})`:"")).join(", ")],["จำนวน",nd(a.days_total)],["เหตุผล",esc(a.reason)],["ผู้รับงานแทนที่เสนอ",a.substitute?esc(a.substitute):"—"]].map(r=>`<div class="r"><span>${r[0]}</span><span>${r[1]}</span></div>`).join("")}</div></div>
+  ${a.change?nt("c-blue","info","ขอยกเลิกวันลา: "+esc(a.change.reason)):""}${a.edited?nt("c-blue","info","พนักงานแก้ไขคำขอนี้แล้ว"):""}
+  ${a.flags.map(x=>nt("c-orange","alert",esc(x))).join("")}
+  <h3 class="lvh">ขั้นตอนอนุมัติ</h3><div class="fcard" style="gap:0;padding-bottom:4px">${tl(stepsOf(Object.assign({mine_lead:1},a)))}</div></div>
+  ${a.step?`<div class="foot"><button class="btn pri" data-apok="${a.id}">${a.status==="chg"?"อนุมัติการยกเลิก":"อนุมัติ"}</button><div class="g2"><button class="btn out sm" data-apno="${a.id}|${a.status==="chg"?"no":"back"}">${a.status==="chg"?"ไม่อนุมัติการยกเลิก":"ส่งกลับแก้ไข"}</button>${a.status==="chg"?"":`<button class="btn out sm" style="color:var(--red);border-color:var(--red)" data-apno="${a.id}|no">ไม่อนุมัติ</button>`}</div>${a.days.length>1&&a.status!=="chg"?`<button class="sim" style="align-self:center;margin:0" data-appart="${a.id}">อนุมัติบางวัน</button>`:""}</div>`:""}`};
+function sheet(h){$("#ov").innerHTML=`<div class="scrim" data-dclose style="inset:0"></div><div class="sheetm" role="dialog" aria-modal="true"><div class="grab"></div>${h}</div>`}
+function decide(id,action,note,days){return api("decideLeave",id,action,note||"",days||[]).then(r=>{$("#ov").innerHTML="";toast({ok:"อนุมัติแล้ว",partial:"อนุมัติบางวันแล้ว",no:"ไม่อนุมัติแล้ว",back:"ส่งกลับแก้ไขแล้ว"}[action]+(r.status==="hr"?" · ส่งต่อ HR":"")+" · แจ้งผู้ขอทาง LINE");S.stack.pop();show("back");loadAps()}).catch(e=>toast(e.message))}
+
+/* ---------- actions ---------- */
+function openLeave(edit){L.f=null;if(L.info)newLeaveForm(edit);go("leave");loadLeave(true).then(()=>{if(!L.f)newLeaveForm(edit);if(curV()==="leave"){repaint();runPreview()}}).catch(e=>toast(e.message))}
+document.addEventListener("click",e=>{const t=e.target.closest("button");if(!t)return;const d=t.dataset||{},f=L.f;
+  if(d.lvtype){f.type_id=d.lvtype;repaint();runPreview();return}
+  if(d.lvmon){const [y,m]=f.mon.split("-").map(Number),n=new Date(y,m-1+Number(d.lvmon),1);f.mon=`${n.getFullYear()}-${p2(n.getMonth()+1)}`;repaint();paintLeaveChecks();return}
+  if(d.lvday){const s=d.lvday;if(!f.a||f.pick===0||s<f.a){f.a=s;f.b=s;f.pick=1}else{f.b=s;f.pick=0}f.reason=($("#lr")||{}).value||f.reason;repaint();runPreview();return}
+  if(d.lvpart){const [s,p]=d.lvpart.split("|");f.parts[s]=p;t.parentNode.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",b===t));runPreview();return}
+  if(d.lvnext!==undefined){f.reason=$("#lr").value.trim();const sb=$("#lsub");f.substitute_id=sb?sb.value:"";
+    if(!f.a){toast("เลือกวันลาในปฏิทิน");return}if(!f.reason){const el=$("#lr");el.classList.add("err");const m=$("#lr-e");m.hidden=false;m.textContent="กรุณาระบุเหตุผล";el.focus();return}
+    t.disabled=true;t.innerHTML='<span class="spin"></span>กำลังตรวจสอบ…';
+    api("previewLeave",reqObj()).then(p=>{L.pv=p;t.disabled=false;t.textContent="ตรวจสอบก่อนส่ง";if(p.errors.length){paintLeaveChecks();toast(p.errors[0]);$("#lvchk").scrollIntoView({behavior:"smooth",block:"center"});return}go("lvsum")}).catch(er2=>{t.disabled=false;t.textContent="ตรวจสอบก่อนส่ง";toast(er2.message)});return}
+  if(d.lvsend!==undefined){t.disabled=true;t.innerHTML='<span class="spin"></span>กำลังส่ง…';
+    api("submitLeave",reqObj()).then(r=>{if(!r.ok){t.disabled=false;t.textContent="ยืนยันส่งคำขอลา";toast(r.errors[0]);return}L.done={id:r.id,req_no:r.req_no,warns:r.warns,edit:!!f.edit_id};L.f=null;L.info=null;S.stack=["lvdone"];S.tab="req";show("fade");loadLeave(true)}).catch(er2=>{t.disabled=false;t.textContent="ยืนยันส่งคำขอลา";toast(er2.message)});return}
+  if(d.lvopen!==undefined){if(d.lvopen)openDetail(d.lvopen);return}
+  if(d.lvedit){const r=L.det[d.lvedit];openLeave(r);return}
+  if(d.lvcancel){const r=L.det[d.lvcancel],imm=["wait","back"].includes(r.status);
+    sheet(`<h3>${imm?"ยกเลิกคำขอลา?":"ขอยกเลิกวันลา"}</h3><span class="cap" style="text-align:center">${esc(r.type)} ${rangeTxt(r.date_from,r.date_to)}${imm?" · ยกเลิกได้ทันที คืนโควตาที่จองไว้":" · หัวหน้าทีมต้องอนุมัติ ระหว่างรอ วันลาเดิมยังมีผล"}</span>${fl("cr",imm?"เหตุผล (ไม่บังคับ)":"เหตุผล *",`<textarea class="ta" id="cr" placeholder="เช่น กลับมาทำงานได้แล้ว"></textarea>`)}<button class="btn pri" data-lvcok="${r.id}">${imm?"ยืนยันยกเลิก":"ส่งคำขอยกเลิก"}</button><button class="btn out" data-dclose>ไม่ใช่ตอนนี้</button>`);return}
+  if(d.lvcok){const why=$("#cr").value.trim();t.disabled=true;api("cancelLeave",d.lvcok,why).then(r=>{$("#ov").innerHTML="";toast(r.status==="cancel"?"ยกเลิกคำขอแล้ว":"ส่งคำขอยกเลิกแล้ว · รอหัวหน้าทีม");L.info=null;loadLeave(true);openDetailReplace(d.lvcok)}).catch(er2=>{t.disabled=false;toast(er2.message)});return}
+  if(d.mrf){L.mrf=d.mrf;repaint();return}
+  if(d.apf){L.apf=d.apf;repaint();loadAps();return}
+  if(d.apopen){go("apdetail:"+d.apopen);return}
+  if(d.apok){decide(d.apok,"ok");return}
+  if(d.apno){const [id,a]=d.apno.split("|");sheet(`<h3>${a==="back"?"ส่งกลับแก้ไข":"ไม่อนุมัติ"}</h3>${fl("apn","เหตุผล * (ผู้ขอจะเห็นข้อความนี้)",`<textarea class="ta" id="apn" placeholder="${a==="back"?"เช่น ขอให้เลื่อนเป็นสัปดาห์หน้า":"ระบุเหตุผล"}"></textarea>`)}<button class="btn pri" data-apnok="${id}|${a}">ยืนยัน</button><button class="btn out" data-dclose>ยกเลิก</button>`);return}
+  if(d.apnok){const [id,a]=d.apnok.split("|"),n=$("#apn").value.trim();if(!n){$("#apn").classList.add("err");toast("กรุณาระบุเหตุผล");return}t.disabled=true;decide(id,a,n);return}
+  if(d.appart){const a=L.aps.find(x=>x.id===d.appart);sheet(`<h3>อนุมัติบางวัน</h3><span class="cap" style="text-align:center">ติ๊กวันที่อนุมัติ · วันที่เหลือแจ้งว่าไม่อนุมัติ</span><div class="fcard" style="box-shadow:none;border:1px solid var(--line)">${a.days.map(x=>`<label style="display:flex;gap:10px;align-items:center"><input type="checkbox" class="apck" value="${x.date}" checked style="width:20px;height:20px">${fD(x.date)} · ${PART[x.part]}</label>`).join("")}</div>${fl("apn","หมายเหตุ",`<textarea class="ta" id="apn"></textarea>`)}<button class="btn pri" data-appok="${a.id}">อนุมัติวันที่เลือก</button><button class="btn out" data-dclose>ยกเลิก</button>`);return}
+  if(d.appok){const ks=[...document.querySelectorAll(".apck:checked")].map(x=>x.value);t.disabled=true;decide(d.appok,"partial",$("#apn").value.trim(),ks).catch(()=>{t.disabled=false});return}
+},true);
+function openDetailReplace(id){api("leaveDetail",id).then(r=>{L.det[id]=r;if(cur()==="lvdetail:"+id)repaint()})}
+document.addEventListener("change",e=>{if(e.target.id==="lsub"&&L.f){L.f.substitute_id=e.target.value;runPreview()}});
+document.addEventListener("input",e=>{if(e.target.id==="lr"&&L.f)L.f.reason=e.target.value});
+
+start();
+
+</script>
+</body>
+</html>
