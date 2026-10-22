@@ -465,13 +465,14 @@ V.sched=()=>{const t=S.today;const jobs=t?t.targets.filter(x=>x.kind==="job"):[]
 V.req=()=>band("เอกสาร")+`<div class="pad" style="gap:12px">${[["ขอลางาน","doc","blue"],["ขอเพิ่ม/แก้ไขเวลา","clock","orange"],["ขอโอที","hour","blue"],["ขอเปลี่ยนกะการทำงาน","calClock","orange"]].map(r=>`<button class="mrow" data-act="soon"><span style="color:var(--${r[2]});display:flex">${ic(r[1])}</span><span>${r[0]}</span><span class="chip c-grey" style="margin-left:auto;font-size:12px">เร็ว ๆ นี้</span></button>`).join("")}</div>`;
 
 /* ---------- เชื่อมบัญชี LINE (ครั้งแรก) ---------- */
-function linkView(lineName,msg){const inv=!!S.invite;
+function linkView(lineName,msg){const inv=!!S.invite;S.lineName=lineName;
   $("#views").innerHTML=`<div class="view white">${band(inv?"ยืนยันตัวตน":"ลงทะเบียนพนักงาน")}<form class="pad" id="lf" novalidate><div class="fcard">
   <b style="font-size:17px">${lineName?"สวัสดีคุณ "+esc(lineName):"เชื่อมบัญชี LINE"}</b><span class="cap">${inv?"กรอกข้อมูลให้ตรงกับที่ HR บันทึกไว้ ทำครั้งเดียวแล้วใช้แอปได้เลย":"ไม่มีลิงก์จาก HR ก็ได้ ระบบจะส่งคำขอให้ HR ยืนยันก่อน"}</span>
   ${fl("code","รหัสพนักงาน (4 หลัก)",`<input class="inp" id="code" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="เช่น 0012">`)}
   ${fl("p4","เบอร์มือถือ 4 ตัวท้าย",`<input class="inp" id="p4" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="••••">`)}
   ${msg?`<div class="note c-red" role="alert">${ic("alert")}<span>${esc(msg)}</span></div>`:""}</div>
-  <div class="note c-blue">${ic("info")}<span>บัญชี LINE หนึ่งบัญชีผูกกับพนักงานได้คนเดียว · กรอกผิด 5 ครั้ง ระบบพัก 15 นาที</span></div></form>
+  <div class="note c-blue">${ic("info")}<span>บัญชี LINE หนึ่งบัญชีผูกกับพนักงานได้คนเดียว · กรอกผิด 5 ครั้ง ระบบพัก 15 นาที</span></div>
+  ${S.setup&&!inv?`<div class="fcard" style="gap:8px"><b>ผู้ดูแลระบบ: ตั้งค่าครั้งแรก</b><span class="cap">ยังไม่มี HR ในระบบ · ใช้รหัสผู้ดูแลเพิ่มตัวคุณเป็น HR และเชื่อม LINE นี้ได้เลย</span><button type="button" class="btn out" id="su">ตั้งค่าครั้งแรก</button></div>`:""}</form>
   <span class="spacer"></span><div class="foot"><button class="btn pri" id="go">${inv?"เชื่อมบัญชี":"ส่งคำขอให้ HR"}</button></div></div>`;
   $("#tabbar").hidden=true;
   const submit=ev=>{ev&&ev.preventDefault();const c=$("#code").value.trim(),p=$("#p4").value.trim();
@@ -481,6 +482,28 @@ function linkView(lineName,msg){const inv=!!S.invite;
       if(r.linked){S.tok=r.token;history.replaceState(null,"",location.pathname+(DEV?"?dev="+encodeURIComponent(DEV):""));toast("เชื่อมบัญชี LINE สำเร็จ");boot()}else waitingView();
     }).catch(e=>{linkView(lineName,e.message);$("#code").value=c})};
   $("#lf").onsubmit=submit;$("#go").onclick=submit;
+  if($("#su"))$("#su").onclick=()=>setupView();
+}
+/* ตั้งค่าครั้งแรก (ยังไม่มี HR เชื่อม LINE): รหัสผู้ดูแล + ข้อมูลตัวเอง → เป็น HR + เชื่อม LINE นี้ */
+function setupView(msg,v){v=v||{};const er=(msg&&msg.errors)||{};
+  const inp=(id,label,o)=>fl(id,label,`<input class="inp${er[o.k||id]?" err":""}" id="${id}" ${o.a||""} value="${esc(v[id]||"")}" placeholder="${o.ph||""}">`)+(er[o.k||id]?`<span class="cap" style="color:var(--red);margin-top:-6px">${esc(er[o.k||id])}</span>`:"");
+  $("#views").innerHTML=`<div class="view white">${band("ตั้งค่าครั้งแรก")}<form class="pad" id="sf" novalidate><div class="fcard">
+  <b style="font-size:17px">เพิ่มตัวคุณเป็น HR</b><span class="cap">ใช้ได้ครั้งเดียวตอนเริ่มระบบ · หลังจากนี้ HR เพิ่มพนักงานและส่งลิงก์เชื่อม LINE ให้คนอื่น</span>
+  ${inp("spw","รหัสผู้ดูแลระบบ *",{a:'type="password" autocomplete="off"'})}
+  ${inp("emp_code","รหัสพนักงาน (4 หลัก) *",{a:'inputmode="numeric" maxlength="4"',ph:"เช่น 0077"})}
+  ${inp("first_name","ชื่อ *",{})}${inp("last_name","นามสกุล *",{})}${inp("nickname","ชื่อเล่น",{})}
+  ${inp("phone","เบอร์มือถือ",{a:'inputmode="tel"',ph:"08xxxxxxxx"})}
+  ${inp("department","แผนก *",{ph:"เช่น ฝ่ายบุคคล"})}
+  ${msg&&msg.text?`<div class="note c-red" role="alert">${ic("alert")}<span>${esc(msg.text)}</span></div>`:""}</div>
+  <div class="note c-blue">${ic("info")}<span>บทบาท HR · วันทำงาน จ.–ศ. · ประเภทการลงเวลา "ไม่ต้องลงเวลา" — แก้ได้ภายหลังในหน้าผู้ดูแล</span></div></form>
+  <span class="spacer"></span><div class="foot"><button class="btn pri" id="sgo">บันทึกและเชื่อม LINE</button><button class="btn out" id="sbk">กลับ</button></div></div>`;
+  $("#sbk").onclick=()=>linkView(S.lineName);
+  const go=ev=>{ev&&ev.preventDefault();const f={};["spw","emp_code","first_name","last_name","nickname","phone","department"].forEach(k=>f[k]=$("#"+k).value.trim());
+    if(!f.spw)return setupView({text:"กรอกรหัสผู้ดูแลระบบ"},f);
+    const b=$("#sgo");b.disabled=true;b.innerHTML='<span class="spin"></span>กำลังบันทึก…';
+    call("firstHrSetup",S.idt,f.spw,f).then(r=>{if(!r.ok){delete f.spw;return setupView({errors:r.errors,text:"ตรวจช่องที่ขึ้นสีแดง"},f)}
+      S.tok=r.token;S.setup=false;toast("ตั้งค่าเสร็จ · เชื่อม LINE แล้ว");boot()}).catch(e=>{delete f.spw;setupView({text:e.message},f)})};
+  $("#sf").onsubmit=go;$("#sgo").onclick=go;
 }
 function waitingView(){$("#views").innerHTML=`<div class="view white"><div class="okv"><div class="c" style="background:var(--blue-soft);color:var(--blue)">${ic("clock")}</div><h2>ส่งคำขอแล้ว</h2><span class="muted">รอ HR ยืนยันว่าเป็นคุณ<br>เมื่อยืนยันแล้วเปิดแอปนี้อีกครั้งได้เลย</span></div><div class="pad"><button class="btn out" onclick="location.reload()">ตรวจสอบอีกครั้ง</button></div></div>`;$("#tabbar").hidden=true}
 function fatal(e){$("#views").innerHTML=`<div class="view white"><div class="okv"><div class="c" style="background:var(--red-soft);color:var(--red)">${ic("alert")}</div><h2>เปิดแอปไม่สำเร็จ</h2><span class="muted">${esc(e.message)}</span></div><div class="pad"><button class="btn pri" onclick="location.reload()">ลองใหม่</button></div></div>`;$("#tabbar").hidden=true}
@@ -491,7 +514,7 @@ function getIdToken(){
   if(!window.liff||!CFG.liffId)return Promise.reject(new Error("ยังไม่ได้ตั้งค่า LIFF ID"));
   return liff.init({liffId:CFG.liffId}).then(()=>{if(!liff.isLoggedIn()){liff.login({redirectUri:location.href});return new Promise(()=>{})}return liff.getIDToken()});
 }
-function start(){getIdToken().then(t=>{S.idt=t;return call("loginLine",t)}).then(r=>{if(r.linked){S.tok=r.token;boot()}else linkView(r.lineName)}).catch(fatal)}
+function start(){getIdToken().then(t=>{S.idt=t;return call("loginLine",t)}).then(r=>{if(r.linked){S.tok=r.token;boot()}else{S.setup=!!r.setup;linkView(r.lineName)}}).catch(fatal)}
 function boot(){S.tab="home";S.stack=[];S.today=null;show("fade");refreshToday();loadLeave(true).then(()=>{if(cur()==="home")repaint()}).catch(()=>{});
   const now=new Date();api("myAttendance",`${now.getFullYear()}-${p2(now.getMonth()+1)}`).then(m=>{S.month=m;if(cur()==="home")repaint()}).catch(()=>{})}
 function refreshToday(){return api("todayInfo").then(t=>{S.today=t;S.me=t.me;if(["home","clock","sched"].includes(cur()))repaint();return t}).catch(e=>{toast(e.message)})}
