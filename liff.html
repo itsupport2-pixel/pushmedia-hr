@@ -386,7 +386,10 @@ const p2=n=>String(n).padStart(2,"0");
 const DT=s=>new Date(s+"T12:00:00");
 function call(fn,...a){return fetch(API,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({fn,args:a})})
   .then(r=>r.text()).then(t=>{let j;try{j=JSON.parse(t)}catch(e){throw new Error("เชื่อมต่อเซิร์ฟเวอร์ไม่สำเร็จ ลองใหม่อีกครั้ง")}if(!j.ok)throw new Error(j.error);return j.r})}
-const api=(fn,...a)=>call(fn,S.tok,...a).catch(e=>{if(/SESSION_EXPIRED/.test(e.message)){S.tok=null;start();}throw e});
+/* เก็บในเครื่อง (ต่อผู้ใช้/เครื่อง): session token 8 ชม. + ข้อมูลหน้าหลักล่าสุด → เปิดแอปครั้งถัดไปแสดงทันที แล้วค่อยอัปเดต */
+const LS={k:x=>"pmhr_"+(DEV||"")+"_"+x,get(x){try{return JSON.parse(localStorage.getItem(this.k(x)))}catch(e){return null}},set(x,v){try{localStorage.setItem(this.k(x),JSON.stringify(v))}catch(e){}},del(x){try{localStorage.removeItem(this.k(x))}catch(e){}}};
+function setTok(t){S.tok=t;if(t)LS.set("tok",t);else{["tok","today","leave"].forEach(x=>LS.del(x))}}
+const api=(fn,...a)=>call(fn,S.tok,...a).catch(e=>{if(/SESSION_EXPIRED/.test(e.message)&&!S.relog){S.relog=1;setTok(null);startLine();}throw e});
 
 const S={tab:"home",stack:[],tok:null,idt:null,invite:Q.get("invite")||"",me:null,today:null,month:null,pos:null,opt:0,last:null,wym:null,ptab:0};
 const TITLE={home:"หน้าหลัก",clock:"ลงเวลาการทำงาน",done:"ลงเวลาการทำงาน",worktime:"เวลาการทำงาน",profile:"ข้อมูลพนักงาน",sched:"ตารางงาน",req:"เอกสาร",leave:"ยื่นเอกสาร",lvsum:"ยื่นเอกสาร",lvdone:"ยื่นเอกสาร",lvdetail:"คำขอลา",approve:"อนุมัติเอกสาร",apdetail:"อนุมัติเอกสาร",quota:"โควตาการลา",myreqs:"เอกสารของฉัน"};
@@ -479,7 +482,7 @@ function linkView(lineName,msg){const inv=!!S.invite;S.lineName=lineName;
     if(!/^\d{4}$/.test(c)||!/^\d{4}$/.test(p))return linkView(lineName,"กรอกรหัสพนักงาน 4 หลัก และเบอร์ 4 ตัวท้าย");
     const b=$("#go");b.disabled=true;b.innerHTML='<span class="spin"></span>กำลังตรวจสอบ…';
     (inv?call("redeemInvite",S.idt,S.invite,c,p):call("requestLink",S.idt,c,p)).then(r=>{
-      if(r.linked){S.tok=r.token;history.replaceState(null,"",location.pathname+(DEV?"?dev="+encodeURIComponent(DEV):""));toast("เชื่อมบัญชี LINE สำเร็จ");boot()}else waitingView();
+      if(r.linked){setTok(r.token);history.replaceState(null,"",location.pathname+(DEV?"?dev="+encodeURIComponent(DEV):""));toast("เชื่อมบัญชี LINE สำเร็จ");boot()}else waitingView();
     }).catch(e=>{linkView(lineName,e.message);$("#code").value=c})};
   $("#lf").onsubmit=submit;$("#go").onclick=submit;
   if($("#su"))$("#su").onclick=()=>setupView();
@@ -502,7 +505,7 @@ function setupView(msg,v){v=v||{};const er=(msg&&msg.errors)||{};
     if(!f.spw)return setupView({text:"กรอกรหัสผู้ดูแลระบบ"},f);
     const b=$("#sgo");b.disabled=true;b.innerHTML='<span class="spin"></span>กำลังบันทึก…';
     call("firstHrSetup",S.idt,f.spw,f).then(r=>{if(!r.ok){delete f.spw;return setupView({errors:r.errors,text:"ตรวจช่องที่ขึ้นสีแดง"},f)}
-      S.tok=r.token;S.setup=false;toast("ตั้งค่าเสร็จ · เชื่อม LINE แล้ว");boot()}).catch(e=>{delete f.spw;setupView({text:e.message},f)})};
+      setTok(r.token);S.setup=false;toast("ตั้งค่าเสร็จ · เชื่อม LINE แล้ว");boot()}).catch(e=>{delete f.spw;setupView({text:e.message},f)})};
   $("#sf").onsubmit=go;$("#sgo").onclick=go;
 }
 function waitingView(){$("#views").innerHTML=`<div class="view white"><div class="okv"><div class="c" style="background:var(--blue-soft);color:var(--blue)">${ic("clock")}</div><h2>ส่งคำขอแล้ว</h2><span class="muted">รอ HR ยืนยันว่าเป็นคุณ<br>เมื่อยืนยันแล้วเปิดแอปนี้อีกครั้งได้เลย</span></div><div class="pad"><button class="btn out" onclick="location.reload()">ตรวจสอบอีกครั้ง</button></div></div>`;$("#tabbar").hidden=true}
@@ -514,10 +517,13 @@ function getIdToken(){
   if(!window.liff||!CFG.liffId)return Promise.reject(new Error("ยังไม่ได้ตั้งค่า LIFF ID"));
   return liff.init({liffId:CFG.liffId}).then(()=>{if(!liff.isLoggedIn()){liff.login({redirectUri:location.href});return new Promise(()=>{})}return liff.getIDToken()});
 }
-function start(){getIdToken().then(t=>{S.idt=t;return call("loginLine",t)}).then(r=>{if(r.linked){S.tok=r.token;boot()}else{S.setup=!!r.setup;linkView(r.lineName)}}).catch(fatal)}
-function boot(){S.tab="home";S.stack=[];S.today=null;show("fade");refreshToday();loadLeave(true).then(()=>{if(cur()==="home")repaint()}).catch(()=>{});
+function start(){const t=LS.get("tok");
+  if(t&&!S.invite){S.tok=t;if(window.liff&&CFG.liffId&&!DEV)liff.init({liffId:CFG.liffId}).catch(()=>{});boot();return}
+  startLine()}
+function startLine(){getIdToken().then(t=>{S.idt=t;return call("loginLine",t)}).then(r=>{S.relog=0;if(r.linked){setTok(r.token);boot()}else{S.setup=!!r.setup;linkView(r.lineName)}}).catch(fatal)}
+function boot(){S.tab="home";S.stack=[];const c=LS.get("today");S.today=c&&c.d===ISO(new Date())?c.t:null;if(S.today)S.me=S.today.me;if(!L.info)L.info=LS.get("leave");show("fade");refreshToday();loadLeave(true).then(()=>{if(cur()==="home")repaint()}).catch(()=>{});
   const now=new Date();api("myAttendance",`${now.getFullYear()}-${p2(now.getMonth()+1)}`).then(m=>{S.month=m;if(cur()==="home")repaint()}).catch(()=>{})}
-function refreshToday(){return api("todayInfo").then(t=>{S.today=t;S.me=t.me;if(["home","clock","sched"].includes(cur()))repaint();return t}).catch(e=>{toast(e.message)})}
+function refreshToday(){return api("todayInfo").then(t=>{S.today=t;S.me=t.me;LS.set("today",{d:ISO(new Date()),t});if(["home","clock","sched"].includes(cur()))repaint();return t}).catch(e=>{toast(e.message)})}
 
 /* ---------- ตำแหน่ง GPS (LIFF / LINE MINI App) · ทดสอบในเครื่อง ?lat=&lng= ---------- */
 function getPos(){
@@ -562,7 +568,7 @@ function act(a){if(a==="soon"){toast("เมนูนี้กำลังพั
   if(a.startsWith("go:"))go(a.slice(3));else if(a.startsWith("tab:"))toTab(a.slice(4));}
 document.addEventListener("click",e=>{const t=e.target.closest("button,[data-dclose]");if(!t)return;const d=t.dataset||{};
   if(d.dclose!==undefined){drawer(false);return}
-  if(d.dlogout!==undefined){drawer(false);call("logout",S.tok);S.tok=null;if(window.liff&&liff.closeWindow&&!DEV){try{liff.closeWindow()}catch(_){}}toast("ออกจากระบบแล้ว");return}
+  if(d.dlogout!==undefined){drawer(false);call("logout",S.tok);setTok(null);if(window.liff&&liff.closeWindow&&!DEV){try{liff.closeWindow()}catch(_){}}toast("ออกจากระบบแล้ว");return}
   if(d.toast){toast(d.toast);return}
   if(d.dgo){drawer(false);act(d.dgo);return}
   if(d.act){act(d.act);return}
@@ -611,7 +617,7 @@ function stepsOf(r){const A=[["var(--green)","ยื่นคำขอ",esc(r.em
 const fAt=s=>{if(!s)return "";const d=new Date(s);return isNaN(d)?s:`${d.getDate()} ${TH_S[d.getMonth()]} · ${p2(d.getHours())}:${p2(d.getMinutes())}`};
 
 const L={info:null,f:null,pv:null,pvT:null,det:{},aps:null,apf:"wait",mrf:"all"};
-function loadLeave(force){if(L.info&&!force)return Promise.resolve(L.info);return api("leaveInfo").then(i=>{L.info=i;return i})}
+function loadLeave(force){if(L.info&&!force)return Promise.resolve(L.info);return api("leaveInfo").then(i=>{L.info=i;LS.set("leave",i);return i})}
 const curV=()=>cur().split(":")[0];
 const lvRepaint=()=>{if(["leave","lvsum","lvdetail","approve","apdetail","quota","myreqs","home","req","sched"].includes(curV()))repaint()};
 
