@@ -90,6 +90,7 @@ td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:middle}tr
 .qr{width:184px;height:184px;flex:none;border:1px solid var(--line);border-radius:8px;padding:8px;background:#fff}
 .copy{display:flex;gap:6px}.copy input{flex:1;min-width:0;border:1px solid var(--line);border-radius:7px;padding:7px 10px;background:var(--sf2);font:12px var(--mono)}
 .otab{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-bottom:12px}.otab button{border:0;background:none;padding:9px 14px;color:var(--mut);border-bottom:2px solid transparent}.otab button[aria-selected=true]{color:var(--fg);font-weight:600;border-bottom-color:var(--acc)}
+.qa{border:0;background:none;color:var(--accent,#0550B5);font:inherit;font-size:12.5px;font-weight:600;cursor:pointer;padding:0 0 0 6px}.qa:hover{text-decoration:underline}
 </style>
 </head>
 <body>
@@ -278,6 +279,7 @@ function vForm(){
   var inp=function(k,o){o=o||{};return '<input data-k="'+k+'" value="'+esc(f[k]||'')+'"'+(o.type?' type="'+o.type+'"':'')+(o.ph?' placeholder="'+o.ph+'"':'')+(o.ro?' readonly':'')+(o.im?' inputmode="'+o.im+'"':'')+'>'};
   var sel=function(k,opts){return '<select data-k="'+k+'">'+opts.map(function(o){return '<option value="'+esc(o[0])+'"'+(String(f[k])===String(o[0])?' selected':'')+'>'+esc(o[1])+'</option>'}).join('')+'</select>'};
   var act=function(t){return A.d.org[t].filter(function(x){return x.active!=='FALSE'})};
+  var qa=function(t){return ' <button type="button" class="qa" data-qa="'+t+'">+ เพิ่ม</button>'};
   var teams=act('teams').filter(function(t){return t.department_id===f.department_id}),pos=act('positions').filter(function(p){return !p.department_id||p.department_id===f.department_id});
   var leads=A.d.employees.filter(function(x){return /lead|manager/.test(x.role)&&x.id!==A.id});
   var errN=Object.keys(er).length;
@@ -286,8 +288,8 @@ function vForm(){
    '<div class="fl"><nav class="toc">'+SECS.map(function(s){var bad=s[2].some(function(k){return er[k]});return '<a href="#'+s[0]+'" class="'+(bad?'err':'')+'">'+(bad?'! ':'')+s[1]+'</a>'}).join('')+'</nav><form id="ef" novalidate style="display:flex;flex-direction:column;gap:14px;min-width:0">'+
    '<section class="card" id="s1"><div class="ch"><h3>ข้อมูลส่วนตัว</h3></div><div class="cb g">'+fld('emp_code','รหัสพนักงาน',inp('emp_code',{im:'numeric',ro:!isNew}),{req:1,h:isNew?'ระบบเสนอเลขถัดไปให้ แก้ได้':'รหัสเปลี่ยนไม่ได้หลังสร้าง'})+fld('title','คำนำหน้า',sel('title',[['นาย','นาย'],['นาง','นาง'],['นางสาว','นางสาว']]))+
     fld('first_name','ชื่อ',inp('first_name'),{req:1})+fld('last_name','นามสกุล',inp('last_name'),{req:1})+fld('nickname','ชื่อเล่น',inp('nickname'))+fld('phone','มือถือ',inp('phone',{im:'tel',ph:'08xxxxxxxx'}),{h:'ใช้ยืนยันตัวตนตอนเชื่อม LINE (4 ตัวท้าย)'})+fld('email','อีเมลบริษัท',inp('email',{type:'email'}),{full:1})+'</div></section>'+
-   '<section class="card" id="s2"><div class="ch"><h3>ตำแหน่งงาน</h3></div><div class="cb g">'+fld('department_id','แผนก',sel('department_id',act('departments').map(function(d){return [d.id,d.name]})),{req:1})+fld('team_id','ทีม',sel('team_id',[['','— ไม่ระบุ —']].concat(teams.map(function(t){return [t.id,t.name]}))))+
-    fld('position_id','ตำแหน่ง',sel('position_id',[['','— ไม่ระบุ —']].concat(pos.map(function(p){return [p.id,p.name]}))),{h:'เพิ่มตำแหน่งได้ที่ โครงสร้างองค์กร'})+fld('manager_id','หัวหน้างาน (อนุมัติขั้น 1)',sel('manager_id',[['','อัตโนมัติ: หัวหน้าทีม']].concat(leads.map(function(x){return [x.id,x.first_name+' '+x.last_name+' · '+ROLE[x.role]]}))))+
+   '<section class="card" id="s2"><div class="ch"><h3>ตำแหน่งงาน</h3></div><div class="cb g">'+fld('department_id','แผนก'+qa('departments'),act('departments').length?sel('department_id',act('departments').map(function(d){return [d.id,d.name]})):'<button type="button" class="btn" data-qa="departments">+ เพิ่มแผนกแรก</button>',{req:1,h:act('departments').length?'':'ยังไม่มีแผนกในระบบ'})+fld('team_id','ทีม'+(f.department_id?qa('teams'):''),sel('team_id',[['','— ไม่ระบุ —']].concat(teams.map(function(t){return [t.id,t.name]}))))+
+    fld('position_id','ตำแหน่ง'+qa('positions'),sel('position_id',[['','— ไม่ระบุ —']].concat(pos.map(function(p){return [p.id,p.name]}))),{})+fld('manager_id','หัวหน้างาน (อนุมัติขั้น 1)',sel('manager_id',[['','อัตโนมัติ: หัวหน้าทีม']].concat(leads.map(function(x){return [x.id,x.first_name+' '+x.last_name+' · '+ROLE[x.role]]}))))+
     fld('start_date','วันเริ่มงาน',inp('start_date',{type:'date'}),{req:1})+fld('employment_type','ประเภทพนักงาน',sel('employment_type',[['monthly','รายเดือน'],['daily','รายวัน']]))+fld('status','สถานะ',sel('status',Object.keys(ST).map(function(k){return [k,ST[k][0]]})))+'</div></section>'+
    '<section class="card" id="s3"><div class="ch"><h3>เวลาทำงานและการลงเวลา</h3></div><div class="cb" style="display:flex;flex-direction:column;gap:14px"><div class="g">'+fld('work_start','เวลาเข้างาน',inp('work_start',{type:'time'}),{req:1,h:'00:00 = เวลายืดหยุ่น ไม่นับสาย'})+fld('work_end','เวลาเลิกงาน',inp('work_end',{type:'time'}),{req:1})+'</div>'+
     '<div class="f'+(er.work_days?' bad':'')+'"><span>วันทำงาน <b class="req">*</b></span><div class="days" role="group" aria-label="วันทำงาน">'+[1,2,3,4,5,6,0].map(function(d){return '<button type="button" data-day="'+d+'" aria-pressed="'+(f.work_days.indexOf(d)>=0)+'">'+DOW[d]+'</button>'}).join('')+'</div>'+(er.work_days?'<span class="er">'+er.work_days+'</span>':'')+'</div>'+
@@ -303,6 +305,13 @@ function bForm(){
   var f=A.f,y=function(){var s=scrollY;render();scrollTo(0,s)};
   $('#bk').onclick=$('#cn').onclick=function(){go(A.id?'profile':'list',A.id)};
   $$('[data-k]').forEach(function(el){el.addEventListener(el.tagName==='SELECT'?'change':'input',function(){f[el.dataset.k]=el.value;delete A.err[el.dataset.k];if(el.dataset.k==='department_id'){f.team_id='';f.position_id='';y()}})});
+  /* เพิ่มแผนก/ทีม/ตำแหน่งจากฟอร์มพนักงานได้เลย (ไม่ต้องออกไปหน้าโครงสร้างองค์กร) */
+  $$('[data-qa]').forEach(function(b){b.onclick=function(ev){ev.preventDefault();ev.stopPropagation();var t=b.dataset.qa,L={departments:'แผนก',teams:'ทีม',positions:'ตำแหน่ง'}[t];
+    drawer('เพิ่ม'+L,'<label class="f"><span>ชื่อ'+L+' <b class="req">*</b></span><input id="qan" placeholder="'+(t==='departments'?'เช่น ฝ่ายบุคคล':t==='teams'?'เช่น ทีม LED A':'เช่น เจ้าหน้าที่ IT')+'"></label>'+(t==='departments'?'':'<div class="muted" style="font-size:13px">อยู่ในแผนก: '+esc(org('departments',f.department_id)||'— ไม่ระบุ —')+'</div>'),'<button class="btn pri" id="qaok">เพิ่ม'+L+'</button>');
+    setTimeout(function(){$('#qan').focus()},50);
+    $('#qaok').onclick=function(){var n=$('#qan').value.trim();if(!n)return toast('กรอกชื่อ'+L,1);var k=this;busy(k,1);var item={name:n};if(t!=='departments')item.department_id=f.department_id||'';
+      aCall('saveOrgItem',t,item).then(function(r){if(!r.ok){busy(k,0);return toast(r.errors.name||'บันทึกไม่ได้',1)}
+        return reload(false).then(function(){closeD();f[{departments:'department_id',teams:'team_id',positions:'position_id'}[t]]=r.id;if(t==='departments'){f.team_id='';f.position_id=''}delete A.err.department_id;y();toast('เพิ่ม'+L+' “'+n+'” แล้ว')})}).catch(function(e){busy(k,0);toast(e.message,1)})}}});
   $$('[data-day]').forEach(function(b){b.onclick=function(){var d=+b.dataset.day;f.work_days=f.work_days.indexOf(d)>=0?f.work_days.filter(function(x){return x!==d}):f.work_days.concat(d);delete A.err.work_days;y()}});
   $$('[data-chk]').forEach(function(b){b.onclick=function(){f.checkin_type=b.dataset.chk;delete A.err.checkin_type;delete A.err.checkin_sites;y()}});
   $$('[data-site]').forEach(function(c){c.onchange=function(){var id=c.dataset.site;f.checkin_sites=c.checked?f.checkin_sites.concat(id):f.checkin_sites.filter(function(x){return x!==id})}});
