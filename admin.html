@@ -140,7 +140,11 @@ function isHR(){return A.d&&(A.d.me.role==='hr'||A.d.me.role==='admin')}
 function org(t,id){var r=(A.d.org[t]||[]).filter(function(x){return x.id===id})[0];return r?r.name:''}
 function full(e){return (e.title||'')+e.first_name+' '+e.last_name}
 function ini(e){return (e.first_name||'?')[0]+(e.last_name||'')[0]}
-function av(e,s){s=s||30;return '<span class="av" style="width:'+s+'px;height:'+s+'px;font-size:'+Math.round(s/2.6)+'px">'+esc(ini(e))+'</span>'}
+function av(e,s){s=s||30;var ph=PH[e.id];return ph?'<img class="av" data-av="'+e.id+'" src="'+esc(ph)+'" alt="" style="width:'+s+'px;height:'+s+'px;object-fit:cover">':'<span class="av" data-av="'+e.id+'" style="width:'+s+'px;height:'+s+'px;font-size:'+Math.round(s/2.6)+'px">'+esc(ini(e))+'</span>'}
+/* รูปพนักงาน: โหลดเฉพาะคนที่อยู่บนหน้าจอ แล้วสลับตัวอักษรย่อเป็นรูป · จำไว้ในหน้า (PH) */
+var PH={},PHask={};
+function loadPhotos(){var ids=[];$$('[data-av]').forEach(function(el){var id=el.dataset.av;if(!(id in PH)&&!PHask[id]){PHask[id]=1;ids.push(id)}});if(!ids.length)return;
+  aCall('photosFor',ids.slice(0,60)).then(function(m){ids.forEach(function(id){PH[id]=m[id]||''});$$('[data-av]').forEach(function(el){var d=PH[el.dataset.av];if(d&&el.tagName!=='IMG'){var w=el.style.width;var im=document.createElement('img');im.className='av';im.dataset.av=el.dataset.av;im.src=d;im.alt='';im.style.cssText='width:'+w+';height:'+w+';object-fit:cover';el.replaceWith(im)}})}).catch(function(){})}
 function chkB(c){return CHK[c]?'<span class="badge '+CHK[c][2]+'">'+CHK[c][0]+'</span>':'<span class="badge b-bad">ยังไม่ระบุ</span>'}
 function lineC(e){return e.line==='linked'?'<span class="ln-ok">● เชื่อมแล้ว</span>':e.line==='wait'?'<span class="ln-wait">● รอยืนยัน</span>':'<span class="ln-no">ยังไม่เชื่อม</span>'}
 function days(d){d=d||[];var s=d.slice().sort().join(',');return s==='1,2,3,4,5'?'จ.–ศ.':s==='1,2,3,4,5,6'?'จ.–ส.':d.map(function(x){return DOW[x]}).join(' ')}
@@ -174,13 +178,14 @@ function done(tok){A.tok=tok;store('hr_tok',tok);boot()}
 function ss(k,v){try{if(v===undefined)return JSON.parse(sessionStorage.getItem(k)||'null');if(v===null)sessionStorage.removeItem(k);else sessionStorage.setItem(k,JSON.stringify(v))}catch(e){return null}}
 function boot(){if(!A.tok)return renderLogin();var c=ss('hr_boot');
   if(c&&c.me){A.d=c;A.db=c.dash;A.dbAt=0;render()}else $('#app').innerHTML='<div class="loading"><span class="spin"></span>กำลังโหลดข้อมูล…</div>';
-  aCall('adminBootstrap',A.view==='dash').then(function(d){A.d=d;if(d.dash){A.db=d.dash;A.dbAt=Date.now()}ss('hr_boot',d);
+  aCall('adminBootstrap',A.view==='dash').then(function(d){if(!d||!d.me)throw new Error('โหลดข้อมูลไม่สำเร็จ ลองใหม่อีกครั้ง');A.d=d;if(d.dash){A.db=d.dash;A.dbAt=Date.now()}ss('hr_boot',d);
     if(!c||['dash','list'].indexOf(A.view)>=0)render();else updNav()}).catch(function(e){if(A.tok&&!c)$('#app').innerHTML='<div class="loading">'+esc(e.message)+' <button class="btn" onclick="location.reload()">ลองใหม่</button></div>'})}
 function updNav(){var a=$('.side a[data-nav="appr"]');if(!a)return;var n=(A.d.pendingCount||0)+A.d.linkRequests.length,c=a.querySelector('.cnt');if(n){if(!c){c=document.createElement('span');c.className='cnt';a.appendChild(c)}c.textContent=n}else if(c)c.remove()}
-function reload(keep){return aCall('adminBootstrap').then(function(d){d.dash=A.db;A.d=d;ss('hr_boot',d);if(keep!==false)render();else updNav()})}
+function reload(keep){return aCall('adminBootstrap').then(function(d){if(!d||!d.me)return;d.dash=A.db;A.d=d;ss('hr_boot',d);if(keep!==false)render();else updNav()})}
 
 /* ───────── shell ───────── */
 function render(){
+  if(!A.d||!A.d.me){if(A.tok)boot();else renderLogin();return}
   var me=A.d.me,lr=A.d.linkRequests.length,allowed=ROLE_NAV[me.role]||ROLE_NAV.lead,cur=NAVOF[A.view]||A.view;
   if(allowed.indexOf(cur)<0&&!(cur==='list'&&me.role!=='exec')){A.view=allowed[0];cur=A.view}
   var V={dash:[vDash,bDash],list:[vList,bList],profile:[vProfile,bProfile],form:[vForm,bForm],req:[vReq,bReq],org:[vOrg,bOrg],att:[vAtt,bAtt],lv:[vLv,bLv],appr:[vAppr,bAppr],set:[vSet,bSet],audit:[vAudit,bAudit],sched:[vSoon,bNone],ot:[vSoon,bNone],rep:[vSoon,bNone]}[A.view]||[vDash,bDash];
@@ -191,6 +196,7 @@ function render(){
   $$('[data-nav]').forEach(function(a){a.onclick=function(){go(a.dataset.nav)}});
   $('#out').onclick=function(){call('logout',A.tok);store('hr_tok',null);A.tok=null;try{sessionStorage.clear()}catch(e){}renderLogin()};
   V[1]();
+  setTimeout(loadPhotos,0);
 }
 function go(v,id){A.view=v;A.id=id||null;if(v!=='form'){A.f=null;A.err={}}closeD();render();scrollTo(0,0)}
 
