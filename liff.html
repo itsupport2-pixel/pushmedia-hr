@@ -408,8 +408,8 @@ function setTok(t){S.tok=t;if(t)LS.set("tok",t);else{["tok","today","leave"].for
 const api=(fn,...a)=>call(fn,S.tok,...a).catch(e=>{if(/SESSION_EXPIRED/.test(e.message)&&!S.relog){S.relog=1;setTok(null);startLine();}throw e});
 
 const S={tab:"home",stack:[],tok:null,idt:null,invite:Q.get("invite")||"",me:null,today:null,month:null,pos:null,opt:0,last:null,wym:null,ptab:0};
-const TITLE={home:"หน้าหลัก",clock:"ลงเวลาการทำงาน",done:"ลงเวลาการทำงาน",worktime:"เวลาการทำงาน",profile:"ข้อมูลพนักงาน",pedit:"แก้ไขข้อมูลส่วนตัว",sched:"ตารางงาน",req:"เอกสาร",leave:"ยื่นเอกสาร",lvsum:"ยื่นเอกสาร",lvdone:"ยื่นเอกสาร",lvdetail:"คำขอลา",approve:"อนุมัติเอกสาร",apdetail:"อนุมัติเอกสาร",quota:"โควตาการลา",myreqs:"เอกสารของฉัน"};
-const NOTAB=["clock","done","pedit","leave","lvsum","lvdone","lvdetail","apdetail"];
+const TITLE={home:"หน้าหลัก",clock:"ลงเวลาการทำงาน",done:"ลงเวลาการทำงาน",devwait:"ลงเวลาการทำงาน",worktime:"เวลาการทำงาน",profile:"ข้อมูลพนักงาน",pedit:"แก้ไขข้อมูลส่วนตัว",sched:"ตารางงาน",req:"เอกสาร",leave:"ยื่นเอกสาร",lvsum:"ยื่นเอกสาร",lvdone:"ยื่นเอกสาร",lvdetail:"คำขอลา",approve:"อนุมัติเอกสาร",apdetail:"อนุมัติเอกสาร",quota:"โควตาการลา",myreqs:"เอกสารของฉัน"};
+const NOTAB=["clock","done","devwait","pedit","leave","lvsum","lvdone","lvdetail","apdetail"];
 const band=t=>`<header class="band">${S.stack.length?`<button data-back aria-label="ย้อนกลับ">${ic("chevL")}</button>`:""}<h1>${t}</h1></header>`;
 const fl=(id,label,inner)=>`<label class="fl" for="${id}"><span>${label}</span>${inner}<span class="emsg" id="${id}-e" hidden></span></label>`;
 const sel=(id,opts,v)=>`<select class="sel" id="${id}">${opts.map(o=>`<option value="${o[0]}" ${String(o[0])===String(v)?"selected":""}>${o[1]}</option>`).join("")}</select>`;
@@ -458,8 +458,21 @@ V.clock=()=>{const t=S.today,p=S.pos;if(!t||!p)return `<section class="clk"><div
   <textarea class="ta" id="cn" placeholder="${inA?"ระบุรายละเอียดเพิ่มเติม (ถ้ามี)":"เช่น เดินทางไปหน้างานโดยตรง"}"></textarea><span class="emsg" id="cn-e" hidden></span></div>
   <div class="foot"><button class="btn pri" data-clock="${out?"out":"in"}" ${p.err?"disabled":""}>${out?"ลงเวลาออกงาน":"ลงเวลาการทำงาน"}</button>${out?"":`<button class="btn out" data-clock="out" ${p.err?"disabled":""}>ลงเวลาออกงาน</button>`}</div>`;};
 
+/* รหัสเครื่อง: สุ่มครั้งแรกแล้วเก็บในแอป LINE ของมือถือ (ล้างข้อมูล LINE = เครื่องใหม่) + รุ่นเครื่องจาก User-Agent */
+function devLabel(){const u=navigator.userAgent;let m;
+  if(m=/iPhone OS (\d+)[_.](\d+)/.exec(u))return `iPhone · iOS ${m[1]}.${m[2]}`;
+  if(m=/iPad.*OS (\d+)[_.](\d+)/.exec(u))return `iPad · iPadOS ${m[1]}.${m[2]}`;
+  if(m=/Android (\d+(?:\.\d+)?);\s*([^;)]+?)(?:\s+Build|\))/.exec(u))return `Android ${m[1]} · ${m[2].trim()}`.slice(0,60);
+  if(/Android/.test(u))return "Android";if(/Mac OS X/.test(u))return "Mac";if(/Windows/.test(u))return "Windows";return "อุปกรณ์อื่น"}
+function devInfo(){let id=LS.get("device");if(!id){id=(crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,12));LS.set("device",id)}return {id,label:devLabel()}}
+V.devwait=()=>{const r=S.devmsg||{},d=r.device||{};return `<div class="okv" style="background:#fff"><div class="c" style="background:var(--orange-soft);color:var(--orange)">${ic("alert")}</div><h2>${r.device_blocked?"อุปกรณ์นี้ถูกยกเลิก":"อุปกรณ์ใหม่ รอ HR อนุมัติ"}</h2>
+  <span class="muted">${r.device_blocked?"ลงเวลาจากเครื่องนี้ไม่ได้ ติดต่อ HR":"ระบบส่งคำขอให้ HR แล้ว · เมื่ออนุมัติจะลงเวลาจากเครื่องนี้ได้"}</span></div>
+  <div class="pad" style="background:#fff;flex:1;padding-top:0"><div class="card" style="padding:2px 18px;box-shadow:none;border:1px solid var(--line)">${[["อุปกรณ์",d.label||"—"],["รหัสเครื่อง",d.short||"—"]].map(x=>`<div class="kv"><span>${x[0]}</span><b>${esc(x[1])}</b></div>`).join("")}</div>
+  ${nt("c-blue","info","ระบบจำเครื่องที่ใช้ลงเวลา เพื่อป้องกันการลงเวลาแทนกัน · ถ้าเปลี่ยนมือถือหรือติดตั้ง LINE ใหม่ จะนับเป็นเครื่องใหม่")}</div>
+  <div class="foot"><button class="btn pri" data-home>กลับหน้าหลัก</button></div>`};
 V.done=()=>{const d=S.last,now=new Date();return `<div class="okv" style="background:#fff"><div class="c">${ic("ok")}</div><h2>${d.kind==="IN"?"ลงเวลาเข้างานสำเร็จ":"ลงเวลาออกงานสำเร็จ"}</h2><span class="muted">${esc(d.time)} น. · ${esc(d.location)}</span></div>
-  <div class="pad" style="background:#fff;flex:1;padding-top:0"><div class="card" style="padding:2px 18px;box-shadow:none;border:1px solid var(--line)">${[["วันที่",`${TH_D[now.getDay()]} ${now.getDate()} ${TH_S[now.getMonth()]} ${now.getFullYear()+543}`],["สถานะ",!d.in_area?"นอกพื้นที่ (รอตรวจสอบ)":d.kind==="IN"?(d.late_min?"สาย "+d.late_min+" นาที":"ตรงเวลา"):"บันทึกแล้ว"],["สถานที่",d.location],["ระยะจากจุดลงเวลา",fmtDist(d.distance_m)]].map(r=>`<div class="kv"><span>${r[0]}</span><b ${r[1]==="ตรงเวลา"?'style="color:var(--green)"':/สาย|นอกพื้นที่/.test(r[1])?'style="color:var(--orange)"':""}>${esc(r[1])}</b></div>`).join("")}</div></div>
+  <div class="pad" style="background:#fff;flex:1;padding-top:0"><div class="card" style="padding:2px 18px;box-shadow:none;border:1px solid var(--line)">${[["วันที่",`${TH_D[now.getDay()]} ${now.getDate()} ${TH_S[now.getMonth()]} ${now.getFullYear()+543}`],["สถานะ",!d.in_area?"นอกพื้นที่ (รอตรวจสอบ)":d.kind==="IN"?(d.late_min?"สาย "+d.late_min+" นาที":"ตรงเวลา"):"บันทึกแล้ว"],["สถานที่",d.location],["ระยะจากจุดลงเวลา",fmtDist(d.distance_m)],["พิกัดที่ลงเวลา",d.lat!=null?`${(+d.lat).toFixed(6)}, ${(+d.lng).toFixed(6)}`:"—"],["อุปกรณ์",d.device?`${d.device.label} · ${d.device.short}`:"—"]].map(r=>`<div class="kv"><span>${r[0]}</span><b ${r[1]==="ตรงเวลา"?'style="color:var(--green)"':/สาย|นอกพื้นที่/.test(r[1])?'style="color:var(--orange)"':""}>${esc(r[1])}</b></div>`).join("")}</div>
+  ${d.device_new?nt("c-orange","alert","ลงเวลาจากเครื่องใหม่ · ระบบแจ้ง HR ให้ทราบแล้ว"):""}${d.lat!=null?`<a class="btn out" style="margin-top:12px;text-decoration:none" href="https://www.google.com/maps?q=${encodeURIComponent(d.lat+","+d.lng)}" target="_blank" rel="noopener">ดูตำแหน่งบนแผนที่</a>`:""}</div>
   <div class="foot"><button class="btn pri" data-home>กลับหน้าหลัก</button></div>`;};
 
 V.worktime=()=>{const now=new Date(),ym=S.wym||`${now.getFullYear()}-${p2(now.getMonth()+1)}`,y=+ym.slice(0,4),m=+ym.slice(5,7),mo=S.wdata&&S.wdata.ym===ym?S.wdata:null;
@@ -641,7 +654,8 @@ document.addEventListener("click",e=>{const t=e.target.closest("button,[data-dcl
   if(d.opt){document.querySelectorAll(".opt").forEach(o=>o.setAttribute("aria-checked",o===t));S.opt=+d.opt;return}
   if(d.clock){const n=$("#cn"),note=n.value.trim(),p=S.pos;
     t.disabled=true;const old=t.innerHTML;t.innerHTML='<span class="spin"></span>กำลังบันทึก…';
-    api("clock",d.clock,p.lat,p.lng,p.acc,note,navigator.userAgent.slice(0,60)).then(r=>{
+    api("clock",d.clock,p.lat,p.lng,p.acc,note,devInfo()).then(r=>{
+      if(!r.ok&&(r.device_pending||r.device_blocked)){t.disabled=false;t.innerHTML=old;S.devmsg=r;S.stack[S.stack.length-1]="devwait";show("fade");return}
       if(!r.ok&&r.need_note){t.disabled=false;t.innerHTML=old;n.classList.add("err");const er=$("#cn-e");er.hidden=false;er.textContent="อยู่นอกพื้นที่"+(r.target?" (ห่าง "+r.target+" "+fmtDist(r.distance_m)+")":"")+" กรุณาระบุเหตุผล";n.focus();return}
       S.last=r;S.today=null;S.month=null;S.stack[S.stack.length-1]="done";show("fade");refreshToday();
       const now=new Date();api("myAttendance",`${now.getFullYear()}-${p2(now.getMonth()+1)}`).then(m=>{S.month=m}).catch(()=>{});
