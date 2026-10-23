@@ -69,7 +69,7 @@ td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:middle}tr
 .toc a.err{color:var(--bad);font-weight:600}
 .g{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px 14px}
 .f{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--mut);min-width:0}
-.f input,.f select{border:1px solid var(--line);border-radius:7px;padding:8px 10px;background:var(--sf);color:var(--fg);width:100%}
+.f input,.f select,.f textarea{border:1px solid var(--line);border-radius:7px;padding:8px 10px;background:var(--sf);color:var(--fg);width:100%}
 .f input[readonly]{background:var(--sf2);color:var(--mut)}.f .h{font-size:12px;color:var(--fnt)}.f .er{font-size:12px;color:var(--bad)}
 .f.bad input,.f.bad select{border-color:var(--bad);background:var(--bad-s)}.req{color:var(--bad)}
 .days{display:flex;gap:6px;flex-wrap:wrap}.days button{width:42px;height:34px;border-radius:7px;border:1px solid var(--line);background:var(--sf)}.days button[aria-pressed=true]{background:var(--nav);color:#fff;border-color:var(--nav)}
@@ -450,6 +450,7 @@ function vProfile(){
    '<section class="card"><div class="ch"><h3>บัญชี LINE</h3></div><div class="cb">'+line+'</div></section>'+
    (isHR()?'<section class="card"><div class="ch"><h3>อุปกรณ์ลงเวลา</h3></div><div class="cb">'+(!p?'<span class="muted">กำลังโหลด…</span>':!(p.devices||[]).length?'<span class="muted">ยังไม่เคยลงเวลา · เครื่องแรกที่ลงเวลาจะถูกจดจำอัตโนมัติ</span>':'<ul class="tl">'+p.devices.map(function(d){var S={active:['ใช้งาน','b-ok'],pending:['รอ HR อนุมัติ','b-warn'],revoked:['ยกเลิกแล้ว','b-mute']}[d.status]||[d.status,'b-mute'];
      return '<li style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span style="flex:1;min-width:160px"><b>'+esc(d.label)+'</b> <span class="mono faint">'+esc(d.short)+'</span><br><span class="faint">ใช้ล่าสุด '+esc(fdt(d.last_seen))+'</span></span><span class="badge '+S[1]+'">'+S[0]+'</span>'+(d.status!=='active'?'<button class="btn sm" data-dva="'+d.id+'">อนุญาต</button>':'')+(d.status!=='revoked'?'<button class="btn sm bad" data-dvr="'+d.id+'">ยกเลิก</button>':'')+'</li>'}).join('')+'</ul>')+'</div></section>':'')+
+   (isHR()?extCards(p):'')+
    (isHR()?'<section class="card"><div class="ch"><h3>เงินเดือนและบัญชี</h3><span class="badge b-warn" style="margin-left:auto">เห็นเฉพาะ HR</span></div><div class="cb">'+(p?'<dl class="kv"><dt>ธนาคาร</dt><dd>'+esc(p.bank_name||'—')+'</dd><dt>เลขบัญชี</dt><dd><span class="mono" id="bank">'+esc(p.bank_account_masked||'—')+'</span> '+(p.bank_account_masked?'<button class="btn sm" id="rv">แสดง</button>':'')+'</dd><dt>รหัส Express</dt><dd class="num">'+esc(e.express_code||'—')+'</dd></dl>':'<div class="loading" style="padding:12px"><span class="spin"></span></div>')+'</div></section>'+
    '<section class="card"><div class="ch"><h3>ประวัติแก้ไข</h3></div><div class="cb">'+(p?(p.audit.length?'<ul class="tl">'+p.audit.map(function(a){return '<li><b>'+esc({create:'สร้าง',update:'แก้ไขข้อมูล',line_link:'เชื่อม LINE',line_unlink:'ยกเลิกการเชื่อม LINE'}[a.action]||a.action)+'</b> <span class="faint">'+esc(a.at.slice(0,16).replace('T',' '))+'</span>'+(a.reason?'<div class="muted">เหตุผล: '+esc(a.reason)+'</div>':'')+'</li>'}).join('')+'</ul>':'<span class="faint">ยังไม่มี</span>'):'<span class="spin"></span>')+'</div></section>':'')+'</div>';
 }
@@ -458,8 +459,43 @@ function bProfile(){
   if($('#inv1'))$('#inv1').onclick=function(){invite([A.id])};if($('#unl'))$('#unl').onclick=function(){unlink(A.id)};
   $$('[data-nav2]').forEach(function(b){b.onclick=function(){go(b.dataset.nav2)}});
   $$('[data-dva],[data-dvr]').forEach(function(b){b.onclick=function(){var ok=!!b.dataset.dva;busy(b,1);aCall('decideDevice',b.dataset.dva||b.dataset.dvr,ok).then(function(){toast(ok?'อนุญาตอุปกรณ์แล้ว':'ยกเลิกอุปกรณ์แล้ว · ลงเวลาจากเครื่องนี้ไม่ได้อีก');PROF=null;render()}).catch(function(e){busy(b,0);toast(e.message,1)})}});
+  bExt();
   if($('#rv'))$('#rv').onclick=function(){var b=this;busy(b,1);aCall('revealBank',A.id).then(function(v){$('#bank').textContent=v;b.remove();toast('การเปิดดูเลขบัญชีถูกบันทึกใน Audit Log')}).catch(function(e){busy(b,0);toast(e.message,1)})};
   if(isHR()&&!(PROF&&PROF.id===A.id)){var id=A.id;aCall('getEmployee',id).then(function(p){PROF=p;if(A.view==='profile'&&A.id===id)render()}).catch(function(e){toast(e.message,1)})}
+}
+
+/* ข้อมูลเพิ่มเติม · ที่อยู่ · ฝึกอบรม · สินทรัพย์ (HR) — พนักงานแก้ข้อมูลเพิ่มเติม/ที่อยู่/ฝึกอบรมเองได้ในแอป · สินทรัพย์ HR บันทึก */
+var GEN={male:'ชาย',female:'หญิง',other:'อื่น ๆ'},MAR={single:'โสด',married:'สมรส',divorced:'หย่าร้าง',widowed:'หม้าย'};
+var ITK={training:['การฝึกอบรม',[['course','ชื่อหลักสูตร',1],['provider','จัดโดย'],['date_from','วันที่เริ่ม','date'],['date_to','วันที่จบ','date'],['hours','จำนวนชั่วโมง'],['note','หมายเหตุ']]],
+  assets:['สินทรัพย์ถือครอง',[['name','ชื่อสินทรัพย์',1],['serial','หมายเลขเครื่อง / Serial'],['received_date','วันที่รับ','date'],['returned_date','วันที่คืน (ว่าง = ยังถือครอง)','date'],['note','หมายเหตุ']]]};
+var EXTF=[['first_name_en','ชื่อ (อังกฤษ)'],['last_name_en','นามสกุล (อังกฤษ)'],['nickname_en','ชื่อเล่น (อังกฤษ)'],['birth_date','วันเกิด','date'],['gender','เพศ',GEN],['marital_status','สถานภาพ',MAR],['addr_idcard','ที่อยู่ตามบัตรประชาชน','ta'],['addr_current','ที่อยู่ปัจจุบัน','ta']];
+function extCards(p){
+  if(!p)return '<section class="card"><div class="ch"><h3>ข้อมูลเพิ่มเติมและที่อยู่</h3></div><div class="cb"><span class="spin"></span></div></section>';
+  var x=p.ext||{},v=function(k){return esc(x[k]||'—')};
+  var item=function(k,it){return k==='training'?'<b>'+esc(it.course)+'</b>'+(it.provider?' <span class="faint">'+esc(it.provider)+'</span>':'')+'<br><span class="faint">'+(it.date_from||it.date_to?thd(it.date_from||it.date_to)+(it.date_to&&it.date_to!==it.date_from&&it.date_from?' – '+thd(it.date_to):''):'ไม่ระบุวันที่')+(it.hours?' · '+esc(it.hours)+' ชม.':'')+'</span>'
+    :'<b>'+esc(it.name)+'</b>'+(it.serial?' <span class="mono faint">'+esc(it.serial)+'</span>':'')+' <span class="badge '+(it.returned_date?'b-mute">คืนแล้ว':'b-ok">ถือครอง')+'</span><br><span class="faint">รับ '+thd(it.received_date)+(it.returned_date?' · คืน '+thd(it.returned_date):'')+'</span>'};
+  var list=function(k){var a=p[k]||[];return '<section class="card"><div class="ch"><h3>'+ITK[k][0]+'</h3><button class="btn sm" data-itadd="'+k+'" style="margin-left:auto">+ เพิ่ม</button></div><div class="cb">'+(a.length?'<ul class="tl">'+a.map(function(it){
+    return '<li style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span style="flex:1;min-width:160px">'+item(k,it)+'</span><button class="btn sm" data-ited="'+k+'|'+esc(it.id)+'">แก้ไข</button><button class="btn sm bad" data-itdel="'+k+'|'+esc(it.id)+'">ลบ</button></li>'}).join('')+'</ul>':'<span class="faint">ไม่มีข้อมูล</span>')+'</div></section>'};
+  return '<section class="card"><div class="ch"><h3>ข้อมูลเพิ่มเติมและที่อยู่</h3><button class="btn sm" id="xed" style="margin-left:auto">แก้ไข</button></div><div class="cb"><dl class="kv"><dt>ชื่อ (อังกฤษ)</dt><dd>'+esc(((x.first_name_en||'')+' '+(x.last_name_en||'')).trim()||'—')+'</dd><dt>ชื่อเล่น (อังกฤษ)</dt><dd>'+v('nickname_en')+'</dd><dt>วันเกิด</dt><dd>'+thd(x.birth_date)+'</dd><dt>เพศ</dt><dd>'+(GEN[x.gender]||'—')+'</dd><dt>สถานภาพ</dt><dd>'+(MAR[x.marital_status]||'—')+'</dd><dt>ที่อยู่ตามบัตร</dt><dd style="white-space:pre-line">'+v('addr_idcard')+'</dd><dt>ที่อยู่ปัจจุบัน</dt><dd style="white-space:pre-line">'+v('addr_current')+'</dd></dl></div></section>'+list('training')+list('assets');
+}
+/* ฟอร์มใน Drawer: fields = [[key,label,1(บังคับ)|'date'|'ta'|{ตัวเลือก}]] · save(d) คืน Promise ของ {ok,errors} */
+function drawerForm(title,fields,val,save){
+  drawer(title,'<div style="display:flex;flex-direction:column;gap:12px">'+fields.map(function(f){var t=f[2],cur=val[f[0]]||'';
+    var inner=t==='ta'||f[0]==='note'?'<textarea data-it="'+f[0]+'" rows="3" maxlength="300">'+esc(cur)+'</textarea>':t&&typeof t==='object'?'<select data-it="'+f[0]+'"><option value="">— ไม่ระบุ —</option>'+Object.keys(t).map(function(k){return '<option value="'+k+'"'+(cur===k?' selected':'')+'>'+t[k]+'</option>'}).join('')+'</select>':'<input data-it="'+f[0]+'"'+(t==='date'?' type="date"':'')+' value="'+esc(cur)+'">';
+    return '<label class="f" id="w-'+f[0]+'"><span>'+f[1]+(t===1?' <b class="req">*</b>':'')+'</span>'+inner+'</label>'}).join('')+'</div>','<button class="btn pri" id="itok">บันทึก</button>');
+  $('#itok').onclick=function(){var b=this,d={};$$('[data-it]').forEach(function(el){d[el.dataset.it]=el.value.trim()});busy(b,1);
+    save(d).then(function(r){if(r.ok)return;busy(b,0);$$('.drw .f').forEach(function(l){l.classList.remove('bad');var e=l.querySelector('.er');if(e)e.remove()});
+      Object.keys(r.errors||{}).forEach(function(n){var l=$('#w-'+n);if(l){l.classList.add('bad');l.insertAdjacentHTML('beforeend','<span class="er">'+esc(r.errors[n])+'</span>')}})}).catch(function(e){busy(b,0);toast(e.message,1)})};
+}
+function bExt(){
+  if($('#xed'))$('#xed').onclick=function(){drawerForm('ข้อมูลเพิ่มเติมและที่อยู่',EXTF,PROF.ext||{},function(d){d.reason='HR แก้ไขข้อมูลเพิ่มเติม';return aCall('saveEmployeeExt',A.id,d).then(function(r){if(r.ok){PROF.ext=r.ext;closeD();render();toast(r.changed?'บันทึกแล้ว':'ไม่มีอะไรเปลี่ยน')}return r})})};
+  var form=function(k,it){drawerForm((it.id?'แก้ไข':'เพิ่ม')+ITK[k][0],ITK[k][1],it,function(d){d.employee_id=A.id;if(it.id)d.id=it.id;return aCall('saveEmpItem',k,d).then(function(r){if(r.ok){PROF[k]=r.items;closeD();render();toast('บันทึกแล้ว')}return r})})};
+  var find=function(v){var p=v.split('|');return [p[0],(PROF[p[0]]||[]).filter(function(x){return x.id===p[1]})[0]]};
+  $$('[data-itadd]').forEach(function(b){b.onclick=function(){form(b.dataset.itadd,{})}});
+  $$('[data-ited]').forEach(function(b){b.onclick=function(){var f=find(b.dataset.ited);if(f[1])form(f[0],f[1])}});
+  $$('[data-itdel]').forEach(function(b){b.onclick=function(){var f=find(b.dataset.itdel),k=f[0];if(!f[1])return;
+    drawer('ลบรายการ'+ITK[k][0]+'?','<p style="margin:0">'+esc(f[1].course||f[1].name)+' · ลบแล้วกู้คืนไม่ได้ (มีประวัติใน Audit Log)</p>','<button class="btn bad" id="itdok">ลบรายการ</button>');
+    $('#itdok').onclick=function(){var x=this;busy(x,1);aCall('deleteEmpItem',k,f[1].id).then(function(r){PROF[k]=r.items;closeD();render();toast('ลบแล้ว')}).catch(function(e){busy(x,0);toast(e.message,1)})}}});
 }
 
 /* ───────── ฟอร์ม ───────── */
