@@ -425,7 +425,7 @@ function vList(){
    :'<div class="loading">ไม่พบพนักงานตามเงื่อนไขนี้ <button class="btn sm" id="rs">ล้างตัวกรอง</button></div>')+'</section>';
 }
 function bList(){
-  var q=$('#q');q.oninput=function(){A.q=q.value;A.page=1;var p=q.selectionStart;render();var n=$('#q');n.focus();n.setSelectionRange(p,p)};
+  var q=$('#q');q.oninput=function(){A.q=q.value;A.page=1;var p=q.selectionStart;render();var n=$('#q');if(n){n.focus();n.setSelectionRange(p,p)}};
   [['#fd','dept'],['#fc','chk'],['#fl','line'],['#fs','st']].forEach(function(x){$(x[0]).onchange=function(e){A[x[1]]=e.target.value;A.page=1;render()}});
   $$('[data-sum]').forEach(function(b){b.onclick=function(){var p=b.dataset.sum.split(':');A.line='all';A.chk='all';A.st='all';if(p[0]!=='all')A[p[0]]=p[1];A.page=1;render()}});
   $$('tr.ck').forEach(function(tr){tr.onclick=function(ev){if(ev.target.closest('[data-no]'))return;go('profile',tr.dataset.id)}});
@@ -563,7 +563,7 @@ function bForm(){
   /* เพิ่มแผนก/ทีม/ตำแหน่งจากฟอร์มพนักงานได้เลย (ไม่ต้องออกไปหน้าโครงสร้างองค์กร) */
   $$('[data-qa]').forEach(function(b){b.onclick=function(ev){ev.preventDefault();ev.stopPropagation();var t=b.dataset.qa,L={departments:'แผนก',teams:'ทีม',positions:'ตำแหน่ง'}[t];
     drawer('เพิ่ม'+L,'<label class="f"><span>ชื่อ'+L+' <b class="req">*</b></span><input id="qan" placeholder="'+(t==='departments'?'เช่น ฝ่ายบุคคล':t==='teams'?'เช่น ทีม LED A':'เช่น เจ้าหน้าที่ IT')+'"></label>'+(t==='departments'?'':'<div class="muted" style="font-size:13px">อยู่ในแผนก: '+esc(org('departments',f.department_id)||'— ไม่ระบุ —')+'</div>'),'<button class="btn pri" id="qaok">เพิ่ม'+L+'</button>');
-    setTimeout(function(){$('#qan').focus()},50);
+    setTimeout(function(){var el=$('#qan');if(el)el.focus()},50);
     $('#qaok').onclick=function(){var n=$('#qan').value.trim();if(!n)return toast('กรอกชื่อ'+L,1);var k=this;busy(k,1);var item={name:n};if(t!=='departments')item.department_id=f.department_id||'';
       aCall('saveOrgItem',t,item).then(function(r){if(!r.ok){busy(k,0);return toast(r.errors.name||'บันทึกไม่ได้',1)}
         return reload(false).then(function(){closeD();f[{departments:'department_id',teams:'team_id',positions:'position_id'}[t]]=r.id;if(t==='departments'){f.team_id='';f.position_id=''}delete A.err.department_id;y();toast('เพิ่ม'+L+' “'+n+'” แล้ว')})}).catch(function(e){busy(k,0);toast(e.message,1)})}}});
