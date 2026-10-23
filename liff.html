@@ -120,7 +120,7 @@ svg.i{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .daily .dt b{display:block;font-size:34px;font-weight:700;line-height:1.1;margin:2px 0}
 .chip{display:inline-flex;align-items:center;padding:2px 12px;border-radius:99px;font-size:14px;font-weight:500}
 .c-green{background:var(--green-soft);color:var(--green)} .c-blue{background:var(--blue-soft);color:var(--blue)} .c-orange{background:var(--orange-soft);color:var(--orange)} .c-red{background:var(--red-soft);color:var(--red)} .c-grey{background:#EEF1F5;color:var(--text-2)} .c-hol{background:#E3ECFA;color:#1F4E9E}
-.daily .chip{display:inline-block;white-space:normal;line-height:1.35;padding:3px 11px;font-size:13.5px;border-radius:12px}
+.daily .chip{display:inline-block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;line-height:1.4;padding:3px 11px;font-size:14px;vertical-align:top}
 .shift{font-size:15px;font-weight:600;margin-top:8px;letter-spacing:-.2px;white-space:nowrap;color:#3A3F47}
 .round{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;flex:none;color:var(--text);background:#fff;box-shadow:var(--sh-2)}
 .round svg.i{width:18px;height:18px;stroke-width:2.2}
@@ -686,13 +686,15 @@ function paintChrome(){const [n]=cur().split(":");document.title=(TITLE[n]||"Pus
   const tb=$("#tabbar");tb.hidden=NOTAB.includes(n);
   tb.innerHTML=TABS.map(x=>x[0]==="clock"?`<button class="fab" data-tab="clock"><span class="ring"><i>${ic("finger")}</i></span>${x[1]}</button>`:`<button data-tab="${x[0]}" ${S.tab===x[0]&&!S.stack.length?'aria-current="page"':""}>${ic(x[2])}${x[1]}</button>`).join("");}
 function build(anim){const [n,arg]=cur().split(":");const v=document.createElement("div");v.className="view "+(n==="home"?"home":["clock","done","lvdone"].includes(n)?"white":"");v.innerHTML=V[n](arg);if(anim)v.classList.add(anim);return v;}
-function repaint(){const box=$("#views"),v=box.lastElementChild;if(!v)return show("fade");const st=v.scrollTop,[n,arg]=cur().split(":");v.innerHTML=V[n](arg);v.scrollTop=st;if(cur()==="clock")startClock();if(n==="leave")paintLeaveChecks();tabsToActive()}
+function repaint(){const box=$("#views"),v=box.lastElementChild;if(!v)return show("fade");const st=v.scrollTop,[n,arg]=cur().split(":");v.innerHTML=V[n](arg);v.scrollTop=st;if(cur()==="clock")startClock();if(n==="leave")paintLeaveChecks();tabsToActive();fitChips()}
+/* ป้ายประเภทวันในการ์ดข้อมูลประจำวัน: บรรทัดเดียวเสมอ · ยาวเกินพื้นที่ → ลดขนาดตัวอักษรทีละน้อย (ไม่ต่ำกว่า 11px) แล้วค่อยตัด … */
+function fitChips(){document.querySelectorAll("#views .daily .chip").forEach(c=>{c.style.fontSize="";let f=14;while(c.scrollWidth>c.clientWidth+1&&f>11){f-=.5;c.style.fontSize=f+"px"}})}
 /* แถบแท็บเลื่อนได้: เลื่อนให้แท็บที่เลือกอยู่ในจอเสมอ (หลังวาดหน้าใหม่ scrollLeft กลับเป็น 0) */
 function tabsToActive(){document.querySelectorAll("#views .tabs").forEach(t=>{const a=t.querySelector('[aria-pressed="true"]');if(a)t.scrollLeft=Math.max(0,a.offsetLeft-t.offsetLeft-16)})}
 function show(mode){const box=$("#views");const old=box.lastElementChild;clearInterval(tick);
   if(mode==="back"&&old&&old.classList.contains("view")){const v=build();box.insertBefore(v,old);old.classList.add("out-r");old.addEventListener("animationend",()=>old.remove(),{once:true});setTimeout(()=>old.remove(),400);}
   else{const v=build(mode==="push"?"in-r":"fade");box.appendChild(v);if(old){if(mode==="push")setTimeout(()=>old.remove(),300);else old.remove();}}
-  paintChrome();if(cur()==="clock")startClock();tabsToActive();}
+  paintChrome();if(cur()==="clock")startClock();tabsToActive();fitChips();}
 function startClock(){clearInterval(tick);const up=()=>{const d=new Date(),t=$("#ct"),c=$("#cd");if(!t)return clearInterval(tick);t.textContent=`${p2(d.getHours())}:${p2(d.getMinutes())}:${p2(d.getSeconds())}`;c.textContent=`วัน${TH_D[d.getDay()]}ที่ ${d.getDate()} ${TH_M[d.getMonth()]} ${d.getFullYear()+543}`;};up();tick=setInterval(up,1000);}
 function go(s){S.stack.push(s);show("push");onEnter()}
 function back(){if(!S.stack.length)return;const c=cur();S.stack.pop();if(c==="leave")L.f=null;show("back");if(cur()==="leave")setTimeout(paintLeaveChecks,0)}
@@ -740,7 +742,7 @@ document.addEventListener("change",e=>{const id=e.target.id;
 document.addEventListener("input",e=>{if(e.target.classList.contains("err")){e.target.classList.remove("err");const er=$("#"+e.target.id+"-e");if(er)er.hidden=true}});
 document.addEventListener("keydown",e=>{if(e.key==="Escape")drawer(false)});
 function fit(){const d=$("#device");if(innerWidth<=500){d.style.transform="";d.style.margin="";return}const s=Math.min(1,(innerHeight-48)/868);d.style.transform=s<1?`scale(${s})`:"";d.style.margin=s<1?`${-(1-s)*434}px 0`:"";}
-addEventListener("resize",fit);fit();
+addEventListener("resize",()=>{fit();fitChips()});fit();
 const sb=()=>{const d=new Date(),el=$("#sbt");if(el)el.textContent=`${d.getHours()}:${p2(d.getMinutes())}`};sb();setInterval(sb,20000);
 $("#views").innerHTML=`<div class="view white"><div class="okv"><span class="spin" style="width:34px;height:34px;border-color:var(--blue-soft);border-top-color:var(--blue)"></span><span class="muted">กำลังเปิดแอป…</span></div></div>`;
 /* ===== โมดูลการลา (Phase 2c) · หน้าตาตาม Figma หน้า 05 section "LIFF · โมดูลการลา" ===== */
