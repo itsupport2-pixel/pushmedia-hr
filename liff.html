@@ -119,8 +119,9 @@ svg.i{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .daily .dt span{display:block;font-size:12px;color:var(--text-2);white-space:nowrap}
 .daily .dt b{display:block;font-size:34px;font-weight:700;line-height:1.1;margin:2px 0}
 .chip{display:inline-flex;align-items:center;padding:2px 12px;border-radius:99px;font-size:14px;font-weight:500}
-.c-green{background:var(--green-soft);color:var(--green)} .c-blue{background:var(--blue-soft);color:var(--blue)} .c-orange{background:var(--orange-soft);color:var(--orange)} .c-red{background:var(--red-soft);color:var(--red)} .c-grey{background:#EEF1F5;color:var(--text-2)}
-.shift{font-size:14px;font-weight:600;margin-top:6px;letter-spacing:-.3px;white-space:nowrap}
+.c-green{background:var(--green-soft);color:var(--green)} .c-blue{background:var(--blue-soft);color:var(--blue)} .c-orange{background:var(--orange-soft);color:var(--orange)} .c-red{background:var(--red-soft);color:var(--red)} .c-grey{background:#EEF1F5;color:var(--text-2)} .c-hol{background:#E3ECFA;color:#1F4E9E}
+.daily .chip{display:inline-block;white-space:normal;line-height:1.35;padding:3px 11px;font-size:13.5px;border-radius:12px}
+.shift{font-size:15px;font-weight:600;margin-top:8px;letter-spacing:-.2px;white-space:nowrap;color:#3A3F47}
 .round{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;flex:none;color:var(--text);background:#fff;box-shadow:var(--sh-2)}
 .round svg.i{width:18px;height:18px;stroke-width:2.2}
 .daily .r2{padding:14px 18px 18px}
@@ -453,15 +454,19 @@ function dayLook(d){const st=d.status;
 const V={};
 V.home=()=>{const t=S.today,me=S.me||{};if(!t)return loadingV();
   const now=DT(t.date),last=t.records[t.records.length-1],ins=t.records.filter(r=>r.kind==="IN"),outs=t.records.filter(r=>r.kind==="OUT");
-  const dayChip=t.holiday?["วันหยุด","c-grey"]:t.leave?["วันลา","c-orange"]:["วันทำงาน","c-green"];
+  /* การ์ดข้อมูลประจำวัน (ผู้ใช้ส่งตัวอย่าง 23 ต.ค.): ป้ายบอกประเภทวัน + ชื่อวันหยุดในป้ายเดียว · ใต้ป้ายแสดงเวลาทำงานเสมอ (เลือกกะแล้ว = เวลากะ) */
+  const HK={national:"วันหยุดนักขัตฤกษ์",company:"วันหยุดบริษัท"},LP={full:"ลาเต็มวัน",am:"ลาครึ่งเช้า",pm:"ลาครึ่งบ่าย"};
+  const nb=x=>` <span style="white-space:nowrap">(${esc(x)})</span>`;
+  const dayChip=t.holiday?[`<span style="white-space:nowrap">${esc(HK[t.holiday_kind]||"วันหยุด")}</span>`+nb(t.holiday),"c-hol"]:t.leave?["วันลา"+nb((LP[t.leave.part]||"ลา")+(t.leave.status==="wait"?" · รออนุมัติ":"")),"c-orange"]:t.workday===false?["วันหยุดประจำสัปดาห์","c-grey"]:["วันทำงาน","c-green"];
+  const so=t.shift&&t.shift.open?t.shift.open.shift:null,dayShift=so?`กะ${so.name} · ${so.start} - ${so.end}`:shiftTxt(t);
   const jobs=t.targets.filter(x=>x.kind==="job");const mo=S.month;
   const c=mo?mo.days.reduce((a,d)=>{if(d.status==="absent")a.abs++;if(d.status==="late"){a.late++;a.lm+=d.late_min}if(d.early_min&&d.status!=="late"){a.early++;a.em+=d.early_min}if(/leave/.test(d.status))a.lv++;return a},{abs:0,late:0,lm:0,early:0,em:0,lv:0}):null;
   const isLead=["lead","manager","hr","exec","admin"].includes(me.role);
   return `<section class="htop"><div class="prof"><div class="ava">${me.photo_url?`<img src="${esc(me.photo_url)}" alt="" style="width:100%;height:100%;object-fit:cover">`:AVA}</div><div class="nm"><b>${esc(me.name)}${me.nickname?` (${esc(me.nickname)})`:""}</b><span>${esc(me.position||me.team||"พนักงาน")}</span></div><button class="bell" data-toast="ยังไม่มีการแจ้งเตือน" aria-label="การแจ้งเตือน">${ic("bell")}</button></div>
   <div class="shorts">${[["ข้อมูลพนักงาน","user","go:profile"],["เวลาการทำงาน","clock","go:worktime"],["ยื่นเอกสาร","doc","tab:req"],[isLead?"อนุมัติเอกสาร":"เอกสารของฉัน","docOk",isLead?"go:approve":"go:myreqs"],["โควตาการลา","userClock","go:quota"]].map(x=>`<button data-act="${x[2]}">${ic(x[1])}<span>${x[0]}</span></button>`).join("")}</div></section>
   <div class="pad" style="padding-top:22px;gap:14px"><div class="sec-h"><h2>ข้อมูลประจำวัน</h2><button data-toast="ข้อมูลประจำวันมาจากเวลาทำงานและการลงเวลาของวันนี้" aria-label="คำอธิบาย">${ic("help")}</button></div>
-  <div class="card daily"><div class="r1"><div class="dt"><span>${TH_D[now.getDay()]}</span><b>${now.getDate()}</b><span>${TH_S[now.getMonth()]} ${now.getFullYear()+543}</span></div><div style="flex:1;min-width:0"><span class="chip ${dayChip[1]}">${dayChip[0]}</span><div class="shift">${t.holiday?esc(t.holiday):esc(shiftTxt(t))}</div></div><button class="round" data-act="go:worktime" aria-label="ดูเวลาการทำงาน">${ic("chevR")}</button></div>
-  <div class="r2"><span class="muted" style="font-size:15px">เวลาการทำงาน</span><div class="inout"><div><span>เวลาเข้า</span><b class="tn">${ins[0]?esc(ins[0].time):"--:--"}</b></div>${ic("arrowR")}<div><span>เวลาออก</span><b class="tn">${outs.length?esc(outs[outs.length-1].time):"--:--"}</b></div></div></div></div>
+  <div class="card daily"><div class="r1"><div class="dt"><span>${TH_D[now.getDay()]}</span><b>${now.getDate()}</b><span>${TH_S[now.getMonth()]} ${now.getFullYear()+543}</span></div><div style="flex:1;min-width:0"><span class="chip ${dayChip[1]}">${dayChip[0]}</span><div class="shift" ${so?`style="color:var(--sh-${SHC(so.id)})"`:""}>${esc(dayShift)}</div></div><button class="round" data-act="go:worktime" aria-label="ดูเวลาการทำงาน">${ic("chevR")}</button></div>
+  <div class="r2"><span class="muted" style="font-size:15px">เวลาการทำงาน</span><div class="inout"><div><span>เวลาเข้า</span><b class="tn">${ins[0]?esc(ins[0].time):"--:--"}</b></div>${ic("arrowR")}<div><span>เวลาออก</span><b class="tn">${outs.length?esc(outs[outs.length-1].time):ins[0]?"&nbsp;":"--:--"}</b></div></div></div></div>
   <div class="card" style="padding:14px 16px;display:flex;flex-direction:column;gap:10px"><span style="display:flex;align-items:center;gap:8px;width:100%"><span style="color:var(--blue);display:flex">${ic("cal","width:22px;height:22px")}</span><b style="flex:1;font-size:16px">งานวันนี้</b></span>
   ${jobs.length?jobs.map(j=>`<span class="todayjob"><span class="bar"></span><span><b style="font-weight:600;display:block">${esc(j.title||j.name)}</b><span class="cap">${esc(j.name)}${j.job_no?" · "+esc(j.job_no):""}${me.lead?" · หัวหน้างาน "+esc(me.lead):""}</span></span></span>`).join(""):`<span class="cap">ไม่มีงานนอกสถานที่ · ทำงานที่${esc(t.targets[0]?t.targets[0].name:"สำนักงาน")}</span>`}</div></div>
   <section><div class="mband"><b>สรุปข้อมูลเดือน ${TH_M[now.getMonth()]} ${now.getFullYear()+543}</b></div>
