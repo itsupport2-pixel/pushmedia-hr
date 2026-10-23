@@ -619,7 +619,7 @@ function waitingView(at){$("#tabbar").hidden=true;
   <div class="fcard"><b>สถานะคำขอ</b><div class="tl3">${[["var(--green)","ส่งคำขอ",at?fAt(at):"",1],["var(--orange)","HR ยืนยันตัวตน","รอดำเนินการ",0],["var(--text-3)","เริ่มใช้งาน","",0]].map(x=>`<div class="r"><i style="border-color:${x[0]};background:${x[3]?x[0]:"#fff"}"></i><span><span style="display:block">${x[1]}</span>${x[2]?`<span class="cap">${esc(x[2])}</span>`:""}</span></div>`).join("")}</div></div>
   <div class="note c-blue">${ic("info")}<span>เมื่อยืนยันแล้ว ระบบแจ้งทาง LINE · เปิดแอปนี้อีกครั้งได้เลย</span></div></div>
   <span class="spacer"></span><div class="foot"><button class="btn out" onclick="location.reload()">ตรวจสอบอีกครั้ง</button></div></div>`}
-function fatal(e){$("#views").innerHTML=`<div class="view white"><div class="okv"><div class="c" style="background:var(--red-soft);color:var(--red)">${ic("alert")}</div><h2>เปิดแอปไม่สำเร็จ</h2><span class="muted">${esc(e.message)}</span></div><div class="pad"><button class="btn pri" onclick="location.reload()">ลองใหม่</button></div></div>`;$("#tabbar").hidden=true}
+function fatal(e){$("#views").innerHTML=`<div class="view white"><div class="okv"><div class="c" style="background:var(--red-soft);color:var(--red)">${ic("alert")}</div><h2>เปิดแอปไม่สำเร็จ</h2><span class="muted">${esc(e.message)}</span><span class="cap" style="color:var(--text-3)">ช่อง ${esc(CFG.channel||"-")} · ${esc(CFG.liffId||"-")}</span></div><div class="pad"><button class="btn pri" onclick="location.reload()">ลองใหม่</button></div></div>`;$("#tabbar").hidden=true}
 
 /* ---------- เข้าระบบ ---------- */
 function getIdToken(){
