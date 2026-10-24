@@ -248,7 +248,9 @@ function av(e,s){s=s||30;var ph=PH[e.id];return ph?'<img class="av" data-av="'+e
 /* รูปพนักงาน: โหลดเฉพาะคนที่อยู่บนหน้าจอ แล้วสลับตัวอักษรย่อเป็นรูป · จำไว้ในหน้า (PH) */
 var PH={},PHask={};
 /* ใส่รูปที่โหลดไว้แล้วให้ทุกวงกลม [data-av] ในหน้า (หน้าถูกวาดใหม่ได้หลายรอบ) แล้วค่อยขอรูปที่ยังไม่มี */
-function applyPhotos(){$$('[data-av]').forEach(function(el){var d=PH[el.dataset.av];if(d&&el.tagName!=='IMG'){var w=el.style.width;var im=document.createElement('img');im.className='av';im.dataset.av=el.dataset.av;im.src=d;im.alt='';im.style.cssText='width:'+w+';height:'+w+';object-fit:cover';el.replaceWith(im)}})}
+/* ไม่มีรูปในระบบ HR (โหลดแล้วได้ค่าว่าง) → ใช้รูปโปรไฟล์ LINE */
+function linePic(id){var e=(A.d&&A.d.employees||[]).filter(function(x){return x.id===id})[0];return e&&/^https:\/\//.test(e.line_picture||'')?e.line_picture:''}
+function applyPhotos(){$$('[data-av]').forEach(function(el){var d=PH[el.dataset.av];if(d===''&&!el.dataset.nol){d=linePic(el.dataset.av)}if(d&&el.tagName!=='IMG'){var w=el.style.width;var im=document.createElement('img');im.className='av';im.dataset.av=el.dataset.av;im.src=d;im.alt='';im.referrerPolicy='no-referrer';im.onerror=function(){el.dataset.nol=1;im.replaceWith(el)};im.style.cssText='width:'+w+';height:'+w+';object-fit:cover';el.replaceWith(im)}})}
 function loadPhotos(){applyPhotos();var ids=[];$$('[data-av]').forEach(function(el){var id=el.dataset.av;if(!(id in PH)&&!PHask[id]){PHask[id]=1;ids.push(id)}});if(!ids.length)return;
   aCall('photosFor',ids.slice(0,60)).then(function(m){ids.forEach(function(id){PH[id]=m[id]||''});applyPhotos()}).catch(function(){ids.forEach(function(id){delete PHask[id]})})}
 function chkB(c){return CHK[c]?'<span class="badge '+CHK[c][2]+'">'+CHK[c][0]+'</span>':'<span class="badge b-bad">ยังไม่ระบุ</span>'}

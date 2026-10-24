@@ -540,7 +540,7 @@ V.pedit=()=>{const p=S.prof;if(!p)return band("แก้ไขข้อมูล
   const fs=(id,label,m)=>fl(id,label,sel(id,[["","— ไม่ระบุ —"]].concat(Object.entries(m)),v[id]||""))+(e[id]?`<span class="cap" style="color:var(--red);margin-top:-6px">${esc(e[id])}</span>`:"");
   return band("แก้ไขข้อมูลส่วนตัว")+`<form class="pad" id="pf" novalidate>
   <div class="fcard"><div class="ph-row"><div class="ava lg">${p.photo_url?`<img src="${esc(p.photo_url)}" alt="" style="width:100%;height:100%;object-fit:cover">`:AVA}</div>
-  <div style="display:flex;flex-direction:column;gap:8px;flex:1"><b>${esc(p.name)}</b><div style="display:flex;gap:8px;flex-wrap:wrap"><label class="btn out sm" style="position:relative"><input type="file" accept="image/*" data-phf class="vh" aria-label="เลือกรูปโปรไฟล์">เปลี่ยนรูป</label>${p.photo_url?`<button type="button" class="btn out sm" data-photodel style="color:var(--red);border-color:var(--red)">ลบรูป</button>`:""}</div></div></div></div>
+  <div style="display:flex;flex-direction:column;gap:8px;flex:1"><b>${esc(p.name)}</b><div style="display:flex;gap:8px;flex-wrap:wrap"><label class="btn out sm" style="position:relative"><input type="file" accept="image/*" data-phf class="vh" aria-label="เลือกรูปโปรไฟล์">เปลี่ยนรูป</label>${p.photo_own?`<button type="button" class="btn out sm" data-photodel style="color:var(--red);border-color:var(--red)">ลบรูป</button>`:""}</div></div></div></div>
   <div class="fcard">${f("nickname","ชื่อเล่น",'maxlength="30"')}${f("first_name_en","ชื่อ (อังกฤษ)",'maxlength="60" autocapitalize="words" placeholder="เช่น Somchai"')}${f("last_name_en","นามสกุล (อังกฤษ)",'maxlength="60" autocapitalize="words"')}${f("nickname_en","ชื่อเล่น (อังกฤษ)",'maxlength="60" autocapitalize="words"')}
   ${f("birth_date","วันเกิด",`type="date" max="${ISO(new Date())}"`)}${fs("gender","เพศ",GEN)}${fs("marital_status","สถานภาพ",MAR)}</div>
   <div class="fcard">${f("phone","เบอร์มือถือ",'inputmode="tel" placeholder="08xxxxxxxx"')}${f("email","อีเมล",'type="email" inputmode="email" placeholder="name@pushmedia.co.th"')}</div>
@@ -562,11 +562,11 @@ V.tredit=id=>{const p=S.prof;if(!p)return band("การฝึกอบรม")
 /* ย่อรูปในเครื่อง: ตัดกลางเป็นสี่เหลี่ยม 320px → JPEG (≤ ~45KB) แล้วส่งขึ้นระบบ */
 function shrinkPhoto(file){return new Promise((ok,no)=>{const img=new Image(),u=URL.createObjectURL(file);img.onload=()=>{const z=320,c=document.createElement("canvas");c.width=c.height=z;const k=Math.min(img.width,img.height),sx=(img.width-k)/2,sy=(img.height-k)/2;
   c.getContext("2d").drawImage(img,sx,sy,k,k,0,0,z,z);URL.revokeObjectURL(u);let q=.82,d=c.toDataURL("image/jpeg",q);while(d.length>45000&&q>.4){q-=.1;d=c.toDataURL("image/jpeg",q)}ok(d)};img.onerror=()=>no(new Error("เปิดรูปนี้ไม่ได้ ลองรูปอื่น"));img.src=u})}
-function applyPhoto(url){if(S.prof)S.prof.photo_url=url;if(S.today&&S.today.me){S.today.me.photo_url=url;LS.set("today",{d:ISO(new Date()),t:S.today})}if(S.me)S.me.photo_url=url;repaint()}
+function applyPhoto(url,own){if(S.prof){S.prof.photo_url=url;S.prof.photo_own=!!own}if(S.today&&S.today.me){S.today.me.photo_url=url;LS.set("today",{d:ISO(new Date()),t:S.today})}if(S.me)S.me.photo_url=url;repaint()}
 document.addEventListener("change",e=>{if(!e.target.hasAttribute||!e.target.hasAttribute("data-phf")||!e.target.files[0])return;const f=e.target.files[0];e.target.value="";toast("กำลังอัปโหลดรูป…");
-  shrinkPhoto(f).then(d=>api("setMyPhoto",d)).then(r=>{applyPhoto(r.photo_url);toast("เปลี่ยนรูปแล้ว")}).catch(er=>toast(er.message))});
+  shrinkPhoto(f).then(d=>api("setMyPhoto",d)).then(r=>{applyPhoto(r.photo_url,r.photo_own);toast("เปลี่ยนรูปแล้ว")}).catch(er=>toast(er.message))});
 document.addEventListener("click",e=>{const t=e.target.closest("button");if(!t)return;
-  if(t.hasAttribute("data-photodel")){t.disabled=true;api("setMyPhoto","").then(r=>{applyPhoto(r.photo_url);toast("ลบรูปแล้ว")}).catch(er=>{t.disabled=false;toast(er.message)});return}
+  if(t.hasAttribute("data-photodel")){t.disabled=true;api("setMyPhoto","").then(r=>{applyPhoto(r.photo_url,r.photo_own);toast("ลบรูปแล้ว")}).catch(er=>{t.disabled=false;toast(er.message)});return}
   if(t.hasAttribute("data-addrsame")){$("#addr_current").value=$("#addr_idcard").value;return}
   if(t.id==="pasv"||t.id==="trsv"){const isA=t.id==="pasv",v={};(isA?["addr_idcard","addr_current"]:["course","provider","date_from","date_to","hours","note"]).forEach(k=>v[k]=$("#"+k).value.trim());
     if(!isA&&t.dataset.id)v.id=t.dataset.id;t.disabled=true;t.innerHTML='<span class="spin"></span>กำลังบันทึก…';
@@ -666,8 +666,11 @@ function getIdToken(){
 /* ชื่อระบบ + โลโก้บริษัท (ตั้งค่าระบบ › ข้อมูลบริษัท) · ไม่ต้องล็อกอิน · จำไว้ในเครื่อง */
 function loadPub(){S.pub=LS.get("pub");return call("publicInfo").then(p=>{S.pub=p;LS.set("pub",p);if(p.app)document.title=p.app}).catch(()=>{})}
 function start(){loadPub();const t=LS.get("tok");
-  if(t&&!S.invite){S.tok=t;if(window.liff&&CFG.liffId&&!DEV)liff.init({liffId:CFG.liffId}).catch(()=>{});boot();return}
+  if(t&&!S.invite){S.tok=t;if(window.liff&&CFG.liffId&&!DEV)liff.init({liffId:CFG.liffId}).then(refreshLine).catch(()=>{});boot();return}
   startLine()}
+/* เข้าระบบจากที่จำไว้ → อัปเดตชื่อ/รูปโปรไฟล์ LINE วันละครั้ง (เงียบ ๆ ไม่กระทบการใช้งาน) */
+function refreshLine(){try{if(LS.get("lpic")===ISO(new Date())||!liff.isLoggedIn())return;const t=liff.getIDToken();if(!t)return;
+  api("refreshLine",t).then(r=>{if(r&&r.ok)LS.set("lpic",ISO(new Date()))}).catch(()=>{})}catch(x){}}
 function startLine(){getIdToken().then(t=>{S.idt=t;return call("loginLine",t)}).then(r=>{S.relog=0;if(r.linked){setTok(r.token);if(r.me&&!LS.get("seen_"+r.me.id))linkedView(r.me);else boot()}
   else{S.setup=!!r.setup;if(r.pending)waitingView(r.pending.at);else if(S.invite||LS.get("welcomed"))linkView(r.lineName);else welcomeView(r.lineName)}}).catch(fatal)}
 function boot(){S.tab="home";S.stack=[];const c=LS.get("today");S.today=c&&c.d===ISO(new Date())?c.t:null;if(S.today)S.me=S.today.me;if(!L.info)L.info=LS.get("leave");show("fade");refreshToday();loadLeave(true).then(()=>{if(cur()==="home")repaint()}).catch(()=>{});
