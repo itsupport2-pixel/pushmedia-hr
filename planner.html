@@ -1315,12 +1315,14 @@ tr:last-child td { border-bottom: none; }
  --teal:#141414;--teal-dark:#000000;--teal-light:#F2F2F2;--teal-dim:rgba(20,20,20,.08);--d-led:#141414;--d-ds:#5A5A5A;--d-bd:#8C8C8C;--d-fin:#8C8C8C;--d-hr:#8C8C8C}
 body,button,input,select,textarea{font-family:'IBM Plex Sans Thai',system-ui,sans-serif}
 /* ฝังในหลังบ้าน: ไม่มีแถบเมนูซ้าย/หัวของ WTM (ใช้ของหลังบ้าน) */
-.sb,.sb-backdrop,.sb-hamburger,#pg-title{display:none!important}
-.tb{height:auto!important;min-height:56px;padding:10px 20px!important;gap:10px;background:#fff;border-bottom:1px solid var(--line)}
-#hr-bar{display:flex;align-items:center;gap:8px;flex:1;min-width:0;flex-wrap:wrap}
-#hr-bar select{height:36px;border:1px solid #DADADA;border-radius:10px;padding:0 12px;background:#fff;font-size:13.5px;color:#141414;min-width:220px}
-#hr-bar .hb{height:36px;display:inline-flex;align-items:center;gap:6px;border:1px solid #DADADA;border-radius:10px;padding:0 14px;background:#fff;font-size:13.5px;cursor:pointer;color:#141414}
-#hr-bar .hb.on{background:#141414;color:#fff;border-color:#141414}
+.sb,.sb-backdrop,.tb{display:none!important}
+.ca{padding-top:16px!important}
+#hr-scope{height:34px;border:1px solid #DADADA;border-radius:10px;padding:0 10px;background:#fff;font-size:13px;font-weight:600;color:#141414;max-width:190px}
+.hr-sep{width:1px;height:24px;background:#E2E2E2;flex:none}
+.hr-r{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.hr-r .hb{height:34px;display:inline-flex;align-items:center;gap:6px;border:1px solid #DADADA;border-radius:10px;padding:0 12px;background:#fff;font-size:13px;cursor:pointer;color:#141414}
+.hr-r .hb.on{background:#141414;color:#fff;border-color:#141414}
+.hr-top{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .btn-p{background:#141414!important;border-color:#141414!important}.btn-p:hover{background:#000!important}
 </style>
 </head>
@@ -14250,28 +14252,33 @@ function _hideLineLoading() {
   };
   var _go = go;
   go = function (p) { if (!p || p === 'dashboard') p = 'planner'; return _go(p); };
-  /* แถบบน (แทนแถบเมนูซ้ายของ WTM): เลือกแผนก/ทีม · รถบริษัท · ปุ่มของหน้า (+ เพิ่มงาน อยู่ใน #tb-actions เดิม) */
-  function hrBar() {
-    var tb = document.querySelector('.tb'); if (!tb || !DB.cu) return;
-    var bar = document.getElementById('hr-bar'); if (!bar) { bar = document.createElement('div'); bar.id = 'hr-bar'; tb.insertBefore(bar, document.getElementById('tb-actions')); }
+  /* แถบเครื่องมือเดียว (Figma 279:5726): ใส่ [แผนก/ทีม ▾] หน้าแถบเครื่องมือของ WTM · ท้ายแถบ = รถบริษัท + ปุ่มของหน้า (+ เพิ่มงาน จาก #tb-actions) */
+  function hrInject() {
+    var c = document.getElementById('content'); if (!c || !DB.cu || typeof vDepts !== 'function') return;
+    var bar = c.firstElementChild;
+    if (bar && bar.getAttribute && bar.getAttribute('data-hr')) return;   // ใส่แล้ว (กันวนซ้ำจาก MutationObserver)
+    if (!bar || !/display:s*flex/.test(bar.getAttribute('style') || '')) { bar = document.createElement('div'); bar.className = 'hr-top'; c.insertBefore(bar, c.firstChild); }
     var ORDER = ['LED', 'Digital Signage & Retail', 'Business Development'], cur = typeof curPage !== 'undefined' ? curPage : 'planner';
     var depts = vDepts().filter(function (d) { return ORDER.indexOf(d.name) >= 0 || (DB.schedTeams && (DB.schedTeams[d.name] || []).length); });
     var val = (typeof _plannerTeam !== 'undefined' && _plannerTeam) ? _plannerDept + '||' + _plannerTeam : (typeof _plannerDept !== 'undefined' ? (_plannerDept || 'all') : 'all');
-    var esc = function (x) { return String(x).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+    var esc = function (x) { return String(x).replace(/[&<>"]/g, function (ch) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]; }); };
     var opt = function (v, l) { return '<option value="' + esc(v) + '"' + (v === val ? ' selected' : '') + '>' + esc(l) + '</option>'; };
-    var mine = vTeams().map(function (t) { return t.name; });
-    var h = '<select id="hr-scope" aria-label="แผนก / ทีม">' + opt('all', 'ทุกแผนก') + depts.map(function (d) {
-      var ts = (DB.schedTeams && DB.schedTeams[d.name] && DB.schedTeams[d.name].length ? DB.schedTeams[d.name] : []).filter(function (t) { return !mine.length || mine.indexOf(t) >= 0 || vDepts().length > 1; });
+    var sel = '<select id="hr-scope" aria-label="แผนก / ทีม">' + opt('all', 'ทุกแผนก') + depts.map(function (d) {
+      var ts = DB.schedTeams && DB.schedTeams[d.name] && DB.schedTeams[d.name].length ? DB.schedTeams[d.name] : [];
       return '<optgroup label="' + esc(d.name) + '">' + opt(d.name, d.name + ' · ทั้งแผนก') + ts.map(function (t) { return opt(d.name + '||' + t, t); }).join('') + '</optgroup>'; }).join('') + '</select>';
-    if (allowedMenus().indexOf('vehicles') >= 0) h += '<button class="hb' + (cur === 'vehicles' ? ' on' : '') + '" id="hr-veh">รถบริษัท</button>';
-    if (cur !== 'planner') h += '<button class="hb" id="hr-back">← ตารางงาน</button>';
-    bar.innerHTML = h;
-    document.getElementById('hr-scope').onchange = function () { var v = this.value, p = v.split('||'); if (p.length > 1) openPlannerTeam(p[0], p[1]); else openPlanner(v); };
+    bar.setAttribute('data-hr', '1');
+    bar.insertAdjacentHTML('afterbegin', (cur === 'planner' ? sel + '<span class="hr-sep"></span>' : '<button class="btn btn-sm" id="hr-back">← ตารางงาน</button>'));
+    var r = document.createElement('div'); r.className = 'hr-r';
+    if (allowedMenus().indexOf('vehicles') >= 0 && cur === 'planner') r.insertAdjacentHTML('beforeend', '<button class="hb" id="hr-veh">รถบริษัท</button>');
+    var act = document.getElementById('tb-actions'); if (act) while (act.firstChild) r.appendChild(act.firstChild);
+    if (r.childNodes.length) bar.appendChild(r);
+    var sc = document.getElementById('hr-scope'); if (sc) sc.onchange = function () { var v = this.value, p = v.split('||'); if (p.length > 1) openPlannerTeam(p[0], p[1]); else openPlanner(v); };
     var vb = document.getElementById('hr-veh'); if (vb) vb.onclick = function () { go('vehicles'); };
     var bk = document.getElementById('hr-back'); if (bk) bk.onclick = function () { go('planner'); };
   }
   var _go2 = go;
-  go = function (p) { var r = _go2(p); try { hrBar(); } catch (e) {} return r; };
+  go = function (p) { var r0 = _go2(p); setTimeout(hrInject, 0); return r0; };
+  document.addEventListener('DOMContentLoaded', function () { var c = document.getElementById('content'); if (c) new MutationObserver(function () { hrInject(); }).observe(c, { childList: true }); });
   doLogout = function () { try { window.top.location.href = 'admin.html'; } catch (e) { location.href = 'admin.html'; } };
   tryLineLogin = async function () { return false; };
   _initApp = (function (orig) { return async function () {
