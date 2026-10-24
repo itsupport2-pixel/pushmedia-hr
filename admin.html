@@ -133,6 +133,50 @@ button.kpi:hover{border-color:var(--fnt)}.kpi .l{color:var(--mut);font-size:13px
 .brand .mk img{width:30px;height:30px;object-fit:contain;border-radius:6px;background:#fff}
 .vh{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:0}
 .login .lg-logo{width:40px;height:40px;border-radius:10px;object-fit:contain}
+
+/* ── หลังบ้าน v2 (24 ต.ค. 2569 · Figma หน้า 03 section 220:4581): แถบไอคอน 92 (ค่าเริ่มต้น) / แถบขยาย 248 + แถบด้านบน */
+.shell .side{width:92px;padding:14px 10px;gap:4px;align-items:center;background:#111;color:#BDBDBD;transition:width .15s}
+.side .rl-logo{display:flex;justify-content:center;padding:2px 0 12px;color:#fff}.side .rl-logo .mk{width:40px;height:40px;display:block}.side .rl-logo .mk svg,.side .rl-logo .mk img{width:40px;height:40px;object-fit:contain;border-radius:8px}
+.side .rl-full{display:none}
+.shell .side a{flex-direction:column;gap:4px;width:72px;padding:8px 2px 7px;border-radius:12px;font-size:11px;text-align:center;line-height:1.25;position:relative;box-shadow:none;color:#BDBDBD}
+.shell .side a svg{width:22px;height:22px}.shell .side a:hover{background:#1E1E1E;color:#fff}
+.shell .side a.on{background:#fff;color:#141414;font-weight:600;box-shadow:none}
+.shell .side a.soon-i{opacity:.45}.shell .side a .soon{display:none}
+.shell .side a .cnt{position:absolute;top:2px;right:8px;margin:0;background:#E5484D;font-size:10px;padding:0 5px;line-height:16px}
+.side .rl-sp{flex:1}.side .ver{font-size:10px;color:#6B6B6B;text-align:center}
+.side .rl-tg{position:absolute;top:66px;right:-11px;width:22px;height:22px;border-radius:99px;background:#fff;border:1px solid #DADADA;display:grid;place-items:center;cursor:pointer;color:#141414;z-index:5;padding:0}.side .rl-tg svg{width:14px;height:14px}
+.side .grp{display:none}
+.shell.wide .side{width:248px;align-items:stretch;padding:18px 14px}
+.shell.wide .side .rl-logo{justify-content:flex-start;padding:2px 8px 14px}.shell.wide .side .rl-logo .mk{display:none}.shell.wide .side .rl-full{display:block;height:44px;width:auto}
+.shell.wide .side a{flex-direction:row;width:auto;gap:12px;padding:10px 12px;font-size:14px;text-align:left;border-radius:10px}
+.shell.wide .side a svg{width:20px;height:20px}.shell.wide .side a .cnt{position:static;margin-left:auto;font-size:11px;padding:0 7px}
+.shell.wide .side a .soon{display:inline;margin-left:auto;font-size:10.5px;border:1px solid #444;border-radius:99px;padding:0 7px;color:#8C8C8C}
+.shell.wide .side .grp{display:block;font-size:11px;color:#7A7A7A;padding:12px 12px 4px}.shell.wide .side .ver{text-align:left;padding:0 12px}
+.shell.wide .side .rl-tg svg{transform:rotate(180deg)}
+.shell .main{padding:0;display:flex;flex-direction:column}.content{padding:24px 28px 60px}
+.tb{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:16px;height:68px;padding:0 24px 0 28px;background:#fff;border-bottom:1px solid #E6E6E6}
+.tb .tb-logo{height:32px;width:auto}.tb .dv{width:1px;height:28px;background:#E6E6E6;flex:none}.shell.wide .tb .tb-logo,.shell.wide .tb .dv.l{display:none}
+.tb .tt{min-width:0}.tb .tt small{display:block;font-size:11.5px;color:#8C8C8C}.tb .tt b{display:block;font-size:18px;font-weight:600;line-height:1.3;white-space:nowrap}
+.tb .grow{flex:1}.tb .srch{position:relative;width:min(320px,30vw)}
+.tb .srch label{display:flex;align-items:center;gap:8px;height:40px;padding:0 12px;border-radius:10px;background:#F3F3F3}.tb .srch svg{width:18px;height:18px;color:#8C8C8C;flex:none}
+.tb .srch input{border:0;outline:0;background:none;font:inherit;font-size:13.5px;flex:1;min-width:0;color:#141414}
+.srch-r{position:absolute;top:46px;left:0;right:0;background:#fff;border:1px solid #E6E6E6;border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.12);padding:6px;max-height:380px;overflow:auto}
+.srch-r button{display:flex;gap:10px;align-items:center;width:100%;padding:8px 10px;border:0;background:none;border-radius:8px;text-align:left;font:inherit;font-size:13.5px;cursor:pointer;color:#141414}.srch-r button:hover{background:#F3F3F3}.srch-r small{color:#8C8C8C;font-size:12px;margin-left:auto}.srch-r .e{padding:10px;color:#8C8C8C;font-size:13px}
+.tb .ib{width:40px;height:40px;border-radius:99px;background:#F3F3F3;border:0;display:grid;place-items:center;cursor:pointer;position:relative;color:#141414;flex:none;padding:0}.tb .ib svg{width:20px;height:20px}
+.tb .ib .dot{position:absolute;top:7px;right:8px;width:9px;height:9px;border-radius:99px;background:#E5484D;border:2px solid #fff}
+.tb .usr{display:flex;align-items:center;gap:10px;cursor:pointer;background:none;border:0;font:inherit;text-align:left;padding:4px;border-radius:10px;color:#141414}.tb .usr:hover{background:#F6F6F6}
+.tb .usr .av{width:38px;height:38px;border-radius:99px;background:#141414;color:#fff;display:grid;place-items:center;font-weight:600;flex:none}.tb .usr b{display:block;font-size:13.5px;white-space:nowrap}.tb .usr small{display:block;font-size:11.5px;color:#8C8C8C;white-space:nowrap}
+.um{position:fixed;right:24px;top:64px;z-index:30;background:#fff;border:1px solid #E6E6E6;border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.12);padding:6px;min-width:220px}.um div{padding:8px 10px;font-size:12.5px;color:#8C8C8C}.um button{display:block;width:100%;text-align:left;padding:9px 10px;border:0;background:none;border-radius:8px;font:inherit;font-size:13.5px;cursor:pointer;color:#141414}.um button:hover{background:#F3F3F3}
+@media (max-width:820px){.tb{padding:0 12px;gap:10px}.tb .srch,.tb .tt small,.tb .usr span,.tb .ib.help,.tb .dv{display:none}.content{padding:16px}}
+.kpi .kh{display:flex;align-items:center;gap:10px;margin-bottom:8px}.kpi .kh i{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:#F2F2F2;color:#141414;flex:none}.kpi .kh i svg{width:20px;height:20px}
+.kpi .kh .l{font-weight:500}.kpi .v{font-size:28px;font-weight:700}.kpi{padding:16px 18px;border-radius:14px}
+.kpi.t-ok .kh i{background:#E3F4EA;color:#1A8A4A}.kpi.t-ok .d{color:#1A8A4A}.kpi.t-warn .kh i{background:#FFF3DC;color:#B26A00}.kpi.t-warn .d{color:#B26A00}.kpi.t-bad .kh i{background:#FCE8E6;color:#C0392B}.kpi.t-bad .d{color:#C0392B}
+.g-side{grid-template-columns:minmax(0,1fr) 400px}@media(max-width:1100px){.g-side{grid-template-columns:1fr}}
+.bars2{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;height:200px}.bars2 .bc{flex:1;max-width:64px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;height:100%}
+.bars2 i{display:block;width:100%;background:#D4D4D4;border-radius:8px;min-height:4px}.bars2 .hi i{background:#141414}.bars2 span{font-size:12px;font-weight:600;color:#6B6B6B}.bars2 .hi span{color:#141414}.bars2 em{font-style:normal;font-size:11.5px;color:#8C8C8C;white-space:nowrap}
+.mine .who2{display:flex;gap:12px;align-items:center;padding-bottom:14px;border-bottom:1px solid #EEE;margin-bottom:12px}.mine .who2 .av{width:52px;height:52px;border-radius:99px;background:#141414;color:#fff;display:grid;place-items:center;font-size:20px;font-weight:600;flex:none}
+.mine .q{margin-bottom:12px}.mine .q div{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px}.mine .q div span{color:#6B6B6B}.mine .q .tr{height:8px;border-radius:99px;background:#EEE;overflow:hidden}.mine .q .tr i{display:block;height:100%;background:#141414;border-radius:99px}
+.an-i{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none}.an-i svg{width:18px;height:18px}
 </style>
 </head>
 <body>
@@ -227,7 +271,7 @@ function boot(){if(!A.tok)return renderLogin();var c=ss('hr_boot');
   if(c&&c.me){A.d=c;A.db=c.dash;A.dbAt=0;render()}else $('#app').innerHTML='<div class="loading"><span class="spin"></span>กำลังโหลดข้อมูล…</div>';
   aCall('adminBootstrap',A.view==='dash').then(function(d){if(!d||!d.me)throw new Error('โหลดข้อมูลไม่สำเร็จ ลองใหม่อีกครั้ง');A.d=d;if(d.dash){A.db=d.dash;A.dbAt=Date.now()}ss('hr_boot',d);
     if(!c||['dash','list'].indexOf(A.view)>=0)render();else updNav()}).catch(function(e){if(A.tok&&!c)$('#app').innerHTML='<div class="loading">'+esc(e.message)+' <button class="btn" onclick="location.reload()">ลองใหม่</button></div>'})}
-function updNav(){var a=$('.side a[data-nav="appr"]');if(!a)return;var n=(A.d.pendingCount||0)+A.d.linkRequests.length,c=a.querySelector('.cnt');if(n){if(!c){c=document.createElement('span');c.className='cnt';a.appendChild(c)}c.textContent=n}else if(c)c.remove()}
+function updNav(){var a=$('.side a[data-nav="appr"]');if(!a)return;var dot=$('#tb-bell .dot'),pn=(A.d.pendingCount||0)+A.d.linkRequests.length;if(pn&&!dot&&$('#tb-bell'))$('#tb-bell').insertAdjacentHTML('beforeend','<span class="dot"></span>');else if(!pn&&dot)dot.remove();var n=(A.d.pendingCount||0)+A.d.linkRequests.length,c=a.querySelector('.cnt');if(n){if(!c){c=document.createElement('span');c.className='cnt';a.appendChild(c)}c.textContent=n}else if(c)c.remove()}
 function reload(keep){return aCall('adminBootstrap').then(function(d){if(!d||!d.me)return;d.dash=A.db;A.d=d;ss('hr_boot',d);if(keep!==false)render();else updNav()})}
 
 /* ───────── shell ───────── */
@@ -236,54 +280,87 @@ function render(){
   var me=A.d.me,lr=A.d.linkRequests.length,allowed=ROLE_NAV[me.role]||ROLE_NAV.lead,cur=NAVOF[A.view]||A.view;
   if(allowed.indexOf(cur)<0&&!(cur==='list'&&me.role!=='exec')){A.view=allowed[0];cur=A.view}
   var V={dash:[vDash,bDash],list:[vList,bList],profile:[vProfile,bProfile],form:[vForm,bForm],req:[vReq,bReq],org:[vOrg,bOrg],att:[vAtt,bAtt],lv:[vLv,bLv],appr:[vAppr,bAppr],set:[vSet,bSet],audit:[vAudit,bAudit],sched:[vSoon,bNone],ot:[vSoon,bNone],rep:[vSoon,bNone]}[A.view]||[vDash,bDash];
-  var body=V[0]().replace('<div class="ph"><div>','<div class="ph"><div><div class="crumb">'+esc(A.d.app||'Push Media HR')+' / '+esc(navTitle(A.view))+'</div>');
-  $('#app').innerHTML='<div class="shell"><nav class="side" aria-label="เมนูหลัก"><div class="brand"><span class="mk">'+(A.d.logo?'<img src="'+esc(A.d.logo)+'" alt="">':MARK)+'</span>'+esc(A.d.app||'Push Media HR')+'</div>'+
-   NAV.filter(function(n){return allowed.indexOf(n[0])>=0}).map(function(n){var c=n[0]==='appr'?(A.d.pendingCount||0)+lr:0;return '<a data-nav="'+n[0]+'" class="'+(cur===n[0]?'on':'')+'"'+(cur===n[0]?' aria-current="page"':'')+'>'+ic(n[2])+'<span>'+n[1]+'</span>'+(SOON[n[0]]?'<span class="soon">เร็ว ๆ นี้</span>':c?'<span class="cnt">'+c+'</span>':'')+'</a>'}).join('')+
-   '<div class="who">เข้าสู่ระบบเป็น<b>คุณ'+esc(me.name)+' · '+ROLE[me.role]+'</b><a id="out" style="padding:6px 0;color:#fff;text-decoration:underline">ออกจากระบบ</a></div></nav><main class="main">'+body+'</main></div>';
+  var pend=(A.d.pendingCount||0)+lr,wide=navWide(),app=A.d.app||'Push Media HR';
+  var item=function(n){var c=n[0]==='appr'?pend:0;return '<a data-nav="'+n[0]+'" class="'+(cur===n[0]?'on':'')+(SOON[n[0]]?' soon-i':'')+'"'+(cur===n[0]?' aria-current="page"':'')+' title="'+n[1]+'">'+ic(n[2])+'<span>'+(wide?n[1]:(SHORT[n[0]]||n[1]))+'</span>'+(SOON[n[0]]?'<span class="soon">เร็ว ๆ นี้</span>':c?'<span class="cnt">'+c+'</span>':'')+'</a>'};
+  var nav=NAV_GROUPS.map(function(g){var its=g[1].filter(function(k){return allowed.indexOf(k)>=0});if(!its.length)return '';return '<div class="grp">'+g[0]+'</div>'+its.map(function(k){return item(NAV.filter(function(n){return n[0]===k})[0])}).join('')}).join('');
+  $('#app').innerHTML='<div class="shell'+(wide?' wide':'')+'"><nav class="side" aria-label="เมนูหลัก"><div class="rl-logo"><span class="mk">'+(A.d.logo?'<img src="'+esc(A.d.logo)+'" alt="">':MARK)+'</span><img class="rl-full" src="push-media-logo-white.svg" alt="Push Media"></div>'+nav+
+   '<div class="rl-sp"></div><a id="out2" title="ออกจากระบบ">'+ic('out')+'<span>ออกจากระบบ</span></a><div class="ver">'+esc(CFG.backend==='cf'?'Cloudflare':'Apps Script')+'</div>'+
+   '<button class="rl-tg" id="rl-tg" aria-label="'+(wide?'ย่อแถบเมนู':'ขยายแถบเมนู')+'">'+ic('chevR')+'</button></nav>'+
+   '<main class="main"><header class="tb"><img class="tb-logo" src="push-media-logo-black.svg" alt="Push Media"><span class="dv l"></span><div class="tt"><small>'+esc(app)+' / '+esc(navTitle(A.view))+'</small><b>'+esc(navTitle(A.view))+'</b></div><span class="grow"></span>'+
+   '<div class="srch"><label>'+ic('search')+'<input id="tb-q" type="search" placeholder="ค้นหาพนักงาน หรือเมนู…" aria-label="ค้นหา" autocomplete="off"></label><div class="srch-r" id="tb-r" hidden></div></div>'+
+   '<button class="ib" id="tb-bell" aria-label="คำขอรออนุมัติ '+pend+' รายการ" title="คำขอรออนุมัติ">'+ic('bell')+(pend?'<span class="dot"></span>':'')+'</button><button class="ib help" id="tb-help" aria-label="ช่วยเหลือ" title="ช่วยเหลือ">'+ic('help')+'</button><span class="dv"></span>'+
+   '<button class="usr" id="tb-me" aria-haspopup="menu"><span class="av">'+esc((me.nickname||me.name||'?').slice(0,1))+'</span><span><b>'+esc(me.name)+'</b><small>'+esc(ROLE[me.role]||me.role)+(me.code?' · รหัส '+esc(me.code):'')+'</small></span>'+ic('caret')+'</button></header>'+
+   '<div class="content">'+V[0]()+'</div></main></div>';
   $$('[data-nav]').forEach(function(a){a.onclick=function(){go(a.dataset.nav)}});
-  $('#out').onclick=function(){call('logout',A.tok);store('hr_tok',null);A.tok=null;try{sessionStorage.clear()}catch(e){}renderLogin()};
+  var logout=function(){call('logout',A.tok);store('hr_tok',null);A.tok=null;try{sessionStorage.clear()}catch(e){}renderLogin()};
+  $('#out2').onclick=logout;
+  $('#rl-tg').onclick=function(){try{localStorage.setItem('hr_nav',wide?'rail':'wide')}catch(e){}render()};
+  $('#tb-bell').onclick=function(){go('appr')};
+  $('#tb-help').onclick=function(){drawer('ช่วยเหลือ','<p>เข้าใช้ไม่ได้ หรือข้อมูลไม่ถูกต้อง ติดต่อ HR หรือผู้ดูแลระบบ</p><p class="faint" style="font-size:13px">ทางลัด: ช่องค้นหาด้านบนพิมพ์ชื่อ ชื่อเล่น หรือรหัสพนักงาน เพื่อเปิดโปรไฟล์ได้ทันที · กดลูกศรที่แถบเมนูซ้ายเพื่อย่อ/ขยาย</p><p class="faint" style="font-size:12.5px">หลังบ้าน: '+esc(CFG.backend==='cf'?'Cloudflare':'Apps Script')+'</p>')};
+  $('#tb-me').onclick=function(e){e.stopPropagation();var m=$('.um');if(m)return m.remove();m=document.createElement('div');m.className='um';m.setAttribute('role','menu');
+    m.innerHTML='<div>เข้าสู่ระบบเป็น<br><b style="color:#141414">คุณ'+esc(me.name)+'</b> · '+esc(ROLE[me.role]||me.role)+'</div>'+(me.id!=='admin'&&me.role!=='exec'?'<button data-um="me">ข้อมูลของฉัน</button>':'')+'<button id="out">ออกจากระบบ</button>';
+    document.body.appendChild(m);$('#out').onclick=logout;var mb=m.querySelector('[data-um="me"]');if(mb)mb.onclick=function(){m.remove();go('profile',me.id)};
+    setTimeout(function(){document.addEventListener('click',function h(){var x=$('.um');if(x)x.remove();document.removeEventListener('click',h)})},0)};
+  bSearch(allowed);
   V[1]();
   setTimeout(loadPhotos,0);
 }
+function navWide(){try{return localStorage.getItem('hr_nav')==='wide'}catch(e){return false}}
+/* ค้นหาด้านบน: พนักงาน (ชื่อ ชื่อเล่น รหัส) + เมนู · Enter = เปิดผลแรก */
+function bSearch(allowed){var q=$('#tb-q'),r=$('#tb-r');if(!q)return;var canEmp=allowed.indexOf('list')>=0||A.d.me.role!=='exec';
+  var draw=function(){var t=q.value.trim().toLowerCase();if(!t){r.hidden=true;return}
+    var menus=NAV.filter(function(n){return allowed.indexOf(n[0])>=0&&n[1].toLowerCase().indexOf(t)>=0}).slice(0,4);
+    var emps=canEmp?(A.d.employees||[]).filter(function(e){return e.status!=='resigned'&&((e.first_name+' '+e.last_name).toLowerCase().indexOf(t)>=0||String(e.nickname||'').toLowerCase().indexOf(t)>=0||String(e.emp_code||'').indexOf(t)===0)}).slice(0,8):[];
+    r.innerHTML=(menus.map(function(n){return '<button data-sv="'+n[0]+'">'+ic(n[2])+'<span>'+n[1]+'</span><small>เมนู</small></button>'}).join('')+emps.map(function(e){return '<button data-se="'+esc(e.id)+'"><b class="num">'+esc(e.emp_code)+'</b><span>'+esc(e.first_name+' '+e.last_name)+(e.nickname?' ('+esc(e.nickname)+')':'')+'</span><small>พนักงาน</small></button>'}).join(''))||'<div class="e">ไม่พบ "'+esc(q.value.trim())+'"</div>';
+    r.hidden=false;$$('[data-sv]',r).forEach(function(b){b.onmousedown=function(e){e.preventDefault();go(b.dataset.sv)}});$$('[data-se]',r).forEach(function(b){b.onmousedown=function(e){e.preventDefault();go('profile',b.dataset.se)}})};
+  q.oninput=draw;q.onfocus=draw;q.onblur=function(){setTimeout(function(){r.hidden=true},120)};
+  q.onkeydown=function(e){if(e.key==='Escape'){q.value='';r.hidden=true;q.blur()}if(e.key==='Enter'){var f=r.querySelector('button');if(f)f.onmousedown({preventDefault:function(){}})}}}
 function go(v,id){A.view=v;A.id=id||null;if(v!=='form'){A.f=null;A.err={}}closeD();render();scrollTo(0,0)}
 
 /* ───────── เมนูตาม Figma หน้า 03 (ไอคอนจาก prototype/index.html) ───────── */
-var ICON={dash:'<path d="M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z"/>',emp:'<circle cx="9" cy="8" r="4"/><path d="M2 21c0-4 3-6 7-6s7 2 7 6M17 11a3 3 0 1 0 0-6M22 21c0-3-2-5-5-5"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',cal:'<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/>',leave:'<path d="M4 20c4-1 6-4 6-9V4M10 4c5 0 9 3 10 8-5 1-9-1-10-8z"/>',ot:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4h3M9 2h6"/>',check:'<path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',org:'<rect x="9" y="2" width="6" height="5"/><rect x="2" y="17" width="6" height="5"/><rect x="16" y="17" width="6" height="5"/><path d="M12 7v5M5 17v-5h14v5"/>',rep:'<path d="M3 21h18M6 17V10M11 17V5M16 17v-8M21 17v-4"/>',set:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-2.7-1.1l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.6 1.6 0 0 0 3.6 15H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.1-2.7l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.6 1.6 0 0 0 9 4.6V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 2.7 1.1l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0 1.1 2.7H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/>',log:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/>'};
+var ICON={alarm:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M5 3 2 6M19 3l3 3"/>',clockx:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5M12 16v.01"/>',search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0"/>',help:'<circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"/>',caret:'<path d="m6 9 6 6 6-6"/>',chevR:'<path d="m9 6 6 6-6 6"/>',out:'<path d="M14 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>',pin:'<path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/>',dash:'<path d="M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z"/>',emp:'<circle cx="9" cy="8" r="4"/><path d="M2 21c0-4 3-6 7-6s7 2 7 6M17 11a3 3 0 1 0 0-6M22 21c0-3-2-5-5-5"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',cal:'<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/>',leave:'<path d="M4 20c4-1 6-4 6-9V4M10 4c5 0 9 3 10 8-5 1-9-1-10-8z"/>',ot:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4h3M9 2h6"/>',check:'<path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',org:'<rect x="9" y="2" width="6" height="5"/><rect x="2" y="17" width="6" height="5"/><rect x="16" y="17" width="6" height="5"/><path d="M12 7v5M5 17v-5h14v5"/>',rep:'<path d="M3 21h18M6 17V10M11 17V5M16 17v-8M21 17v-4"/>',set:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-2.7-1.1l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.6 1.6 0 0 0 3.6 15H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.1-2.7l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.6 1.6 0 0 0 9 4.6V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 2.7 1.1l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0 1.1 2.7H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/>',log:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/>'};
 function ic(k){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+ICON[k]+'</svg>'}
 var MARK='<svg viewBox="0 0 64 64" aria-hidden="true"><path fill="currentColor" d="M10 4h13v19a9 9 0 0 0 18 0V4h13a6 6 0 0 1 6 6v44a6 6 0 0 1-6 6H10a6 6 0 0 1-6-6V10a6 6 0 0 1 6-6z"/></svg>';
 var NAV=[['dash','Dashboard','dash'],['list','พนักงาน','emp'],['att','ลงเวลา','clock'],['sched','ตารางงาน','cal'],['lv','การลา','leave'],['ot','OT','ot'],['appr','ศูนย์อนุมัติ','check'],['org','โครงสร้างองค์กร','org'],['rep','รายงาน','rep'],['set','ตั้งค่าระบบ','set'],['audit','Audit Log','log']];
 var ROLE_NAV={hr:['dash','list','att','sched','lv','ot','appr','org','rep','set','audit'],admin:['dash','list','att','sched','lv','ot','appr','org','rep','set','audit'],manager:['dash','list','att','sched','lv','ot','appr','rep'],lead:['dash','list','att','sched','lv','ot','appr'],exec:['dash','appr','rep','sched']};
 var SOON={sched:['ตารางงาน','จัดงานรายสัปดาห์ รายทีม รายเดือน และสร้างงาน (เชื่อมข้อมูลจาก Workforce Task Manager)'],ot:['OT','คำขอ OT และเทียบกับเวลาลงเวลาจริง'],rep:['รายงาน','รายงานการลงเวลา การลา OT และส่งออก Excel']};
 var NAVOF={profile:'list',form:'list',req:'appr'};
+var SHORT={appr:'อนุมัติ',org:'โครงสร้าง',set:'ตั้งค่า'};
+var NAV_GROUPS=[['ภาพรวม',['dash','appr']],['พนักงาน',['list','att','lv','sched','ot']],['องค์กรและระบบ',['org','rep','set','audit']]];
 function navTitle(v){var n=NAV.filter(function(x){return x[0]===(NAVOF[v]||v)})[0];return n?n[1]:''}
 function vSoon(){var s=SOON[A.view];return '<div class="ph"><div><h1>'+s[0]+'</h1><div class="sub">'+s[1]+'</div></div></div><section class="card state"><b>อยู่ระหว่างพัฒนา</b><span>หน้านี้ออกแบบไว้แล้วใน Figma (หน้า 03) · จะเปิดใช้ในรอบถัดไป</span></section>'}
 function bNone(){}
 function pct(a,b){return b?Math.round(a/b*100):0}
 
 /* ───────── Dashboard ───────── */
-function vDash(){return '<div class="ph"><div><h1>Dashboard</h1><div class="sub" id="db-sub">กำลังโหลด…</div></div><span class="sp"></span><button class="btn" id="db-re">รีเฟรช</button></div><div id="db-body"><div class="loading"><span class="spin"></span>กำลังโหลด…</div></div>'}
+function vDash(){var nm=String(A.d.me.nickname||A.d.me.name||'').split(' ')[0];return '<div class="ph"><div><h1>'+(A.d.me.id==='admin'?'Dashboard':'สวัสดี คุณ'+esc(nm))+'</h1><div class="sub" id="db-sub">กำลังโหลด…</div></div><span class="sp"></span><button class="btn" id="db-re">รีเฟรช</button></div><div id="db-body"><div class="loading"><span class="spin"></span>กำลังโหลด…</div></div>'}
 function bDash(){var load=function(force){aCall('hrDashboard',!!force).then(function(d){A.db=d;A.dbAt=Date.now();drawDash()}).catch(function(e){if($('#db-body')&&!A.db)$('#db-body').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})};
   $('#db-re').onclick=function(){$('#db-sub').textContent='กำลังรีเฟรช…';load(true)};if(A.db)drawDash();if(!A.db||Date.now()-(A.dbAt||0)>60000)load()}
 function drawDash(){if(!$('#db-body'))return;var d=A.db,k=d.kpi,dt=new Date(d.date+'T12:00:00'),TD=['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'],TM=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
   $('#db-sub').textContent='ขอบเขตข้อมูล: '+d.scope+' · '+TD[dt.getDay()]+' '+dt.getDate()+' '+TM[dt.getMonth()]+' '+(dt.getFullYear()+543)+' · อัปเดต '+new Date().toTimeString().slice(0,5)+' น.';
-  var kpi=function(go,l,v,sub,cls){return '<button class="kpi" data-go="'+go+'"><span class="l">'+l+'</span><span class="v num '+(cls||'')+'">'+v+'</span><span class="d">'+sub+'</span></button>'};
-  var sev={bad:'var(--bad)',warn:'var(--warn)'};
+  var kpi=function(go,icn,l,v,sub,tone){return '<button class="kpi'+(tone?' t-'+tone:'')+'" data-go="'+go+'"><span class="kh"><i>'+ic(icn)+'</i><span class="l">'+l+'</span></span><span class="v num">'+v+'</span><span class="d">'+sub+'</span></button>'};
+  var SEV={bad:['clockx','#FCE8E6','#C0392B'],warn:['alarm','#FFF3DC','#B26A00']},mine=A.d.me.id!=='admin';
+  var tr=d.trend.length?'<div class="bars2">'+d.trend.map(function(t,i){var last=i===d.trend.length-1,dd=new Date(t.date+'T12:00:00');return '<div class="bc'+(last?' hi':'')+'" title="'+t.date+' · '+t.pct+'%"><span>'+t.pct+'%</span><i style="height:calc((100% - 44px) * '+(Math.max(3,t.pct)/100)+')"></i><em>'+dd.getDate()+' '+TM[dd.getMonth()]+'</em></div>'}).join('')+'</div><div class="faint" style="font-size:12px;margin-top:10px">ล่าสุด '+d.trend[d.trend.length-1].pct+'%'+(d.trend[d.trend.length-1].live?' (วันนี้ · ยังลงเวลาไม่ครบ)':'')+' · เข้างานวันนี้ '+k.present+' จาก '+k.expected+' คน</div>':'<div class="muted">ยังไม่มีข้อมูลสรุปรายวัน (ระบบสรุปทุกคืน 23:30)</div>';
   $('#db-body').innerHTML='<div class="grid g5">'+
-    kpi('list','พนักงานทั้งหมด',k.total,'ทดลองงาน '+k.probation+' · ลาระยะยาว '+k.longLeave)+
-    kpi('att','เข้างานวันนี้',k.present+' / '+k.expected,pct(k.present,k.expected)+'% · ลา '+k.leaveToday+' คน')+
-    kpi('att','มาสาย',k.late,k.late?'เฉลี่ย '+k.lateAvg+' นาที':'ไม่มีคนมาสาย',k.late?'warn':'')+
-    kpi('att','ยังไม่ลงเวลา / ลืมลงเวลา',k.absent+' / '+k.missing,'ต้องตรวจสอบ',k.absent||k.missing?'bad':'')+
-    kpi('appr','รออนุมัติ',k.pending,'คำขอที่รอคุณ')+'</div>'+
-   '<div class="grid g3-1" style="margin-top:14px"><section class="card"><div class="ch"><h3>รายการผิดปกติที่ต้องตรวจสอบ</h3><span class="sp"></span><button class="btn sm" data-go="att">ดูทั้งหมด'+(d.anomalyCount>8?' ('+d.anomalyCount+')':'')+'</button></div><div class="list">'+
-    (d.anomalies.length?d.anomalies.map(function(a){return '<div class="li"><span class="sev" style="background:'+sev[a.sev]+'"></span><div style="flex:1;min-width:0"><b>'+esc(a.title)+'</b><div class="muted" style="font-size:13px">'+esc(a.sub)+'</div></div><button class="btn sm" data-go="att">ตรวจสอบ</button></div>'}).join(''):'<div class="li muted">ไม่มีรายการผิดปกติวันนี้</div>')+'</div></section>'+
-   '<section class="card"><div class="ch"><h3>คำขอรออนุมัติ</h3><span class="sp"></span><button class="btn sm" data-go="appr">ศูนย์อนุมัติ</button></div><div class="list">'+
-    (d.pending.length?d.pending.map(function(p){return '<div class="li"><span class="av" style="width:30px;height:30px;font-size:11.5px;background:var(--nav)">'+esc((p.employee||'?').slice(0,2))+'</span><div style="flex:1;min-width:0"><b style="font-weight:500">'+esc(p.title)+'</b><div class="muted" style="font-size:12.5px">'+esc(p.sub)+'</div></div><span class="badge '+(p.kind==='line'?'b-ok':'b-mute')+'">'+(p.kind==='line'?'เชื่อม LINE':'คำขอลา')+'</span></div>'}).join(''):'<div class="li muted">ไม่มีคำขอรออนุมัติ</div>')+'</div></section></div>'+
-   '<div class="grid g2" style="margin-top:14px"><section class="card"><div class="ch"><h3>อัตราเข้างาน '+d.trend.length+' วันล่าสุด (%)</h3></div><div class="cb">'+
-    (d.trend.length?'<div class="bars">'+d.trend.map(function(t,i){return '<div class="'+(i===d.trend.length-1?'hi':'')+'" style="height:'+Math.max(4,t.pct)+'%" title="'+t.date+' · '+t.pct+'%"></div>'}).join('')+'</div><div class="xl">'+d.trend.map(function(t){return '<span>'+(+t.date.slice(8))+'</span>'}).join('')+'</div><div class="faint" style="font-size:12px;margin-top:6px">ล่าสุด '+d.trend[d.trend.length-1].pct+'%'+(d.trend[d.trend.length-1].live?' (วันนี้ · ยังลงเวลาไม่ครบ)':'')+'</div>':'<div class="muted">ยังไม่มีข้อมูลสรุปรายวัน (ระบบสรุปทุกคืน 23:30)</div>')+'</div></section>'+
-   '<section class="card"><div class="ch"><h3>กำลังคนวันนี้ตามแผนก</h3></div><div class="cb" style="display:flex;flex-direction:column;gap:12px">'+
-    (d.departments.length?d.departments.map(function(x){return '<div><div style="display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:5px"><span>'+esc(x.name)+'</span><span class="muted num">มา '+x.in+'/'+x.total+(x.leave?' · ลา '+x.leave:'')+'</span></div><div class="meter"><i style="width:'+pct(x.in,x.total)+'%"></i></div></div>'}).join('')+'<div class="faint" style="font-size:12px">แถบ = สัดส่วนคนที่มาทำงาน</div>':'<div class="muted">ยังไม่มีพนักงาน</div>')+'</div></section></div>';
-  $$('#db-body [data-go]').forEach(function(b){b.onclick=function(){go(b.dataset.go)}});
+    kpi('list','emp','พนักงานทั้งหมด',k.total,'ทดลองงาน '+k.probation+' · ลาระยะยาว '+k.longLeave)+
+    kpi('att','clock','เข้างานวันนี้',k.present+' / '+k.expected,pct(k.present,k.expected)+'% · ลา '+k.leaveToday+' คน','ok')+
+    kpi('att','alarm','มาสาย',k.late,k.late?'เฉลี่ย '+k.lateAvg+' นาที':'ไม่มีคนมาสาย',k.late?'warn':'')+
+    kpi('att','clockx','ยังไม่ลงเวลา / ลืมลงเวลา',k.absent+' / '+k.missing,'ต้องตรวจสอบ',k.absent||k.missing?'bad':'')+
+    kpi('appr','check','รออนุมัติ',k.pending,'คำขอที่รอคุณ')+'</div>'+
+   '<div class="grid '+(mine?'g-side':'')+'" style="margin-top:14px"><section class="card"><div class="ch"><h3>อัตราเข้างาน '+d.trend.length+' วันล่าสุด</h3><span class="sp"></span><button class="btn sm" data-go="att">ลงเวลาวันนี้</button></div><div class="cb">'+tr+'</div></section>'+
+    (mine?'<section class="card mine"><div class="ch"><h3>ของฉัน</h3><span class="sp"></span>'+(A.d.me.role!=='exec'?'<button class="btn sm" data-go="profile" data-id="'+esc(A.d.me.id)+'">ข้อมูลพนักงาน</button>':'')+'</div><div class="cb" id="db-mine"><div class="who2"><span class="av">'+esc((A.d.me.nickname||A.d.me.name||'?').slice(0,1))+'</span><div><b style="font-size:15px">'+esc(A.d.me.name)+(A.d.me.nickname?' ('+esc(A.d.me.nickname)+')':'')+'</b><div class="muted" style="font-size:12.5px">รหัส '+esc(A.d.me.code||'-')+' · '+esc(ROLE[A.d.me.role]||A.d.me.role)+'</div></div></div><div id="db-quota" class="faint" style="font-size:13px">กำลังโหลดโควตาการลา…</div></div></section>':'')+'</div>'+
+   '<div class="grid g-side" style="margin-top:14px"><section class="card"><div class="ch"><h3>คำขอรออนุมัติ'+(d.pending.length?' ('+k.pending+')':'')+'</h3><span class="sp"></span><button class="btn sm" data-go="appr">ศูนย์อนุมัติ</button></div><div class="list">'+
+    (d.pending.length?d.pending.map(function(p){return '<div class="li"><span class="av" style="width:34px;height:34px;font-size:12px;background:#EDEDED;color:#141414">'+esc((p.employee||'?').slice(0,1))+'</span><div style="flex:1;min-width:0"><b style="font-weight:600">'+esc(p.title)+'</b><div class="muted" style="font-size:12.5px">'+esc(p.sub)+'</div></div><span class="badge '+(p.kind==='line'?'b-ok':'b-mute')+'">'+(p.kind==='line'?'เชื่อม LINE':'คำขอลา')+'</span><button class="btn sm" data-go="appr">ดู</button></div>'}).join(''):'<div class="li muted">ไม่มีคำขอรออนุมัติ</div>')+'</div></section>'+
+   '<section class="card"><div class="ch"><h3>รายการผิดปกติวันนี้</h3><span class="sp"></span><button class="btn sm" data-go="att">ดูทั้งหมด'+(d.anomalyCount>8?' ('+d.anomalyCount+')':'')+'</button></div><div class="list">'+
+    (d.anomalies.length?d.anomalies.map(function(a){var v=SEV[a.sev]||SEV.warn;return '<button class="li" data-go="att" style="width:100%;border:0;border-bottom:1px solid var(--line);background:none;text-align:left;font:inherit;cursor:pointer"><span class="an-i" style="background:'+v[1]+';color:'+v[2]+'">'+ic(v[0])+'</span><div style="flex:1;min-width:0"><b style="font-weight:600">'+esc(a.title)+'</b><div class="muted" style="font-size:12.5px">'+esc(a.sub)+'</div></div><span class="faint">'+ic('chevR').replace('<svg','<svg width="16" height="16"')+'</span></button>'}).join(''):'<div class="li muted">ไม่มีรายการผิดปกติวันนี้</div>')+'</div></section></div>'+
+   '<section class="card" style="margin-top:14px"><div class="ch"><h3>กำลังคนวันนี้ตามแผนก</h3></div><div class="cb" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px 28px">'+
+    (d.departments.length?d.departments.map(function(x){return '<div><div style="display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:5px"><span>'+esc(x.name)+'</span><span class="muted num">มา '+x.in+'/'+x.total+(x.leave?' · ลา '+x.leave:'')+'</span></div><div class="meter"><i style="width:'+pct(x.in,x.total)+'%"></i></div></div>'}).join(''):'<div class="muted">ยังไม่มีพนักงาน</div>')+'</div></section>';
+  if(mine)loadMine();
+  $$('#db-body [data-go]').forEach(function(b){b.onclick=function(){go(b.dataset.go,b.dataset.id)}});
 }
+/* การ์ด "ของฉัน": โควตาการลาปีนี้ของผู้ใช้ (จำไว้ในหน้า · โหลดใหม่ทุก 5 นาที) */
+function loadMine(){var draw=function(li){var q=$('#db-quota');if(!q)return;var ts=(li.types||[]).filter(function(t){return t.quota!==null});q.className='';q.innerHTML=ts.length?ts.map(function(t){var u=(t.used||0)+(t.reserved||0);return '<div class="q"><div><b style="font-weight:500">'+esc(t.name)+'</b><span class="num">ใช้ '+(+u.toFixed(1))+' / '+t.quota+' วัน</span></div><div class="tr"><i style="width:'+Math.min(100,t.quota?u/t.quota*100:0)+'%"></i></div></div>'}).join('')+'<div class="faint" style="font-size:12px">ปี '+(li.year+543)+' · รวมที่รออนุมัติ</div>':'<span class="faint">ไม่มีโควตาการลา</span>'};
+  if(A.mine&&Date.now()-A.mine.at<300000)return draw(A.mine.d);aCall('leaveInfo').then(function(li){A.mine={at:Date.now(),d:li};draw(li)}).catch(function(){var q=$('#db-quota');if(q)q.textContent='โหลดโควตาไม่สำเร็จ'})}
 
 /* ───────── ศูนย์อนุมัติ ───────── */
 function vAppr(){return '<div class="ph"><div><h1>ศูนย์อนุมัติ</h1><div class="sub">คุณเป็นผู้อนุมัติในฐานะ '+ROLE[A.d.me.role]+' · คำขอทุกประเภทรวมไว้ที่นี่</div></div></div><div id="ap-body"><div class="loading"><span class="spin"></span>กำลังโหลด…</div></div>'}
