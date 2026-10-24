@@ -173,6 +173,7 @@ button.kpi:hover{border-color:var(--fnt)}.kpi .l{color:var(--mut);font-size:13px
 .kpi .kh .l{font-weight:500}.kpi .v{font-size:28px;font-weight:700}.kpi{padding:16px 18px;border-radius:14px}
 .kpi.t-ok .kh i{background:#E3F4EA;color:#1A8A4A}.kpi.t-ok .d{color:#1A8A4A}.kpi.t-warn .kh i{background:#FFF3DC;color:#B26A00}.kpi.t-warn .d{color:#B26A00}.kpi.t-bad .kh i{background:#FCE8E6;color:#C0392B}.kpi.t-bad .d{color:#C0392B}
 .g-side{grid-template-columns:minmax(0,1fr) 400px}
+.plf{display:block;width:calc(100% + 56px);margin:-20px -28px -60px;height:calc(100vh - 70px);border:0;background:#fff}@media(max-width:900px){.plf{width:calc(100% + 32px);margin:-16px -16px -24px}}
 /* ตารางงาน (Figma 270:5306) */
 .sctb{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}.scg{width:6px}.scbtn{display:inline-flex;align-items:center;gap:6px;border:1px solid #DADADA;background:var(--sf);border-radius:10px;padding:7px 12px;font:inherit;font-size:13px;cursor:pointer;color:var(--fg);white-space:nowrap}.scbtn svg{width:15px;height:15px}
 .scbtn.on{background:#141414;color:#fff;border-color:#141414}.scbtn:disabled{color:#BDBDBD;cursor:default}.scbtn.rng{cursor:default;font-weight:600}.scsel{height:34px;border:1px solid #DADADA;border-radius:10px;background:var(--sf);font:inherit;font-size:13px;padding:0 10px}
@@ -371,7 +372,7 @@ function render(){
   var me=A.d.me,lr=A.d.linkRequests.length,allowed=navFor(me),cur=NAVOF[A.view]||A.view;
   if(selfOnly()&&(A.view==='profile'||A.view==='form'))A.view='dash';
   if(allowed.indexOf(cur)<0){A.view=allowed[0];cur=A.view}
-  var V={dash:selfOnly()?[vMine,bMine]:[vDash,bDash],list:[vList,bList],profile:[vProfile,bProfile],form:[vForm,bForm],req:[vReq,bReq],org:[vOrg,bOrg],att:[vAtt,bAtt],lv:[vLv,bLv],appr:[vAppr,bAppr],set:[vSet,bSet],audit:[vAudit,bAudit],sched:[vSched,bSched],ot:[vSoon,bNone],rep:[vSoon,bNone]}[A.view]||[vDash,bDash];
+  var V={dash:selfOnly()?[vMine,bMine]:[vDash,bDash],list:[vList,bList],profile:[vProfile,bProfile],form:[vForm,bForm],req:[vReq,bReq],org:[vOrg,bOrg],att:[vAtt,bAtt],lv:[vLv,bLv],appr:[vAppr,bAppr],set:[vSet,bSet],audit:[vAudit,bAudit],sched:[vPlanner,bNone],ot:[vSoon,bNone],rep:[vSoon,bNone]}[A.view]||[vDash,bDash];
   var pend=(A.d.pendingCount||0)+lr,wide=navWide(),app=A.d.app||'Push Media HR';
   var item=function(n){var c=n[0]==='appr'?pend:0;return '<a data-nav="'+n[0]+'" class="'+(cur===n[0]?'on':'')+(SOON[n[0]]?' soon-i':'')+'"'+(cur===n[0]?' aria-current="page"':'')+' title="'+n[1]+'">'+ic(n[2])+'<span>'+(wide?n[1]:(SHORT[n[0]]||n[1]))+'</span>'+(SOON[n[0]]?'<span class="soon">เร็ว ๆ นี้</span>':c?'<span class="cnt">'+c+'</span>':'')+'</a>'};
   var nav=NAV_GROUPS.map(function(g){var its=g[1].filter(function(k){return allowed.indexOf(k)>=0});if(!its.length)return '';return '<div class="grp">'+g[0]+'</div>'+its.map(function(k){return item(NAV.filter(function(n){return n[0]===k})[0])}).join('')}).join('');
@@ -750,7 +751,9 @@ function bProfile(){
 /* พนักงานที่เห็นเฉพาะตัวเอง: หน้าแรก = โปรไฟล์ + ภาพรวมของตัวเอง (ดูอย่างเดียว) */
 function vMine(){A.id=A.d.me.id;return '<div class="scb"><span class="i">i</span><div><b>คุณเห็นเฉพาะข้อมูลของตัวเอง</b><small>ลงเวลา · การลา · โควตา ของคุณ · ดูอย่างเดียว (สิทธิ์แก้ข้อมูลขึ้นกับที่ HR กำหนด)</small></div></div>'+vProfile()}
 function bMine(){A.id=A.d.me.id;bProfile()}
-/* ───────── ตารางงาน (ย้ายจาก Workforce Task Manager · ช่วง 1 · Figma 270:5306) ───────── */
+/* ───────── ตารางงาน = หน้าเว็บ Workforce Task Manager เดิมทั้งชุด (planner.html · สร้างด้วย app/tools/build-planner.mjs · หลังบ้าน app/gas/Wtm.js) ───────── */
+function vPlanner(){return '<iframe class="plf" src="planner.html?desktop=1" title="ตารางงาน" allow="geolocation"></iframe>'}
+/* (เดิม) ตารางงานช่วง 1 ที่เขียนใหม่ — ไม่ได้ใช้แล้ว เก็บไว้อ้างอิง */
 var THD=['อา.','จ.','อ.','พ.','พฤ.','ศ.','ส.'];
 function isoAdd(d,n){var x=new Date(d+'T12:00:00');x.setDate(x.getDate()+n);return x.getFullYear()+'-'+('0'+(x.getMonth()+1)).slice(-2)+'-'+('0'+x.getDate()).slice(-2)}
 function locISO(){var x=new Date();return x.getFullYear()+'-'+('0'+(x.getMonth()+1)).slice(-2)+'-'+('0'+x.getDate()).slice(-2)}
