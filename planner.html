@@ -1317,6 +1317,10 @@ body,button,input,select,textarea{font-family:'IBM Plex Sans Thai',system-ui,san
 /* ฝังในหลังบ้าน: ไม่มีแถบเมนูซ้าย/หัวของ WTM (ใช้ของหลังบ้าน) */
 .sb,.sb-backdrop,.tb{display:none!important}
 .ca{padding-top:16px!important}
+/* หน้าโหลด: แบบหลังบ้าน (เดิมของ WTM = พื้นเข้ม + โลโก้สายฟ้าเขียว) */
+#loading-screen{background:#fff!important}#loading-logo{display:none!important}
+#loading-screen .spinner{border-color:#E8E8E8!important;border-top-color:#141414!important;width:30px;height:30px}
+#loading-screen .loading-txt{color:#8C8C8C!important;font-size:13.5px}
 #hr-scope{height:34px;border:1px solid #DADADA;border-radius:10px;padding:0 10px;background:#fff;font-size:13px;font-weight:600;color:#141414;max-width:190px}
 .hr-sep{width:1px;height:24px;background:#E2E2E2;flex:none}
 .hr-r{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
@@ -1405,7 +1409,7 @@ function fi(name, size=16, cls='', style='') {
     <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
   </div>
   <div class="spinner"></div>
-  <div class="loading-txt">กำลังโหลดข้อมูล...</div>
+  <div class="loading-txt">กำลังโหลดตารางงาน…</div>
 </div>
 <script>
 
@@ -13598,7 +13602,7 @@ async function init() {
 
   if (CONFIG.GAS_URL) {
     document.querySelector('.loading-txt').textContent =
-      _usedCache ? 'กำลังอัปเดตข้อมูลล่าสุด...' : 'กำลังโหลดจาก Google Sheets...';
+      _usedCache ? 'กำลังอัปเดตข้อมูลล่าสุด…' : 'กำลังโหลดตารางงาน…';
 
     if (_usedCache) {
       loaded = true;
