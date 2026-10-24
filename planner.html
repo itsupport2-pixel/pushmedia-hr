@@ -9660,11 +9660,11 @@ var WTMPhoto = (function(){
     // ปุ่มพิกัด — บังคับเฉพาะพนักงานทั่วไป
     if(!pending){
       if(s.gps){
-        box += '<div style="margin-top:8px;font-size:' + (m?'0.8em':'12px') + ';color:var(--teal-dark,#0f766e);font-weight:700;">📍 ได้ตำแหน่งแล้ว (' + s.gps.lat.toFixed(5) + ', ' + s.gps.lng.toFixed(5) + ')' +
+        box += '<div style="margin-top:8px;font-size:' + (m?'0.8em':'12px') + ';color:var(--teal-dark,#0f766e);font-weight:700;display:flex;align-items:center;gap:6px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> ได้ตำแหน่งแล้ว (' + s.gps.lat.toFixed(5) + ', ' + s.gps.lng.toFixed(5) + ')' +
           ' <a href="#" onclick="WTMPhoto._getLoc(' + q + ');return false;" style="color:var(--ink-3);font-weight:600;margin-left:6px;">อัปเดต</a></div>';
       } else {
         box += '<div style="display:flex;gap:6px;margin-top:6px;">' +
-          _btn('📍 ระบุตำแหน่งหน้างาน' + (canManage?' (ถ้ามี)':''), 'WTMPhoto._getLoc(' + q + ')', false, false, m) + '</div>';
+          _btn('<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> ระบุตำแหน่งหน้างาน' + (canManage?'<span style="color:#8C8C8C;font-weight:400;margin-left:4px;">(ไม่บังคับ · ใช้ตรวจลงเวลาหน้างาน)</span>':''), 'WTMPhoto._getLoc(' + q + ')', false, false, m) + '</div>';
       }
     }
 
@@ -9712,7 +9712,7 @@ var WTMPhoto = (function(){
               (canDel ? '<button type="button" onclick="WTMPhoto._del(\'' + p.id + '\',\'' + taskId + '\',' + (o.canManage?1:0) + ',\'' + variant + '\')" title="ลบรูป" style="position:absolute;top:3px;right:3px;width:20px;height:20px;border:none;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;font-size:12px;line-height:1;cursor:pointer;">&times;</button>' : '') +
               '<div style="padding:3px 5px;font-size:9.5px;line-height:1.35;color:var(--ink-3);">' +
                 esc((p.uploadedByName||p.uploadedByCode||'') + ' · ' + String(p.uploadedAt||'').slice(5,16)) +
-                (mu ? '<br><a href="' + mu + '" target="_blank" rel="noopener" style="color:var(--teal-dark,#0f766e);text-decoration:none;font-weight:700;">📍 ดูพิกัด</a>' : '') +
+                (mu ? '<br><a href="' + mu + '" target="_blank" rel="noopener" style="color:var(--teal-dark,#0f766e);text-decoration:none;font-weight:700;">ดูพิกัด ›</a>' : '') +
               '</div>' +
             '</div>';
           }).join('') + '</div>';
