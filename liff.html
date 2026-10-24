@@ -87,6 +87,8 @@ svg.i{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-widt
 /* ---------- sub-page band (HumanSoft blue header) ---------- */
 .band{flex:none;position:sticky;top:0;z-index:6;display:flex;align-items:center;height:64px;padding:0 20px 0 16px;background:linear-gradient(105deg,var(--blue) 0%,var(--blue-2) 100%);color:#fff}
 .band button{display:grid;place-items:center;width:36px;height:36px;margin-left:-6px}
+/* แถบย้อนกลับสีขาว (หน้าพื้นขาว: ลงเวลา · รอ HR อนุญาตเครื่อง) · Figma 248:4688 */
+.wbar{flex:none;position:sticky;top:0;z-index:6;display:flex;align-items:center;height:52px;padding:0 8px;background:#fff;border-bottom:1px solid #EEEEEE}.wbar button{width:44px;height:44px;display:grid;place-items:center;border:0;background:none;color:#141414;border-radius:10px}.wbar button svg{width:26px;height:26px;stroke-width:2.4}.wbar h1{flex:1;margin:0;text-align:center;font-size:16px;font-weight:600;color:#141414}.wbar i{width:44px}
 .band svg.i{width:26px;height:26px;stroke-width:2.6}
 .band h1{margin:0 0 0 auto;font-size:21px;font-weight:700;letter-spacing:.1px}
 .band .lock{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.9);color:var(--ink);display:grid;place-items:center;margin-left:12px}
@@ -434,6 +436,7 @@ const api=(fn,...a)=>call(fn,S.tok,...a).catch(e=>{if(/SESSION_EXPIRED/.test(e.m
 const S={tab:"home",stack:[],tok:null,idt:null,invite:Q.get("invite")||"",me:null,today:null,month:null,pos:null,opt:0,last:null,wym:null,ptab:0};
 const TITLE={home:"หน้าหลัก",clock:"ลงเวลาการทำงาน",done:"ลงเวลาการทำงาน",devwait:"ลงเวลาการทำงาน",worktime:"เวลาการทำงาน",profile:"ข้อมูลพนักงาน",pedit:"แก้ไขข้อมูลส่วนตัว",paddr:"แก้ไขที่อยู่",tredit:"การฝึกอบรม",sched:"ตารางงาน",req:"เอกสาร",leave:"ยื่นเอกสาร",lvsum:"ยื่นเอกสาร",lvdone:"ยื่นเอกสาร",lvdetail:"คำขอลา",approve:"อนุมัติเอกสาร",apdetail:"อนุมัติเอกสาร",quota:"โควตาการลา",myreqs:"เอกสารของฉัน"};
 const NOTAB=["clock","done","devwait","pedit","paddr","tredit","leave","lvsum","lvdone","lvdetail","apdetail"];
+const wbar=t=>`<header class="wbar"><button data-back aria-label="ย้อนกลับ">${ic("chevL")}</button><h1>${t}</h1><i></i></header>`;
 const band=t=>`<header class="band">${S.stack.length?`<button data-back aria-label="ย้อนกลับ">${ic("chevL")}</button>`:""}<h1>${t}</h1></header>`;
 const fl=(id,label,inner)=>`<label class="fl" for="${id}"><span>${label}</span>${inner}<span class="emsg" id="${id}-e" hidden></span></label>`;
 const sel=(id,opts,v)=>`<select class="sel" id="${id}">${opts.map(o=>`<option value="${o[0]}" ${String(o[0])===String(v)?"selected":""}>${o[1]}</option>`).join("")}</select>`;
@@ -482,13 +485,13 @@ function shiftPicker(t,sf,open,selId){const list=open&&!sf.list.some(x=>x.id===o
   return `<div class="shead"><span class="lab">เลือกกะการทำงาน</span><span class="cap">${open?"ล็อกตามกะที่เข้างาน":sel.id===sf.suggested?"เลือกให้ตามเวลาตอนนี้":"แตะเพื่อเปลี่ยนกะ"}</span></div>
   <div class="shifts" role="radiogroup" aria-label="เลือกกะการทำงาน" style="grid-template-columns:repeat(${list.length},minmax(0,1fr))">${list.map(x=>{const k=SHC(x.id);return `<button class="shc${open&&x.id!==sel.id?" lock":""}" role="radio" aria-checked="${x.id===sel.id}" data-shift="${esc(x.id)}" ${open?"disabled":""} style="--s:var(--sh-${k});--ss:var(--sh-${k}-soft)"><span class="ck">${ic("chk")}</span><span class="bd">${ic(SHI[k])}</span><b>${esc(x.name)}</b><small>${esc(x.start)}–${esc(x.end)}</small></button>`}).join("")}</div>
   <div class="late${!open&&def&&sel.id!==def.id?" warn":""}" style="--s:var(--sh-${c});--ss:var(--sh-${c}-soft)">${ic("alarm")}<span>${msg}</span></div>`}
-V.clock=()=>{const t=S.today,p=S.pos;if(!t||!p)return `<section class="clk"><div class="d" id="cd"></div><div class="t" id="ct">--:--:--</div><div class="s">${ic("clock")}เวลาที่ใช้ในการบันทึก</div></section><div class="pad" style="background:#fff;flex:1"><div class="skel" style="height:90px"></div><div class="cap" style="text-align:center">กำลังหาตำแหน่งของคุณ…</div></div>`;
+V.clock=()=>{const t=S.today,p=S.pos;if(!t||!p)return wbar("ลงเวลาการทำงาน")+`<section class="clk"><div class="d" id="cd"></div><div class="t" id="ct">--:--:--</div><div class="s">${ic("clock")}เวลาที่ใช้ในการบันทึก</div></section><div class="pad" style="background:#fff;flex:1"><div class="skel" style="height:90px"></div><div class="cap" style="text-align:center">กำลังหาตำแหน่งของคุณ…</div></div>`;
   const sf=t.shift,open=sf&&sf.open,lockId=open?open.shift.id:"",last=t.records[t.records.length-1],out=last&&last.kind==="IN"||!!open;
   if(sf&&!lockId&&!sf.list.some(x=>x.id===S.shift))S.shift=sf.suggested;
   const selId=lockId||S.shift,sel=sf?(open?open.shift:sf.list.find(x=>x.id===selId)):null,shName=sel?"กะ"+sel.name:"";
   const tg=t.targets.map(g=>{const d=p.err||g.lat==null?null:dist(p.lat,p.lng,g.lat,g.lng);return {g,d,inside:d!=null&&d<=g.radius_m}}).sort((a,b)=>(a.d==null?1e9:a.d-a.g.radius_m)-(b.d==null?1e9:b.d-b.g.radius_m));
   const inA=tg.some(x=>x.inside),near=tg[0];if(S.opt>=tg.length)S.opt=0;
-  return `<section class="clk"><div class="d" id="cd"></div><div class="t" id="ct">--:--:--</div><div class="s">${ic("clock")}เวลาที่ใช้ในการบันทึก</div></section>
+  return wbar("ลงเวลาการทำงาน")+`<section class="clk"><div class="d" id="cd"></div><div class="t" id="ct">--:--:--</div><div class="s">${ic("clock")}เวลาที่ใช้ในการบันทึก</div></section>
   <div class="pad" style="gap:12px;background:#fff;flex:1">${sf?shiftPicker(t,sf,open,selId):""}<span class="lab">ตำแหน่งที่ลงเวลา</span>
   <div class="loc"><div style="flex:1;min-width:0">${p.err?`<b style="color:var(--red)">หาตำแหน่งไม่ได้</b><div class="s">${esc(p.err)}</div>`:`<b style="color:${inA?"#1FB25A":"var(--red)"}">${inA?"สามารถลงเวลาได้":"อยู่นอกพื้นที่ลงเวลา"}</b><div class="s">${inA?"คุณอยู่ในพื้นที่ลงเวลา":near?"ห่างจุดลงเวลาที่ใกล้ที่สุด "+fmtDist(near.d):"วันนี้ไม่มีจุดหรืองานที่กำหนด"}<br>${inA?esc(near.g.name)+" · ห่าง "+fmtDist(near.d):"ต้องระบุเหตุผล หัวหน้าทีมจะตรวจสอบ"}</div>`}</div><button class="locbtn" data-loc aria-label="อัปเดตตำแหน่ง">${ic("target")}</button></div>
   ${tg.length?`<span class="lab">จุดลงเวลา</span>${tg.map((x,i)=>`<button class="opt" role="radio" aria-checked="${S.opt===i}" data-opt="${i}"><span class="rad"></span><span style="min-width:0"><b>${x.g.kind==="job"?"หน้างาน: "+esc(x.g.title||x.g.name):sf?esc(x.g.name):"กะปกติ ("+esc(x.g.name)+")"}</b><span class="s">${ic(sf&&x.g.kind!=="job"?"pin":"clock")}${x.g.kind==="job"?esc(x.g.name)+" · จากตารางงานวันนี้":sf?"รัศมี "+esc(x.g.radius_m)+" ม."+(x.d!=null?" · ห่าง "+fmtDist(x.d):""):esc(shiftTxt(t))}</span></span></button>`).join("")}`:""}
@@ -503,7 +506,7 @@ function devLabel(){const u=navigator.userAgent;let m;
   if(m=/Android (\d+(?:\.\d+)?);\s*([^;)]+?)(?:\s+Build|\))/.exec(u))return `Android ${m[1]} · ${m[2].trim()}`.slice(0,60);
   if(/Android/.test(u))return "Android";if(/Mac OS X/.test(u))return "Mac";if(/Windows/.test(u))return "Windows";return "อุปกรณ์อื่น"}
 function devInfo(){let id=LS.get("device");if(!id){id=(crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,12));LS.set("device",id)}return {id,label:devLabel()}}
-V.devwait=()=>{const r=S.devmsg||{},d=r.device||{};return `<div class="okv" style="background:#fff"><div class="c" style="background:var(--orange-soft);color:var(--orange)">${ic("alert")}</div><h2>${r.device_blocked?"อุปกรณ์นี้ถูกยกเลิก":"อุปกรณ์ใหม่ รอ HR อนุมัติ"}</h2>
+V.devwait=()=>{const r=S.devmsg||{},d=r.device||{};return wbar("ลงเวลาการทำงาน")+`<div class="okv" style="background:#fff"><div class="c" style="background:var(--orange-soft);color:var(--orange)">${ic("alert")}</div><h2>${r.device_blocked?"อุปกรณ์นี้ถูกยกเลิก":"อุปกรณ์ใหม่ รอ HR อนุมัติ"}</h2>
   <span class="muted">${r.device_blocked?"ลงเวลาจากเครื่องนี้ไม่ได้ ติดต่อ HR":"ระบบส่งคำขอให้ HR แล้ว · เมื่ออนุมัติจะลงเวลาจากเครื่องนี้ได้"}</span></div>
   <div class="pad" style="background:#fff;flex:1;padding-top:0"><div class="card" style="padding:2px 18px;box-shadow:none;border:1px solid var(--line)">${[["อุปกรณ์",d.label||"—"],["รหัสเครื่อง",d.short||"—"]].map(x=>`<div class="kv"><span>${x[0]}</span><b>${esc(x[1])}</b></div>`).join("")}</div>
   ${nt("c-blue","info","ระบบจำเครื่องที่ใช้ลงเวลา เพื่อป้องกันการลงเวลาแทนกัน · ถ้าเปลี่ยนมือถือหรือติดตั้ง LINE ใหม่ จะนับเป็นเครื่องใหม่")}</div>
@@ -707,7 +710,9 @@ function show(mode){const box=$("#views");box.querySelectorAll(".out-r").forEach
   else{const v=build(mode==="push"?"in-r":"fade");box.appendChild(v);if(old){if(mode==="push")setTimeout(()=>old.remove(),300);else old.remove();}}
   paintChrome();if(cur()==="clock")startClock();tabsToActive();fitChips();}
 function startClock(){clearInterval(tick);const up=()=>{const d=new Date(),t=$("#ct"),c=$("#cd");if(!t)return clearInterval(tick);t.textContent=`${p2(d.getHours())}:${p2(d.getMinutes())}:${p2(d.getSeconds())}`;c.textContent=`วัน${TH_D[d.getDay()]}ที่ ${d.getDate()} ${TH_M[d.getMonth()]} ${d.getFullYear()+543}`;};up();tick=setInterval(up,1000);}
-function go(s){S.stack.push(s);show("push");onEnter()}
+function go(s){S.stack.push(s);try{history.pushState({pm:1},"")}catch(x){}show("push");onEnter()}
+/* ปุ่มย้อนกลับของเครื่อง (Android) / ปัดขอบจอ → ย้อนหน้าในแอปแทนการปิดแอป */
+addEventListener("popstate",()=>{if(S.skipPop){S.skipPop=0;return}if(S.stack.length)back()});
 function back(){if(!S.stack.length)return;const c=cur();S.stack.pop();if(c==="leave")L.f=null;show("back");if(cur()==="leave")setTimeout(paintLeaveChecks,0)}
 function toTab(t){S.tab=t;S.stack=[];show("fade");onEnter();if(t==="home")loadLeave(true).then(()=>{if(cur()==="home")repaint()}).catch(()=>{})}
 function onEnter(){const n=cur();
@@ -732,7 +737,7 @@ document.addEventListener("click",e=>{const t=e.target.closest("button,[data-dcl
   if(d.dgo){drawer(false);act(d.dgo);return}
   if(d.act){act(d.act);return}
   if(d.tab){if(d.tab==="menu"){drawer(true);return}if(d.tab==="clock"){openClock();return}toTab(d.tab);return}
-  if(d.back!==undefined){back();return}
+  if(d.back!==undefined){back();if(history.state&&history.state.pm){S.skipPop=1;history.back()}return}   // เก็บประวัติเบราว์เซอร์ให้ตรงกับหน้าในแอป
   if(d.home!==undefined){S.tab="home";S.stack=[];show("fade");return}
   if(d.loc!==undefined){t.classList.add("busy");getPos().then(p=>{S.pos=p;t.classList.remove("busy");if(cur()==="clock")repaint();toast(p.err?p.err:"อัปเดตตำแหน่งแล้ว · ความแม่นยำ ±"+Math.round(p.acc||0)+" ม.")});return}
   if(d.shift&&!t.disabled){const n=$("#cn"),v=n?n.value:"";S.shift=d.shift;repaint();const n2=$("#cn");if(n2)n2.value=v;return}
