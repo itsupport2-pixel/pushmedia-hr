@@ -655,7 +655,13 @@ function fatal(e){$("#views").innerHTML=`<div class="view white"><div class="okv
 function getIdToken(){
   if(DEV)return Promise.resolve("dev|"+DEV);
   if(!window.liff||!CFG.liffId)return Promise.reject(new Error("ยังไม่ได้ตั้งค่า LIFF ID"));
-  return liff.init({liffId:CFG.liffId}).then(()=>{if(!liff.isLoggedIn()){liff.login({redirectUri:location.href});return new Promise(()=>{})}return liff.getIDToken()});
+  return liff.init({liffId:CFG.liffId}).then(()=>{try{sessionStorage.removeItem("pmhr_swap")}catch(x){}if(!liff.isLoggedIn()){liff.login({redirectUri:location.href});return new Promise(()=>{})}return liff.getIDToken()})
+    .catch(e=>{   // เปิดจากอีกช่อง LINE (Developing / Published) แต่หน้าเว็บเดาช่องผิด → สลับไปอีกช่องเอง 1 ครั้งต่อการเปิด
+      let tried="";try{tried=sessionStorage.getItem("pmhr_swap")||""}catch(x){}
+      if(/invalid liff id/i.test(String(e&&e.message))&&!tried){const other=CFG.channel==="pub"?"dev":"pub";
+        try{sessionStorage.setItem("pmhr_swap",CFG.channel||"dev");localStorage.setItem("pmhr_ch",other)}catch(x){}
+        const u=new URL(location.href);u.searchParams.set("ch",other);location.replace(u.toString());return new Promise(()=>{})}
+      throw e});
 }
 /* ชื่อระบบ + โลโก้บริษัท (ตั้งค่าระบบ › ข้อมูลบริษัท) · ไม่ต้องล็อกอิน · จำไว้ในเครื่อง */
 function loadPub(){S.pub=LS.get("pub");return call("publicInfo").then(p=>{S.pub=p;LS.set("pub",p);if(p.app)document.title=p.app}).catch(()=>{})}
