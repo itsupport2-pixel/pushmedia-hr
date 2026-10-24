@@ -21,5 +21,6 @@
   try { localStorage.removeItem('pmhr_be'); } catch (e) {}   // เลิกจำหลังบ้านจากช่วงทดลอง (ทุกคนใช้ค่าเริ่มต้น)
   if (!IDS[ch]) ch = 'dev';
   if (!API[be]) be = DEFAULT_BE;
-  window.HR_CONFIG = { api: API[be], liffId: IDS[ch], channel: ch, backend: be };
+  var GOOGLE_CLIENT_ID = '902459045498-tnh7v08k557koh0flhds23hs5mg69r4h.apps.googleusercontent.com';   // Google Cloud โครงการ pushmedia-hr · ปุ่มเข้าสู่ระบบด้วย Google (ไม่ใช่ค่าลับ)
+  window.HR_CONFIG = { api: API[be], liffId: IDS[ch], channel: ch, backend: be, googleClientId: GOOGLE_CLIENT_ID };
 })();
