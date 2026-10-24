@@ -1335,6 +1335,15 @@ body,button,input,select,textarea{font-family:'IBM Plex Sans Thai',system-ui,san
 .hr-fc{background:#fff;border:1px solid #E8E8E8;border-radius:14px;padding:10px 12px!important;margin-bottom:14px!important;gap:10px!important}
 .hr-fc .btn,.hr-fc .wpick-label{height:38px;border-radius:10px!important}
 .hr-seg{display:inline-flex!important;gap:2px!important;background:#F2F2F2;border-radius:10px;padding:3px}
+.hr-seg svg{display:none!important}
+#hr-scope{width:150px!important;max-width:150px!important;height:38px;border:1px solid #DADADA;border-radius:10px;padding:0 30px 0 14px;font-size:13.5px;font-weight:600;color:#141414;background-color:#fff}
+.hr-fc .hr-sep{display:none}
+.hr-fc>div>.btn-sm,.hr-fc .btn-sm{font-size:13.5px!important;font-weight:600;height:38px;padding:0 14px!important;border:1px solid #DADADA!important;background:#fff!important}
+.hr-seg .rp-view-btn{font-size:13px!important;padding:0 12px!important}
+.hr-wk{display:inline-flex;align-items:center;border:1px solid #DADADA;border-radius:10px;background:#fff;height:38px;overflow:hidden}
+.hr-wk .btn{border:0!important;background:transparent!important;height:36px!important;border-radius:0!important;box-shadow:none!important}
+.hr-wk .wpick-label{height:36px;min-width:150px;font-size:13.5px;border-radius:0!important}.hr-wk .wpick-label::before{display:none}
+.hr-tg>div{font-size:12.5px!important;color:#5A5A5A!important}
 .hr-seg .rp-view-btn{border:0!important;background:transparent!important;border-radius:8px!important;height:32px;color:#6B6B6B!important;box-shadow:none!important}
 .hr-seg .rp-view-btn.active{background:#fff!important;color:#141414!important;box-shadow:0 1px 3px rgba(0,0,0,.08)!important;font-weight:600}
 .hr-tg{margin-left:auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-size:13px;color:#3A3A3A}
@@ -7556,7 +7565,7 @@ function renderPlannerList() {
         var rkEsc = (r.dateKey||r.rowKey||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
         var tnEsc = r.tname.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
         var acEsc = (r.dept.color||'').replace(/'/g,"\\'");
-        html += '<td rowspan="'+r.taskCount+'" style="'+H+'padding:6px 8px;font-size:11px;font-weight:700;color:'+r.dept.color+';vertical-align:middle;background:'+r.dept.color+(_rpNoDept?'0d':'06')+';cursor:pointer;'+(_rpNoDept?'border-left:4px solid '+ac+';':'')+'" onclick="event.stopPropagation();rpOpenRowMgr(\''+rkEsc+'\',\''+tnEsc+'\',\''+acEsc+'\')" title="'+(_rpNoDept?escapeHtml(r.dept.name)+' · ':'')+'คลิกเพื่อเพิ่มแถววันนี้">' +
+        html += '<td rowspan="'+r.taskCount+'" style="'+H+'padding:6px 8px;font-size:11px;font-weight:700;color:'+r.dept.color+';vertical-align:middle;background:#fff;cursor:pointer;'+(_rpNoDept?'border-left:4px solid '+ac+';':'')+'" onclick="event.stopPropagation();rpOpenRowMgr(\''+rkEsc+'\',\''+tnEsc+'\',\''+acEsc+'\')" title="'+(_rpNoDept?escapeHtml(r.dept.name)+' · ':'')+'คลิกเพื่อเพิ่มแถววันนี้">' +
           '<div style="display:flex;align-items:center;gap:5px;">' +
             r.tname +
             '<span style="font-size:8px;font-weight:700;background:'+r.dept.color+'20;color:'+r.dept.color+';border-radius:8px;padding:1px 5px;white-space:nowrap;">'+r.taskCount+'</span>' +
@@ -7739,10 +7748,10 @@ function renderPlannerList() {
           '<col style="width:80px;">' +    
         '</colgroup>' +
         '<thead><tr>' +
-          '<th style="text-align:center;width:84px;">Date</th>' +
-          (_rpNoDept ? '' : '<th style="width:110px;">Dept</th>') +
-          '<th style="width:'+(_rpNoDept?96:75)+'px;">Team</th>' +
-          '<th style="width:'+(_rpNoDept?309:220)+'px;">Project / Site</th>' +
+          '<th style="text-align:center;width:84px;">วันที่</th>' +
+          (_rpNoDept ? '' : '<th style="width:110px;">แผนก</th>') +
+          '<th style="width:'+(_rpNoDept?96:75)+'px;">ทีม</th>' +
+          '<th style="width:'+(_rpNoDept?309:220)+'px;">โครงการ / หน้างาน</th>' +
           '<th style="width:112px;">รถ</th>' +
           personTHs +
           '<th style="width:80px;text-align:right;">ค่าใช้จ่าย</th>' +
@@ -14316,6 +14325,7 @@ function _hideLineLoading() {
     var add = ph.querySelector('.btn-p'); if (add && !/เพิ่มงาน/.test(add.textContent)) add.insertAdjacentText('beforeend', ' เพิ่มงาน');
     c.insertBefore(ph, bar);
     bar.classList.add('hr-fc');
+    if (lbl && lbl.parentNode) { var wk = document.createElement('span'); wk.className = 'hr-wk'; var pv = lbl.previousElementSibling, nx = lbl.nextElementSibling; lbl.parentNode.insertBefore(wk, pv || lbl); if (pv) wk.appendChild(pv); wk.appendChild(lbl); if (nx) wk.appendChild(nx); }
     var vb = bar.querySelector('.rp-view-btn'); if (vb) vb.parentNode.classList.add('hr-seg');
     var tg = document.createElement('div'); tg.className = 'hr-tg';
     var att = oc(/_rlToggleAttTime/); if (att) { var on = att.classList.contains('active'); var sw = document.createElement('button'); sw.className = 'hr-att' + (on ? ' on' : ''); sw.innerHTML = '<i></i>เวลาเข้างาน'; sw.onclick = function () { _rlToggleAttTime(); }; tg.appendChild(sw); att.remove(); }
