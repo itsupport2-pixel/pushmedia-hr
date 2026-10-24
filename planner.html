@@ -1327,6 +1327,28 @@ body,button,input,select,textarea{font-family:'IBM Plex Sans Thai',system-ui,san
 .hr-r .hb{height:34px;display:inline-flex;align-items:center;gap:6px;border:1px solid #DADADA;border-radius:10px;padding:0 12px;background:#fff;font-size:13px;cursor:pointer;color:#141414}
 .hr-r .hb.on{background:#141414;color:#fff;border-color:#141414}
 .hr-top{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+/* รูปแบบระบบหลัก (Figma 285:5478): หัวหน้า · การ์ดตัวกรอง · การ์ดตัวนับ · ตารางในการ์ด เส้นบาง */
+.ca{background:#F4F4F4!important;padding:20px 28px 40px!important}
+.hr-ph{display:flex;align-items:flex-end;gap:8px;margin-bottom:14px;flex-wrap:wrap}.hr-ph .t{flex:1;min-width:220px}.hr-ph h1{margin:0;font-size:24px;font-weight:700;color:#141414}.hr-ph .s{font-size:13px;color:#8C8C8C;margin-top:2px}
+.hr-ph .hb,.hr-ph .btn-p{height:38px!important;display:inline-flex;align-items:center;gap:6px;border:1px solid #DADADA;border-radius:10px!important;padding:0 14px!important;background:#fff;font-size:13.5px!important;font-weight:600;cursor:pointer;color:#141414}
+.hr-ph .btn-p{background:#141414!important;color:#fff!important;border-color:#141414!important}
+.hr-fc{background:#fff;border:1px solid #E8E8E8;border-radius:14px;padding:10px 12px!important;margin-bottom:14px!important;gap:10px!important}
+.hr-fc .btn,.hr-fc .wpick-label{height:38px;border-radius:10px!important}
+.hr-seg{display:inline-flex!important;gap:2px!important;background:#F2F2F2;border-radius:10px;padding:3px}
+.hr-seg .rp-view-btn{border:0!important;background:transparent!important;border-radius:8px!important;height:32px;color:#6B6B6B!important;box-shadow:none!important}
+.hr-seg .rp-view-btn.active{background:#fff!important;color:#141414!important;box-shadow:0 1px 3px rgba(0,0,0,.08)!important;font-weight:600}
+.hr-tg{margin-left:auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-size:13px;color:#3A3A3A}
+.hr-att{display:inline-flex;align-items:center;gap:6px;border:0;background:none;cursor:pointer;font:inherit;font-size:13px;color:#3A3A3A;padding:0}
+.hr-att i{width:32px;height:18px;border-radius:99px;background:#DADADA;position:relative;display:inline-block}.hr-att i:after{content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff;transition:.15s}
+.hr-att.on i{background:#141414}.hr-att.on i:after{left:16px}
+.hr-sum{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.hr-sum .rp-pmf,.hr-sum .hs{height:46px;display:inline-flex;align-items:center;gap:8px;padding:0 16px 0 14px!important;border:1px solid #E8E8E8!important;border-radius:12px!important;background:#fff!important;font-size:12.5px!important;color:#5A5A5A!important;cursor:pointer}
+.hr-sum .rp-pmf b,.hr-sum .hs b{font-size:18px!important;color:#141414!important}.hr-sum .rp-pmf.on{background:#F2F2F2!important;border:1.5px solid #141414!important}
+.hr-sum .warn b{color:#B26A00!important}
+#content>.card{border:1px solid #E8E8E8!important;border-radius:14px!important;box-shadow:none!important;overflow:hidden}
+.rp-list thead th{background:#F6F6F6!important;color:#5A5A5A!important;border-bottom:1px solid #E8E8E8!important}
+.rp-list tr,.rp-list td{border-top-width:1px!important;border-top-color:#E8E8E8!important}
+.rp-list td[rowspan]{border-right-width:1px!important;border-right-color:#E8E8E8!important}
 .btn-p{background:#141414!important;border-color:#141414!important}.btn-p:hover{background:#000!important}
 </style>
 </head>
@@ -14259,8 +14281,8 @@ function _hideLineLoading() {
   /* แถบเครื่องมือเดียว (Figma 279:5726): ใส่ [แผนก/ทีม ▾] หน้าแถบเครื่องมือของ WTM · ท้ายแถบ = รถบริษัท + ปุ่มของหน้า (+ เพิ่มงาน จาก #tb-actions) */
   function hrInject() {
     var c = document.getElementById('content'); if (!c || !DB.cu || typeof vDepts !== 'function') return;
+    if (c.querySelector(':scope>[data-hr]')) return;   // ใส่แล้ว (กันวนซ้ำจาก MutationObserver · หัวหน้า .hr-ph อาจอยู่บนสุด)
     var bar = c.firstElementChild;
-    if (bar && bar.getAttribute && bar.getAttribute('data-hr')) return;   // ใส่แล้ว (กันวนซ้ำจาก MutationObserver)
     if (!bar || !/display:s*flex/.test(bar.getAttribute('style') || '')) { bar = document.createElement('div'); bar.className = 'hr-top'; c.insertBefore(bar, c.firstChild); }
     var ORDER = ['LED', 'Digital Signage & Retail', 'Business Development'], cur = typeof curPage !== 'undefined' ? curPage : 'planner';
     var depts = vDepts().filter(function (d) { return ORDER.indexOf(d.name) >= 0 || (DB.schedTeams && (DB.schedTeams[d.name] || []).length); });
@@ -14274,11 +14296,46 @@ function _hideLineLoading() {
     bar.insertAdjacentHTML('afterbegin', (cur === 'planner' ? sel + '<span class="hr-sep"></span>' : '<button class="btn btn-sm" id="hr-back">← ตารางงาน</button>'));
     var r = document.createElement('div'); r.className = 'hr-r';
     if (allowedMenus().indexOf('vehicles') >= 0 && cur === 'planner') r.insertAdjacentHTML('beforeend', '<button class="hb" id="hr-veh">รถบริษัท</button>');
-    var act = document.getElementById('tb-actions'); if (act) while (act.firstChild) r.appendChild(act.firstChild);
+    // ปุ่มจาก #tb-actions (+ เพิ่มงาน) ใส่โดย go() ครั้งเดียว · renderPlanner() ภายหลังไม่ใส่ซ้ำ → เก็บสำเนาไว้ใช้ทุกครั้งที่วาดใหม่
+    var act = document.getElementById('tb-actions'); if (act && act.children.length) { window._hrActs = window._hrActs || {}; window._hrActs[cur] = act.innerHTML; act.innerHTML = ''; }
+    if (window._hrActs && window._hrActs[cur]) r.insertAdjacentHTML('beforeend', window._hrActs[cur]);
     if (r.childNodes.length) bar.appendChild(r);
+    if (cur === 'planner') try { hrLayout(c, bar); } catch (e) { console.warn('hrLayout', e); }
     var sc = document.getElementById('hr-scope'); if (sc) sc.onchange = function () { var v = this.value, p = v.split('||'); if (p.length > 1) openPlannerTeam(p[0], p[1]); else openPlanner(v); };
     var vb = document.getElementById('hr-veh'); if (vb) vb.onclick = function () { go('vehicles'); };
     var bk = document.getElementById('hr-back'); if (bk) bk.onclick = function () { go('planner'); };
+  }
+  /* จัดหน้าแบบระบบหลัก: ย้ายปุ่มดาวน์โหลด/รถ/เพิ่มงานขึ้นหัวหน้า · มุมมองเป็นแถบเลือก · เวลาเข้างานเป็นสวิตช์ · ตัวนับ PM เป็นการ์ด + การ์ดใหม่ 2 ใบ */
+  function hrLayout(c, bar) {
+    var q = function (sel) { return bar.querySelector(sel); }, oc = function (re) { return [].slice.call(bar.querySelectorAll('[onclick]')).filter(function (b) { return re.test(b.getAttribute('onclick')); })[0]; };
+    var lbl = q('.wpick-label'), pmf = q('.rp-pmfs'), tot = pmf && pmf.querySelector('b');
+    var ph = document.createElement('div'); ph.className = 'hr-ph';
+    ph.innerHTML = '<div class="t"><h1>ตารางงาน</h1><div class="s">' + (lbl ? lbl.textContent.trim() : '') + (tot ? ' · ' + tot.textContent + ' งาน' : '') + ' · เวลาเข้างานจากระบบลงเวลา</div></div>';
+    var exp = oc(/rpOpenExport/); if (exp) { var d = document.createElement('button'); d.className = 'hb'; d.innerHTML = '⤓ ดาวน์โหลด'; d.onclick = function () { rpOpenExport(); }; ph.appendChild(d); exp.remove(); }
+    var right = bar.querySelector('.hr-r'); if (right) { while (right.firstChild) ph.appendChild(right.firstChild); right.remove(); }
+    var add = ph.querySelector('.btn-p'); if (add && !/เพิ่มงาน/.test(add.textContent)) add.insertAdjacentText('beforeend', ' เพิ่มงาน');
+    c.insertBefore(ph, bar);
+    bar.classList.add('hr-fc');
+    var vb = bar.querySelector('.rp-view-btn'); if (vb) vb.parentNode.classList.add('hr-seg');
+    var tg = document.createElement('div'); tg.className = 'hr-tg';
+    var att = oc(/_rlToggleAttTime/); if (att) { var on = att.classList.contains('active'); var sw = document.createElement('button'); sw.className = 'hr-att' + (on ? ' on' : ''); sw.innerHTML = '<i></i>เวลาเข้างาน'; sw.onclick = function () { _rlToggleAttTime(); }; tg.appendChild(sw); att.remove(); }
+    var leg = pmf && pmf.nextElementSibling; if (leg && !leg.classList.contains('hr-r')) tg.appendChild(leg);
+    bar.appendChild(tg);
+    var sum = document.createElement('div'); sum.className = 'hr-sum';
+    if (pmf) { var names = ['งานทั้งหมด', 'ผูกเลข PM แล้ว', 'ยังไม่ผูก PM']; [].slice.call(pmf.children).forEach(function (b, i) { var n = b.querySelector('b'); b.innerHTML = '<b>' + (n ? n.textContent : '') + '</b>' + names[i]; if (i === 2) b.classList.add('warn'); sum.appendChild(b); }); pmf.remove(); }
+    // การ์ดใหม่: วันนี้ — คนในงานที่ยังไม่ลงเวลา · คนลาแต่มีงาน (ตามแผนก/ทีมที่เลือก)
+    var td = _localDateStr(new Date()), dp = typeof _plannerDept !== 'undefined' ? _plannerDept : 'all', tm = typeof _plannerTeam !== 'undefined' ? _plannerTeam : null;
+    var tasks = (DB.tasks || []).filter(function (t) { return t.start <= td && (t.end || t.start) >= td && (dp === 'all' || t.deptName === dp) && (!tm || t.teamName === tm); });
+    var noIn = [], lv = [], seen = {};
+    tasks.forEach(function (t) { taskMembersOn(t, td).forEach(function (code) { if (seen[code]) return; seen[code] = 1; var k = code + '::' + td;
+      if (DB.leaves && DB.leaves[k]) lv.push([code, t]); else if (!(DB.attendance && DB.attendance[k])) noIn.push([code, t]); }); });
+    var nm = function (code) { var e = (DB.employees || []).find(function (x) { return x.code === code; }); return e ? (e.nickname || e.name) : code; };
+    var card = function (list, label, title) { var b = document.createElement('button'); b.className = 'hs warn'; b.innerHTML = '<b>' + list.length + '</b>' + label;
+      b.onclick = function () { openMd('<div class="md"><div class="mh"><h3>' + title + '</h3><button class="mc" onclick="closeMd()">✕</button></div><div class="mb">' + (list.length ? '<table style="width:100%;border-collapse:collapse;font-size:13px">' + list.map(function (x) { return '<tr><td style="padding:8px 4px;border-bottom:1px solid #EEE"><b>' + escapeHtml(nm(x[0])) + '</b></td><td style="padding:8px 4px;border-bottom:1px solid #EEE;color:#6B6B6B">' + escapeHtml(x[1].title) + ' · ' + escapeHtml(x[1].teamName || '') + '</td></tr>'; }).join('') + '</table>' : '<p style="color:#8C8C8C">ไม่มี</p>') + '</div></div>'); };
+      return b; };
+    sum.appendChild(card(noIn, 'คนยังไม่ลงเวลา (วันนี้)', 'คนในงานวันนี้ที่ยังไม่ลงเวลา'));
+    sum.appendChild(card(lv, 'คนลาแต่มีงาน (วันนี้)', 'คนที่ลาวันนี้แต่มีชื่อในงาน'));
+    c.insertBefore(sum, bar.nextSibling);
   }
   var _go2 = go;
   go = function (p) { var r0 = _go2(p); setTimeout(hrInject, 0); return r0; };
