@@ -1336,6 +1336,36 @@ body,button,input,select,textarea{font-family:'IBM Plex Sans Thai',system-ui,san
 .hr-fc .btn,.hr-fc .wpick-label{height:38px;border-radius:10px!important}
 .hr-seg{display:inline-flex!important;gap:2px!important;background:#F2F2F2;border-radius:10px;padding:3px}
 .hr-seg svg{display:none!important}
+/* Confirmed โทนขาว–ดำ (Figma 332:5947) */
+#cfp .cfp-eb{display:none}
+#cfp .cfp-h1{font-size:24px!important;font-weight:700!important;color:#141414!important;margin:0!important}
+#cfp .cfp-lead{color:#8C8C8C!important;font-size:13px!important}
+#cfp .cfp-seg{background:#F2F2F2!important;border:0!important;border-radius:10px!important;padding:3px!important;gap:2px!important}
+#cfp .cfp-seg button{border:0!important;background:transparent!important;color:#6B6B6B!important;border-radius:8px!important;font-weight:500!important;box-shadow:none!important}
+#cfp .cfp-seg button[aria-pressed="true"]{background:#fff!important;color:#141414!important;font-weight:600!important;box-shadow:0 1px 3px rgba(0,0,0,.08)!important}
+#cfp .cfp-panel{border:1px solid #E8E8E8!important;border-radius:14px!important;box-shadow:none!important}
+#cfp .cfp-cov i{background:#141414!important}
+.cfp-gbars{display:flex;flex-direction:column;gap:14px;padding-top:4px}
+.cfp-gbars .h{display:flex;align-items:baseline;gap:8px;font-size:13.5px}.cfp-gbars .h b{flex:1;font-weight:600}.cfp-gbars .h span{font-weight:700}.cfp-gbars .h i{font-style:normal;color:#8C8C8C;font-size:12px;min-width:34px;text-align:right}
+.cfp-gbars .bar{height:6px;border-radius:99px;background:#EFEFEF;margin:5px 0 3px;overflow:hidden}.cfp-gbars .bar i{display:block;height:100%;background:#141414;border-radius:99px}
+.cfp-gbars small{font-size:11.5px;color:#8C8C8C}
+#cfp .cfp-mf{background:#fff!important;border:1px solid #E8E8E8!important;border-radius:12px!important;height:46px;padding:0 16px 0 14px!important;color:#5A5A5A!important;font-size:12.5px!important;display:inline-flex!important;align-items:center;gap:8px;flex-direction:row-reverse}
+#cfp .cfp-mf b{font-size:18px!important;color:#141414!important}
+#cfp .cfp-mf.on{background:#F2F2F2!important;border:1.5px solid #141414!important}
+#cfp .cfp-mf[data-mf="none"] b{color:#B26A00!important}
+#cfp .cfp-bulk{background:#141414!important;color:#fff!important;border-radius:12px!important;border:0!important}
+#cfp .cfp-bulk .cfp-mbtn{background:#fff!important;color:#141414!important;border:0!important}
+#cfp .cfp-mbtn{border-radius:10px!important}
+#cfp .cfp-mcode,#cfp .cfp-ccode{font-family:inherit!important;font-weight:700!important;color:#141414!important}
+#cfp .cfp-mh{background:#F6F6F6!important;color:#5A5A5A!important}
+#cfp .cfp-mtask .live,#cfp .cfp-clive{color:#16794A!important;background:#E9F6EC!important;border-radius:99px;padding:1px 8px;font-style:normal}
+.cfp-stc{appearance:none;-webkit-appearance:none;border:0!important;border-radius:99px!important;padding:3px 24px 3px 10px!important;font:inherit;font-size:12px!important;font-weight:600!important;cursor:pointer;background-repeat:no-repeat!important;background-position:right 8px center!important;background-size:8px!important;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' fill='none' stroke='%23888' stroke-width='1.5'/></svg>")!important;width:auto!important;height:auto!important}
+.cfp-stc.st-active{background-color:#141414!important;color:#fff!important}.cfp-stc.st-upcoming{background-color:#F2F2F2!important;color:#3A3A3A!important}.cfp-stc.st-done{background-color:#E9F6EC!important;color:#16794A!important}.cfp-stc.st-hidden{background-color:#EFEFEF!important;color:#8C8C8C!important}.cfp-stc.st-none{background-color:#FFF4DE!important;color:#B26A00!important}
+.cfp-stc:disabled{cursor:default;background-image:none!important;padding-right:10px!important;opacity:1}
+#cfp .cfp-card{border:1px solid #E8E8E8!important;border-radius:14px!important;box-shadow:none!important}#cfp .cfp-card:hover{border-color:#141414!important}
+#cfp .cfp-card.is-active{border-color:#141414!important}
+#cfp .cfp-cst{display:none!important}
+.cfp-drawer .cfp-x{border-radius:10px!important;background:#F4F4F4!important;border:0!important;color:#141414!important}
 /* ตัวเลือกแผนก/ทีม แบบ 1 */
 .hr-pl{font-size:12.5px;font-weight:600;color:#8C8C8C;margin-right:2px}
 .hr-pds{display:inline-flex;gap:2px;background:#F2F2F2;border-radius:10px;padding:3px;flex-wrap:wrap}
@@ -2783,8 +2813,8 @@ function _pjSet(codes, st) {
   }, 700);
 }
 var _CFP_TH = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
-var _CFP_C = ['#3B5BDB','#E8890C','#0C9B72'], _CFP_CN = ['ค่าวันหยุด','ค่าต่างจังหวัด','จ้างรายวัน'], _CFP_CK = ['hol','prov','daily'];
-var _CFP_GC = { LED:'#1B2A4E', DS:'#3E5C9A', RI:'#7F98CC', Service:'#C4D0EA', 'Push Logix':'#0E9F75' };
+var _CFP_C = ['#141414','#8C8C8C','#D4D4D4'], _CFP_CN = ['ค่าวันหยุด','ค่าต่างจังหวัด','จ้างรายวัน'], _CFP_CK = ['hol','prov','daily'];
+var _CFP_GC = { LED:'#141414', DS:'#3A3A3A', RI:'#6B6B6B', Service:'#A3A3A3', 'Push Logix':'#D4D4D4' };
 function _cfpIsAdmin() { return !!(DB.cu && _normAL(DB.cu.accessLevel) === 'super_admin'); }
 
 function _cfpCompute(rows) {
@@ -2853,7 +2883,7 @@ function _cfpRender() {
   a.forEach(function (o) { Object.keys(o.pp).forEach(function (c) { ppl[c] = 1; }); });
   var cov = a.length ? Math.round(linked.length / a.length * 100) : 0;
   el.innerHTML =
-    '<div class="cfp-top"><div><div class="cfp-eb">Confirmed Projects</div><h2 class="cfp-h1">ต้นทุนภาคสนามรายโปรเจกต์</h2><div class="cfp-lead">ใช้คนไปเท่าไหร่ และจ่ายไปเท่าไหร่ ในแต่ละโปรเจกต์ที่ Confirmed · นับจากงานที่ใส่เลข PM ไว้</div></div>' +
+    '<div class="cfp-top"><div><h2 class="cfp-h1">Confirmed</h2><div class="cfp-lead">' + (_cfp.view === 'manage' ? 'รายการโปรเจกต์ (เลข PM) จากชีต Confirmed · ตั้งสถานะเพื่อกรองในหน้าต้นทุน' : 'ต้นทุนภาคสนามรายโปรเจกต์ · นับจากงานในตารางที่ผูกเลข PM') + '</div></div>' +
       '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><div class="cfp-seg" role="group" aria-label="มุมมอง" id="cfp-view"><button type="button" data-v="cost" aria-pressed="' + (_cfp.view !== 'dept' && _cfp.view !== 'manage') + '">ต้นทุน</button><button type="button" data-v="manage" aria-pressed="' + (_cfp.view === 'manage') + '">จัดการโปรเจกต์</button></div>' +
       (_cfp.view === 'manage' ? '' : '<div class="cfp-seg" role="group" aria-label="แสดงโปรเจกต์" id="cfp-show" title="เลือกโปรเจกต์ที่แสดงในหน้านี้ · ตั้งสถานะได้ที่ จัดการโปรเจกต์"><button type="button" data-s="all" aria-pressed="' + (_cfp.show !== 'active') + '">ทุกโปรเจกต์</button><button type="button" data-s="active" aria-pressed="' + (_cfp.show === 'active') + '">เฉพาะกำลังทำ</button></div>') +
       '<div class="cfp-seg" role="group" aria-label="ช่วงเวลา">' + ys.map(function (y) { return '<button type="button" data-y="' + y + '" aria-pressed="' + (_cfp.y === y) + '">ปี ' + y + '</button>'; }).join('') + '<button type="button" data-y="" aria-pressed="' + (!_cfp.y) + '">ทั้งหมด</button></div></div></div>' +
@@ -2867,7 +2897,7 @@ function _cfpRender() {
       '<div class="cfp-stat"><span class="cfp-lbl">กำลังคนที่ใช้</span><span class="cfp-v">' + _cfpFmt(pd) + '<small>คน-วัน</small></span></div>' +
       '<div class="cfp-stat"><span class="cfp-lbl">พนักงานที่ไปหน้างาน</span><span class="cfp-v">' + Object.keys(ppl).length + '<small>คน</small></span></div></div></section>' +
     '<div class="cfp-grid2"><section class="cfp-panel"><div class="cfp-ph"><h3>ค่าใช้จ่ายรายเดือน</h3><div class="cfp-legend">' + _CFP_CN.map(function (n, i) { return '<span><i class="cfp-sw" style="background:' + _CFP_C[i] + '"></i>' + n + '</span>'; }).join('') + '</div></div><div id="cfp-month"></div></section>' +
-      '<section class="cfp-panel"><div class="cfp-ph"><h3>แยกตาม Group</h3><span class="cfp-hint">สัดส่วนค่าใช้จ่าย</span></div><div class="cfp-gwrap" id="cfp-group"></div></section></div>' +
+      '<section class="cfp-panel"><div class="cfp-ph"><h3>แยกตามกลุ่ม</h3><span class="cfp-hint">สัดส่วนค่าใช้จ่าย</span></div><div class="cfp-gwrap" id="cfp-group"></div></section></div>' +
     '<section class="cfp-panel"><div class="cfp-ph"><h3>10 โปรเจกต์ที่ใช้ค่าใช้จ่ายสูงสุด</h3><span class="cfp-hint">คลิกเพื่อดูงานและรายชื่อคน</span></div><div id="cfp-top"></div></section>' +
     '<details class="cfp-all"' + (_cfp.q ? ' open' : '') + '><summary>ทุกโปรเจกต์ <span>' + a.length + ' โปรเจกต์ · มีงานแล้ว ' + linked.length + '</span></summary><div class="cfp-in"><input class="cfp-search" id="cfp-q" type="search" placeholder="ค้นหาเลข PM, ชื่อไฟล์, ลูกค้า หรือทีม PM..." value="' + escapeHtml(_cfp.q) + '"><div id="cfp-list"></div></div></details>' +
     '<div class="cfp-foot">ค่าใช้จ่าย = ค่าวันหยุด ' + HOL_BONUS + ' ฿/คน/วัน + ต่างจังหวัด ' + PROV_BONUS + ' ฿/คน/วัน + จ้างรายวัน (สูตรเดียวกับ Dashboard) · คนนับตามรายชื่อประจำวันของงาน · โปรเจกต์จากชีต Confirmed (อัปเดตเมื่อรันสคริปต์ฝั่ง ConfirmedSheet)</div>';
@@ -3065,7 +3095,7 @@ function _cfpManage() {
         '<span class="cfp-mname"><b title="' + escapeHtml(o.name) + '">' + escapeHtml(o.name || '-') + '</b><small>' + escapeHtml(o.client || '') + '</small></span>' +
         '<span class="cfp-mg"><b>' + escapeHtml(o.group) + '</b><small>' + escapeHtml(o.pm) + '</small></span>' +
         '<span class="cfp-mtask">' + (o.ts.length ? '<b>' + o.ts.length + ' งาน</b>' + (live ? ' <em class="live">มีงานวันนี้</em>' : '') + '<small>' + fdt(sp.f) + (sp.l !== sp.f ? ' – ' + fdt(sp.l) : '') + '</small>' : '<small>ยังไม่มีงาน</small>') + '</span>' +
-        '<span class="cfp-mst" data-code="' + escapeHtml(o.code) + '">' + _PJST_K.map(function (k) { return '<button type="button" class="st-' + k + (st === k ? ' on' : '') + '" data-st="' + k + '" title="' + (st === k ? 'กดอีกครั้งเพื่อล้างสถานะ' : 'ตั้งเป็น ' + _PJST_L[k]) + '">' + _PJST_L[k] + '</button>'; }).join('') + '</span></div>';
+        '<span class="cfp-mst2"><select class="cfp-csel cfp-stc st-' + (st || 'none') + '" data-stsel="' + escapeHtml(o.code) + '"' + (_cfpCanEdit() ? '' : ' disabled') + ' title="สถานะโปรเจกต์" aria-label="สถานะ ' + escapeHtml(o.code) + '"><option value="">ยังไม่ระบุ</option>' + _PJST_K.map(function (k) { return '<option value="' + k + '"' + (st === k ? ' selected' : '') + '>' + _PJST_L[k] + '</option>'; }).join('') + '</select></span></div>';
     }).join('') : '<div class="cfp-empty">ไม่พบโปรเจกต์</div>') + '</div>') +
     (list.length > shown.length ? '<div class="cfp-empty"><button type="button" class="cfp-mbtn" id="cfp-more">แสดงเพิ่ม (' + shown.length + ' จาก ' + list.length + ')</button></div>' : '');
   el.querySelectorAll('[data-mf]').forEach(function (b) { b.onclick = function () { _cfp.mf = b.dataset.mf; _cfp.mn = 100; _cfpManage(); }; });
@@ -3097,7 +3127,7 @@ function _cfpCards(shown, today, fdt) {
         '<dt>ช่วงงาน</dt><dd>' + (o.ts.length ? fdt(sp.f) + (sp.l !== sp.f ? ' – ' + fdt(sp.l) : '') : '—') + '</dd></dl>' +
       '<div class="cfp-cfig"><div><small>งาน</small><b>' + o.ts.length + '</b></div><div><small>คน-วัน</small><b>' + _cfpFmt(o.pd) + '</b></div><div class="r"><small>ค่าใช้จ่ายภาคสนาม</small><b>' + _cfpBt(o.total) + '</b></div></div>' +
       '<footer class="cfp-cft">' + (live ? '<span class="cfp-clive">● มีงานวันนี้</span>' : o.ts.length ? '<span>' + (o.n || 0) + ' คนไปหน้างาน</span>' : '<span>ยังไม่มีงานในตารางงาน</span>') +
-        '<select class="cfp-csel" data-stsel="' + escapeHtml(o.code) + '" title="เปลี่ยนสถานะ"><option value="">— ยังไม่ระบุ —</option>' + _PJST_K.map(function (k) { return '<option value="' + k + '"' + (st === k ? ' selected' : '') + '>' + _PJST_L[k] + '</option>'; }).join('') + '</select></footer>' +
+        '<select class="cfp-csel cfp-stc st-' + (st || 'none') + '" data-stsel="' + escapeHtml(o.code) + '"' + (_cfpCanEdit() ? '' : ' disabled') + ' title="เปลี่ยนสถานะ"><option value="">— ยังไม่ระบุ —</option>' + _PJST_K.map(function (k) { return '<option value="' + k + '"' + (st === k ? ' selected' : '') + '>' + _PJST_L[k] + '</option>'; }).join('') + '</select></footer>' +
     '</article>';
   }).join('') + '</div>';
 }
@@ -14458,6 +14488,17 @@ function _hideLineLoading() {
       sum.parentNode.insertBefore(un, sum.nextSibling); }
     row.remove();
   }
+  /* Confirmed › แยกตามกลุ่ม: แถบแนวนอนแทนวงโดนัท (Figma 332:5949) · ตัวเลขชุดเดียวกับเดิม */
+  _cfpGroup = function (a) {
+    var el = document.getElementById('cfp-group'); if (!el) return;
+    var gs = { LED: 1, DS: 1, RI: 1, Service: 1, 'Push Logix': 1 }; a.forEach(function (o) { if (o.group && o.group !== '-') gs[o.group] = 1; });
+    var G = Object.keys(gs).map(function (g) { var b = a.filter(function (o) { return o.group === g; }); return { g: g, tot: _cfpSum(b, 'total'), pd: _cfpSum(b, 'pd'), n: b.filter(function (o) { return o.ts.length; }).length, all: b.length }; })
+      .sort(function (x, y) { return y.tot - x.tot || y.all - x.all; });
+    var T = G.reduce(function (s, r) { return s + r.tot; }, 0);
+    el.className = 'cfp-gbars';
+    el.innerHTML = G.map(function (r) { var p = T ? r.tot / T * 100 : 0;
+      return '<div class="gb"><div class="h"><b>' + escapeHtml(r.g) + '</b><span>' + _cfpBt(r.tot) + '</span><i>' + Math.round(p) + '%</i></div><div class="bar"><i style="width:' + p.toFixed(1) + '%"></i></div><small>' + r.n + '/' + r.all + ' โปรเจกต์ · ' + _cfpFmt(r.pd) + ' คน-วัน</small></div>'; }).join('');
+  };
   /* จัดหน้าแบบระบบหลัก: ย้ายปุ่มดาวน์โหลด/รถ/เพิ่มงานขึ้นหัวหน้า · มุมมองเป็นแถบเลือก · เวลาเข้างานเป็นสวิตช์ · ตัวนับ PM เป็นการ์ด + การ์ดใหม่ 2 ใบ */
   function hrLayout(c, bar) {
     var q = function (sel) { return bar.querySelector(sel); }, oc = function (re) { return [].slice.call(bar.querySelectorAll('[onclick]')).filter(function (b) { return re.test(b.getAttribute('onclick')); })[0]; };
