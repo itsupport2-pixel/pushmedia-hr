@@ -14339,7 +14339,8 @@ function _hideLineLoading() {
     return ok;
   };
   var _go = go;
-  go = function (p) { if (!p || p === 'dashboard') p = 'planner'; return _go(p); };
+  var _pg0 = (function () { try { return new URLSearchParams(location.search).get('page') || ''; } catch (e) { return ''; } })();   // หลังบ้านเปิดเมนูย่อย เช่น ?page=confirmed
+  go = function (p) { if (!p || p === 'dashboard') { p = _pg0 === 'confirmed' ? 'confirmed' : 'planner'; } return _go(p); };
   /* แถบเครื่องมือเดียว (Figma 279:5726): ใส่ [แผนก/ทีม ▾] หน้าแถบเครื่องมือของ WTM · ท้ายแถบ = รถบริษัท + ปุ่มของหน้า (+ เพิ่มงาน จาก #tb-actions) */
   function hrInject() {
     var c = document.getElementById('content'); if (!c || !DB.cu || typeof vDepts !== 'function') return;
@@ -14355,7 +14356,7 @@ function _hideLineLoading() {
       var ts = DB.schedTeams && DB.schedTeams[d.name] && DB.schedTeams[d.name].length ? DB.schedTeams[d.name] : [];
       return '<optgroup label="' + esc(d.name) + '">' + opt(d.name, d.name + ' · ทั้งแผนก') + ts.map(function (t) { return opt(d.name + '||' + t, t); }).join('') + '</optgroup>'; }).join('') + '</select>';
     bar.setAttribute('data-hr', '1');
-    bar.insertAdjacentHTML('afterbegin', (cur === 'planner' ? hrPicker(depts) : '<button class="btn btn-sm" id="hr-back">← ตารางงาน</button>'));
+    bar.insertAdjacentHTML('afterbegin', (cur === 'planner' ? hrPicker(depts) : cur === 'confirmed' ? '' : '<button class="btn btn-sm" id="hr-back">← ตารางงาน</button>'));
     if (cur === 'planner') { var tr = hrTeamRow(depts); if (tr) bar.insertAdjacentHTML('beforeend', tr); }
     var r = document.createElement('div'); r.className = 'hr-r';
     if (allowedMenus().indexOf('vehicles') >= 0 && cur === 'planner') r.insertAdjacentHTML('beforeend', '<button class="hb" id="hr-veh">รถบริษัท</button>');
