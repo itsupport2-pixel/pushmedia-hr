@@ -1,4 +1,4 @@
-<!-- สร้างอัตโนมัติจาก Workforce Task Manager (index.html) ด้วย app/tools/build-planner.mjs · 2026-10-24 · อย่าแก้ไฟล์นี้ตรง ๆ -->
+<!-- สร้างอัตโนมัติจาก Workforce Task Manager (index.html) ด้วย app/tools/build-planner.mjs · 2026-10-25 · อย่าแก้ไฟล์นี้ตรง ๆ -->
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -2443,8 +2443,8 @@ function denyAccess(msg) {
 
 
 
-const HOL_BONUS  = 700;  
-const PROV_BONUS = 300;  
+var HOL_BONUS  = 700;  
+var PROV_BONUS = 300;  
 
 function otCost(task) { return 0; } 
 
@@ -14320,7 +14320,7 @@ function _hideLineLoading() {
   }
   apiGet = function (action, params) {
     return hrCall(action, params).then(function (r) {
-      if (action === 'bootstrap' && r && !r.error) { if (r.cu) H.cu = r.cu; (r.employees || []).forEach(function (e) { e.photo = photo(e.photo); }); }
+      if (action === 'bootstrap' && r && !r.error) { if (r.cu) H.cu = r.cu; if (r.config) { if (+r.config.holBonus) HOL_BONUS = +r.config.holBonus; if (+r.config.provBonus) PROV_BONUS = +r.config.provBonus; } (r.employees || []).forEach(function (e) { e.photo = photo(e.photo); }); }
       return r;
     });
   };
@@ -14335,7 +14335,6 @@ function _hideLineLoading() {
         menuPerms: mp, dept: c.dept, team: c.team, emp: emp || { code: c.code, menuPerms: mp, dept: c.dept, team: c.team, accessLevel: 'viewer_team' } };
       if (emp) { emp.menuPerms = mp; emp.accessLevel = 'viewer_team'; }
     }
-    if (ok) { try { CONFIG.positionColors = {}; } catch (e) {} }   // สีพื้นช่องคนตามตำแหน่ง (WTM) → ไม่ใช้ ให้เข้ากับโทนขาว–ดำ
     if (ok && !H.cu) DB.cu = null;
     return ok;
   };
@@ -14466,6 +14465,9 @@ function _hideLineLoading() {
     ph.innerHTML = '<div class="t"><h1>ตารางงาน</h1><div class="s">' + (lbl ? lbl.textContent.trim() : '') + (tot ? ' · ' + tot.textContent + ' งาน' : '') + ' · เวลาเข้างานจากระบบลงเวลา</div></div>';
     var exp = oc(/rpOpenExport/); if (exp) { var d = document.createElement('button'); d.className = 'hb'; d.innerHTML = '⤓ ดาวน์โหลด'; d.onclick = function () { rpOpenExport(); }; ph.appendChild(d); exp.remove(); }
     var right = bar.querySelector('.hr-r'); if (right) { while (right.firstChild) ph.appendChild(right.firstChild); right.remove(); }
+    if (H.cu && H.cu.hr) { var sb = document.createElement('button'); sb.className = 'hb'; sb.id = 'hr-set'; sb.textContent = 'ตั้งค่าตารางงาน'; sb.title = 'สีตำแหน่งงาน · ค่าเบี้ย (ตั้งค่าระบบ › ตารางงาน)';
+      sb.onclick = function () { try { window.top.hrNav('set', 'sched'); } catch (e) { window.top.location.href = 'admin.html'; } };
+      var addB = ph.querySelector('.btn-p'); ph.insertBefore(sb, addB || null); }
     var add = ph.querySelector('.btn-p'); if (add && !/เพิ่มงาน/.test(add.textContent)) add.insertAdjacentText('beforeend', ' เพิ่มงาน');
     c.insertBefore(ph, bar);
     bar.classList.add('hr-fc');
