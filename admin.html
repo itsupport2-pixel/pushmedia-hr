@@ -10,6 +10,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js" charset="utf-8"></script>
 <script src="config.js"></script>
+<script src="i18n.js?v=1"></script>
 <style>
 /* สี Push Media ขาว–ดำ ตามโลโก้ (22 ต.ค. 2569) · สีสถานะ ok/warn/bad คงไว้ */
 :root{--nav:#0B0B0B;--nav2:#1F1F1F;--nav-ink:#C8C8C8;--acc:#111111;--acc-soft:#EDEDED;--bg:#F4F4F4;--sf:#FFFFFF;--sf2:#F8F8F8;--line:#E3E3E3;
@@ -163,6 +164,8 @@ button.kpi:hover{border-color:var(--fnt)}.kpi .l{color:var(--mut);font-size:13px
 .tb .srch input{border:0;outline:0;background:none;font:inherit;font-size:13.5px;flex:1;min-width:0;color:#141414}
 .srch-r{position:absolute;top:46px;left:0;right:0;background:#fff;border:1px solid #E6E6E6;border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.12);padding:6px;max-height:380px;overflow:auto}
 .srch-r button{display:flex;gap:10px;align-items:center;width:100%;padding:8px 10px;border:0;background:none;border-radius:8px;text-align:left;font:inherit;font-size:13.5px;cursor:pointer;color:#141414}.srch-r button:hover{background:#F3F3F3}.srch-r small{color:#8C8C8C;font-size:12px;margin-left:auto}.srch-r .e{padding:10px;color:#8C8C8C;font-size:13px}
+.tb .lang{display:flex;gap:2px;padding:3px;border-radius:99px;background:#F1F1F1;flex:none}.tb .lang button{border:0;background:none;height:30px;min-width:38px;padding:0 10px;border-radius:99px;font:600 12.5px/1 inherit;font-family:inherit;color:#5A5A5A;cursor:pointer}
+.tb .lang button[aria-pressed="true"]{background:#141414;color:#fff;box-shadow:0 1px 3px rgba(0,0,0,.12)}.tb .lang button:focus-visible{outline:2px solid #141414;outline-offset:1px}
 .tb .ib{width:40px;height:40px;border-radius:99px;background:#F3F3F3;border:0;display:grid;place-items:center;cursor:pointer;position:relative;color:#141414;flex:none;padding:0}.tb .ib svg{width:20px;height:20px}
 .tb .ib .dot{position:absolute;top:7px;right:8px;width:9px;height:9px;border-radius:99px;background:#E5484D;border:2px solid #fff}
 .tb .usr{display:flex;align-items:center;gap:10px;cursor:pointer;background:none;border:0;font:inherit;text-align:left;padding:4px;border-radius:10px;color:#141414}.tb .usr:hover{background:#F6F6F6}
@@ -473,7 +476,8 @@ function render(){
    '<button class="rl-tg" id="rl-tg" aria-label="'+(wide?'ย่อแถบเมนู':'ขยายแถบเมนู')+'">'+ic('chevR')+'</button></nav>'+
    '<main class="main"><header class="tb"><img class="tb-logo" src="push-media-logo-black.svg" alt="Push Media"><span class="dv l"></span><div class="tt"><small>'+esc(app)+' / '+esc(navTitle(A.view))+'</small><b>'+esc(navTitle(A.view))+'</b></div>'+(isHR()||me.id==='admin'?'':'<span class="scp" title="ขอบเขตข้อมูลที่คุณเห็น"><i></i>ขอบเขต: '+esc(scopeTxt(selfOnly()?'emp':{att:'att',lv:'leave',appr:'approve'}[A.view]||'emp'))+'</span>')+'<span class="grow"></span>'+
    '<div class="srch"><label>'+ic('search')+'<input id="tb-q" type="search" placeholder="ค้นหาพนักงาน หรือเมนู…" aria-label="ค้นหา" autocomplete="off"></label><div class="srch-r" id="tb-r" hidden></div></div>'+
-   '<button class="ib" id="tb-bell" aria-label="คำขอรออนุมัติ '+pend+' รายการ" title="คำขอรออนุมัติ">'+ic('bell')+(pend?'<span class="dot"></span>':'')+'</button><button class="ib help" id="tb-help" aria-label="ช่วยเหลือ" title="ช่วยเหลือ">'+ic('help')+'</button><span class="dv"></span>'+
+   '<div class="lang" role="group" aria-label="ภาษา / Language" data-noi18n><button type="button" data-lang="th" aria-pressed="'+(window.hrLang&&hrLang()==='th')+'">TH</button><button type="button" data-lang="en" aria-pressed="'+(window.hrLang&&hrLang()==='en')+'">EN</button></div>'+
+    '<button class="ib" id="tb-bell" aria-label="คำขอรออนุมัติ '+pend+' รายการ" title="คำขอรออนุมัติ">'+ic('bell')+(pend?'<span class="dot"></span>':'')+'</button><button class="ib help" id="tb-help" aria-label="ช่วยเหลือ" title="ช่วยเหลือ">'+ic('help')+'</button><span class="dv"></span>'+
    '<button class="usr" id="tb-me" aria-haspopup="menu"><span class="av"'+(me.id!=='admin'?' data-av="'+esc(me.id)+'" style="width:38px;height:38px"':'')+'>'+esc((me.nickname||me.name||'?').slice(0,1))+'</span><span><b>'+esc(me.name)+'</b><small>'+esc(ROLE[me.role]||me.role)+(me.code?' · รหัส '+esc(me.code):'')+'</small></span>'+ic('caret')+'</button></header>'+
    '<div class="content">'+V[0]()+'</div></main></div>';
   $$('[data-nav]').forEach(function(a){a.onclick=function(){if(a.closest('.subi')&&wide)A.subOpen=true;go(a.dataset.nav)}});
