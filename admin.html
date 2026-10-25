@@ -256,10 +256,7 @@ button.kpi:hover{border-color:var(--fnt)}.kpi .l{color:var(--mut);font-size:13px
 .evs{display:inline-flex;gap:2px;background:#F2F2F2;border-radius:10px;padding:3px}.evs button{height:32px;border:0;background:none;border-radius:8px;padding:0 14px;font:inherit;font-size:13px;color:#6B6B6B;cursor:pointer}.evs button[aria-pressed="true"]{background:#fff;color:#141414;font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.08)}
 .ecs{display:flex;flex-direction:column;gap:14px}
 .eg{background:#fff;border:1px solid var(--line,#E8E8E8);border-radius:14px;overflow:hidden}
-.eg-h{display:flex;align-items:center;gap:8px;padding:12px 20px;background:#F6F6F6}.eg-h b{font-size:16px}.eg-h span{font-size:13px;color:#8C8C8C}.eg-h i{margin-left:auto;font-style:normal;font-size:13px;font-weight:500;color:#5A5A5A}
-.eg-d .eg-h b:before{content:'';display:inline-block;width:4px;height:18px;border-radius:2px;background:#141414;margin-right:10px;vertical-align:-3px}
-.eg-ex .eg-h{background:#141414;color:#fff}.eg-ex .eg-h span{color:#BDBDBD}.eg-ex .eg-h i{color:#D9D9D9}
-.eg-mg .eg-h{background:#3A3A3A;color:#fff}.eg-mg .eg-h span{color:#BDBDBD}.eg-mg .eg-h i{color:#D9D9D9}
+.eg-h{display:flex;align-items:center;gap:8px;padding:14px 20px;background:#fff;border-bottom:1px solid #EEE}.eg-h b{font-size:17px}.eg-h span{font-size:13px;color:#8C8C8C}.eg-h i{font-style:normal;font-size:13px;font-weight:600;color:#3A3A3A;white-space:nowrap}.eg-h .eg-ln{flex:1;height:1px;background:#E2E2E2;margin:0 14px;min-width:24px}
 .eg-g{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;padding:16px}
 .eg-ex .eg-g{display:flex;justify-content:center;flex-wrap:wrap}.eg-ex .ec{width:calc(25% - 9px);min-width:260px}
 .ec{display:flex;gap:14px;align-items:flex-start;padding:14px;border:1px solid #EEE;border-radius:14px;background:#fff;cursor:pointer;min-width:0;transition:border-color .12s,box-shadow .12s}
@@ -835,8 +832,8 @@ function empCards(rows){
       '<div class="ec-p">'+esc(org('positions',e.position_id)||'—')+'</div>'+(sub?'<div class="ec-s">'+esc(sub)+'</div>':'')+
       (e.phone?'<a class="ec-l" href="tel:'+esc(String(e.phone).replace(/[^\d+]/g,''))+'" data-no>'+PH_I+'<span>'+esc(e.phone)+'</span></a>':'')+
       (e.email?'<a class="ec-l" href="mailto:'+esc(e.email)+'" data-no>'+EM_I+'<span>'+esc(e.email)+'</span></a>':'')+'</div></div>'};
-  var grp=function(k,title,sub,list,showDept){return list.length?'<section class="eg eg-'+k+'"><div class="eg-h"><b>'+esc(title)+'</b>'+(sub?'<span>'+esc(sub)+'</span>':'')+'<i>'+list.length+' คน</i></div><div class="eg-g">'+list.map(function(e){return card(e,showDept)}).join('')+'</div></section>':''};
-  var h=grp('ex','ผู้บริหาร','(Executive)',ex,0)+grp('mg','Management Team','(ผู้จัดการแผนก)',mg,1);
+  var grp=function(k,title,sub,list,showDept){return list.length?'<section class="eg eg-'+k+'"><div class="eg-h"><b>'+esc(title)+'</b>'+(sub?'<span>'+esc(sub)+'</span>':'')+'<em class="eg-ln"></em><i>'+list.length+' คน</i></div><div class="eg-g">'+list.map(function(e){return card(e,showDept)}).join('')+'</div></section>':''};
+  var h=grp('ex','ผู้บริหาร','Executive',ex,0)+grp('mg','Management Team','ผู้จัดการแผนก',mg,1);
   var deps=A.d.org.departments.slice();rest.forEach(function(e){if(!deps.some(function(d){return d.id===e.department_id}))deps.push({id:e.department_id,name:'ไม่ระบุแผนก'})});
   deps.forEach(function(d){h+=grp('d',d.name,'',rest.filter(function(e){return (e.department_id||'')===(d.id||'')}).sort(function(a,b){return String(org('teams',a.team_id)).localeCompare(String(org('teams',b.team_id)))||by(a,b)}),0)});
   return '<div class="ecs">'+h+'</div>'}
@@ -1151,7 +1148,7 @@ function vForm(){
    (isHR()?'<section class="card" id="s5"><div class="ch"><h3>เงินเดือนและบัญชี</h3><span class="badge b-warn" style="margin-left:auto">เห็นเฉพาะ HR</span></div><div class="cb g">'+fld('bank_name','ธนาคาร',sel('bank_name',[['','— เลือก —'],['กสิกรไทย','กสิกรไทย'],['กรุงเทพ','กรุงเทพ'],['ไทยพาณิชย์','ไทยพาณิชย์'],['กรุงไทย','กรุงไทย'],['กรุงศรีอยุธยา','กรุงศรีอยุธยา'],['ทหารไทยธนชาต','ทหารไทยธนชาต']]))+
     fld('bank_account','เลขบัญชีธนาคาร',inp('bank_account',{im:'numeric',ph:isNew||!(PROF&&PROF.id===A.id&&PROF.bank_account_masked)?'xxx-x-xxxxx-x':'ปัจจุบัน '+PROF.bank_account_masked}),{h:isNew?'':'กรอกเมื่อต้องการเปลี่ยน · เว้นว่าง = ใช้เลขเดิม'})+'</div></section>'+
    '<section class="card" id="s6"><div class="ch"><h3>สิทธิ์ในระบบ</h3></div><div class="cb g">'+fld('role','บทบาท',sel('role',Object.keys(ROLE).filter(function(k){return k!=='admin'}).map(function(k){return [k,ROLE[k]]})),{h:'หัวหน้าทีม = อนุมัติคำขอของทีม · HR = เห็นและแก้ข้อมูลทุกคน'})+'</div></section>':'')+
-   '<div class="foot">'+(isNew?'':fld('reason','เหตุผลการแก้ไข',inp('reason',{ph:'เช่น ปรับเวลาทำงานตามประกาศ 12/2569'}),{req:1}).replace('class="f','style="flex:1;min-width:220px" class="f'))+'<span class="sp"></span><button type="button" class="btn" id="cn">ยกเลิก</button><button class="btn pri" id="sv">'+(isNew?'บันทึกพนักงาน':'บันทึกการแก้ไข')+'</button></div></form></div>';
+   '<div class="foot">'+(isNew?'':fld('reason','เหตุผลการแก้ไข (ไม่บังคับ)',inp('reason',{ph:'เช่น ปรับเวลาทำงานตามประกาศ 12/2569'})).replace('class="f','style="flex:1;min-width:220px" class="f'))+'<span class="sp"></span><button type="button" class="btn" id="cn">ยกเลิก</button><button class="btn pri" id="sv">'+(isNew?'บันทึกพนักงาน':'บันทึกการแก้ไข')+'</button></div></form></div>';
 }
 function bForm(){
   var f=A.f,y=function(){var s=scrollY;render();scrollTo(0,s)};
