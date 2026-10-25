@@ -6148,7 +6148,7 @@ function renderPlannerSidebar() {
   var subEl = document.getElementById('n-planner-depts');
   if (!subEl) return;
   var DEPT_ORDER = ['LED','Digital Signage & Retail','Business Development'];
-  var depts = vDepts().filter(function(d){ return DEPT_ORDER.indexOf(d.name) >= 0 || (DB.schedTeams && DB.schedTeams[d.name] && DB.schedTeams[d.name].length); });
+  var depts = vDepts().filter(function(d){ return (DB.schedTeams && DB.schedTeams[d.name] && DB.schedTeams[d.name].length); });
   depts.sort(function(a,b){
     var ai = DEPT_ORDER.indexOf(a.name), bi = DEPT_ORDER.indexOf(b.name);
     if (ai<0 && bi<0) return a.name.localeCompare(b.name);
@@ -6782,11 +6782,7 @@ function renderPlanner() {
   var s = dates[0].toLocaleDateString('th-TH',{day:'numeric',month:'short'});
   var e = dates[dates.length-1].toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'2-digit'});
 
-  var DEFAULT_SCHED = {
-    'LED'                     : ['LED','LED-A','LED-B','LED-C'],
-    'Digital Signage & Retail': ['RI','Service','DS'],
-    'Business Development'    : ['Push Logix'],
-  };
+  var DEFAULT_SCHED = Object.assign({}, DB.schedTeams || {});
   var SCHED_DEPTS = Object.keys(DEFAULT_SCHED);
 
   var showDepts = depts.filter(function(d) {
@@ -7012,11 +7008,7 @@ function _attTimeToggleBtnHtml() {
 // ── ดาวน์โหลดตารางงาน (Excel / PDF) ─────────────────────────────
 // ขอบเขตข้อมูล = สิทธิ์ "ดู" ของเมนูตารางงาน (vTasks/vDepts/vTeams) → admin เลือกได้ทุกแผนก/ทีม · คนอื่นเห็นเฉพาะที่ตัวเองดูได้
 // ไลบรารีโหลดเฉพาะตอนกดดาวน์โหลด (SheetJS / html2pdf จาก cdnjs) ไม่ทำให้หน้าแรกช้าลง
-var _RP_EXPORT_SCHED = { // ต้องตรงกับ DEFAULT_SCHED ใน renderPlannerList
-  'LED'                     : ['LED','LED-A','LED-B','LED-C'],
-  'Digital Signage & Retail': ['RI','Service','DS'],
-  'Business Development'    : ['Push Logix'],
-};
+var _RP_EXPORT_SCHED = {}; // Push Media HR: ใช้ DB.schedTeams จากตั้งค่าระบบเท่านั้น
 var _RP_EXPORT_MAX_PDF_DAYS = 31;   // PDF วาดเป็นภาพ — ช่วงยาวเกินจะใหญ่/ช้าเกินไป
 var _RP_EXPORT_MAX_DAYS     = 366;
 
@@ -7396,11 +7388,7 @@ function renderPlannerList() {
     }
   }
 
-  var DEFAULT_SCHED = {
-    'LED'                     : ['LED','LED-A','LED-B','LED-C'],
-    'Digital Signage & Retail': ['RI','Service','DS'],
-    'Business Development'    : ['Push Logix'],
-  };
+  var DEFAULT_SCHED = Object.assign({}, DB.schedTeams || {});
   var showDepts = depts.filter(function(d) {
     if (_plannerDept !== 'all' && d.name !== _plannerDept) return false;
     var st = DB.schedTeams && DB.schedTeams[d.name];
@@ -13666,9 +13654,7 @@ async function loadFromGAS(opts) {
         'Digital Signage & Retail': ['RI','Service','DS'],
         'Business Development': ['Push Logix'],
       };
-      Object.keys(defaults).forEach(function(k){
-        if (!data.schedTeams[k] || !data.schedTeams[k].length) data.schedTeams[k] = defaults[k];
-      });
+      /* Push Media HR: ไม่เติมทีมสำรอง — ใช้ตามตั้งค่าระบบ › ตารางงาน */
       DB.schedTeams = data.schedTeams;
     }
     
@@ -13725,9 +13711,10 @@ async function init() {
       // sync ข้อมูลสดเบื้องหลัง — ไม่บล็อกการเข้าแอป
       // ถ้า user เปิดฟอร์ม (สร้าง/แก้ไขงาน ฯลฯ) ค้างอยู่พอดีตอนที่ sync นี้เสร็จ (มักเกิดตอน backend ช้าเพราะมีคนอื่นบันทึกข้อมูลพร้อมกัน)
       // ห้ามเรียก go() เด็ดขาด — go() จะ closeMd() ปิดฟอร์มทิ้งทันทีโดยไม่ถาม ทำข้อมูลที่พิมพ์ไว้หาย (เหมือน _pollForChanges ป้องกันไว้)
+      var _hrSig = function () { try { return JSON.stringify(DB.tasks || []) + '|' + JSON.stringify(DB.vehicles || []); } catch (e) { return String(Math.random()); } }, _hrSig0 = _hrSig();
       loadFromGAS().then(function(ok){
         if (!ok) return;
-        if (_userBusy()) { _remotePending = true; _remoteBar(true); return; }
+        if (_userBusy()) { if (_hrSig() === _hrSig0) return; _remotePending = true; _remoteBar(true); return; }
         try { if (typeof curPage !== 'undefined') go(curPage || 'dashboard'); } catch(_){}
       });
     } else {
@@ -14383,7 +14370,7 @@ function _hideLineLoading() {
     var bar = c.firstElementChild;
     if (!bar || !/display:s*flex/.test(bar.getAttribute('style') || '')) { bar = document.createElement('div'); bar.className = 'hr-top'; c.insertBefore(bar, c.firstChild); }
     var ORDER = ['LED', 'Digital Signage & Retail', 'Business Development'], cur = typeof curPage !== 'undefined' ? curPage : 'planner';
-    var depts = vDepts().filter(function (d) { return ORDER.indexOf(d.name) >= 0 || (DB.schedTeams && (DB.schedTeams[d.name] || []).length); });
+    var depts = vDepts().filter(function (d) { return DB.schedTeams && (DB.schedTeams[d.name] || []).length; });
     var val = (typeof _plannerTeam !== 'undefined' && _plannerTeam) ? _plannerDept + '||' + _plannerTeam : (typeof _plannerDept !== 'undefined' ? (_plannerDept || 'all') : 'all');
     var esc = function (x) { return String(x).replace(/[&<>"]/g, function (ch) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]; }); };
     var opt = function (v, l) { return '<option value="' + esc(v) + '"' + (v === val ? ' selected' : '') + '>' + esc(l) + '</option>'; };
