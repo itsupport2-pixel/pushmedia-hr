@@ -341,8 +341,12 @@ var CFG=window.HR_CONFIG||{};var API=CFG.api||'/api';var DEV=/^(127\.0\.0\.1|loc
 var $=function(s,r){return (r||document).querySelector(s)},$$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function store(k,v){try{if(v===undefined)return JSON.parse(localStorage.getItem(k)||'null');if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,JSON.stringify(v))}catch(e){return null}}
+/* เครือข่ายสะดุด (fetch โยน TypeError "Failed to fetch") → คำสั่งอ่านอย่างเดียวลองใหม่เอง 1 ครั้ง · คำสั่งบันทึกไม่ลองซ้ำ (กันบันทึกซ้ำ) */
+var READ_FN=/^(list|get|empOverview|attendanceToday|dayRecords|hrDashboard|approvalCenter|approvalsList|leaveAdminList|leaveInfo|leaveDetail|adminBootstrap|auditList|perfStats|photosFor|publicInfo|schedSettings|schedTeamsGet|scheduleWeek|myProfile|myAttendance|todayInfo)/;
+function post(fn,args,n){return fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({fn:fn,args:args})})
+  .catch(function(e){if(!n&&READ_FN.test(fn))return new Promise(function(r){setTimeout(r,900)}).then(function(){return post(fn,args,1)});throw new Error('เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ (อินเทอร์เน็ตหรือเซิร์ฟเวอร์สะดุดชั่วคราว) กรุณากดรีเฟรชอีกครั้ง')})}
 function call(fn){var args=Array.prototype.slice.call(arguments,1);
-  return fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({fn:fn,args:args})}).then(function(r){return r.text()})
+  return post(fn,args,0).then(function(r){return r.text()})
    .then(function(t){var j;try{j=JSON.parse(t)}catch(e){throw new Error('เชื่อมต่อเซิร์ฟเวอร์ไม่สำเร็จ')}if(!j.ok){if(j.error==='SESSION_EXPIRED'){store('hr_tok',null);A.tok=null;toast('หมดเวลาการใช้งาน กรุณาเข้าสู่ระบบใหม่',1);renderLogin()}throw new Error(j.error)}return j.r})}
 function aCall(fn){return call.apply(null,[fn,A.tok].concat(Array.prototype.slice.call(arguments,1)))}
 /* หน้าต่างยืนยันของระบบ (แทน confirm() ของเบราว์เซอร์ · Figma 310:5751) → Promise คืนค่า k ของปุ่มที่กด · Esc / คลิกนอกกล่อง = ปุ่มที่ไม่มี cls (ยกเลิก/อยู่หน้านี้) */
