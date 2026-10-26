@@ -335,24 +335,24 @@ button.kpi:hover{border-color:var(--fnt)}.kpi .l{color:var(--mut);font-size:13px
 /* ตัวเลือกช่วงวัน (Figma 419:7274 แบบ ค) */
 .dpt{min-width:230px;justify-content:flex-start}.dpt svg{flex:none;color:var(--mut)}.dpt .chev{margin-left:auto;color:var(--fnt)}.dpt[aria-expanded=true]{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc)}
 .dp{position:absolute;z-index:70;display:flex;background:var(--sf);border:1px solid var(--line);border-radius:12px;box-shadow:0 10px 28px rgba(0,0,0,.12);overflow:hidden;max-width:calc(100vw - 16px)}
-.dp-sc{background:var(--sf2);border-right:1px solid var(--line);padding:10px 8px;display:flex;flex-direction:column;gap:2px;min-width:168px}
-.dp-sc button{border:1px solid transparent;background:none;text-align:left;padding:8px 12px;border-radius:8px;color:var(--mut);font-size:14px}.dp-sc button:hover{background:var(--sf)}
+.dp-sc{background:var(--sf2);border-right:1px solid var(--line);padding:8px 6px;display:flex;flex-direction:column;gap:1px;min-width:136px}
+.dp-sc button{border:1px solid transparent;background:none;text-align:left;padding:6px 10px;border-radius:7px;color:var(--mut);font-size:13px}.dp-sc button:hover{background:var(--sf)}
 .dp-sc button[aria-pressed=true]{background:var(--sf);border-color:var(--line);color:var(--fg);font-weight:600}
-.dp-m{padding:16px 16px 12px}.dp-cal{display:flex;gap:32px}.dp-mo{width:308px}
-.dp-h{display:flex;align-items:center;height:36px;margin-bottom:4px}.dp-h b{flex:1;text-align:center;font-size:16px}
-.dp-nv{width:32px;height:32px;border:1px solid var(--line);border-radius:8px;background:var(--sf);display:grid;place-items:center;font-size:16px;line-height:1}.dp-nv:hover{border-color:var(--fnt)}.dp-nv.x{visibility:hidden}
-.dp-g{display:grid;grid-template-columns:repeat(7,44px);row-gap:4px}.dp-g .wd{font-size:12px;color:var(--fnt);text-align:center;height:28px;line-height:28px;font-weight:500}
-.dp-g .d{height:40px;border:0;background:none;padding:0;display:grid;place-items:center;font-size:14px;color:var(--fg)}
-.dp-g .d span{width:40px;height:40px;display:grid;place-items:center;border-radius:8px}.dp-g .d:hover span{background:var(--acc-soft)}
+.dp-m{padding:12px 12px 10px}.dp-cal{display:flex;gap:20px}.dp-mo{width:224px}
+.dp-h{display:flex;align-items:center;height:30px;margin-bottom:2px}.dp-h b{flex:1;text-align:center;font-size:14px}
+.dp-nv{width:28px;height:28px;border:1px solid var(--line);border-radius:8px;background:var(--sf);display:grid;place-items:center;font-size:16px;line-height:1}.dp-nv:hover{border-color:var(--fnt)}.dp-nv.x{visibility:hidden}
+.dp-g{display:grid;grid-template-columns:repeat(7,32px);row-gap:2px}.dp-g .wd{font-size:11px;color:var(--fnt);text-align:center;height:22px;line-height:22px;font-weight:500}
+.dp-g .d{height:32px;border:0;background:none;padding:0;display:grid;place-items:center;font-size:12.5px;color:var(--fg)}
+.dp-g .d span{width:32px;height:32px;display:grid;place-items:center;border-radius:7px}.dp-g .d:hover span{background:var(--acc-soft)}
 .dp-g .d.wk{color:var(--mut)}.dp-g .d.td span{box-shadow:inset 0 0 0 1.5px var(--acc);font-weight:700;color:var(--fg)}
 .dp-g .d.in{background:var(--acc-soft)}.dp-g .d.in.c0,.dp-g .d.s{border-radius:8px 0 0 8px}.dp-g .d.in.c6,.dp-g .d.e,.dp-g .d.in.last{border-radius:0 8px 8px 0}
 .dp-g .d.in.c0.c6,.dp-g .d.s.e,.dp-g .d.s.c6,.dp-g .d.e.c0,.dp-g .d.s.last,.dp-g .d.in.c0.last{border-radius:8px}
 .dp-g .d:disabled{color:var(--fnt);opacity:.4;cursor:default}.dp-g .d:disabled:hover span{background:none}.dp-nv:disabled{opacity:.35;cursor:default}
 .dp-g .d.s span,.dp-g .d.e span{background:var(--acc)!important;color:#fff;font-weight:600}
-.dp-f{display:flex;align-items:center;gap:8px;border-top:1px solid var(--line);padding-top:12px;margin-top:12px}
+.dp-f{display:flex;align-items:center;gap:8px;border-top:1px solid var(--line);padding-top:10px;margin-top:8px}
 .dp-bx{background:var(--sf2);border:1px solid var(--line);border-radius:8px;padding:5px 12px;min-width:132px}.dp-bx small{display:block;font-size:11px;color:var(--fnt)}.dp-bx b{font-size:14px}
 .dp-f .n{font-size:13px;color:var(--mut);font-weight:500}.dp-f .sp{flex:1}
-@media(max-width:820px){.dp{flex-direction:column}.dp-sc{flex-direction:row;flex-wrap:wrap;border-right:0;border-bottom:1px solid var(--line);min-width:0}.dp-g{grid-template-columns:repeat(7,40px)}.dp-g .d span{width:36px;height:36px}.dp-mo{width:280px}.dp-f{flex-wrap:wrap}}
+@media(max-width:820px){.dp{flex-direction:column}.dp-sc{flex-direction:row;flex-wrap:wrap;border-right:0;border-bottom:1px solid var(--line);min-width:0}.dp-g{grid-template-columns:repeat(7,32px)}.dp-g .d span{width:36px;height:36px}.dp-mo{width:224px}.dp-f{flex-wrap:wrap}}
 /* รายงาน › Matrix (Figma 426:8186 · 26 ต.ค. 2569) */
 .rp-tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:14px;flex-wrap:wrap}
 .rp-tabs button{border:0;background:none;font:inherit;font-size:14px;color:var(--mut);padding:10px 14px;border-bottom:2.5px solid transparent;cursor:pointer;display:flex;align-items:center;gap:6px}
@@ -898,7 +898,7 @@ function dpRange(btn,cur,onApply){
   var close=function(){el.remove();btn.setAttribute('aria-expanded','false');document.removeEventListener('mousedown',om,true);document.removeEventListener('keydown',kd,true);window.removeEventListener('resize',pos)},
       om=function(e){if(!el.contains(e.target)&&!btn.contains(e.target))close()},kd=function(e){if(e.key==='Escape'){e.stopPropagation();close();btn.focus()}};
   el._close=close;
-  var pos=function(){var r=btn.getBoundingClientRect(),w=el.offsetWidth,l=r.right+window.scrollX-w;el.style.left=Math.max(8+window.scrollX,l)+'px';el.style.top=(r.bottom+window.scrollY+6)+'px'};
+  var pos=function(){var r=btn.getBoundingClientRect(),w=el.offsetWidth,l=r.left<innerWidth/2&&r.left+w<=innerWidth-8?r.left+window.scrollX:r.right+window.scrollX-w;el.style.left=Math.max(8+window.scrollX,l)+'px';el.style.top=(r.bottom+window.scrollY+6)+'px'};
   var mo=function(v,i,n){var y=v.getFullYear(),m=v.getMonth(),first=new Date(y,m,1).getDay(),dim=new Date(y,m+1,0).getDate(),t=dIso(new Date()),lo=S.a,hi=S.b||(S.a&&S.h?S.h:'');if(lo&&hi&&hi<lo){var x=lo;lo=hi;hi=x}
     var h='<div class="dp-mo"><div class="dp-h"><button type="button" class="dp-nv'+(i===0?'':' x')+'" data-nv="-1" aria-label="เดือนก่อน">‹</button><b>'+DPM[m]+' '+(y+543)+'</b><button type="button" class="dp-nv'+(i===n-1?'':' x')+'" data-nv="1" aria-label="เดือนถัดไป"'+(mx&&dIso(new Date(y,m+1,1))>mx?' disabled':'')+'>›</button></div><div class="dp-g">'+
       (document.documentElement.lang==='en'?['Su','Mo','Tu','We','Th','Fr','Sa']:DPW).map(function(w){return '<div class="wd">'+w+'</div>'}).join('');
@@ -940,7 +940,7 @@ function vRep(){if(A.rpa===undefined){var tm=dpPresets(dIso(new Date())).filter(
    '<section class="card" style="padding:0;overflow:hidden"><div id="rp-body"><div class="loading"><span class="spin"></span></div></div></section>'}
 function bRep(){
   var load=function(){$('#rp-body').innerHTML='<div class="loading"><span class="spin"></span></div>';aCall('attMatrix',A.rpa,A.rpb).then(function(d){A.rpm=d;drawRep()}).catch(function(e){if($('#rp-body'))$('#rp-body').innerHTML='<div class="alert" style="margin:16px">'+esc(e.message)+'</div>'})};
-  $('#rp-rg').onclick=function(){var b=this;dpRange(b,{a:A.rpa,b:A.rpb,max:dIso(new Date())},function(a,z){if(!a){var t=dIso(new Date());a=dAdd(t,-29);z=t}if(Math.round((dObj(z)-dObj(a))/864e5)+1>62){toast('เลือกได้ไม่เกิน 62 วัน',1);return}A.rpa=a;A.rpb=z;b.querySelector('span').textContent=rngTxt(a,z);load()})};
+  $('#rp-rg').onclick=function(){var b=this;dpRange(b,{a:A.rpa,b:A.rpb,max:dIso(new Date())},function(a,z){if(!a){var t=dIso(new Date());a=t.slice(0,4)+'-01-01';z=t}A.rpa=a;A.rpb=z;b.querySelector('span').textContent=rngTxt(a,z);load()})};
   if($('#rp-dep'))$('#rp-dep').onchange=function(){A.rpd=this.value;A.rpt='all';render()};
   if($('#rp-team'))$('#rp-team').onchange=function(){A.rpt=this.value;drawRep()};
   var qt;$('#rp-q').oninput=function(){var v=this.value;clearTimeout(qt);qt=setTimeout(function(){A.rpq=v;drawRep()},200)};
@@ -949,7 +949,7 @@ function bRep(){
 function repRows(){var d=A.rpm;if(!d)return [];var q=(A.rpq||'').trim().toLowerCase();
   return d.people.filter(function(p){return (A.rpd==='all'||p.department_id===A.rpd)&&(A.rpt==='all'||p.team_id===A.rpt)&&(!q||(p.code+' '+p.name+' '+(p.nickname||'')).toLowerCase().indexOf(q)>=0)})}
 function repCell(x,ds,d){if(x.s==='nodata'){var w=dObj(ds).getDay();return d.holidays[ds]?{c:'ho',h:'วันหยุด',t:'วันหยุด'}:(w===0||w===6)?{c:'we',h:'',t:''}:{c:'nd',h:'',t:'ไม่มีข้อมูล'}}var we=x.s==='off',ho=x.s==='holiday'||(!x.i&&d.holidays[ds]);
-  if(x.i||x.o){var t=(x.i||'?')+'–'+(x.o||'?'),c=x.off?'of':'',sub=x.off?'นอกพื้นที่':'สำนักงาน';if(x.adj){c+=' aj';sub='แก้เวลา'}if(x.lv)sub=x.lv;
+  if(x.i||x.o){var t=x.i&&x.o?x.i+'–'+x.o:x.i?x.i:'ออก '+x.o,c=x.off?'of':'',sub=x.off?'นอกพื้นที่':'สำนักงาน';if(x.adj){c+=' aj';sub='แก้เวลา'}if(x.lv)sub=x.lv;
     return {c:c,h:'<span class="'+(x.l?'late':'')+'">'+t+'</span><small>'+esc(sub)+'</small>',t:t+(x.off?' นอกพื้นที่':'')+(x.adj?' แก้เวลา':'')+(x.l?' สาย '+x.l+' นาที':'')}}
   if(/leave/.test(x.s))return {c:'lv',h:esc(x.lv||'ลา')+(x.s==='leave_wait'?'<small>รออนุมัติ</small>':''),t:'ลา '+(x.lv||'')};
   if(ho)return {c:'ho',h:'วันหยุด',t:'วันหยุด'};if(we)return {c:'we',h:'',t:''};
@@ -987,8 +987,9 @@ function drawLv(){if(!$('#lv-body'))return;var d=A.lvd,f=A.lvf||'all',c={all:d.l
   var sb=function(k,l,n,w){return '<button data-lf="'+k+'" class="'+(w&&n?'w':'')+'" aria-pressed="'+(f===k)+'"><b class="num">'+n+'</b><span>'+l+'</span></button>'};
   $('#lv-body').innerHTML='<div class="sum">'+sb('all','ทั้งหมด',c.all)+sb('mine','รอคุณพิจารณา',c.mine,1)+sb('wait','รอหัวหน้า',c.wait)+sb('hr','รอ HR อนุมัติ',c.hr,1)+(isHR()?sb('ack','รอ HR รับทราบ',c.ack,1):'')+sb('ok','อนุมัติแล้ว',c.ok)+sb('adv','ลาล่วงหน้า',c.adv)+'</div>'+
    '<section class="card"><div class="tw"><table style="min-width:860px"><thead><tr><th>เลขที่</th><th>พนักงาน</th><th>ประเภท</th><th>วันที่</th><th>วัน</th><th>เหตุผล</th><th>สถานะ</th><th></th></tr></thead><tbody>'+
-   (rows.length?rows.map(function(r){var s=LVS[r.status]||[r.status,'b-mute'];return '<tr><td class="num">'+esc(r.req_no)+'</td><td><b>'+esc(r.code)+'</b> '+esc(r.employee)+'<div class="muted" style="font-size:12px">'+esc(r.department)+'</div></td><td>'+esc(r.type)+(r.edited?' <span class="badge b-info">แก้ไขแล้ว</span>':'')+'</td><td class="num">'+esc(r.date_from)+(r.date_to!==r.date_from?' – '+esc(r.date_to):'')+'</td><td class="num">'+r.days_total+'</td><td style="max-width:220px;font-size:12.5px">'+esc(r.reason)+'</td><td><span class="badge '+s[1]+'">'+s[0]+'</span>'+(r.need_hr&&r.status==='ok'?(r.hr_ack?' <span class="badge b-ok">HR รับทราบ</span>':' <span class="badge b-warn">รอ HR รับทราบ</span>'):'')+'</td><td style="white-space:nowrap">'+
+   (rows.length?rows.map(function(r){var s=LVS[r.status]||[r.status,'b-mute'];return '<tr><td class="num">'+esc(r.req_no)+'</td><td><div style="display:flex;align-items:center;gap:10px">'+av(emp(r.employee_id)||{id:r.employee_id,first_name:r.employee,last_name:''},34)+'<div><b>'+esc(r.code)+'</b> '+esc(r.employee)+'<div class="muted" style="font-size:12px">'+esc(r.department)+'</div></div></div></td><td>'+esc(r.type)+(r.edited?' <span class="badge b-info">แก้ไขแล้ว</span>':'')+'</td><td class="num">'+esc(r.date_from)+(r.date_to!==r.date_from?' – '+esc(r.date_to):'')+'</td><td class="num">'+r.days_total+'</td><td style="max-width:220px;font-size:12.5px">'+esc(r.reason)+'</td><td><span class="badge '+s[1]+'">'+s[0]+'</span>'+(r.need_hr&&r.status==='ok'?(r.hr_ack?' <span class="badge b-ok">HR รับทราบ</span>':' <span class="badge b-warn">รอ HR รับทราบ</span>'):'')+'</td><td style="white-space:nowrap">'+
      (r.step?'<button class="btn sm pri" data-ld="'+r.id+'|ok">อนุมัติ</button> <button class="btn sm" data-ld="'+r.id+'|no">ไม่อนุมัติ</button>':'')+(isHR()&&r.status==='ok'&&r.need_hr&&!r.hr_ack?'<button class="btn sm" data-lack="'+r.id+'">รับทราบ</button>':'')+'</td></tr>'}).join(''):'<tr><td colspan="8" class="muted" style="text-align:center;padding:24px">ไม่มีรายการ</td></tr>')+'</tbody></table></div></section>';
+  loadPhotos();
   $$('[data-lf]').forEach(function(b){b.onclick=function(){A.lvf=b.dataset.lf;drawLv()}});
   $$('[data-ld]').forEach(function(b){b.onclick=function(){var p=b.dataset.ld.split('|');if(p[1]==='no'){var r=A.lvd.find(function(x){return x.id===p[0]});
      drawer('ไม่อนุมัติ '+r.req_no,'<label class="f">เหตุผล (พนักงานจะเห็นข้อความนี้)<textarea id="lvno" rows="3" style="width:100%"></textarea></label>','<button class="btn pri" id="lvno-ok">ยืนยันไม่อนุมัติ</button>');
