@@ -22,5 +22,6 @@
   if (!IDS[ch]) ch = 'dev';
   if (!API[be]) be = DEFAULT_BE;
   var GOOGLE_CLIENT_ID = '902459045498-tnh7v08k557koh0flhds23hs5mg69r4h.apps.googleusercontent.com';   // Google Cloud โครงการ pushmedia-hr · ปุ่มเข้าสู่ระบบด้วย Google (ไม่ใช่ค่าลับ)
-  window.HR_CONFIG = { api: API[be], liffId: IDS[ch], channel: ch, backend: be, googleClientId: GOOGLE_CLIENT_ID };
+  // backup = ระบบสำรองการลงเวลา (Apps Script) ใช้เมื่อ Cloudflare ขัดข้อง · 26 ต.ค. 2569
+  window.HR_CONFIG = { api: API[be], liffId: IDS[ch], channel: ch, backend: be, googleClientId: GOOGLE_CLIENT_ID, backup: be === 'cf' ? API.gas : '' };
 })();

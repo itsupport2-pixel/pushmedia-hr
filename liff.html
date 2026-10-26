@@ -440,6 +440,14 @@ function call(fn,...a){return post(fn,a,0)
 /* เก็บในเครื่อง (ต่อผู้ใช้/เครื่อง): session token 8 ชม. + ข้อมูลหน้าหลักล่าสุด → เปิดแอปครั้งถัดไปแสดงทันที แล้วค่อยอัปเดต */
 const LS={k:x=>"pmhr_"+(DEV||"")+"_"+x,get(x){try{return JSON.parse(localStorage.getItem(this.k(x)))}catch(e){return null}},set(x,v){try{localStorage.setItem(this.k(x),JSON.stringify(v))}catch(e){}},del(x){try{localStorage.removeItem(this.k(x))}catch(e){}}};
 function setTok(t){S.tok=t;if(t)LS.set("tok",t);else{["tok","today","leave"].forEach(x=>LS.del(x))}}
+/* ระบบสำรองการลงเวลา (26 ต.ค. 2569): ระบบหลักขัดข้อง → ส่งไป Apps Script (CFG.backup) ยืนยันตัวตนด้วย LINE · นำเข้าระบบหลักอัตโนมัติภายหลัง */
+const DOWN_RE=/เชื่อมต่อเซิร์ฟเวอร์|ระบบขัดข้องชั่วคราว|D1_ERROR|exceeded/;
+function lineTok(){if(DEV)return Promise.resolve("dev|"+DEV);if(!window.liff||!CFG.liffId)return Promise.reject(new Error("ยืนยันตัวตน LINE ไม่ได้"));
+  return liff.init({liffId:CFG.liffId}).catch(()=>{}).then(()=>{const t=liff.isLoggedIn()&&liff.getIDToken();if(!t)throw new Error("ยืนยันตัวตน LINE ไม่ได้ กรุณาปิดแอปแล้วเปิดใหม่");return t})}
+function backupClock(kind,p,note,shift){return lineTok().then(t=>fetch(CFG.backup,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({fn:"clockBackup",args:[t,kind,p.lat,p.lng,p.acc,note,devInfo(),shift,CFG.env||""]})}))
+  .then(r=>r.text()).then(x=>{let j;try{j=JSON.parse(x)}catch(e){throw new Error("ระบบสำรองไม่ตอบ กรุณาลองใหม่")}if(!j.ok)throw new Error(j.error);return j.r})}
+/* ระบบหลักขัดข้อง + ยังไม่มีข้อมูลวันนี้ → ใช้จุดลงเวลา/กะที่จำไว้ล่าสุด เพื่อให้หน้าลงเวลาเปิดได้ */
+function outageToday(){const c=LS.get("today"),t=c&&c.t;if(!t)return null;S.down=1;return Object.assign({},t,{records:[],shift:t.shift?Object.assign({},t.shift,{open:null}):null})}
 const api=(fn,...a)=>call(fn,S.tok,...a).catch(e=>{if(/SESSION_EXPIRED/.test(e.message)&&!S.relog){S.relog=1;setTok(null);startLine();}throw e});
 
 const S={tab:"home",stack:[],tok:null,idt:null,invite:Q.get("invite")||"",me:null,today:null,month:null,pos:null,opt:0,last:null,wym:null,ptab:0};
@@ -521,8 +529,8 @@ V.devwait=()=>{const r=S.devmsg||{},d=r.device||{};return wbar("ลงเวล�
   ${nt("c-blue","info","ระบบจำเครื่องที่ใช้ลงเวลา เพื่อป้องกันการลงเวลาแทนกัน · ถ้าเปลี่ยนมือถือหรือติดตั้ง LINE ใหม่ จะนับเป็นเครื่องใหม่")}</div>
   <div class="foot"><button class="btn pri" data-home>กลับหน้าหลัก</button></div>`};
 V.done=()=>{const d=S.last,now=new Date();return `<div class="okv" style="background:#fff"><div class="c">${ic("ok")}</div><h2>${d.kind==="IN"?"ลงเวลาเข้างานสำเร็จ":"ลงเวลาออกงานสำเร็จ"}</h2><span class="muted">${esc(d.time)} น. · ${esc(d.location)}</span></div>
-  <div class="pad" style="background:#fff;flex:1;padding-top:0"><div class="card" style="padding:2px 18px;box-shadow:none;border:1px solid var(--line)">${[["วันที่",`${TH_D[now.getDay()]} ${now.getDate()} ${TH_S[now.getMonth()]} ${now.getFullYear()+543}`],...(d.shift?[["กะการทำงาน",`${d.shift.name} · ${d.shift.start}–${d.shift.end}`]]:[]),["สถานะ",!d.in_area?"นอกพื้นที่ (รอตรวจสอบ)":d.kind==="IN"?(d.late_min?"สาย "+d.late_min+" นาที":"ตรงเวลา"):"บันทึกแล้ว"],["สถานที่",d.location],["ระยะจากจุดลงเวลา",fmtDist(d.distance_m)],["พิกัดที่ลงเวลา",d.lat!=null?`${(+d.lat).toFixed(6)}, ${(+d.lng).toFixed(6)}`:"—"],["อุปกรณ์",d.device?`${d.device.label} · ${d.device.short}`:"—"]].map(r=>`<div class="kv"><span>${r[0]}</span><b ${/^ตรงเวลา/.test(r[1])?'style="color:var(--green)"':r[0]==="กะการทำงาน"?`style="color:var(--sh-${SHC(d.shift.id)})"`:/สาย|นอกพื้นที่/.test(r[1])?'style="color:var(--orange)"':""}>${esc(r[1])}</b></div>`).join("")}</div>
-  ${d.device_new?nt("c-orange","alert","ลงเวลาจากเครื่องใหม่ · ระบบแจ้ง HR ให้ทราบแล้ว"):""}${d.lat!=null?`<a class="btn out" style="margin-top:12px;text-decoration:none" href="https://www.google.com/maps?q=${encodeURIComponent(d.lat+","+d.lng)}" target="_blank" rel="noopener">ดูตำแหน่งบนแผนที่</a>`:""}</div>
+  <div class="pad" style="background:#fff;flex:1;padding-top:0"><div class="card" style="padding:2px 18px;box-shadow:none;border:1px solid var(--line)">${[["วันที่",`${TH_D[now.getDay()]} ${now.getDate()} ${TH_S[now.getMonth()]} ${now.getFullYear()+543}`],...(d.shift?[["กะการทำงาน",`${d.shift.name} · ${d.shift.start}–${d.shift.end}`]]:[]),["สถานะ",d.backup?"บันทึกสำรองแล้ว · รอนำเข้าระบบ":!d.in_area?"นอกพื้นที่ (รอตรวจสอบ)":d.kind==="IN"?(d.late_min?"สาย "+d.late_min+" นาที":"ตรงเวลา"):"บันทึกแล้ว"],["สถานที่",d.location],["ระยะจากจุดลงเวลา",fmtDist(d.distance_m)],["พิกัดที่ลงเวลา",d.lat!=null?`${(+d.lat).toFixed(6)}, ${(+d.lng).toFixed(6)}`:"—"],["อุปกรณ์",d.device?`${d.device.label} · ${d.device.short}`:"—"]].map(r=>`<div class="kv"><span>${r[0]}</span><b ${/^ตรงเวลา/.test(r[1])?'style="color:var(--green)"':r[0]==="กะการทำงาน"?`style="color:var(--sh-${SHC(d.shift.id)})"`:/สาย|นอกพื้นที่/.test(r[1])?'style="color:var(--orange)"':""}>${esc(r[1])}</b></div>`).join("")}</div>
+  ${d.backup?nt("c-orange","alert","ระบบหลักขัดข้องชั่วคราว · บันทึกเวลาไว้ในระบบสำรองแล้ว และจะนำเข้าระบบหลักอัตโนมัติเมื่อกลับมาปกติ (ไม่ต้องลงเวลาซ้ำ)"):""}${d.device_new?nt("c-orange","alert","ลงเวลาจากเครื่องใหม่ · ระบบแจ้ง HR ให้ทราบแล้ว"):""}${d.lat!=null?`<a class="btn out" style="margin-top:12px;text-decoration:none" href="https://www.google.com/maps?q=${encodeURIComponent(d.lat+","+d.lng)}" target="_blank" rel="noopener">ดูตำแหน่งบนแผนที่</a>`:""}</div>
   <div class="foot"><button class="btn pri" data-home>กลับหน้าหลัก</button></div>`;};
 
 V.worktime=()=>{const now=new Date(),ym=S.wym||`${now.getFullYear()}-${p2(now.getMonth()+1)}`,y=+ym.slice(0,4),m=+ym.slice(5,7),mo=S.wdata&&S.wdata.ym===ym?S.wdata:null;
@@ -697,7 +705,7 @@ function getPos(){
       ()=>ok({err:"ไม่ได้รับอนุญาตให้ใช้ตำแหน่ง กรุณาเปิดตำแหน่งที่ตั้ง (GPS) แล้วกดปุ่มอัปเดตตำแหน่ง"}),{enableHighAccuracy:true,timeout:15000,maximumAge:0})});
 }
 function dist(a,b,c,d){const R=6371000,r=Math.PI/180,x=Math.sin((c-a)*r/2),y=Math.sin((d-b)*r/2),h=x*x+Math.cos(a*r)*Math.cos(c*r)*y*y;return Math.round(2*R*Math.atan2(Math.sqrt(h),Math.sqrt(1-h)))}
-function openClock(){S.pos=null;S.opt=0;S.shift=null;go("clock");Promise.all([S.today?Promise.resolve(S.today):refreshToday(),getPos()]).then(x=>{S.pos=x[1];if(cur()==="clock"){repaint();startClock()}})}
+function openClock(){S.pos=null;S.opt=0;S.shift=null;go("clock");Promise.all([S.today?Promise.resolve(S.today):refreshToday().then(t=>t||(CFG.backup&&(S.today=outageToday()))),getPos()]).then(x=>{S.pos=x[1];if(cur()==="clock"){repaint();startClock()}})}
 
 /* ---------- navigation (เหมือนต้นแบบ) ---------- */
 const TABS=[["home","หน้าหลัก","home"],["sched","ตารางงาน","cal"],["clock","ลงเวลางาน","finger"],["req","เอกสาร","doc"],["menu","เมนู","menu"]];
@@ -759,7 +767,11 @@ document.addEventListener("click",e=>{const t=e.target.closest("button,[data-dcl
       if(!r.ok&&r.need_note){t.disabled=false;t.innerHTML=old;n.classList.add("err");const er=$("#cn-e");er.hidden=false;er.textContent="อยู่นอกพื้นที่"+(r.target?" (ห่าง "+r.target+" "+fmtDist(r.distance_m)+")":"")+" กรุณาระบุเหตุผล";n.focus();return}
       S.last=r;S.today=null;S.month=null;S.stack[S.stack.length-1]="done";show("fade");refreshToday();
       const now=new Date();api("myAttendance",`${now.getFullYear()}-${p2(now.getMonth()+1)}`).then(m=>{S.month=m}).catch(()=>{});
-    }).catch(err=>{t.disabled=false;t.innerHTML=old;toast(err.message)});return}
+    }).catch(err=>{
+      if(CFG.backup&&DOWN_RE.test(err.message)){t.innerHTML='<span class="spin"></span>ระบบหลักขัดข้อง · กำลังบันทึกสำรอง…';
+        return backupClock(d.clock,p,note,d.clock==="in"?S.shift||"":"").then(r=>{S.last={ok:true,backup:true,time:r.time,kind:r.kind,location:"บันทึกสำรอง (รอนำเข้า)",in_area:true,lat:p.lat,lng:p.lng};S.stack[S.stack.length-1]="done";show("fade")})
+          .catch(e2=>{t.disabled=false;t.innerHTML=old;toast(e2.message)})}
+      t.disabled=false;t.innerHTML=old;toast(err.message)});return}
   if(d.ptab){S.ptab=+d.ptab;repaint();return}
 });
 document.addEventListener("change",e=>{const id=e.target.id;
