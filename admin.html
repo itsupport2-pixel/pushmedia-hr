@@ -366,7 +366,7 @@ function ask(o){return new Promise(function(res){var prev=document.activeElement
   [].forEach.call(w.querySelectorAll('[data-ask]'),function(b){b.onclick=function(){done(b.dataset.ask)}});var f=w.querySelector('.btn.pri')||w.querySelector('[data-ask="'+cancel+'"]');if(f)f.focus()})}
 var tT;function toast(m,bad){var t=$('.toast');if(t)t.remove();t=document.createElement('div');t.className='toast'+(bad?' bad':'');t.setAttribute('role','status');t.textContent=m;document.body.appendChild(t);clearTimeout(tT);tT=setTimeout(function(){t.remove()},bad?6000:3000)}
 function busy(btn,on){if(btn){btn.disabled=on}}
-var A={ev:store('emp_view')==='card'?'card':'table',tok:store('hr_tok'),d:null,view:'dash',id:null,q:'',dept:'all',team:'all',chk:'all',line:'all',st:'all',sum:'all',sel:[],page:1,f:null,err:{},otab:'departments'};
+var A={ev:store('emp_view')==='card'?'card':'table',tok:store('hr_tok'),d:null,view:'dash',id:null,q:'',dept:'all',team:'all',chk:'all',line:'all',st:'cur',sum:'all',sel:[],page:1,f:null,err:{},otab:'departments'};
 var ROLE={employee:'พนักงาน',lead:'หัวหน้าทีม',manager:'หัวหน้าแผนก',hr:'HR',exec:'ผู้บริหาร',admin:'ผู้ดูแลระบบ'};
 var ST={active:['ทำงาน','b-ok'],probation:['ทดลองงาน','b-info'],leave:['ลาระยะยาว','b-warn'],resigned:['ลาออก','b-mute']};
 var CHK={office:['Office','ลงเวลาเฉพาะจุดสำนักงาน (GPS)','b-info'],field:['Field','ลงเวลาที่หน้างานตามตารางงาน','b-ok'],both:['Office + Field','สำนักงาน หรือหน้างานตามตาราง','b-warn'],none:['ไม่ต้องลงเวลา','ผู้บริหาร / ยกเว้นการลงเวลา','b-mute']};
@@ -851,23 +851,23 @@ function drawLv(){if(!$('#lv-body'))return;var d=A.lvd,f=A.lvf||'all',c={all:d.l
 
 /* ───────── รายชื่อ ───────── */
 function vList(){
-  var all=A.d.employees,q=A.q.trim();
-  var c={all:all.length,no:all.filter(function(e){return e.line==='none'}).length,wait:all.filter(function(e){return e.line==='wait'}).length,chk:all.filter(function(e){return !e.checkin_type}).length,prob:all.filter(function(e){return e.status==='probation'}).length};
+  var all=A.d.employees,q=A.q.trim(),cur=all.filter(function(e){return e.status!=='resigned'}),nres=all.length-cur.length;
+  var c={all:cur.length,no:cur.filter(function(e){return e.line==='none'}).length,wait:cur.filter(function(e){return e.line==='wait'}).length,chk:cur.filter(function(e){return !e.checkin_type}).length,prob:cur.filter(function(e){return e.status==='probation'}).length};
   var rows=all.filter(function(e){var t=e.emp_code+e.first_name+e.last_name+e.nickname+org('teams',e.team_id)+org('positions',e.position_id)+(e.express_code||'')+(e.phone||'')+(e.email||'');
-    return (!q||t.indexOf(q)>=0)&&(A.dept==='all'||e.department_id===A.dept)&&(A.team==='all'||e.team_id===A.team)&&(A.chk==='all'||e.checkin_type===A.chk||(A.chk==='none-set'&&!e.checkin_type))&&(A.line==='all'||e.line===A.line)&&(A.st==='all'||e.status===A.st)});
+    return (!q||t.indexOf(q)>=0)&&(A.dept==='all'||e.department_id===A.dept)&&(A.team==='all'||e.team_id===A.team)&&(A.chk==='all'||e.checkin_type===A.chk||(A.chk==='none-set'&&!e.checkin_type))&&(A.line==='all'||e.line===A.line)&&(A.st==='all'||(A.st==='cur'?e.status!=='resigned':e.status===A.st))});
   var per=20,pages=Math.max(1,Math.ceil(rows.length/per));A.page=Math.min(A.page,pages);var view=rows.slice((A.page-1)*per,A.page*per);
   var sel=A.sel.filter(function(id){return rows.some(function(e){return e.id===id})});
-  var sb=function(k,v,l,n,w){var on=k==='all'?(A.line==='all'&&A.chk==='all'&&A.st==='all'):A[k]===v;return '<button data-sum="'+k+':'+v+'" class="'+(w&&n?'w':'')+'" aria-pressed="'+on+'"><b class="num">'+n+'</b><span>'+l+'</span></button>'};
-  var sc=acc('emp'),tms=sc==='dept'?A.d.org.teams.filter(function(t){return t.active!=='FALSE'&&all.some(function(e){return e.team_id===t.id})}):[];
-  var bar=isHR()?'':'<div class="scb"><span class="i">i</span><div><b>แสดงเฉพาะ'+esc(scopeTxt('emp'))+' ('+all.length+' คน)</b><small>ดูข้อมูลได้ตามขอบเขตที่ HR กำหนด'+(acc('edit')==='none'?' · แก้ข้อมูลพนักงานได้เฉพาะ HR':'')+' · เลขบัญชีเห็นเฉพาะ HR</small></div></div>'+
-    (tms.length>1?'<div class="tchips" role="group" aria-label="กรองตามทีม"><button data-team="all" aria-pressed="'+(A.team==='all')+'">ทุกทีม · '+all.length+'</button>'+tms.map(function(t){return '<button data-team="'+t.id+'" aria-pressed="'+(A.team===t.id)+'">'+esc(t.name)+' · '+all.filter(function(e){return e.team_id===t.id}).length+'</button>'}).join('')+'</div>':'');
-  return '<div class="ph"><div><h1>พนักงาน</h1><div class="sub">'+all.length+' คน'+(isHR()?'':' · '+esc(scopeTxt('emp')))+'</div></div><span class="sp"></span><div class="evs" role="group" aria-label="มุมมอง"><button data-ev="table" aria-pressed="'+(A.ev!=='card')+'">ตาราง</button><button data-ev="card" aria-pressed="'+(A.ev==='card')+'">การ์ด</button></div>'+(isHR()?'<button class="btn pri" id="add">+ เพิ่มพนักงาน</button>':'')+'</div>'+bar+
+  var sb=function(k,v,l,n,w){var on=k==='all'?(A.line==='all'&&A.chk==='all'&&A.st==='cur'):A[k]===v;return '<button data-sum="'+k+':'+v+'" class="'+(w&&n?'w':'')+'" aria-pressed="'+on+'"><b class="num">'+n+'</b><span>'+l+'</span></button>'};
+  var sc=acc('emp'),tms=sc==='dept'?A.d.org.teams.filter(function(t){return t.active!=='FALSE'&&cur.some(function(e){return e.team_id===t.id})}):[];
+  var bar=isHR()?'':'<div class="scb"><span class="i">i</span><div><b>แสดงเฉพาะ'+esc(scopeTxt('emp'))+' ('+cur.length+' คน)</b><small>ดูข้อมูลได้ตามขอบเขตที่ HR กำหนด'+(acc('edit')==='none'?' · แก้ข้อมูลพนักงานได้เฉพาะ HR':'')+' · เลขบัญชีเห็นเฉพาะ HR</small></div></div>'+
+    (tms.length>1?'<div class="tchips" role="group" aria-label="กรองตามทีม"><button data-team="all" aria-pressed="'+(A.team==='all')+'">ทุกทีม · '+cur.length+'</button>'+tms.map(function(t){return '<button data-team="'+t.id+'" aria-pressed="'+(A.team===t.id)+'">'+esc(t.name)+' · '+cur.filter(function(e){return e.team_id===t.id}).length+'</button>'}).join('')+'</div>':'');
+  return '<div class="ph"><div><h1>พนักงาน</h1><div class="sub">'+cur.length+' คน'+(nres?' · ลาออก '+nres+' คน (ดูได้ที่ตัวกรองสถานะ)':'')+(isHR()?'':' · '+esc(scopeTxt('emp')))+'</div></div><span class="sp"></span><div class="evs" role="group" aria-label="มุมมอง"><button data-ev="table" aria-pressed="'+(A.ev!=='card')+'">ตาราง</button><button data-ev="card" aria-pressed="'+(A.ev==='card')+'">การ์ด</button></div>'+(isHR()?'<button class="btn pri" id="add">+ เพิ่มพนักงาน</button>':'')+'</div>'+bar+
    '<div class="sum">'+sb('all','all','ทั้งหมด',c.all)+sb('line','none','ยังไม่เชื่อม LINE',c.no,1)+sb('line','wait','รอยืนยัน LINE',c.wait,1)+sb('chk','none-set','ยังไม่ระบุการลงเวลา',c.chk,1)+sb('st','probation','ทดลองงาน',c.prob)+'</div>'+
    '<div class="tools"><input id="q" placeholder="ค้นหา ชื่อ ชื่อเล่น รหัส ทีม ตำแหน่ง เบอร์ อีเมล" value="'+esc(A.q)+'" aria-label="ค้นหา">'+
    (sc==='all'?'<select id="fd" aria-label="แผนก"><option value="all">ทุกแผนก</option>'+A.d.org.departments.filter(function(d){return d.active!=='FALSE'}).map(function(d){return '<option value="'+d.id+'"'+(A.dept===d.id?' selected':'')+'>'+esc(d.name)+'</option>'}).join('')+'</select>':'')+
    '<select id="fc" aria-label="ประเภทลงเวลา"><option value="all">ลงเวลา: ทุกแบบ</option>'+Object.keys(CHK).map(function(k){return '<option value="'+k+'"'+(A.chk===k?' selected':'')+'>'+CHK[k][0]+'</option>'}).join('')+'<option value="none-set"'+(A.chk==='none-set'?' selected':'')+'>ยังไม่ระบุ</option></select>'+
    '<select id="fl" aria-label="LINE"><option value="all">LINE: ทั้งหมด</option><option value="linked"'+(A.line==='linked'?' selected':'')+'>เชื่อมแล้ว</option><option value="wait"'+(A.line==='wait'?' selected':'')+'>รอยืนยัน</option><option value="none"'+(A.line==='none'?' selected':'')+'>ยังไม่เชื่อม</option></select>'+
-   '<select id="fs" aria-label="สถานะ"><option value="all">สถานะ: ทั้งหมด</option>'+Object.keys(ST).map(function(k){return '<option value="'+k+'"'+(A.st===k?' selected':'')+'>'+ST[k][0]+'</option>'}).join('')+'</select></div>'+
+   '<select id="fs" aria-label="สถานะ"><option value="cur">สถานะ: ไม่รวมลาออก</option><option value="all"'+(A.st==='all'?' selected':'')+'>สถานะ: ทั้งหมด (รวมลาออก)</option>'+Object.keys(ST).map(function(k){return '<option value="'+k+'"'+(A.st===k?' selected':'')+'>'+ST[k][0]+'</option>'}).join('')+'</select></div>'+
    (A.ev==='card'?empCards(rows):'<section class="card">'+(sel.length&&isHR()?'<div class="bulk"><b>เลือก '+sel.length+' คน</b><button class="btn sm" id="inv">ส่งลิงก์เชื่อม LINE</button><button class="btn sm" id="clr">ยกเลิกการเลือก</button></div>':'')+
    (view.length?'<div class="tw"><table><thead><tr>'+(isHR()?'<th><input type="checkbox" id="sa" aria-label="เลือกทั้งหน้า"'+(view.every(function(e){return sel.indexOf(e.id)>=0})?' checked':'')+'></th>':'')+'<th>พนักงาน</th><th>แผนก / ทีม</th><th>ตำแหน่ง</th><th>เวลาทำงาน</th><th>ลงเวลา</th><th>LINE</th><th>สถานะ</th></tr></thead><tbody>'+
    view.map(function(e){return '<tr class="ck" data-id="'+e.id+'">'+(isHR()?'<td data-no><input type="checkbox" data-sel="'+e.id+'" aria-label="เลือก"'+(sel.indexOf(e.id)>=0?' checked':'')+'></td>':'')+
@@ -902,12 +902,12 @@ function bList(){
   var q=$('#q');q.oninput=function(){A.q=q.value;A.page=1;var p=q.selectionStart;render();var n=$('#q');if(n){n.focus();n.setSelectionRange(p,p)}};
   $$('[data-team]').forEach(function(b){b.onclick=function(){A.team=b.dataset.team;A.page=1;render()}});
   [['#fd','dept'],['#fc','chk'],['#fl','line'],['#fs','st']].forEach(function(x){if($(x[0]))$(x[0]).onchange=function(e){A[x[1]]=e.target.value;A.page=1;render()}});
-  $$('[data-sum]').forEach(function(b){b.onclick=function(){var p=b.dataset.sum.split(':');A.line='all';A.chk='all';A.st='all';if(p[0]!=='all')A[p[0]]=p[1];A.page=1;render()}});
+  $$('[data-sum]').forEach(function(b){b.onclick=function(){var p=b.dataset.sum.split(':');A.line='all';A.chk='all';A.st='cur';if(p[0]!=='all')A[p[0]]=p[1];A.page=1;render()}});
   $$('tr.ck,.ec.ck').forEach(function(tr){tr.onclick=function(ev){if(ev.target.closest('[data-no]'))return;go('profile',tr.dataset.id)}});
   $$('[data-sel]').forEach(function(c){c.onchange=function(){var id=c.dataset.sel;A.sel=c.checked?A.sel.concat(id):A.sel.filter(function(x){return x!==id});render()}});
   var sa=$('#sa');if(sa)sa.onchange=function(){var ids=$$('[data-sel]').map(function(c){return c.dataset.sel});A.sel=sa.checked?A.sel.concat(ids.filter(function(i){return A.sel.indexOf(i)<0})):A.sel.filter(function(x){return ids.indexOf(x)<0});render()};
   if($('#add'))$('#add').onclick=function(){go('form')};if($('#inv'))$('#inv').onclick=function(){invite(A.sel)};if($('#clr'))$('#clr').onclick=function(){A.sel=[];render()};
-  if($('#pp'))$('#pp').onclick=function(){A.page--;render()};if($('#pn'))$('#pn').onclick=function(){A.page++;render()};if($('#rs'))$('#rs').onclick=function(){A.q='';A.dept=A.chk=A.line=A.st='all';render()};
+  if($('#pp'))$('#pp').onclick=function(){A.page--;render()};if($('#pn'))$('#pn').onclick=function(){A.page++;render()};if($('#rs'))$('#rs').onclick=function(){A.q='';A.dept=A.chk=A.line='all';A.st='cur';render()};
 }
 
 /* ───────── โปรไฟล์ ───────── */
