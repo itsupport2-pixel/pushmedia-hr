@@ -871,7 +871,7 @@ function dpRange(btn,cur,onApply){
   var pos=function(){var r=btn.getBoundingClientRect(),w=el.offsetWidth,l=r.right+window.scrollX-w;el.style.left=Math.max(8+window.scrollX,l)+'px';el.style.top=(r.bottom+window.scrollY+6)+'px'};
   var mo=function(v,i,n){var y=v.getFullYear(),m=v.getMonth(),first=new Date(y,m,1).getDay(),dim=new Date(y,m+1,0).getDate(),t=dIso(new Date()),lo=S.a,hi=S.b||(S.a&&S.h?S.h:'');if(lo&&hi&&hi<lo){var x=lo;lo=hi;hi=x}
     var h='<div class="dp-mo"><div class="dp-h"><button type="button" class="dp-nv'+(i===0?'':' x')+'" data-nv="-1" aria-label="เดือนก่อน">‹</button><b>'+DPM[m]+' '+(y+543)+'</b><button type="button" class="dp-nv'+(i===n-1?'':' x')+'" data-nv="1" aria-label="เดือนถัดไป">›</button></div><div class="dp-g">'+
-      DPW.map(function(w){return '<div class="wd">'+w+'</div>'}).join('');
+      (document.documentElement.lang==='en'?['Su','Mo','Tu','We','Th','Fr','Sa']:DPW).map(function(w){return '<div class="wd">'+w+'</div>'}).join('');
     for(var k=0;k<first;k++)h+='<div></div>';
     for(var d=1;d<=dim;d++){var s=dIso(new Date(y,m,d)),c=(first+d-1)%7,cl='d c'+c+(c===0||c===6?' wk':'')+(s===t?' td':'')+(d===dim?' last':'');
       if(lo&&hi&&s>=lo&&s<=hi)cl+=' in';if(s===lo)cl+=' s';if(s===(hi||lo))cl+=' e';
@@ -897,7 +897,8 @@ function dpRange(btn,cur,onApply){
 
 /* ───────── การลา (Phase 2c) ───────── */
 var LVS={wait:['รอหัวหน้า','b-warn'],hr:['รอ HR','b-warn'],ok:['อนุมัติแล้ว','b-ok'],chg:['ขอยกเลิก','b-info'],back:['ส่งกลับแก้ไข','b-warn'],no:['ไม่อนุมัติ','b-bad'],cancel:['ยกเลิก','b-mute']};
-function vLv(){return '<div class="ph"><div><h1>การลา</h1><div class="sub" id="lv-sub">กำลังโหลด…</div></div><span class="sp"></span>'+dpBtn('lv-rg',A.lva,A.lvb)+'<button class="btn" id="lv-re">รีเฟรช</button></div><div id="lv-body"><div class="loading"><span class="spin"></span></div></div>'}
+function vLv(){if(A.lva===undefined){var tm=dpPresets().filter(function(x){return x[0]==='tm'})[0];A.lva=tm[2];A.lvb=tm[3]}// ค่าเริ่มต้น = เดือนปัจจุบัน
+  return '<div class="ph"><div><h1>การลา</h1><div class="sub" id="lv-sub">กำลังโหลด…</div></div><span class="sp"></span>'+dpBtn('lv-rg',A.lva,A.lvb)+'<button class="btn" id="lv-re">รีเฟรช</button></div><div id="lv-body"><div class="loading"><span class="spin"></span></div></div>'}
 function bLv(){var load=function(){aCall('leaveAdminList','all',A.lva?A.lva+'..'+A.lvb:'').then(function(d){A.lvd=d;drawLv()}).catch(function(e){if($('#lv-body'))$('#lv-body').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})};
   $('#lv-re').onclick=load;$('#lv-rg').onclick=function(){var b=this;dpRange(b,{a:A.lva,b:A.lvb},function(a,z){A.lva=a;A.lvb=z;b.querySelector('span').textContent=rngTxt(a,z);load()})};load()}
 function drawLv(){if(!$('#lv-body'))return;var d=A.lvd,f=A.lvf||'all',c={all:d.length,mine:0,wait:0,hr:0,ok:0,ack:0,adv:0},td=dIso(new Date()),adv=function(r){return r.date_from>td&&r.status!=='no'&&r.status!=='cancel'};
