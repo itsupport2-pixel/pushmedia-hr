@@ -388,6 +388,8 @@ button.kpi:hover{border-color:var(--fnt)}.kpi .l{color:var(--mut);font-size:13px
 .btn-ex{display:inline-flex;align-items:center;gap:8px;background:#fff}.btn-ex .fic{flex:none}
 .rp-empty{padding:40px;text-align:center;color:var(--fnt)}
 @media print{.side,.tb,.rp-tabs,.rp-tools,.rp-f,.scb,.rp-noprint{display:none!important}.main{padding:0!important}.rp-tw{max-height:none;overflow:visible}.rp-t{font-size:9px}.rp-t .dy{min-width:0}@page{size:A4 landscape;margin:6mm}}
+#fo-bar{position:fixed;top:0;left:0;right:0;z-index:2147483646;background:#C2410C;color:#fff;font:600 13px/1.3 'IBM Plex Sans Thai',system-ui,sans-serif;padding:8px 16px;text-align:center}
+body.fo{padding-top:36px}body.fo .tb{top:36px}body.fo .side{top:36px;height:calc(100vh - 36px)}
 </style>
 </head>
 <body>
@@ -403,11 +405,23 @@ function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){retur
 function store(k,v){try{if(v===undefined)return JSON.parse(localStorage.getItem(k)||'null');if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,JSON.stringify(v))}catch(e){return null}}
 /* เครือข่ายสะดุด (fetch โยน TypeError "Failed to fetch") → คำสั่งอ่านอย่างเดียวลองใหม่เอง 1 ครั้ง · คำสั่งบันทึกไม่ลองซ้ำ (กันบันทึกซ้ำ) */
 var READ_FN=/^(list|get|empOverview|attendanceToday|dayRecords|hrDashboard|approvalCenter|approvalsList|leaveAdminList|leaveInfo|leaveDetail|adminBootstrap|auditList|perfStats|photosFor|publicInfo|schedSettings|schedTeamsGet|scheduleWeek|myProfile|myAttendance|todayInfo)/;
+/* ── หลังบ้านโหมดสำรอง "ดูอย่างเดียว" (26 ต.ค. 2569 · แบบ A) ──
+ * ระบบหลัก (Cloudflare) ขัดข้อง → ตรวจซ้ำ 1 ครั้ง → ถ้ายังขัดข้อง สลับไปใช้ Apps Script + สำเนา Google Sheets (CFG.adminBackup) แล้วให้เข้าสู่ระบบใหม่
+ * ระหว่างโหมดสำรอง: แถบส้มด้านบน · บันทึก/อนุมัติไม่ได้ (หลังบ้านตอบว่าดูได้อย่างเดียว) · ตรวจระบบหลักทุก 1 นาที กลับมาแล้วสลับกลับเอง */
+var FO_RE=/เชื่อมต่อเซิร์ฟเวอร์|ระบบขัดข้องชั่วคราว|D1_ERROR|exceeded|Failed to fetch|Load failed|NetworkError/i;
+function foPing(){return fetch(CFG.primary,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({fn:'publicInfo',args:[]})}).then(function(r){return r.json()}).then(function(j){return !!j.ok}).catch(function(){return false})}
+function foCheck(){if(CFG.failover||!CFG.adminBackup||!CFG.primary||A.foChk)return;A.foChk=1;
+  foPing().then(function(ok){A.foChk=0;if(ok)return;try{sessionStorage.setItem('pmhr_failover','1')}catch(e){}store('hr_tok',null);A.tok=null;location.reload()})}
+function foExit(){try{sessionStorage.removeItem('pmhr_failover')}catch(e){}store('hr_tok',null);A.tok=null;location.reload()}
+function foStart(){if(!CFG.failover)return;document.body.classList.add('fo');var b=document.createElement('div');b.id='fo-bar';b.setAttribute('role','status');b.textContent='ระบบหลักขัดข้อง · กำลังใช้ข้อมูลสำรองจาก Google Sheets · ดูได้อย่างเดียว (บันทึก/อนุมัติได้เมื่อระบบหลักกลับมา)';document.body.appendChild(b);
+  post('backupInfo',[],0).then(function(r){return r.json()}).then(function(j){if(!j.ok)return;var m=j.r.mirror_at?String(j.r.mirror_at).slice(11,16):'';b.textContent='ระบบหลักขัดข้อง · กำลังใช้ข้อมูลสำรองจาก Google Sheets'+(m?' (ข้อมูลถึง '+m+' น.)':'')+' · ดูได้อย่างเดียว'+(j.r.backup_pending?' · ลงเวลาสำรองรอนำเข้า '+j.r.backup_pending+' รายการ':'')}).catch(function(){});
+  setInterval(function(){foPing().then(function(ok){if(!ok)return;b.textContent='ระบบหลักกลับมาแล้ว · กำลังสลับกลับ…';b.style.background='#15803D';setTimeout(foExit,1500)})},60000)}
+document.addEventListener('DOMContentLoaded',foStart);
 function post(fn,args,n){return fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({fn:fn,args:args})})
-  .catch(function(e){if(!n&&READ_FN.test(fn))return new Promise(function(r){setTimeout(r,900)}).then(function(){return post(fn,args,1)});throw new Error('เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ (อินเทอร์เน็ตหรือเซิร์ฟเวอร์สะดุดชั่วคราว) กรุณากดรีเฟรชอีกครั้ง')})}
+  .catch(function(e){if(!n&&READ_FN.test(fn))return new Promise(function(r){setTimeout(r,900)}).then(function(){return post(fn,args,1)});if(fn!=='backupInfo')foCheck();throw new Error('เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ (อินเทอร์เน็ตหรือเซิร์ฟเวอร์สะดุดชั่วคราว) กรุณากดรีเฟรชอีกครั้ง')})}
 function call(fn){var args=Array.prototype.slice.call(arguments,1);
   return post(fn,args,0).then(function(r){return r.text()})
-   .then(function(t){var j;try{j=JSON.parse(t)}catch(e){throw new Error('เชื่อมต่อเซิร์ฟเวอร์ไม่สำเร็จ')}if(!j.ok){if(j.error==='SESSION_EXPIRED'){store('hr_tok',null);A.tok=null;toast('หมดเวลาการใช้งาน กรุณาเข้าสู่ระบบใหม่',1);renderLogin()}throw new Error(j.error)}return j.r})}
+   .then(function(t){var j;try{j=JSON.parse(t)}catch(e){foCheck();throw new Error('เชื่อมต่อเซิร์ฟเวอร์ไม่สำเร็จ')}if(!j.ok){if(FO_RE.test(j.error||''))foCheck();if(j.error==='SESSION_EXPIRED'){store('hr_tok',null);A.tok=null;toast('หมดเวลาการใช้งาน กรุณาเข้าสู่ระบบใหม่',1);renderLogin()}throw new Error(j.error)}return j.r})}
 function aCall(fn){return call.apply(null,[fn,A.tok].concat(Array.prototype.slice.call(arguments,1)))}
 /* หน้าต่างยืนยันของระบบ (แทน confirm() ของเบราว์เซอร์ · Figma 310:5751) → Promise คืนค่า k ของปุ่มที่กด · Esc / คลิกนอกกล่อง = ปุ่มที่ไม่มี cls (ยกเลิก/อยู่หน้านี้) */
 function ask(o){return new Promise(function(res){var prev=document.activeElement,w=document.createElement('div');w.className='ask-w';

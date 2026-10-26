@@ -21,7 +21,11 @@
   try { localStorage.removeItem('pmhr_be'); } catch (e) {}   // เลิกจำหลังบ้านจากช่วงทดลอง (ทุกคนใช้ค่าเริ่มต้น)
   if (!IDS[ch]) ch = 'dev';
   if (!API[be]) be = DEFAULT_BE;
+  // หลังบ้านโหมดสำรอง (ดูอย่างเดียว · 26 ต.ค. 2569): Cloudflare ขัดข้อง → admin.html ตั้ง pmhr_failover แล้วโหลดใหม่ → ใช้ Apps Script + สำเนา Google Sheets
+  var fo = false; try { fo = sessionStorage.getItem('pmhr_failover') === '1'; } catch (e) {}
+  if (fo) be = 'gas';
   var GOOGLE_CLIENT_ID = '902459045498-tnh7v08k557koh0flhds23hs5mg69r4h.apps.googleusercontent.com';   // Google Cloud โครงการ pushmedia-hr · ปุ่มเข้าสู่ระบบด้วย Google (ไม่ใช่ค่าลับ)
   // backup = ระบบสำรองการลงเวลา (Apps Script) ใช้เมื่อ Cloudflare ขัดข้อง · 26 ต.ค. 2569
-  window.HR_CONFIG = { api: API[be], liffId: IDS[ch], channel: ch, backend: be, googleClientId: GOOGLE_CLIENT_ID, backup: be === 'cf' ? API.gas : '' };
+  window.HR_CONFIG = { api: API[be], liffId: IDS[ch], channel: ch, backend: be, googleClientId: GOOGLE_CLIENT_ID, backup: be === 'cf' ? API.gas : '',
+    adminBackup: API.gas, primary: API.cf, failover: fo };
 })();
