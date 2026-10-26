@@ -24,7 +24,7 @@ button,input,select{font:inherit;color:inherit}button{cursor:pointer}
 .muted{color:var(--mut)}.faint{color:var(--fnt)}
 /* shell */
 .shell{display:flex;min-height:100%}
-.side{width:232px;flex:none;background:var(--nav);color:var(--nav-ink);padding:16px 10px;display:flex;flex-direction:column;gap:2px;position:sticky;top:0;height:100vh}
+.side{z-index:40;width:232px;flex:none;background:var(--nav);color:var(--nav-ink);padding:16px 10px;display:flex;flex-direction:column;gap:2px;position:sticky;top:0;height:100vh}
 .brand{display:flex;align-items:center;gap:10px;color:#fff;font-weight:700;padding:4px 8px 16px}
 .brand i{width:30px;height:30px;border-radius:8px;background:#fff;color:var(--nav);display:grid;place-items:center;font-style:normal;font-size:12px;font-weight:800}
 .side a{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:7px;color:inherit;text-decoration:none;cursor:pointer}
@@ -362,7 +362,7 @@ button.kpi:hover{border-color:var(--fnt)}.kpi .l{color:var(--mut);font-size:13px
 .rp-f select,.rp-f input[type=search]{height:38px;border:1px solid var(--line);border-radius:8px;padding:0 10px;font:inherit;font-size:13.5px;background:var(--sf);min-width:170px}
 .rp-lg{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.rp-lg span{font-size:12px;font-weight:500;border-radius:99px;padding:3px 10px}
 .rp-ok{background:#F0FDF4;color:#15803D}.rp-ab{background:#FEF2F2;color:#DC2626;font-weight:700!important}.rp-of{background:#ECFEFF;color:#0E7490}.rp-aj{background:#FFFBEB;color:#B45309}
-.rp-ho{background:#EFF6FF;color:#1E40AF}.rp-lv{background:#F5F3FF;color:#7C3AED}.rp-we{background:#F9FAFB;color:#9CA3AF;border:1px solid #F1F1F1}
+.rp-ho{background:#EFF6FF;color:#1E40AF}.rp-lv{background:#F5F3FF;color:#7C3AED}.rp-we{background:repeating-linear-gradient(135deg,#EFEFEF 0 6px,#FAFAFA 6px 12px);color:#6B7280;border:1px solid #EAEAEA}.rp-nd{background:#fff;color:#9CA3AF;border:1px solid #EAEAEA}
 .rp-tw{overflow:auto;max-height:calc(100vh - 330px);border-top:1px solid var(--line)}
 .rp-t{border-collapse:separate;border-spacing:0;font-size:12.5px;min-width:100%}
 .rp-t th,.rp-t td{border-bottom:1px solid var(--line);padding:0;background:var(--sf);white-space:nowrap}
@@ -371,13 +371,21 @@ button.kpi:hover{border-color:var(--fnt)}.kpi .l{color:var(--mut);font-size:13px
 .rp-t .c0{left:0;width:40px;min-width:40px;text-align:center;color:var(--fnt)}.rp-t .c1{left:40px;min-width:190px;text-align:left!important;padding:6px 10px}.rp-t .c2{left:230px;min-width:120px;text-align:left!important;padding:6px 8px;color:var(--mut);border-right:1px solid var(--line)}
 .rp-t .sm{min-width:50px;text-align:center;font-weight:700;font-size:13px}.rp-t .sm.last{border-right:1px solid var(--line)}
 .rp-t .dy{min-width:76px;border-left:1px solid var(--line);text-align:center;padding:5px 4px;line-height:1.25}.rp-t .dy small{display:block;font-size:10px;color:var(--fnt);font-weight:400}
-.rp-t td.dy{background:#F0FDF4}.rp-t td.dy.we{background:#FDF2F8}.rp-t td.dy.ho{background:#EFF6FF;color:#1E40AF;font-weight:600}.rp-t td.dy.ab{background:#FEF2F2;color:#DC2626;font-weight:700}.rp-t td.dy.lv{background:#F5F3FF;color:#7C3AED;font-weight:600}
-.rp-t td.dy.nd{background:repeating-linear-gradient(135deg,#FAFAFA 0 6px,#F3F3F3 6px 12px)}
+.rp-t td.dy{background:#F0FDF4}.rp-t td.dy.we{background:repeating-linear-gradient(135deg,#F3F3F3 0 10px,#FAFAFA 10px 20px)}.rp-t td.dy.ho{background:#EFF6FF;color:#1E40AF;font-weight:600}.rp-t td.dy.ab{background:#FEF2F2;color:#DC2626;font-weight:700}.rp-t td.dy.lv{background:#F5F3FF;color:#7C3AED;font-weight:600}
+.rp-t td.dy.nd{background:#fff;color:#D4D4D4}
 .rp-t td.dy.of{background:#ECFEFF;color:#0E7490}.rp-t td.dy.aj{background:#FFFBEB;color:#B45309}.rp-t .late{font-weight:600}.rp-t td.dy.ny{background:#fff;color:#CFCFCF}
 .rp-t thead th.we{background:#E5E7EB;color:#6B7280}.rp-t thead th.ho{background:#EFF6FF;color:#1E40AF}
 .rp-t td.s-p{background:#F0FDF4;color:#15803D}.rp-t td.s-a{background:#FEF2F2;color:#DC2626}.rp-t td.s-o{background:#ECFEFF;color:#0E7490}.rp-t td.s-j{background:#FFFBEB;color:#B45309}.rp-t td.s-l{background:#F5F3FF;color:#7C3AED}
 .rp-t thead th.s-p{color:#15803D}.rp-t thead th.s-a{color:#DC2626}.rp-t thead th.s-o{color:#0E7490}.rp-t thead th.s-j{color:#B45309}.rp-t thead th.s-l{color:#7C3AED}.rp-t thead th.sm small{display:block;font-size:9.5px;font-weight:500;opacity:.8}
 .rp-t .nm b{display:block;font-weight:600;color:var(--fg);font-size:13px}.rp-t .nm small{font-size:11px;color:var(--fnt)}
+.rp-t th.sk{cursor:pointer;user-select:none}.rp-t th.sk:hover{filter:brightness(.97)}
+.rp-t th.sk.on{box-shadow:inset 0 -3px 0 currentColor}.rp-t th.c1.sk.on,.rp-t th.c2.sk.on{color:var(--fg);box-shadow:inset 0 -3px 0 #111}
+.rp-t .si{display:block;width:18px;height:18px;margin:3px auto 0;border-radius:5px;position:relative}.rp-t th.c1 .si,.rp-t th.c2 .si{display:inline-block;vertical-align:middle;margin:0 0 0 6px}
+.rp-t .si::before,.rp-t .si::after{content:'';position:absolute;left:5px;border-left:4px solid transparent;border-right:4px solid transparent}
+.rp-t .si.none::before{top:3px;border-bottom:5px solid #A3A3A3}.rp-t .si.none::after{top:10px;border-top:5px solid #A3A3A3}
+.rp-t .si.desc,.rp-t .si.asc{background:#111}.rp-t .si.desc::before{top:6.5px;border-top:5px solid #fff}.rp-t .si.asc::before{top:6.5px;border-bottom:5px solid #fff}
+@media print{.rp-t .si{display:none}}
+.btn-ex{display:inline-flex;align-items:center;gap:8px;background:#fff}.btn-ex .fic{flex:none}
 .rp-empty{padding:40px;text-align:center;color:var(--fnt)}
 @media print{.side,.tb,.rp-tabs,.rp-tools,.rp-f,.scb,.rp-noprint{display:none!important}.main{padding:0!important}.rp-tw{max-height:none;overflow:visible}.rp-t{font-size:9px}.rp-t .dy{min-width:0}@page{size:A4 landscape;margin:6mm}}
 </style>
@@ -928,10 +936,12 @@ function dpRange(btn,cur,onApply){
 /* ───────── รายงาน (เมนู "รายงาน" · ข้อเสนอจัดเมนูใหม่ Figma 441:7719: Matrix · Dashboard ผู้บริหาร · สรุปทำเงินเดือน · รายงาน OT) ─────────
    Matrix (Figma 426:8186): ตารางคน × วัน · ช่วงวันที่เลือกได้ถึงวันนี้ · ตามขอบเขต "ลงเวลา" ของผู้ใช้ · ส่งออก Excel (CSV) / PDF (พิมพ์) */
 var RP_ST={ok:'มาทำงาน',late:'มาสาย',working:'กำลังทำงาน',missing_out:'ไม่มีออก',missing_in:'ไม่มีเข้า',leave:'ลา',leave_wait:'ลา (รออนุมัติ)',holiday:'วันหยุด',off:'วันหยุด',absent:'ขาดงาน',not_yet:'ยังไม่ลงเวลา'};
+function fileIc(kind){var c=kind==='pdf'?'#DC2626':'#15803D',l=kind==='pdf'?'PDF':'XLS';
+  return '<svg class="fic" width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 1.5h8l5 5v12H4z" fill="none" stroke="'+c+'" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 1.5v5h5" fill="none" stroke="'+c+'" stroke-width="1.5" stroke-linejoin="round"/><rect x="1" y="10" width="13" height="7" rx="2" fill="'+c+'"/><text x="7.5" y="15.2" text-anchor="middle" font-size="4.8" font-weight="700" fill="#fff" font-family="Arial,sans-serif">'+l+'</text></svg>'}
 function vRep(){if(A.rpa===undefined){var tm=dpPresets(dIso(new Date())).filter(function(x){return x[0]==='tm'})[0];A.rpa=tm[2];A.rpb=tm[3];A.rpq='';A.rpd='all';A.rpt='all'}
   var sc=acc('att'),deps=A.d.org.departments.filter(function(d){return d.active!=='FALSE'}),tms=A.d.org.teams.filter(function(t){return t.active!=='FALSE'&&(A.rpd==='all'||t.department_id===A.rpd)});
   var tab=function(l,on,soon){return '<button type="button"'+(on?' aria-pressed="true"':'')+(soon?' disabled title="อยู่ระหว่างพัฒนา"':'')+'>'+l+(soon?' <span class="sn">เร็ว ๆ นี้</span>':'')+'</button>'};
-  return '<div class="ph"><div><h1>รายงาน</h1><div class="sub">ตารางสรุปรายวันต่อคน · ขอบเขต: '+esc(scopeTxt('att'))+'</div></div><span class="sp"></span><button class="btn rp-noprint" id="rp-xls">ส่งออก Excel</button><button class="btn rp-noprint" id="rp-pdf">ส่งออก PDF</button></div>'+
+  return '<div class="ph"><div><h1>รายงาน</h1><div class="sub">ตารางสรุปรายวันต่อคน · ขอบเขต: '+esc(scopeTxt('att'))+'</div></div><span class="sp"></span><button class="btn btn-ex rp-noprint" id="rp-xls">'+fileIc('xls')+'ส่งออก Excel</button><button class="btn btn-ex rp-noprint" id="rp-pdf">'+fileIc('pdf')+'ส่งออก PDF</button></div>'+
    '<div class="rp-tabs" role="group" aria-label="รายงาน">'+tab('Matrix',1)+tab('Dashboard ผู้บริหาร',0,1)+tab('สรุปทำเงินเดือน',0,1)+tab('รายงาน OT',0,1)+'</div>'+
    '<section class="card rp-tools" style="padding:14px 16px"><div class="rp-f"><label>ช่วงวันที่'+dpBtn('rp-rg',A.rpa,A.rpb)+'</label>'+
     (sc==='all'?'<label>แผนก<select id="rp-dep"><option value="all">ทุกแผนก</option>'+deps.map(function(d){return '<option value="'+d.id+'"'+(A.rpd===d.id?' selected':'')+'>'+esc(d.name)+'</option>'}).join('')+'</select></label>':'')+
@@ -941,31 +951,46 @@ function vRep(){if(A.rpa===undefined){var tm=dpPresets(dIso(new Date())).filter(
 function bRep(){
   var load=function(){$('#rp-body').innerHTML='<div class="loading"><span class="spin"></span></div>';aCall('attMatrix',A.rpa,A.rpb).then(function(d){A.rpm=d;drawRep()}).catch(function(e){if($('#rp-body'))$('#rp-body').innerHTML='<div class="alert" style="margin:16px">'+esc(e.message)+'</div>'})};
   $('#rp-rg').onclick=function(){var b=this;dpRange(b,{a:A.rpa,b:A.rpb,max:dIso(new Date())},function(a,z){if(!a){var t=dIso(new Date());a=t.slice(0,4)+'-01-01';z=t}A.rpa=a;A.rpb=z;b.querySelector('span').textContent=rngTxt(a,z);load()})};
-  if($('#rp-dep'))$('#rp-dep').onchange=function(){A.rpd=this.value;A.rpt='all';render()};
+  if($('#rp-dep'))$('#rp-dep').onchange=function(){A.rpd=this.value;A.rpt='all';drawRep()};
   if($('#rp-team'))$('#rp-team').onchange=function(){A.rpt=this.value;drawRep()};
   var qt;$('#rp-q').oninput=function(){var v=this.value;clearTimeout(qt);qt=setTimeout(function(){A.rpq=v;drawRep()},200)};
   $('#rp-xls').onclick=function(){repCsv()};$('#rp-pdf').onclick=function(){if(!A.rpm)return;window.print()};
   if(A.rpm&&A.rpm.from===A.rpa&&A.rpm.to===A.rpb)drawRep();else load()}
 function repRows(){var d=A.rpm;if(!d)return [];var q=(A.rpq||'').trim().toLowerCase();
-  return d.people.filter(function(p){return (A.rpd==='all'||p.department_id===A.rpd)&&(A.rpt==='all'||p.team_id===A.rpt)&&(!q||(p.code+' '+p.name+' '+(p.nickname||'')).toLowerCase().indexOf(q)>=0)})}
-function repCell(x,ds,d){if(x.s==='nodata'){var w=dObj(ds).getDay();return d.holidays[ds]?{c:'ho',h:'วันหยุด',t:'วันหยุด'}:(w===0||w===6)?{c:'we',h:'',t:''}:{c:'nd',h:'',t:'ไม่มีข้อมูล'}}var we=x.s==='off',ho=x.s==='holiday'||(!x.i&&d.holidays[ds]);
+  var rows=d.people.filter(function(p){return (A.rpd==='all'||p.department_id===A.rpd)&&(A.rpt==='all'||p.team_id===A.rpt)&&(!q||(p.code+' '+p.name+' '+(p.nickname||'')).toLowerCase().indexOf(q)>=0)});
+  var s=A.rps;if(!s)return rows;   // เรียงตามหัวคอลัมน์ (Figma 480:8493) · ค่าเท่ากัน = ตามรหัสพนักงาน
+  var val=function(p){return s.k==='name'?p.name:s.k==='pos'?(p.position||''):p.sum[s.k]};
+  return rows.slice().sort(function(a,b){var x=val(a),y=val(b),c=typeof x==='string'?x.localeCompare(y,'th'):x-y;return (c*s.dir)||(a.code<b.code?-1:1)})}
+/* หัวคอลัมน์กดเรียง: ปกติ → (ตัวเลข มาก→น้อย | ข้อความ ก–ฮ) → กลับด้าน → ปกติ */
+function repSort(k){var s=A.rps,num=k!=='name'&&k!=='pos',first=num?-1:1;
+  A.rps=!s||s.k!==k?{k:k,dir:first}:s.dir===first?{k:k,dir:-first}:null;drawRep()}
+function repTh(k,cls,html){var s=A.rps,on=s&&s.k===k,st=on?(s.dir<0?'desc':'asc'):'none';
+  return '<th class="'+cls+' sk'+(on?' on':'')+'" data-sk="'+k+'" aria-sort="'+(on?(s.dir<0?'descending':'ascending'):'none')+'" title="กดเพื่อเรียง">'+html+'<i class="si '+st+'"></i></th>'}
+function repCell(x,ds,d){if(x.s==='nodata'){var w=dObj(ds).getDay();return d.holidays[ds]?{c:'ho',h:'วันหยุด',t:'วันหยุด'}:(w===0||w===6)?{c:'we',h:'',t:''}:{c:'nd',h:'–',t:'ไม่มีข้อมูล'}}var we=x.s==='off',ho=x.s==='holiday'||(!x.i&&d.holidays[ds]);
   if(x.i||x.o){var t=x.i&&x.o?x.i+'–'+x.o:x.i?x.i:'ออก '+x.o,c=x.off?'of':'',sub=x.off?'นอกพื้นที่':'สำนักงาน';if(x.adj){c+=' aj';sub='แก้เวลา'}if(x.lv)sub=x.lv;
     return {c:c,h:'<span class="'+(x.l?'late':'')+'">'+t+'</span><small>'+esc(sub)+'</small>',t:t+(x.off?' นอกพื้นที่':'')+(x.adj?' แก้เวลา':'')+(x.l?' สาย '+x.l+' นาที':'')}}
   if(/leave/.test(x.s))return {c:'lv',h:esc(x.lv||'ลา')+(x.s==='leave_wait'?'<small>รออนุมัติ</small>':''),t:'ลา '+(x.lv||'')};
   if(ho)return {c:'ho',h:'วันหยุด',t:'วันหยุด'};if(we)return {c:'we',h:'',t:''};
   if(x.s==='absent')return {c:'ab',h:'ขาดงาน',t:'ขาดงาน'};return {c:'ny',h:'—',t:''}}
-function drawRep(){var d=A.rpm;if(!d||!$('#rp-body'))return;var rows=repRows(),TD=['อา','จ','อ','พ','พฤ','ศ','ส'];
+/* ตัวกรองแผนก/ทีม: แสดงเฉพาะที่มีพนักงานในรายงานนี้ (ตามขอบเขตสิทธิ์) + จำนวนคน · แผนก/ทีมว่างไม่ขึ้น */
+function repOpts(){var d=A.rpm;if(!d)return;var cd={},ct={};d.people.forEach(function(p){cd[p.department_id]=(cd[p.department_id]||0)+1;if(A.rpd==='all'||p.department_id===A.rpd)ct[p.team_id]=(ct[p.team_id]||0)+1});
+  var o=function(v,l,n,cur){return '<option value="'+esc(v)+'"'+(cur===v?' selected':'')+'>'+esc(l)+(n?' ('+n+')':'')+'</option>'};
+  var ds=A.d.org.departments.filter(function(x){return cd[x.id]}).sort(function(a,b){return a.name.localeCompare(b.name)}),ts=A.d.org.teams.filter(function(x){return ct[x.id]}).sort(function(a,b){return a.name.localeCompare(b.name)});
+  if(A.rpd!=='all'&&!cd[A.rpd])A.rpd='all';if(A.rpt!=='all'&&!ct[A.rpt])A.rpt='all';
+  if($('#rp-dep'))$('#rp-dep').innerHTML=o('all','ทุกแผนก',d.people.length,A.rpd)+ds.map(function(x){return o(x.id,x.name,cd[x.id],A.rpd)}).join('');
+  if($('#rp-team'))$('#rp-team').innerHTML=o('all','ทุกทีม',0,A.rpt)+ts.map(function(x){return o(x.id,x.name,ct[x.id],A.rpt)}).join('')}
+function drawRep(){var d=A.rpm;if(!d||!$('#rp-body'))return;repOpts();var rows=repRows(),TD=['อา','จ','อ','พ','พฤ','ศ','ส'];
   var tot={present:0,absent:0,off:0,adj:0,leave:0},we=0,nd=0;rows.forEach(function(p){['present','absent','off','adj','leave'].forEach(function(k){tot[k]+=p.sum[k]});d.dates.forEach(function(ds){var st=p.days[ds].s,c=repCell(p.days[ds],ds,d).c;if(c==='we')we++;if(c==='nd')nd++})});
   var hol=Object.keys(d.holidays).length;
-  $('#rp-lg').innerHTML='<span class="rp-ok">มาทำงาน · '+tot.present+'</span><span class="rp-ab">ขาดงาน · '+tot.absent+'</span><span class="rp-of">นอกพื้นที่ (เช็คอินนอกพื้นที่) · '+tot.off+'</span><span class="rp-aj">ขอแก้เวลา · '+tot.adj+'</span><span class="rp-ho">วันหยุดบริษัท · '+hol+' วัน</span><span class="rp-lv">ลา · '+tot.leave+'</span><span class="rp-we">เสาร์–อาทิตย์ / วันไม่ทำงาน · '+we+'</span>'+(nd?'<span class="rp-we" style="background:repeating-linear-gradient(135deg,#FAFAFA 0 6px,#EFEFEF 6px 12px)">ไม่มีข้อมูล (ก่อนเริ่มใช้ระบบ/ก่อนวันเริ่มงาน) · '+nd+'</span>':'');
+  $('#rp-lg').innerHTML='<span class="rp-ok">มาทำงาน · '+tot.present+'</span><span class="rp-ab">ขาดงาน · '+tot.absent+'</span><span class="rp-of">นอกพื้นที่ (เช็คอินนอกพื้นที่) · '+tot.off+'</span><span class="rp-aj">ขอแก้เวลา · '+tot.adj+'</span><span class="rp-ho">วันหยุดบริษัท · '+hol+' วัน</span><span class="rp-lv">ลา · '+tot.leave+'</span><span class="rp-we">เสาร์–อาทิตย์ / วันไม่ทำงาน · '+we+'</span>'+(nd?'<span class="rp-nd">– ไม่มีข้อมูล (ก่อนเริ่มใช้ระบบ/ก่อนวันเริ่มงาน) · '+nd+'</span>':'');
   if(!rows.length){$('#rp-body').innerHTML='<div class="rp-empty">ไม่พบพนักงานตามเงื่อนไขนี้</div>';return}
-  var h='<div class="faint" style="padding:10px 16px;font-size:12.5px">'+rows.length+' คน · '+d.dates.length+' วัน ('+esc(rngTxt(d.from,d.to))+') · เลื่อนซ้าย–ขวาเพื่อดูวันอื่น (ชื่อและสรุปค้างไว้)</div><div class="rp-tw"><table class="rp-t"><thead><tr><th class="fx c0">#</th><th class="fx c1">พนักงาน</th><th class="fx c2">ตำแหน่ง</th><th class="sm s-p">มา<small>วัน</small></th><th class="sm s-a">ขาด<small>วัน</small></th><th class="sm s-o">นอกฯ<small>วัน</small></th><th class="sm s-j">แก้เวลา<small>ครั้ง</small></th><th class="sm s-l last">ลา<small>วัน</small></th>'+
+  var h='<div class="faint" style="padding:10px 16px;font-size:12.5px">'+rows.length+' คน · '+d.dates.length+' วัน ('+esc(rngTxt(d.from,d.to))+') · เลื่อนซ้าย–ขวาเพื่อดูวันอื่น (ชื่อและสรุปค้างไว้)</div><div class="rp-tw"><table class="rp-t"><thead><tr><th class="fx c0">#</th>'+repTh('name','fx c1','พนักงาน')+repTh('pos','fx c2','ตำแหน่ง')+repTh('present','sm s-p','มา<small>วัน</small>')+repTh('absent','sm s-a','ขาด<small>วัน</small>')+repTh('off','sm s-o','นอกฯ<small>วัน</small>')+repTh('adj','sm s-j','แก้เวลา<small>ครั้ง</small>')+repTh('leave','sm s-l last','ลา<small>วัน</small>')+''+
    d.dates.map(function(ds){var dt=dObj(ds),wd=dt.getDay(),cl=d.holidays[ds]?'ho':(wd===0||wd===6?'we':'');return '<th class="dy '+cl+'"'+(d.holidays[ds]?' title="'+esc(d.holidays[ds])+'"':'')+'>'+dt.getDate()+' '+DPS[dt.getMonth()]+'<small>'+TD[wd]+'</small></th>'}).join('')+'</tr></thead><tbody>';
   rows.forEach(function(p,i){var sm=function(v,c){return '<td class="sm '+c+'">'+v+'</td>'};
     h+='<tr><td class="fx c0">'+(i+1)+'</td><td class="fx c1 nm"><b>'+esc(p.name)+'</b><small>('+esc(p.nickname||'-')+') · '+esc(p.code)+'</small></td><td class="fx c2">'+esc(p.position||'')+'</td>'+
      sm(p.sum.present,'s-p')+sm(p.sum.absent,'s-a')+sm(p.sum.off,'s-o')+sm(p.sum.adj,'s-j')+sm(p.sum.leave,'s-l last')+
      d.dates.map(function(ds){var c=repCell(p.days[ds],ds,d);return '<td class="dy '+c.c+'" title="'+esc(c.t)+'">'+c.h+'</td>'}).join('')+'</tr>'});
-  $('#rp-body').innerHTML=h+'</tbody></table></div>'}
+  $('#rp-body').innerHTML=h+'</tbody></table></div>';$$('#rp-body [data-sk]').forEach(function(t){t.onclick=function(){repSort(t.dataset.sk)}})}
 function repCsv(){var d=A.rpm;if(!d)return;var rows=repRows(),q=function(v){v=String(v==null?'':v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
   var out=[['รหัส','ชื่อ','ชื่อเล่น','ตำแหน่ง','มา','ขาด','นอกพื้นที่','แก้เวลา','ลา'].concat(d.dates)];
   rows.forEach(function(p){out.push([p.code,p.name,p.nickname||'',p.position||'',p.sum.present,p.sum.absent,p.sum.off,p.sum.adj,p.sum.leave].concat(d.dates.map(function(ds){var c=repCell(p.days[ds],ds,d);return c.t||''})))});
@@ -1122,7 +1147,7 @@ function drawLead(d){var k=d.kpi,L=d.lead,dt=new Date(d.date+'T12:00:00'),TD=['�
 function vMine(){A.id=A.d.me.id;return '<div class="scb"><span class="i">i</span><div><b>คุณเห็นเฉพาะข้อมูลของตัวเอง</b><small>ลงเวลา · การลา · โควตา ของคุณ · ดูอย่างเดียว (สิทธิ์แก้ข้อมูลขึ้นกับที่ HR กำหนด)</small></div></div>'+vProfile()}
 function bMine(){A.id=A.d.me.id;bProfile()}
 /* ───────── ตารางงาน = หน้าเว็บ Workforce Task Manager เดิมทั้งชุด (planner.html · สร้างด้วย app/tools/build-planner.mjs · หลังบ้าน app/gas/Wtm.js) ───────── */
-var PLANNER_V='mvozl5i2';   // เลขรุ่นหน้า planner.html (build-planner.mjs ตั้งให้ทุกครั้ง · กันเบราว์เซอร์จำหน้าเก่า)
+var PLANNER_V='mvp958oq';   // เลขรุ่นหน้า planner.html (build-planner.mjs ตั้งให้ทุกครั้ง · กันเบราว์เซอร์จำหน้าเก่า)
 function vConf(){return '<iframe class="plf" src="planner.html?desktop=1&page=confirmed&v='+PLANNER_V+'" title="Confirmed"></iframe>'}
 function vPlanner(){return '<iframe class="plf" src="planner.html?desktop=1&v='+PLANNER_V+'" title="ตารางงาน" allow="geolocation"></iframe>'}
 /* (เดิม) ตารางงานช่วง 1 ที่เขียนใหม่ — ไม่ได้ใช้แล้ว เก็บไว้อ้างอิง */

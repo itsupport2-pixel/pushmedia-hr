@@ -1310,6 +1310,7 @@ tr:last-child td { border-bottom: none; }
 .rp-pmf b{font-weight:700;margin-left:2px}.rp-pmf.on{background:var(--ink);border-color:var(--ink);color:#fff}
 </style>
 <style id="pmhr-embed">
+html.hr-wait #content{visibility:hidden}
 /* Push Media HR: โทนขาว–ดำ (แทนเขียว WTM) · ตัวแปรสีชุดเดียวกับหลังบ้าน */
 :root{--ink:#141414;--ink-2:#3A3A3A;--ink-3:#8C8C8C;--line:#E8E8E8;--line-2:#F2F2F2;--surface:#FFFFFF;--bg:#F4F4F4;--bg-2:#EDEDED;
  --teal:#141414;--teal-dark:#000000;--teal-light:#F2F2F2;--teal-dim:rgba(20,20,20,.08);--d-led:#141414;--d-ds:#5A5A5A;--d-bd:#8C8C8C;--d-fin:#8C8C8C;--d-hr:#8C8C8C}
@@ -14401,7 +14402,10 @@ function _hideLineLoading() {
   };
   var _go = go;
   var _pg0 = (function () { try { return new URLSearchParams(location.search).get('page') || ''; } catch (e) { return ''; } })();   // หลังบ้านเปิดเมนูย่อย เช่น ?page=confirmed
-  go = function (p) { if (!p || p === 'dashboard') { p = _pg0 === 'confirmed' ? 'confirmed' : 'planner'; } return _go(p); };
+  // ไม่ให้หน้า Dashboard เดิมของ WTM โผล่แว๊บแรก: ซ่อนเนื้อหาจนกว่าจะเปิดหน้าที่ต้องการ (ตารางงาน / Confirmed) · กันค้าง 8 วิ
+  var _pgT = _pg0 === 'confirmed' ? 'confirmed' : 'planner', _show = function () { document.documentElement.classList.remove('hr-wait'); };
+  document.documentElement.classList.add('hr-wait'); setTimeout(_show, 8000);
+  go = function (p) { if (!p || p === 'dashboard') { p = _pgT; } var r = _go(p); if (p === _pgT) setTimeout(_show, 0); return r; };
   /* แถบเครื่องมือเดียว (Figma 279:5726): ใส่ [แผนก/ทีม ▾] หน้าแถบเครื่องมือของ WTM · ท้ายแถบ = รถบริษัท + ปุ่มของหน้า (+ เพิ่มงาน จาก #tb-actions) */
   function hrInject() {
     var c = document.getElementById('content'); if (!c || !DB.cu || typeof vDepts !== 'function') return;
