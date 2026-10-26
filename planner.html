@@ -14405,7 +14405,10 @@ function _hideLineLoading() {
   // ไม่ให้หน้า Dashboard เดิมของ WTM โผล่แว๊บแรก: ซ่อนเนื้อหาจนกว่าจะเปิดหน้าที่ต้องการ (ตารางงาน / Confirmed) · กันค้าง 8 วิ
   var _pgT = _pg0 === 'confirmed' ? 'confirmed' : 'planner', _show = function () { document.documentElement.classList.remove('hr-wait'); };
   document.documentElement.classList.add('hr-wait'); setTimeout(_show, 8000);
-  go = function (p) { if (!p || p === 'dashboard') { p = _pgT; } var r = _go(p); if (p === _pgT) setTimeout(_show, 0); return r; };
+  // Confirmed: WTM วาดข้อความโหลดแบบเดิมก่อน แล้ว planner-confirmed.js วาดแบบใหม่ทับ → รอจนเห็นแบบใหม่ (.pc-tools) ค่อยแสดง
+  var _ready = function () { var c = document.getElementById('content'); return _pgT !== 'confirmed' || !!(c && c.querySelector('.pc-tools')); };
+  var _wait = function () { if (_ready()) _show(); else setTimeout(_wait, 30); };
+  go = function (p) { if (!p || p === 'dashboard') { p = _pgT; } var r = _go(p); if (p === _pgT) setTimeout(_wait, 0); return r; };
   /* แถบเครื่องมือเดียว (Figma 279:5726): ใส่ [แผนก/ทีม ▾] หน้าแถบเครื่องมือของ WTM · ท้ายแถบ = รถบริษัท + ปุ่มของหน้า (+ เพิ่มงาน จาก #tb-actions) */
   function hrInject() {
     var c = document.getElementById('content'); if (!c || !DB.cu || typeof vDepts !== 'function') return;
@@ -14586,6 +14589,130 @@ function _hideLineLoading() {
     return orig.apply(this, arguments);
   }; })(_initApp);
 })();
+/* Push Media HR · หน้า Confirmed แบบ A (Figma 460:8237 · 26 ต.ค. 2569) — ใส่ท้าย planner.html โดย build-planner.mjs
+ * รายการโปรเจกต์ + สถานะเป็นหลัก · ค่าใช้จ่ายภาคสนามเป็นคอลัมน์ท้าย + ยอดรวม (กดดูกราฟแบบเดิมได้)
+ * ใช้ข้อมูลและฟังก์ชันเดิมของ WTM: _cfp / _cfpYear / _cfpTaskSpan / _pjSt / _pjSet / _cfpCanEdit / _cfpDrawer · ไม่แก้ WTM */
+(function () {
+  if (typeof _cfpRender !== 'function') return;
+  var oldRender = _cfpRender, oldDrawer = _cfpDrawer;
+  var ST = { active: ['กำลังทำ', 'ok'], upcoming: ['รอเริ่ม', 'wait'], done: ['เสร็จแล้ว', 'done'], '': ['ยังไม่ระบุ', 'none'], hidden: ['ซ่อน', 'none'] };
+  var ORDER = { active: 0, upcoming: 1, '': 2, done: 3, hidden: 4 };
+  var esc = function (x) { return typeof escapeHtml === 'function' ? escapeHtml(x) : String(x); };
+  var fdt = function (d) { if (!d) return ''; var x = new Date(d + 'T00:00:00'); return x.getDate() + ' ' + _CFP_TH[x.getMonth()]; };
+  var span = function (o, today) {
+    var sp = _cfpTaskSpan(o); if (!sp.f) return _pjSt(o.code) === 'upcoming' ? 'ยังไม่มีงาน' : '—';
+    if (sp.f === sp.l) return fdt(sp.f);
+    return fdt(sp.f) + ' – ' + (sp.l >= today ? 'ปัจจุบัน' : fdt(sp.l));
+  };
+  if (!_cfp.pc) { _cfp.pc = 1; _cfp.view = 'list'; _cfp.mf = 'all'; _cfp.md = ''; _cfp.mt = ''; _cfp.mq = ''; _cfp.mn = 50; _cfp.jobs = false; }
+  /* แผนก/ทีมของโปรเจกต์ (26 ต.ค. 2569 · แบบเดียวกับตารางงาน): จากงานที่ผูกเลข PM (แผนก/ทีมที่ลงงานจริง) + คอลัมน์ PM ในชีต (เช่น "LED A" → ทีม LED-A) */
+  var normT = function (x) { return String(x || '').toUpperCase().replace(/^PM\s+/, '').replace(/[\s_-]+/g, ''); };
+  function units(o) {
+    var u = [], seen = {}, push = function (d, t) { var k = d + '|' + (t || ''); if (d && !seen[k]) { seen[k] = 1; u.push({ d: d, t: t || '' }); } };
+    o.ts.forEach(function (x) { push(x.t.deptName, x.t.teamName); });
+    var k = normT(o.pm), tm = k && (DB.teams || []).find(function (t) { return normT(t.name) === k; });
+    if (tm) push(tm.deptName, tm.name);
+    return u;
+  }
+  var inUnit = function (o, d, t) { return (o._u || (o._u = units(o))).some(function (x) { return x.d === d && (!t || x.t === t); }); };
+
+  window._cfpRender = function () {
+    if (_cfp.view === 'cost' || _cfp.view === 'manage') {   // มุมมองเดิม: กราฟต้นทุน / จัดการโปรเจกต์ (การ์ด · ติ๊กหลายรายการ · ตั้งสถานะ) + ปุ่มกลับ
+      oldRender(); var top = document.querySelector('#cfp .cfp-top'); if (top && !document.getElementById('pc-back')) top.insertAdjacentHTML('afterbegin', '<button type="button" class="pc-back" id="pc-back">← รายการโปรเจกต์</button>');
+      var bk = document.getElementById('pc-back'); if (bk) bk.onclick = function () { _cfp.view = 'list'; _cfpRender(); };
+      var vs = document.getElementById('cfp-view'); if (vs) vs.style.display = 'none'; return;
+    }
+    var el = document.getElementById('cfp'); if (!el || !_cfp.data) return;
+    var today = _localDateStr(new Date());
+    // ปีที่มีโปรเจกต์ ≥ 20 (ปีเก่าที่ค้างดูได้ใน "ทั้งหมด") · แสดงเป็น พ.ศ.
+    var years = {}; _cfp.data.forEach(function (o) { if (o.y) years[o.y] = (years[o.y] || 0) + 1; });
+    Object.keys(years).forEach(function (y) { if (years[y] < 20) delete years[y]; });
+    var ys = Object.keys(years).sort().reverse(); if (_cfp.y && !years[_cfp.y]) _cfp.y = ys[0] || '';
+    var all = _cfpYear(), cnt = { all: 0, active: 0, upcoming: 0, done: 0, none: 0, hidden: 0 };
+    all.forEach(function (o) { o._u = null; var st = _pjSt(o.code); if (st === 'hidden') { cnt.hidden++; return; } cnt.all++; cnt[st || 'none']++; });
+    var words = _cfp.mq.trim().toLowerCase().split(/\s+/).filter(Boolean);
+    var list = all.filter(function (o) {
+      var st = _pjSt(o.code);
+      if (_cfp.mf === 'hidden') { if (st !== 'hidden') return false; } else if (st === 'hidden') return false;
+      if (_cfp.mf !== 'all' && _cfp.mf !== 'hidden' && (_cfp.mf === 'none' ? st : st !== _cfp.mf)) return false;
+      if (_cfp.jobs && !o.ts.length) return false;
+      var h = (o.code + ' ' + o.name + ' ' + o.client + ' ' + o.pm + ' ' + o.group).toLowerCase();
+      return words.every(function (w) { return h.indexOf(w) >= 0; });
+    });
+    // ตัวเลขบนปุ่มแผนก/ทีม = จำนวนโปรเจกต์ตามตัวกรองอื่น (สถานะ/ค้นหา/มีงาน) ก่อนเลือกแผนก
+    var base = list, depts = vDepts().filter(function (d) { return DB.schedTeams && (DB.schedTeams[d.name] || []).length; }).map(function (d) { return d.name; });
+    if (_cfp.md && depts.indexOf(_cfp.md) < 0) { _cfp.md = ''; _cfp.mt = ''; }
+    var dc = function (d, t) { return base.filter(function (o) { return inUnit(o, d, t); }).length; };
+    list = base.filter(function (o) { return !_cfp.md || inUnit(o, _cfp.md, _cfp.mt); }).map(function (o) { o._sp = _cfpTaskSpan(o); return o; }).sort(function (x, y) {
+      return (ORDER[_pjSt(x.code)] - ORDER[_pjSt(y.code)]) || String(y._sp.l || '').localeCompare(String(x._sp.l || '')) || String(y.code).localeCompare(String(x.code));
+    });
+    var tot = all.filter(function (o) { return _pjSt(o.code) !== 'hidden'; }).reduce(function (s, o) { return s + (o.total || 0); }, 0);
+    var shown = list.slice(0, _cfp.mn);
+    var tab = function (k, l) { var on = _cfp.mf === k; return '<button type="button" class="pc-tab' + (on ? ' on' : '') + '" data-mf="' + k + '"><span>' + (k !== 'all' ? '<i class="pc-dot ' + (k === 'none' ? 'none' : ST[k][1]) + '"></i>' : '') + l + '</span><b>' + cnt[k] + '</b></button>'; };
+    var dbtn = function (d, l, n) { return '<button type="button" class="pc-d' + ((_cfp.md || '') === d ? ' on' : '') + '" data-d="' + esc(d) + '">' + esc(l) + ' <i>' + n + '</i></button>'; };
+    var tbtn = function (t, l, n) { return '<button type="button" class="pc-tm' + ((_cfp.mt || '') === t ? ' on' : '') + '" data-t="' + esc(t) + '">' + esc(l) + ' <i>' + n + '</i></button>'; };
+    var teamRow = _cfp.md ? '<div class="pc-trow"><span class="pc-l">ทีม</span>' + tbtn('', 'ทั้งแผนก ' + _cfp.md, dc(_cfp.md)) + (DB.schedTeams[_cfp.md] || []).map(function (t) { return tbtn(t, t, dc(_cfp.md, t)); }).join('') + '</div>' : '';
+    var row = function (o) {
+      var st = _pjSt(o.code), s = ST[st] || ST[''], has = o.ts.length;
+      return '<tr data-c="' + esc(o.code) + '" tabindex="0"><td class="pc-code">' + esc(o.code) + '</td>' +
+        '<td><div class="pc-nm">' + esc(o.name) + '</div><div class="pc-cl">' + esc(o.client || '') + '</div></td>' +
+        '<td>' + (o.group && o.group !== '-' ? '<span class="pc-chip">' + esc(o.group) + '</span>' : '') + '</td>' +
+        '<td>' + esc(o.pm && o.pm !== '-' ? o.pm : '') + '</td>' +
+        '<td><span class="pc-st ' + s[1] + '">● ' + s[0] + '</span></td>' +
+        '<td class="num' + (has ? '' : ' z') + '">' + o.ts.length + '</td><td class="num' + (has ? '' : ' z') + '">' + (o.pd || 0) + '</td>' +
+        '<td class="pc-sp">' + span(o, today) + '</td>' +
+        '<td class="num pc-amt' + (o.total ? '' : ' z') + '">' + (o.total ? _cfpBt(o.total) : '—') + '</td></tr>';
+    };
+    el.innerHTML =
+      '<div class="pc-hd"><div><h2>โปรเจกต์ Confirmed</h2><div class="pc-lead">รายการโปรเจกต์จากชีต Confirmed · สถานะ · งานและคนที่ลงแล้ว · ค่าใช้จ่ายภาคสนาม</div></div>' +
+        '<button type="button" class="pc-mng" id="pc-mng" title="การ์ดโปรเจกต์ · ติ๊กหลายรายการแล้วตั้งสถานะพร้อมกัน">จัดการโปรเจกต์</button><div class="pc-seg" role="group" aria-label="ปี">' + ys.map(function (y) { return '<button type="button" data-y="' + y + '" aria-pressed="' + (_cfp.y === y) + '">' + (Number(y) + 543) + '</button>'; }).join('') + '<button type="button" data-y="" aria-pressed="' + (!_cfp.y) + '">ทั้งหมด</button></div></div>' +
+      '<div class="pc-tabs">' + tab('all', 'ทั้งหมด') + tab('active', 'กำลังทำ') + tab('upcoming', 'รอเริ่ม') + tab('done', 'เสร็จแล้ว') + tab('none', 'ยังไม่ระบุสถานะ') + '</div>' +
+      '<div class="pc-tools"><input id="pc-q" class="pc-q" type="search" placeholder="ค้นหา เลข PM / ชื่อโปรเจกต์ / ลูกค้า / PM" value="' + esc(_cfp.mq) + '">' +
+        '<span class="pc-l">แผนก</span><div class="pc-seg">' + dbtn('', 'ทุกแผนก', base.length) + depts.map(function (d) { return dbtn(d, d, dc(d)); }).join('') + '</div><span class="pc-spc"></span>' +
+        (cnt.hidden ? '<button type="button" class="pc-hid' + (_cfp.mf === 'hidden' ? ' on' : '') + '" data-mf="hidden">ซ่อนไว้ ' + cnt.hidden + '</button>' : '') +
+        '<label class="pc-tog"><input type="checkbox" id="pc-jobs"' + (_cfp.jobs ? ' checked' : '') + '> เฉพาะที่มีงานแล้ว</label></div>' + teamRow +
+      '<section class="pc-card"><div class="pc-tw"><table class="pc-t"><thead><tr><th>เลข PM</th><th>โปรเจกต์ / ลูกค้า</th><th>กลุ่ม</th><th>PM</th><th>สถานะ</th><th class="num">งาน</th><th class="num">คน-วัน</th><th>ช่วงที่ลงงาน</th><th class="num">ค่าใช้จ่ายภาคสนาม</th></tr></thead><tbody>' +
+        (shown.length ? shown.map(row).join('') : '<tr><td colspan="9" class="pc-empty">ไม่พบโปรเจกต์ตามเงื่อนไขนี้</td></tr>') + '</tbody></table></div>' +
+        '<div class="pc-ft"><span>แสดง ' + shown.length + ' จาก ' + list.length + (list.length > shown.length ? ' · <button type="button" class="pc-more" id="pc-more">แสดงเพิ่ม</button>' : '') + ' · คลิกแถว = รายละเอียด (งาน · คน · ค่าใช้จ่ายแยกประเภท · เปลี่ยนสถานะ)</span>' +
+        '<button type="button" class="pc-cost" id="pc-cost">รวมค่าใช้จ่ายภาคสนาม' + (_cfp.y ? 'ปี ' + (Number(_cfp.y) + 543) : '') + ' ' + _cfpBt(tot) + ' →</button></div></section>';
+    el.querySelectorAll('.pc-seg button[data-y]').forEach(function (b) { b.onclick = function () { _cfp.y = b.dataset.y; _cfp.mn = 50; _cfpRender(); }; });
+    el.querySelectorAll('[data-mf]').forEach(function (b) { b.onclick = function () { _cfp.mf = _cfp.mf === b.dataset.mf && b.dataset.mf === 'hidden' ? 'all' : b.dataset.mf; _cfp.mn = 50; _cfpRender(); }; });
+    el.querySelectorAll('.pc-d').forEach(function (b) { b.onclick = function () { _cfp.md = b.dataset.d; _cfp.mt = ''; _cfp.mn = 50; _cfpRender(); }; });
+    el.querySelectorAll('.pc-tm').forEach(function (b) { b.onclick = function () { _cfp.mt = b.dataset.t; _cfp.mn = 50; _cfpRender(); }; });
+    var q = document.getElementById('pc-q'), qt; if (q) q.oninput = function () { clearTimeout(qt); qt = setTimeout(function () { _cfp.mq = q.value; _cfp.mn = 50; _cfpRender(); var n = document.getElementById('pc-q'); if (n) { n.focus(); n.setSelectionRange(n.value.length, n.value.length); } }, 250); };
+    var jb = document.getElementById('pc-jobs'); if (jb) jb.onchange = function () { _cfp.jobs = jb.checked; _cfpRender(); };
+    var mr = document.getElementById('pc-more'); if (mr) mr.onclick = function () { _cfp.mn += 100; _cfpRender(); };
+    document.getElementById('pc-cost').onclick = function () { _cfp.view = 'cost'; _cfpRender(); };
+    document.getElementById('pc-mng').onclick = function () { _cfp.view = 'manage'; _cfpRender(); };
+    el.querySelectorAll('tr[data-c]').forEach(function (r) { r.onclick = function () { _cfpDrawer(r.dataset.c); }; r.onkeydown = function (e) { if (e.key === 'Enter') _cfpDrawer(r.dataset.c); }; });
+  };
+
+  /* แผงรายละเอียดเดิม + ปุ่มเปลี่ยนสถานะ (คนมีสิทธิ์แก้ไขเมนู Confirmed) */
+  window._cfpDrawer = function (code) {
+    oldDrawer(code);
+    var d = document.querySelector('.cfp-drawer .d'); if (!d) return;
+    var cur = _pjSt(code), can = _cfpCanEdit();
+    var h = '<div class="pc-dst"><div class="cfp-lbl">สถานะโปรเจกต์</div><div class="pc-seg" role="group" aria-label="สถานะโปรเจกต์">' +
+      ['upcoming', 'active', 'done', 'hidden'].map(function (k) { return '<button type="button" data-st="' + k + '" aria-pressed="' + (cur === k) + '"' + (can ? '' : ' disabled') + '>' + ST[k][0] + '</button>'; }).join('') + '</div>' +
+      (can ? '' : '<div class="pc-note">ดูได้อย่างเดียว · ขอสิทธิ์แก้ไขเมนู Confirmed เพื่อเปลี่ยนสถานะ</div>') + '</div>';
+    var first = d.children[1]; if (first) first.insertAdjacentHTML('afterend', h);
+    d.querySelectorAll('[data-st]').forEach(function (b) { b.onclick = function () {
+      var st = b.dataset.st === cur ? '' : b.dataset.st; _pjSet([code], st); cur = st;
+      d.querySelectorAll('[data-st]').forEach(function (x) { x.setAttribute('aria-pressed', String(x.dataset.st === cur)); });
+      _cfpRender();
+    }; });
+  };
+  /* ตัวกัน (26 ต.ค. 2569): ถ้ามีทางใดวาดหน้า Confirmed แบบเดิมของ WTM ขึ้นมา (เช่นเรียกฟังก์ชันตัวเดิมที่จำไว้ก่อนเราเปลี่ยน)
+   * ขณะอยู่มุมมองรายการ → วาดแบบใหม่ทับทันที · ไม่วนซ้ำ (เช็กว่ามี .pc-tools แล้วหยุด) */
+  var _fix = 0;
+  new MutationObserver(function () {
+    if (_fix) return; var el = document.getElementById('cfp');
+    if (!el || !_cfp.data || _cfp.view === 'cost' || _cfp.view === 'manage' || el.querySelector('.pc-tools')) return;
+    if (!el.querySelector('.cfp-top, #cfp-view, .cfp-panel')) return;   // ยังเป็นข้อความกำลังโหลด
+    _fix = 1; try { window._cfpRender(); } finally { setTimeout(function () { _fix = 0; }, 0); }
+  }).observe(document.documentElement, { childList: true, subtree: true });
+})();
+
 
 init();
 </script>
@@ -16181,122 +16308,5 @@ body.m-active{ overflow:hidden; }
 
 })();
 </script><script>try { window.isMobileMode = function () { return false; }; } catch (e) {}</script>
-<script>
-/* Push Media HR · หน้า Confirmed แบบ A (Figma 460:8237 · 26 ต.ค. 2569) — ใส่ท้าย planner.html โดย build-planner.mjs
- * รายการโปรเจกต์ + สถานะเป็นหลัก · ค่าใช้จ่ายภาคสนามเป็นคอลัมน์ท้าย + ยอดรวม (กดดูกราฟแบบเดิมได้)
- * ใช้ข้อมูลและฟังก์ชันเดิมของ WTM: _cfp / _cfpYear / _cfpTaskSpan / _pjSt / _pjSet / _cfpCanEdit / _cfpDrawer · ไม่แก้ WTM */
-(function () {
-  if (typeof _cfpRender !== 'function') return;
-  var oldRender = _cfpRender, oldDrawer = _cfpDrawer;
-  var ST = { active: ['กำลังทำ', 'ok'], upcoming: ['รอเริ่ม', 'wait'], done: ['เสร็จแล้ว', 'done'], '': ['ยังไม่ระบุ', 'none'], hidden: ['ซ่อน', 'none'] };
-  var ORDER = { active: 0, upcoming: 1, '': 2, done: 3, hidden: 4 };
-  var esc = function (x) { return typeof escapeHtml === 'function' ? escapeHtml(x) : String(x); };
-  var fdt = function (d) { if (!d) return ''; var x = new Date(d + 'T00:00:00'); return x.getDate() + ' ' + _CFP_TH[x.getMonth()]; };
-  var span = function (o, today) {
-    var sp = _cfpTaskSpan(o); if (!sp.f) return _pjSt(o.code) === 'upcoming' ? 'ยังไม่มีงาน' : '—';
-    if (sp.f === sp.l) return fdt(sp.f);
-    return fdt(sp.f) + ' – ' + (sp.l >= today ? 'ปัจจุบัน' : fdt(sp.l));
-  };
-  if (!_cfp.pc) { _cfp.pc = 1; _cfp.view = 'list'; _cfp.mf = 'all'; _cfp.md = ''; _cfp.mt = ''; _cfp.mq = ''; _cfp.mn = 50; _cfp.jobs = false; }
-  /* แผนก/ทีมของโปรเจกต์ (26 ต.ค. 2569 · แบบเดียวกับตารางงาน): จากงานที่ผูกเลข PM (แผนก/ทีมที่ลงงานจริง) + คอลัมน์ PM ในชีต (เช่น "LED A" → ทีม LED-A) */
-  var normT = function (x) { return String(x || '').toUpperCase().replace(/^PM\s+/, '').replace(/[\s_-]+/g, ''); };
-  function units(o) {
-    var u = [], seen = {}, push = function (d, t) { var k = d + '|' + (t || ''); if (d && !seen[k]) { seen[k] = 1; u.push({ d: d, t: t || '' }); } };
-    o.ts.forEach(function (x) { push(x.t.deptName, x.t.teamName); });
-    var k = normT(o.pm), tm = k && (DB.teams || []).find(function (t) { return normT(t.name) === k; });
-    if (tm) push(tm.deptName, tm.name);
-    return u;
-  }
-  var inUnit = function (o, d, t) { return (o._u || (o._u = units(o))).some(function (x) { return x.d === d && (!t || x.t === t); }); };
-
-  window._cfpRender = function () {
-    if (_cfp.view === 'cost' || _cfp.view === 'manage') {   // มุมมองเดิม: กราฟต้นทุน / จัดการโปรเจกต์ (การ์ด · ติ๊กหลายรายการ · ตั้งสถานะ) + ปุ่มกลับ
-      oldRender(); var top = document.querySelector('#cfp .cfp-top'); if (top && !document.getElementById('pc-back')) top.insertAdjacentHTML('afterbegin', '<button type="button" class="pc-back" id="pc-back">← รายการโปรเจกต์</button>');
-      var bk = document.getElementById('pc-back'); if (bk) bk.onclick = function () { _cfp.view = 'list'; _cfpRender(); };
-      var vs = document.getElementById('cfp-view'); if (vs) vs.style.display = 'none'; return;
-    }
-    var el = document.getElementById('cfp'); if (!el || !_cfp.data) return;
-    var today = _localDateStr(new Date());
-    // ปีที่มีโปรเจกต์ ≥ 20 (ปีเก่าที่ค้างดูได้ใน "ทั้งหมด") · แสดงเป็น พ.ศ.
-    var years = {}; _cfp.data.forEach(function (o) { if (o.y) years[o.y] = (years[o.y] || 0) + 1; });
-    Object.keys(years).forEach(function (y) { if (years[y] < 20) delete years[y]; });
-    var ys = Object.keys(years).sort().reverse(); if (_cfp.y && !years[_cfp.y]) _cfp.y = ys[0] || '';
-    var all = _cfpYear(), cnt = { all: 0, active: 0, upcoming: 0, done: 0, none: 0, hidden: 0 };
-    all.forEach(function (o) { o._u = null; var st = _pjSt(o.code); if (st === 'hidden') { cnt.hidden++; return; } cnt.all++; cnt[st || 'none']++; });
-    var words = _cfp.mq.trim().toLowerCase().split(/\s+/).filter(Boolean);
-    var list = all.filter(function (o) {
-      var st = _pjSt(o.code);
-      if (_cfp.mf === 'hidden') { if (st !== 'hidden') return false; } else if (st === 'hidden') return false;
-      if (_cfp.mf !== 'all' && _cfp.mf !== 'hidden' && (_cfp.mf === 'none' ? st : st !== _cfp.mf)) return false;
-      if (_cfp.jobs && !o.ts.length) return false;
-      var h = (o.code + ' ' + o.name + ' ' + o.client + ' ' + o.pm + ' ' + o.group).toLowerCase();
-      return words.every(function (w) { return h.indexOf(w) >= 0; });
-    });
-    // ตัวเลขบนปุ่มแผนก/ทีม = จำนวนโปรเจกต์ตามตัวกรองอื่น (สถานะ/ค้นหา/มีงาน) ก่อนเลือกแผนก
-    var base = list, depts = vDepts().filter(function (d) { return DB.schedTeams && (DB.schedTeams[d.name] || []).length; }).map(function (d) { return d.name; });
-    if (_cfp.md && depts.indexOf(_cfp.md) < 0) { _cfp.md = ''; _cfp.mt = ''; }
-    var dc = function (d, t) { return base.filter(function (o) { return inUnit(o, d, t); }).length; };
-    list = base.filter(function (o) { return !_cfp.md || inUnit(o, _cfp.md, _cfp.mt); }).map(function (o) { o._sp = _cfpTaskSpan(o); return o; }).sort(function (x, y) {
-      return (ORDER[_pjSt(x.code)] - ORDER[_pjSt(y.code)]) || String(y._sp.l || '').localeCompare(String(x._sp.l || '')) || String(y.code).localeCompare(String(x.code));
-    });
-    var tot = all.filter(function (o) { return _pjSt(o.code) !== 'hidden'; }).reduce(function (s, o) { return s + (o.total || 0); }, 0);
-    var shown = list.slice(0, _cfp.mn);
-    var tab = function (k, l) { var on = _cfp.mf === k; return '<button type="button" class="pc-tab' + (on ? ' on' : '') + '" data-mf="' + k + '"><span>' + (k !== 'all' ? '<i class="pc-dot ' + (k === 'none' ? 'none' : ST[k][1]) + '"></i>' : '') + l + '</span><b>' + cnt[k] + '</b></button>'; };
-    var dbtn = function (d, l, n) { return '<button type="button" class="pc-d' + ((_cfp.md || '') === d ? ' on' : '') + '" data-d="' + esc(d) + '">' + esc(l) + ' <i>' + n + '</i></button>'; };
-    var tbtn = function (t, l, n) { return '<button type="button" class="pc-tm' + ((_cfp.mt || '') === t ? ' on' : '') + '" data-t="' + esc(t) + '">' + esc(l) + ' <i>' + n + '</i></button>'; };
-    var teamRow = _cfp.md ? '<div class="pc-trow"><span class="pc-l">ทีม</span>' + tbtn('', 'ทั้งแผนก ' + _cfp.md, dc(_cfp.md)) + (DB.schedTeams[_cfp.md] || []).map(function (t) { return tbtn(t, t, dc(_cfp.md, t)); }).join('') + '</div>' : '';
-    var row = function (o) {
-      var st = _pjSt(o.code), s = ST[st] || ST[''], has = o.ts.length;
-      return '<tr data-c="' + esc(o.code) + '" tabindex="0"><td class="pc-code">' + esc(o.code) + '</td>' +
-        '<td><div class="pc-nm">' + esc(o.name) + '</div><div class="pc-cl">' + esc(o.client || '') + '</div></td>' +
-        '<td>' + (o.group && o.group !== '-' ? '<span class="pc-chip">' + esc(o.group) + '</span>' : '') + '</td>' +
-        '<td>' + esc(o.pm && o.pm !== '-' ? o.pm : '') + '</td>' +
-        '<td><span class="pc-st ' + s[1] + '">● ' + s[0] + '</span></td>' +
-        '<td class="num' + (has ? '' : ' z') + '">' + o.ts.length + '</td><td class="num' + (has ? '' : ' z') + '">' + (o.pd || 0) + '</td>' +
-        '<td class="pc-sp">' + span(o, today) + '</td>' +
-        '<td class="num pc-amt' + (o.total ? '' : ' z') + '">' + (o.total ? _cfpBt(o.total) : '—') + '</td></tr>';
-    };
-    el.innerHTML =
-      '<div class="pc-hd"><div><h2>โปรเจกต์ Confirmed</h2><div class="pc-lead">รายการโปรเจกต์จากชีต Confirmed · สถานะ · งานและคนที่ลงแล้ว · ค่าใช้จ่ายภาคสนาม</div></div>' +
-        '<button type="button" class="pc-mng" id="pc-mng" title="การ์ดโปรเจกต์ · ติ๊กหลายรายการแล้วตั้งสถานะพร้อมกัน">จัดการโปรเจกต์</button><div class="pc-seg" role="group" aria-label="ปี">' + ys.map(function (y) { return '<button type="button" data-y="' + y + '" aria-pressed="' + (_cfp.y === y) + '">' + (Number(y) + 543) + '</button>'; }).join('') + '<button type="button" data-y="" aria-pressed="' + (!_cfp.y) + '">ทั้งหมด</button></div></div>' +
-      '<div class="pc-tabs">' + tab('all', 'ทั้งหมด') + tab('active', 'กำลังทำ') + tab('upcoming', 'รอเริ่ม') + tab('done', 'เสร็จแล้ว') + tab('none', 'ยังไม่ระบุสถานะ') + '</div>' +
-      '<div class="pc-tools"><input id="pc-q" class="pc-q" type="search" placeholder="ค้นหา เลข PM / ชื่อโปรเจกต์ / ลูกค้า / PM" value="' + esc(_cfp.mq) + '">' +
-        '<span class="pc-l">แผนก</span><div class="pc-seg">' + dbtn('', 'ทุกแผนก', base.length) + depts.map(function (d) { return dbtn(d, d, dc(d)); }).join('') + '</div><span class="pc-spc"></span>' +
-        (cnt.hidden ? '<button type="button" class="pc-hid' + (_cfp.mf === 'hidden' ? ' on' : '') + '" data-mf="hidden">ซ่อนไว้ ' + cnt.hidden + '</button>' : '') +
-        '<label class="pc-tog"><input type="checkbox" id="pc-jobs"' + (_cfp.jobs ? ' checked' : '') + '> เฉพาะที่มีงานแล้ว</label></div>' + teamRow +
-      '<section class="pc-card"><div class="pc-tw"><table class="pc-t"><thead><tr><th>เลข PM</th><th>โปรเจกต์ / ลูกค้า</th><th>กลุ่ม</th><th>PM</th><th>สถานะ</th><th class="num">งาน</th><th class="num">คน-วัน</th><th>ช่วงที่ลงงาน</th><th class="num">ค่าใช้จ่ายภาคสนาม</th></tr></thead><tbody>' +
-        (shown.length ? shown.map(row).join('') : '<tr><td colspan="9" class="pc-empty">ไม่พบโปรเจกต์ตามเงื่อนไขนี้</td></tr>') + '</tbody></table></div>' +
-        '<div class="pc-ft"><span>แสดง ' + shown.length + ' จาก ' + list.length + (list.length > shown.length ? ' · <button type="button" class="pc-more" id="pc-more">แสดงเพิ่ม</button>' : '') + ' · คลิกแถว = รายละเอียด (งาน · คน · ค่าใช้จ่ายแยกประเภท · เปลี่ยนสถานะ)</span>' +
-        '<button type="button" class="pc-cost" id="pc-cost">รวมค่าใช้จ่ายภาคสนาม' + (_cfp.y ? 'ปี ' + (Number(_cfp.y) + 543) : '') + ' ' + _cfpBt(tot) + ' →</button></div></section>';
-    el.querySelectorAll('.pc-seg button[data-y]').forEach(function (b) { b.onclick = function () { _cfp.y = b.dataset.y; _cfp.mn = 50; _cfpRender(); }; });
-    el.querySelectorAll('[data-mf]').forEach(function (b) { b.onclick = function () { _cfp.mf = _cfp.mf === b.dataset.mf && b.dataset.mf === 'hidden' ? 'all' : b.dataset.mf; _cfp.mn = 50; _cfpRender(); }; });
-    el.querySelectorAll('.pc-d').forEach(function (b) { b.onclick = function () { _cfp.md = b.dataset.d; _cfp.mt = ''; _cfp.mn = 50; _cfpRender(); }; });
-    el.querySelectorAll('.pc-tm').forEach(function (b) { b.onclick = function () { _cfp.mt = b.dataset.t; _cfp.mn = 50; _cfpRender(); }; });
-    var q = document.getElementById('pc-q'), qt; if (q) q.oninput = function () { clearTimeout(qt); qt = setTimeout(function () { _cfp.mq = q.value; _cfp.mn = 50; _cfpRender(); var n = document.getElementById('pc-q'); if (n) { n.focus(); n.setSelectionRange(n.value.length, n.value.length); } }, 250); };
-    var jb = document.getElementById('pc-jobs'); if (jb) jb.onchange = function () { _cfp.jobs = jb.checked; _cfpRender(); };
-    var mr = document.getElementById('pc-more'); if (mr) mr.onclick = function () { _cfp.mn += 100; _cfpRender(); };
-    document.getElementById('pc-cost').onclick = function () { _cfp.view = 'cost'; _cfpRender(); };
-    document.getElementById('pc-mng').onclick = function () { _cfp.view = 'manage'; _cfpRender(); };
-    el.querySelectorAll('tr[data-c]').forEach(function (r) { r.onclick = function () { _cfpDrawer(r.dataset.c); }; r.onkeydown = function (e) { if (e.key === 'Enter') _cfpDrawer(r.dataset.c); }; });
-  };
-
-  /* แผงรายละเอียดเดิม + ปุ่มเปลี่ยนสถานะ (คนมีสิทธิ์แก้ไขเมนู Confirmed) */
-  window._cfpDrawer = function (code) {
-    oldDrawer(code);
-    var d = document.querySelector('.cfp-drawer .d'); if (!d) return;
-    var cur = _pjSt(code), can = _cfpCanEdit();
-    var h = '<div class="pc-dst"><div class="cfp-lbl">สถานะโปรเจกต์</div><div class="pc-seg" role="group" aria-label="สถานะโปรเจกต์">' +
-      ['upcoming', 'active', 'done', 'hidden'].map(function (k) { return '<button type="button" data-st="' + k + '" aria-pressed="' + (cur === k) + '"' + (can ? '' : ' disabled') + '>' + ST[k][0] + '</button>'; }).join('') + '</div>' +
-      (can ? '' : '<div class="pc-note">ดูได้อย่างเดียว · ขอสิทธิ์แก้ไขเมนู Confirmed เพื่อเปลี่ยนสถานะ</div>') + '</div>';
-    var first = d.children[1]; if (first) first.insertAdjacentHTML('afterend', h);
-    d.querySelectorAll('[data-st]').forEach(function (b) { b.onclick = function () {
-      var st = b.dataset.st === cur ? '' : b.dataset.st; _pjSet([code], st); cur = st;
-      d.querySelectorAll('[data-st]').forEach(function (x) { x.setAttribute('aria-pressed', String(x.dataset.st === cur)); });
-      _cfpRender();
-    }; });
-  };
-})();
-
-</script>
 </body>
 </html>
