@@ -347,6 +347,7 @@ button.kpi:hover{border-color:var(--fnt)}.kpi .l{color:var(--mut);font-size:13px
 .dp-g .d.wk{color:var(--mut)}.dp-g .d.td span{box-shadow:inset 0 0 0 1.5px var(--acc);font-weight:700;color:var(--fg)}
 .dp-g .d.in{background:var(--acc-soft)}.dp-g .d.in.c0,.dp-g .d.s{border-radius:8px 0 0 8px}.dp-g .d.in.c6,.dp-g .d.e,.dp-g .d.in.last{border-radius:0 8px 8px 0}
 .dp-g .d.in.c0.c6,.dp-g .d.s.e,.dp-g .d.s.c6,.dp-g .d.e.c0,.dp-g .d.s.last,.dp-g .d.in.c0.last{border-radius:8px}
+.dp-g .d:disabled{color:var(--fnt);opacity:.4;cursor:default}.dp-g .d:disabled:hover span{background:none}.dp-nv:disabled{opacity:.35;cursor:default}
 .dp-g .d.s span,.dp-g .d.e span{background:var(--acc)!important;color:#fff;font-weight:600}
 .dp-f{display:flex;align-items:center;gap:8px;border-top:1px solid var(--line);padding-top:12px;margin-top:12px}
 .dp-bx{background:var(--sf2);border:1px solid var(--line);border-radius:8px;padding:5px 12px;min-width:132px}.dp-bx small{display:block;font-size:11px;color:var(--fnt)}.dp-bx b{font-size:14px}
@@ -856,13 +857,15 @@ function dAdd(s,n){var d=dObj(s);d.setDate(d.getDate()+n);return dIso(d)}
 function dTxt(s,wd){var d=dObj(s);return (wd?DPD[d.getDay()]+' ':'')+d.getDate()+' '+DPS[d.getMonth()]+' '+(d.getFullYear()+543)}
 function rngTxt(a,b){if(!a)return 'ทุกช่วงเวลา';if(!b||a===b)return dTxt(a,1);var x=dObj(a),y=dObj(b);return x.getFullYear()===y.getFullYear()?x.getDate()+' '+DPS[x.getMonth()]+' – '+dTxt(b):dTxt(a)+' – '+dTxt(b)}
 function dpBtn(id,a,b){return '<button class="btn dpt" id="'+id+'" aria-haspopup="dialog" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>'+esc(rngTxt(a,b))+'</span><svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>'}
-function dpPresets(){var t=dIso(new Date()),d=dObj(t),w=d.getDay(),y=d.getFullYear(),m=d.getMonth();
-  return [['all','ทุกช่วงเวลา','',''],['today','วันนี้',t,t],['yday','เมื่อวาน',dAdd(t,-1),dAdd(t,-1)],['tw','สัปดาห์นี้',dAdd(t,-w),dAdd(t,6-w)],['lw','สัปดาห์ที่แล้ว',dAdd(t,-w-7),dAdd(t,-w-1)],
-    ['tm','เดือนนี้',dIso(new Date(y,m,1)),dIso(new Date(y,m+1,0))],['lm','เดือนที่แล้ว',dIso(new Date(y,m-1,1)),dIso(new Date(y,m,0))],['d30','30 วันล่าสุด',dAdd(t,-29),t]]}
+function dpPresets(max){var t=dIso(new Date()),d=dObj(t),w=d.getDay(),y=d.getFullYear(),m=d.getMonth(),cl=function(x){return max&&x>max?max:x};
+  return [['all','ทุกช่วงเวลา','',''],['today','วันนี้',t,t],['yday','เมื่อวาน',dAdd(t,-1),dAdd(t,-1)],['tw','สัปดาห์นี้',dAdd(t,-w),cl(dAdd(t,6-w))],['lw','สัปดาห์ที่แล้ว',dAdd(t,-w-7),dAdd(t,-w-1)],
+    ['tm','เดือนนี้',dIso(new Date(y,m,1)),cl(dIso(new Date(y,m+1,0)))],['lm','เดือนที่แล้ว',dIso(new Date(y,m-1,1)),dIso(new Date(y,m,0))],['d30','30 วันล่าสุด',dAdd(t,-29),t]]}
 function dpRange(btn,cur,onApply){
   var old=document.querySelector('.dp');if(old){old._close();if(old._btn===btn)return}
   var S={a:cur.a||'',b:cur.b||'',h:''},one=window.innerWidth<820;
-  var startV=function(){var a=S.a?dObj(S.a):new Date();return new Date(a.getFullYear(),a.getMonth()-(!one&&!S.a?1:0),1)};
+  var mx=cur.max||'';// วันที่เลือกได้สูงสุด (เช่น วันนี้) · หลังจากนั้นกดไม่ได้
+  var startV=function(){var e=dObj(S.b||S.a||mx||dIso(new Date())),L=new Date(e.getFullYear(),e.getMonth()-(one?0:1),1);
+    if(!one&&S.a&&S.a<dIso(L))L=new Date(dObj(S.a).getFullYear(),dObj(S.a).getMonth(),1);return L};
   S.v=startV();
   var el=document.createElement('div');el.className='dp';el.setAttribute('role','dialog');el.setAttribute('aria-label','เลือกช่วงวัน');el._btn=btn;document.body.appendChild(el);btn.setAttribute('aria-expanded','true');
   var close=function(){el.remove();btn.setAttribute('aria-expanded','false');document.removeEventListener('mousedown',om,true);document.removeEventListener('keydown',kd,true);window.removeEventListener('resize',pos)},
@@ -870,14 +873,14 @@ function dpRange(btn,cur,onApply){
   el._close=close;
   var pos=function(){var r=btn.getBoundingClientRect(),w=el.offsetWidth,l=r.right+window.scrollX-w;el.style.left=Math.max(8+window.scrollX,l)+'px';el.style.top=(r.bottom+window.scrollY+6)+'px'};
   var mo=function(v,i,n){var y=v.getFullYear(),m=v.getMonth(),first=new Date(y,m,1).getDay(),dim=new Date(y,m+1,0).getDate(),t=dIso(new Date()),lo=S.a,hi=S.b||(S.a&&S.h?S.h:'');if(lo&&hi&&hi<lo){var x=lo;lo=hi;hi=x}
-    var h='<div class="dp-mo"><div class="dp-h"><button type="button" class="dp-nv'+(i===0?'':' x')+'" data-nv="-1" aria-label="เดือนก่อน">‹</button><b>'+DPM[m]+' '+(y+543)+'</b><button type="button" class="dp-nv'+(i===n-1?'':' x')+'" data-nv="1" aria-label="เดือนถัดไป">›</button></div><div class="dp-g">'+
+    var h='<div class="dp-mo"><div class="dp-h"><button type="button" class="dp-nv'+(i===0?'':' x')+'" data-nv="-1" aria-label="เดือนก่อน">‹</button><b>'+DPM[m]+' '+(y+543)+'</b><button type="button" class="dp-nv'+(i===n-1?'':' x')+'" data-nv="1" aria-label="เดือนถัดไป"'+(mx&&dIso(new Date(y,m+1,1))>mx?' disabled':'')+'>›</button></div><div class="dp-g">'+
       (document.documentElement.lang==='en'?['Su','Mo','Tu','We','Th','Fr','Sa']:DPW).map(function(w){return '<div class="wd">'+w+'</div>'}).join('');
     for(var k=0;k<first;k++)h+='<div></div>';
     for(var d=1;d<=dim;d++){var s=dIso(new Date(y,m,d)),c=(first+d-1)%7,cl='d c'+c+(c===0||c===6?' wk':'')+(s===t?' td':'')+(d===dim?' last':'');
       if(lo&&hi&&s>=lo&&s<=hi)cl+=' in';if(s===lo)cl+=' s';if(s===(hi||lo))cl+=' e';
-      h+='<button type="button" class="'+cl+'" data-d="'+s+'" aria-label="'+dTxt(s,1)+'"'+(s===lo||s===hi?' aria-pressed="true"':'')+'><span>'+d+'</span></button>'}
+      h+='<button type="button" class="'+cl+'" data-d="'+s+'" aria-label="'+dTxt(s,1)+'"'+(s===lo||s===hi?' aria-pressed="true"':'')+(mx&&s>mx?' disabled':'')+'><span>'+d+'</span></button>'}
     return h+'</div></div>'};
-  var draw=function(){var n=one?1:2,P=dpPresets(),lo=S.a,hi=S.b||S.a,cnt=lo?Math.round((dObj(hi)-dObj(lo))/864e5)+1:0;
+  var draw=function(){var n=one?1:2,P=dpPresets(mx),lo=S.a,hi=S.b||S.a,cnt=lo?Math.round((dObj(hi)-dObj(lo))/864e5)+1:0;
     el.innerHTML='<div class="dp-sc">'+P.map(function(p){return '<button type="button" data-pr="'+p[0]+'" aria-pressed="'+(p[2]===S.a&&p[3]===(S.b||S.a))+'">'+p[1]+'</button>'}).join('')+'</div>'+
       '<div class="dp-m"><div class="dp-cal">'+[0,1].slice(0,n).map(function(i){return mo(new Date(S.v.getFullYear(),S.v.getMonth()+i,1),i,n)}).join('')+'</div>'+
       '<div class="dp-f"><div class="dp-bx"><small>วันเริ่ม</small><b>'+(lo?dTxt(lo,1):'—')+'</b></div><span class="faint">–</span><div class="dp-bx"><small>ถึงวันที่</small><b>'+(S.b?dTxt(S.b,1):lo?'เลือกวันสุดท้าย':'—')+'</b></div>'+
@@ -886,7 +889,7 @@ function dpRange(btn,cur,onApply){
     el.querySelectorAll('[data-d]').forEach(function(b){var k=b.dataset.d;
       b.onclick=function(){if(!S.a||S.b){S.a=k;S.b='';S.h=''}else if(k<S.a){S.b=S.a;S.a=k}else S.b=k;draw()};
       b.onmouseenter=function(){if(S.a&&!S.b&&S.h!==k){S.h=k;paint()}}});
-    el.querySelectorAll('[data-pr]').forEach(function(b){b.onclick=function(){var p=dpPresets().filter(function(x){return x[0]===b.dataset.pr})[0];S.a=p[2];S.b=p[3];S.h='';S.v=startV();draw()}});
+    el.querySelectorAll('[data-pr]').forEach(function(b){b.onclick=function(){var p=dpPresets(mx).filter(function(x){return x[0]===b.dataset.pr})[0];S.a=p[2];S.b=p[3];S.h='';S.v=startV();draw()}});
     el.querySelector('[data-x]').onclick=function(){close();btn.focus()};
     el.querySelector('[data-ok]').onclick=function(){var a=S.a,b=S.b||S.a;close();onApply(a,b)};
     pos()};
@@ -897,14 +900,16 @@ function dpRange(btn,cur,onApply){
 
 /* ───────── การลา (Phase 2c) ───────── */
 var LVS={wait:['รอหัวหน้า','b-warn'],hr:['รอ HR','b-warn'],ok:['อนุมัติแล้ว','b-ok'],chg:['ขอยกเลิก','b-info'],back:['ส่งกลับแก้ไข','b-warn'],no:['ไม่อนุมัติ','b-bad'],cancel:['ยกเลิก','b-mute']};
-function vLv(){if(A.lva===undefined){var tm=dpPresets().filter(function(x){return x[0]==='tm'})[0];A.lva=tm[2];A.lvb=tm[3]}// ค่าเริ่มต้น = เดือนปัจจุบัน
+function vLv(){if(A.lva===undefined){var tm=dpPresets(dIso(new Date())).filter(function(x){return x[0]==='tm'})[0];A.lva=tm[2];A.lvb=tm[3]}// ค่าเริ่มต้น = เดือนปัจจุบัน
   return '<div class="ph"><div><h1>การลา</h1><div class="sub" id="lv-sub">กำลังโหลด…</div></div><span class="sp"></span>'+dpBtn('lv-rg',A.lva,A.lvb)+'<button class="btn" id="lv-re">รีเฟรช</button></div><div id="lv-body"><div class="loading"><span class="spin"></span></div></div>'}
-function bLv(){var load=function(){aCall('leaveAdminList','all',A.lva?A.lva+'..'+A.lvb:'').then(function(d){A.lvd=d;drawLv()}).catch(function(e){if($('#lv-body'))$('#lv-body').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})};
-  $('#lv-re').onclick=load;$('#lv-rg').onclick=function(){var b=this;dpRange(b,{a:A.lva,b:A.lvb},function(a,z){A.lva=a;A.lvb=z;b.querySelector('span').textContent=rngTxt(a,z);load()})};load()}
-function drawLv(){if(!$('#lv-body'))return;var d=A.lvd,f=A.lvf||'all',c={all:d.length,mine:0,wait:0,hr:0,ok:0,ack:0,adv:0},td=dIso(new Date()),adv=function(r){return r.date_from>td&&r.status!=='no'&&r.status!=='cancel'};
-  d.forEach(function(r){if(r.step)c.mine++;if(r.status==='wait'||r.status==='chg')c.wait++;if(r.status==='hr')c.hr++;if(r.status==='ok')c.ok++;if(r.status==='ok'&&r.need_hr&&!r.hr_ack)c.ack++;if(adv(r))c.adv++});
+function bLv(){var load=function(){var t=dIso(new Date());
+    // ลาล่วงหน้า = ใบลาที่เริ่มหลังวันนี้ · ดึงแยก ไม่ขึ้นกับช่วงวันที่เลือก (ช่วงวันเลือกได้ถึงวันนี้เท่านั้น)
+    Promise.all([aCall('leaveAdminList','all',A.lva?A.lva+'..'+A.lvb:''),aCall('leaveAdminList','all',dAdd(t,1)+'..9999-12-31')]).then(function(x){A.lvd=x[0];A.lvadv=x[1].filter(function(r){return r.date_from>t&&r.status!=='no'&&r.status!=='cancel'});drawLv()}).catch(function(e){if($('#lv-body'))$('#lv-body').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})};
+  $('#lv-re').onclick=load;$('#lv-rg').onclick=function(){var b=this;dpRange(b,{a:A.lva,b:A.lvb,max:dIso(new Date())},function(a,z){A.lva=a;A.lvb=z;b.querySelector('span').textContent=rngTxt(a,z);load()})};load()}
+function drawLv(){if(!$('#lv-body'))return;var d=A.lvd,f=A.lvf||'all',c={all:d.length,mine:0,wait:0,hr:0,ok:0,ack:0,adv:(A.lvadv||[]).length};
+  d.forEach(function(r){if(r.step)c.mine++;if(r.status==='wait'||r.status==='chg')c.wait++;if(r.status==='hr')c.hr++;if(r.status==='ok')c.ok++;if(r.status==='ok'&&r.need_hr&&!r.hr_ack)c.ack++});
   $('#lv-sub').textContent=d.length+' ใบ'+' · '+rngTxt(A.lva,A.lvb);
-  var rows=d.filter(function(r){return f==='all'||(f==='mine'&&r.step)||(f==='wait'&&(r.status==='wait'||r.status==='chg'))||(f==='hr'&&r.status==='hr')||(f==='ok'&&r.status==='ok')||(f==='ack'&&r.status==='ok'&&r.need_hr&&!r.hr_ack)||(f==='adv'&&adv(r))});
+  var rows=f==='adv'?(A.lvadv||[]):d.filter(function(r){return f==='all'||(f==='mine'&&r.step)||(f==='wait'&&(r.status==='wait'||r.status==='chg'))||(f==='hr'&&r.status==='hr')||(f==='ok'&&r.status==='ok')||(f==='ack'&&r.status==='ok'&&r.need_hr&&!r.hr_ack)});
   var sb=function(k,l,n,w){return '<button data-lf="'+k+'" class="'+(w&&n?'w':'')+'" aria-pressed="'+(f===k)+'"><b class="num">'+n+'</b><span>'+l+'</span></button>'};
   $('#lv-body').innerHTML='<div class="sum">'+sb('all','ทั้งหมด',c.all)+sb('mine','รอคุณพิจารณา',c.mine,1)+sb('wait','รอหัวหน้า',c.wait)+sb('hr','รอ HR อนุมัติ',c.hr,1)+(isHR()?sb('ack','รอ HR รับทราบ',c.ack,1):'')+sb('ok','อนุมัติแล้ว',c.ok)+sb('adv','ลาล่วงหน้า',c.adv)+'</div>'+
    '<section class="card"><div class="tw"><table style="min-width:860px"><thead><tr><th>เลขที่</th><th>พนักงาน</th><th>ประเภท</th><th>วันที่</th><th>วัน</th><th>เหตุผล</th><th>สถานะ</th><th></th></tr></thead><tbody>'+
