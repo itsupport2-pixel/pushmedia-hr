@@ -7,8 +7,8 @@
  * ถอยกลับ: เปลี่ยน DEFAULT_BE เป็น 'gas' หลังรัน cutoverRollback ใน Apps Script */
 (function () {
   // login = ช่อง LINE Login สำรอง (LIFF ธรรมดา) ใช้เมื่อ MINI App ใช้ไม่ได้ · ใส่ LIFF ID + Channel ID เมื่อสร้างช่องแล้ว (ดู LINE-FALLBACK.md)
-  var IDS = { dev: '2012151622-Z47Zaz4B', pub: '2012151624-SdlUS0FT', login: '' };
-  var BY_CHANNEL = { '2012151622': 'dev', '2012151624': 'pub' };
+  var IDS = { dev: '2012151622-Z47Zaz4B', pub: '2012151624-SdlUS0FT', login: '2012235420-HusTQ3rY' };   // login = ช่อง LINE Login 2012235420 LIFF "Push Media Center"
+  var BY_CHANNEL = { '2012151622': 'dev', '2012151624': 'pub', '2012235420': 'login' };
   var API = {
     gas: 'https://script.google.com/macros/s/AKfycbyi-htjhk6Y17o51CDP6u3RpK4lmtilVEtQjHWEs7XC1MQml69jXL5bQPhWHyqtrYNc/exec',
     cf: 'https://pushmedia-hr-api.itsupport2-3a4.workers.dev'
