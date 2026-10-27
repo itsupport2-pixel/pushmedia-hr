@@ -437,7 +437,7 @@ const p2=n=>String(n).padStart(2,"0");
 const DT=s=>new Date(s+"T12:00:00");
 /* เครือข่ายมือถือสะดุด (iPhone: "Load failed" · Android: "Failed to fetch") → คำสั่งอ่านอย่างเดียว/เข้าระบบ ลองใหม่เอง 2 ครั้ง (1 วิ, 2.5 วิ)
  * คำสั่งบันทึก (ลงเวลา ยื่นลา ฯลฯ) ไม่ลองซ้ำ กันบันทึกซ้ำ · ทุกคำขอตัดที่ 20 วิ ไม่ให้ค้างหน้าโหลด */
-const READ_FN=/^(todayInfo|myAttendance|leaveInfo|publicInfo|refreshLine|loginLine|loginGoogle|myProfile|leaveDetail|approvalsList|scheduleWeek|previewLeave|wtm)$/;
+const READ_FN=/^(todayInfo|myAttendance|leaveInfo|publicInfo|refreshLine|loginLine|loginGoogle|myProfile|leaveDetail|approvalsList|scheduleWeek|previewLeave|wtm|photosFor)$/;
 const NET_ERR="เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ (อินเทอร์เน็ตสะดุด) กรุณาลองใหม่อีกครั้ง";
 function post(fn,a,n){const ac=typeof AbortController!=="undefined"?new AbortController():null,tm=ac&&setTimeout(()=>ac.abort(),20000);
   return fetch(API,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({fn,args:a}),signal:ac?ac.signal:undefined})
@@ -895,15 +895,26 @@ V.myreqs=()=>{const i=L.info;if(!i)return band("เอกสารของฉ�
   <button class="btn pri" data-act="lv:leave">ยื่นคำขอลา</button></div>`};
 
 /* ---------- หัวหน้าทีม / HR: อนุมัติ ---------- */
-function loadAps(){L.aps=null;return api("approvalsList",L.apf).then(a=>{L.aps=a;if(["approve","apdetail"].includes(curV()))repaint()}).catch(e=>toast(e.message))}
-V.approve=()=>{const A=L.aps;return band("อนุมัติเอกสาร")+`<div class="pad"><div class="seg" style="background:#fff;box-shadow:var(--sh-2)">${[["wait","รออนุมัติ"],["ok","อนุมัติแล้ว"],["all","ทั้งหมด"]].map(x=>`<button type="button" data-apf="${x[0]}" aria-pressed="${L.apf===x[0]}">${x[1]}</button>`).join("")}</div>
-  ${!A?`<div class="skel" style="height:120px"></div>`:A.length?A.map(a=>`<button class="ap" data-apopen="${a.id}" style="text-align:left;width:100%"><div style="display:flex;gap:12px;align-items:center"><div class="ava av-sm">${AVA}</div><div style="flex:1;min-width:0"><b style="font-weight:600">${esc(a.employee)}</b><div class="cap">${esc(a.team)} · ยื่น ${fAt(a.created_at)}</div></div>${lchip(a.status,1)}</div>
+/* รูปพนักงาน (โหลดทีหลัง ทีละชุด) · ใส่ data-pav="<id>" ที่กรอบรูป */
+const PAV={};function loadPav(){const all=[...document.querySelectorAll("[data-pav]")],paint=()=>all.forEach(el=>{const p=PAV[el.dataset.pav];if(p&&!el.querySelector("img"))el.innerHTML=`<img src="${esc(p)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`});paint();
+  const u=[...new Set(all.map(e=>e.dataset.pav).filter(i=>i&&!(i in PAV)))].slice(0,60);if(!u.length)return;u.forEach(i=>PAV[i]="");api("photosFor",u).then(m=>{Object.assign(PAV,m||{});paint()}).catch(()=>{})}
+const isHRme=()=>S.me&&["hr","admin"].includes(S.me.role);
+function loadAps(){L.aps=null;if(L.apf==="acc")return api("approvalCenter","pending").then(d=>{L.aps=d.items.filter(x=>x.kind!=="leave");if(curV()==="approve")repaint()}).catch(e=>toast(e.message));return api("approvalsList",L.apf).then(a=>{L.aps=a;if(["approve","apdetail"].includes(curV()))repaint()}).catch(e=>toast(e.message))}
+V.approve=()=>{const A=L.aps;setTimeout(loadPav,0);if(L.apf==="acc")return band("อนุมัติเอกสาร")+`<div class="pad">${apSeg()}${accList(A)}</div>`;return band("อนุมัติเอกสาร")+`<div class="pad">${apSeg()}
+  ${!A?`<div class="skel" style="height:120px"></div>`:A.length?A.map(a=>`<button class="ap" data-apopen="${a.id}" style="text-align:left;width:100%"><div style="display:flex;gap:12px;align-items:center"><div class="ava av-sm" data-pav="${a.employee_id}">${AVA}</div><div style="flex:1;min-width:0"><b style="font-weight:600">${esc(a.employee)}</b><div class="cap">${esc(a.team)} · ยื่น ${fAt(a.created_at)}</div></div>${lchip(a.status,1)}</div>
    <div class="r"><span>ประเภท</span><span>${esc(a.type)}${a.status==="chg"?" · ขอยกเลิก":""}</span></div><div class="r"><span>วันที่</span><span>${rangeTxt(a.date_from,a.date_to)} · ${nd(a.days_total)}</span></div>
    ${(a.edited||a.flags.length)?`<div style="display:flex;gap:6px;flex-wrap:wrap">${a.edited?'<span class="chip c-blue mini">แก้ไขแล้ว</span>':""}${a.flags.map(x=>`<span class="chip c-red mini">${esc(x.split(" ·")[0])}</span>`).join("")}</div>`:""}
    <span style="color:var(--blue);font-weight:600;font-size:14px">${a.step?"พิจารณา":"ดูรายละเอียด"} ›</span></button>`).join(""):`<div class="empty">ไม่มีเอกสารในรายการนี้</div>`}</div>`};
+/* แท็บรายการอนุมัติ · "เข้าระบบ" (เชื่อม LINE / อุปกรณ์ใหม่) เฉพาะ HR / ผู้ดูแลระบบ */
+function apSeg(){const T=[["wait","รออนุมัติ"],["ok","อนุมัติแล้ว"],["no","ไม่อนุมัติ"],["all","ทั้งหมด"]].concat(isHRme()?[["acc","เข้าระบบ"]]:[]);
+  return `<div class="seg" style="background:#fff;box-shadow:var(--sh-2);overflow-x:auto">${T.map(x=>`<button type="button" data-apf="${x[0]}" aria-pressed="${L.apf===x[0]}" style="font-size:${T.length>4?13:14}px;white-space:nowrap">${x[1]}</button>`).join("")}</div>`}
+function accList(A){if(!A)return `<div class="skel" style="height:120px"></div>`;if(!A.length)return `<div class="empty">ไม่มีคำขอเข้าระบบรออนุมัติ</div>`;
+  return A.map(x=>`<div class="ap"><div style="display:flex;gap:12px;align-items:center"><div class="ava av-sm" data-pav="${esc(x.employee_id)}">${AVA}</div><div style="flex:1;min-width:0"><b style="font-weight:600">${esc(x.employee)}</b><div class="cap">${esc(x.code||"")} · ${esc(x.dept||"")} · ${fAt(x.created_at)}</div></div><span class="chip ${x.kind==="line"?"c-green":"c-orange"} mini">${esc(x.type)}</span></div>
+   <div class="r"><span>รายการ</span><span>${esc(x.title)}</span></div><div class="r"><span>รายละเอียด</span><span>${esc(x.detail)}</span></div>
+   <div class="g2"><button class="btn out sm" style="color:var(--red);border-color:var(--red)" data-acno="${x.kind}|${x.id}">${x.kind==="line"?"ไม่ใช่คนนี้":"ไม่อนุญาต"}</button><button class="btn pri sm" data-acok="${x.kind}|${x.id}">${x.kind==="line"?"ยืนยันเป็นพนักงาน":"อนุญาตเครื่องนี้"}</button></div></div>`).join("")}
 V.apdetail=id=>{const a=(L.aps||[]).find(x=>x.id===id);if(!a)return band("พิจารณาคำขอลา")+loadingV();
-  return band(a.status==="chg"?"พิจารณาการยกเลิก":"พิจารณาคำขอลา")+`<div class="pad">
-  <div class="fcard" style="gap:10px"><div style="display:flex;gap:12px;align-items:center"><div class="ava av-sm">${AVA}</div><div style="flex:1;min-width:0"><b>${esc(a.employee)}</b><div class="cap">${esc(a.team)} · ${esc(a.req_no)}</div></div>${lchip(a.status,1)}</div>
+  setTimeout(loadPav,0);return band(a.status==="chg"?"พิจารณาการยกเลิก":"พิจารณาคำขอลา")+`<div class="pad">
+  <div class="fcard" style="gap:10px"><div style="display:flex;gap:12px;align-items:center"><div class="ava av-sm" data-pav="${a.employee_id}">${AVA}</div><div style="flex:1;min-width:0"><b>${esc(a.employee)}</b><div class="cap">${esc(a.team)} · ${esc(a.req_no)}</div></div>${lchip(a.status,1)}</div>
   <div class="ap" style="box-shadow:none;padding:0;gap:8px">${[["ประเภท",esc(a.type)],["วันที่",a.days.map(x=>fD(x.date)+(x.part!=="full"?` (${PART[x.part]})`:"")).join(", ")],["จำนวน",nd(a.days_total)],["เหตุผล",esc(a.reason)],["ผู้รับงานแทนที่เสนอ",a.substitute?esc(a.substitute):"—"]].map(r=>`<div class="r"><span>${r[0]}</span><span>${r[1]}</span></div>`).join("")}</div></div>
   ${a.change?nt("c-blue","info","ขอยกเลิกวันลา: "+esc(a.change.reason)):""}${a.edited?nt("c-blue","info","พนักงานแก้ไขคำขอนี้แล้ว"):""}
   ${a.flags.map(x=>nt("c-orange","alert",esc(x))).join("")}
@@ -932,6 +943,7 @@ document.addEventListener("click",e=>{const t=e.target.closest("button");if(!t)r
   if(d.lvcok){const why=$("#cr").value.trim();t.disabled=true;api("cancelLeave",d.lvcok,why).then(r=>{$("#ov").innerHTML="";toast(r.status==="cancel"?"ยกเลิกคำขอแล้ว":"ส่งคำขอยกเลิกแล้ว · รอหัวหน้าทีม");L.info=null;loadLeave(true);openDetailReplace(d.lvcok)}).catch(er2=>{t.disabled=false;toast(er2.message)});return}
   if(d.mrf){L.mrf=d.mrf;repaint();return}
   if(d.apf){L.apf=d.apf;repaint();loadAps();return}
+  if(d.acok||d.acno){const [k,id]=(d.acok||d.acno).split("|"),ok=!!d.acok;t.disabled=true;api(k==="line"?"decideLink":"decideDevice",id,ok).then(()=>{toast(k==="line"?(ok?"ยืนยันการเชื่อม LINE แล้ว":"ปฏิเสธคำขอแล้ว"):(ok?"อนุญาตอุปกรณ์แล้ว":"ไม่อนุญาตอุปกรณ์"));loadAps()}).catch(e2=>{t.disabled=false;toast(e2.message)});return}
   if(d.apopen){go("apdetail:"+d.apopen);return}
   if(d.apok){decide(d.apok,"ok");return}
   if(d.apno){const [id,a]=d.apno.split("|");sheet(`<h3>${a==="back"?"ส่งกลับแก้ไข":"ไม่อนุมัติ"}</h3>${fl("apn","เหตุผล * (ผู้ขอจะเห็นข้อความนี้)",`<textarea class="ta" id="apn" placeholder="${a==="back"?"เช่น ขอให้เลื่อนเป็นสัปดาห์หน้า":"ระบุเหตุผล"}"></textarea>`)}<button class="btn pri" data-apnok="${id}|${a}">ยืนยัน</button><button class="btn out" data-dclose>ยกเลิก</button>`);return}
