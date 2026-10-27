@@ -222,6 +222,8 @@
     'วันไม่ทำงาน': 'Non-working day', 'ก่อนเริ่มใช้ระบบ': 'before system start', 'ก่อนวันเริ่มงาน': 'before start date',
     'มา': 'Present', 'ขาด': 'Absent', 'นอกฯ': 'Outside',
     'ไม่รวม': 'excluding', 'คนที่ไม่ต้องลงเวลา': 'people exempt from clock-in', 'ตั้งที่ ข้อมูลพนักงาน › ประเภทการลงเวลา': 'Set in Employee info › Check-in type',
+    // ผู้อนุมัติ (27 ต.ค. 2569)
+    'ผู้อนุมัติ': 'Approver', 'ผู้อนุมัติการลา': 'Leave approvers', 'ขั้นที่ 1': 'Step 1', 'ขั้นที่ 2': 'Step 2', 'หัวหน้างาน (ตั้งเอง)': 'Supervisor (assigned)', 'ไม่มีหัวหน้า': 'No supervisor', 'HR อนุมัติแทน': 'HR approves instead', 'ยังไม่มี HR': 'No HR yet', 'หรือประเภทลาที่กำหนด': 'or specified leave types', 'สายอนุมัติการลา': 'Leave approval flow', 'สายอนุมัติค่าเริ่มต้น': 'Default approval flow', 'รอหัวหน้าแผนก': 'Awaiting dept. head', 'ค่าเริ่มต้นของระบบ': 'System default', 'ไม่มีหัวหน้าทีม': 'No team lead', 'ไม่มีหัวหน้าแผนก': 'No department head', 'เมื่อลาเกิน': 'when leave exceeds',
   };
   // ชื่อคน/ชื่อเล่นที่บังเอิญอยู่ในรายการข้อความ (ปุ่มโหมดทดสอบ) → ไม่แปล
   ['ต้น', 'บอย', 'โอ๊ต', 'มิ้นท์', 'มิ้นต์'].forEach(function (k) { delete D[k]; });
