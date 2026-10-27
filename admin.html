@@ -334,7 +334,8 @@ button.kpi:hover{border-color:var(--fnt)}.kpi .l{color:var(--mut);font-size:13px
 .mine .q{margin-bottom:12px}.mine .q div{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px}.mine .q div span{color:#6B6B6B}.mine .q .tr{height:8px;border-radius:99px;background:#EEE;overflow:hidden}.mine .q .tr i{display:block;height:100%;background:#141414;border-radius:99px}
 .an-i{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none}.an-i svg{width:18px;height:18px}
 /* ตัวเลือกช่วงวัน (Figma 419:7274 แบบ ค) */
-.dpt{min-width:230px;justify-content:flex-start}.dpt svg{flex:none;color:var(--mut)}.dpt .chev{margin-left:auto;color:var(--fnt)}.dpt[aria-expanded=true]{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc)}
+.dpt{min-width:230px;justify-content:flex-start}
+.ofs{display:contents}.fsel,.ph .dpt,.ph>.btn:not(.sm){height:40px;box-sizing:border-box}.fsel{border:1px solid var(--line);border-radius:7px;padding:0 30px 0 12px;background:var(--sf);font:inherit;font-size:14px;color:var(--fg);max-width:220px}.dpt svg{flex:none;color:var(--mut)}.dpt .chev{margin-left:auto;color:var(--fnt)}.dpt[aria-expanded=true]{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc)}
 .dp{position:absolute;z-index:70;display:flex;background:var(--sf);border:1px solid var(--line);border-radius:12px;box-shadow:0 10px 28px rgba(0,0,0,.12);overflow:hidden;max-width:calc(100vw - 16px)}
 .dp-sc{background:var(--sf2);border-right:1px solid var(--line);padding:8px 6px;display:flex;flex-direction:column;gap:1px;min-width:136px}
 .dp-sc button{border:1px solid transparent;background:none;text-align:left;padding:6px 10px;border-radius:7px;color:var(--mut);font-size:13px}.dp-sc button:hover{background:var(--sf)}
@@ -630,16 +631,30 @@ function loadMine(){var draw=function(li){var q=$('#db-quota');if(!q)return;var 
   if(A.mine&&Date.now()-A.mine.at<300000)return draw(A.mine.d);aCall('leaveInfo').then(function(li){A.mine={at:Date.now(),d:li};draw(li)}).catch(function(){var q=$('#db-quota');if(q)q.textContent='โหลดโควตาไม่สำเร็จ'})}
 
 /* ───────── ศูนย์อนุมัติ ───────── */
-function vAppr(){return '<div class="ph"><div><h1>ศูนย์อนุมัติ</h1><div class="sub">คุณเป็นผู้อนุมัติในฐานะ '+ROLE[A.d.me.role]+' · คำขอทุกประเภทรวมไว้ที่นี่</div></div></div><div id="ap-body"><div class="loading"><span class="spin"></span>กำลังโหลด…</div></div>'}
-function bAppr(){A.apTab=A.apTab||'pending';A.apType=A.apType||'all';if(A.ap&&A.apFor===A.apTab)drawAppr();loadAppr()}
-function loadAppr(){var t=A.apTab;aCall('approvalCenter',t==='no'?'done':t).then(function(d){if(t!==A.apTab)return;A.ap=d;A.apFor=t;drawAppr()}).catch(function(e){if($('#ap-body'))$('#ap-body').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})}
+function vAppr(){if(A.apa===undefined){var tm=dpPresets(dIso(new Date())).filter(function(x){return x[0]==='tm'})[0];A.apa=tm[2];A.apb=tm[3]}// ค่าเริ่มต้น = เดือนปัจจุบัน
+  return '<div class="ph"><div><h1>ศูนย์อนุมัติ</h1><div class="sub">คุณเป็นผู้อนุมัติในฐานะ '+ROLE[A.d.me.role]+' · คำขอทุกประเภทรวมไว้ที่นี่</div></div><span class="sp"></span>'+ofSel('ap')+dpBtn('ap-rg',A.apa,A.apb)+'</div><div id="ap-body"><div class="loading"><span class="spin"></span>กำลังโหลด…</div></div>'}
+/* ตัวกรองแผนก/ทีม ใช้ร่วมหลายหน้า (ศูนย์อนุมัติ · การลา · ลงเวลาวันนี้) · k = ชื่อหน้า · ทีมแสดงเฉพาะในแผนกที่เลือก */
+function ofSt(k){A.of=A.of||{};return A.of[k]||(A.of[k]={d:'all',t:'all'})}
+function ofSel(k){var s=ofSt(k),o=A.d.org,vd={},vt={};A.d.employees.forEach(function(e){vd[e.department_id]=1;vt[e.team_id]=1});// ไม่ใช่ HR: แสดงเฉพาะแผนก/ทีมที่มีคนในขอบเขตที่เห็น
+  var deps=o.departments.filter(function(d){return d.active!=='FALSE'&&(isHR()||vd[d.id])}).sort(function(a,b){return a.name.localeCompare(b.name)}),dep=deps.filter(function(d){return d.name===s.d})[0];
+  var ts=o.teams.filter(function(t){return t.active!=='FALSE'&&(isHR()||vt[t.id])&&(!dep||t.department_id===dep.id)}).sort(function(a,b){return a.name.localeCompare(b.name)});
+  var op=function(v,l,cur){return '<option value="'+esc(v)+'"'+(cur===v?' selected':'')+'>'+esc(l)+'</option>'};
+  return '<span class="ofs" id="ofs-'+k+'"><select class="fsel" data-ofd="'+k+'" aria-label="แผนก">'+op('all','ทุกแผนก',s.d)+deps.map(function(d){return op(d.name,d.name,s.d)}).join('')+'</select><select class="fsel" data-oft="'+k+'" aria-label="ทีม">'+op('all','ทุกทีม',s.t)+ts.map(function(t){return op(t.name,t.name,s.t)}).join('')+'</select></span>'}
+function ofBind(k,redraw){var w=$('#ofs-'+k);if(!w)return;var s=ofSt(k);
+  w.querySelector('[data-ofd]').onchange=function(){s.d=this.value;s.t='all';w.outerHTML=ofSel(k);ofBind(k,redraw);redraw()};
+  w.querySelector('[data-oft]').onchange=function(){s.t=this.value;redraw()}}
+function ofOk(k,dept,team){var s=ofSt(k);return (s.d==='all'||dept===s.d)&&(s.t==='all'||team===s.t)}
+function bAppr(){A.apTab=A.apTab||'pending';A.apType=A.apType||'all';
+  ofBind('ap',drawAppr);
+  $('#ap-rg').onclick=function(){var b=this;dpRange(b,{a:A.apa,b:A.apb,max:dIso(new Date())},function(a,z){A.apa=a;A.apb=z;b.querySelector('span').textContent=rngTxt(a,z);A.apFor=null;$('#ap-body').innerHTML='<div class="loading"><span class="spin"></span>กำลังโหลด…</div>';loadAppr()})};if(A.ap&&A.apFor===A.apTab)drawAppr();loadAppr()}
+function loadAppr(){var t=A.apTab;aCall('approvalCenter',t==='no'?'done':t,A.apa?A.apa+'..'+A.apb:'').then(function(d){if(t!==A.apTab)return;A.ap=d;A.apFor=t;drawAppr()}).catch(function(e){if($('#ap-body'))$('#ap-body').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})}
 function drawAppr(){if(!$('#ap-body'))return;var d=A.ap,k=d.kpi,T=A.apType;
   // แท็บ "ไม่อนุมัติ" = รายการที่ดำเนินการแล้วซึ่งไม่อนุมัติหรือส่งกลับแก้ไข
-  var items=d.items.filter(function(x){return (T==='all'||x.kind===T)&&(A.apTab!=='no'||x.status==='no'||x.status==='back')});
+  var items=d.items.filter(function(x){return (T==='all'||x.kind===T)&&(A.apTab!=='no'||x.status==='no'||x.status==='back')&&ofOk('ap',x.dept,x.team)});
   var kpi=function(l,v,sub,cls){return '<div class="kpi"><span class="l">'+l+'</span><span class="v num '+(cls||'')+'">'+v+'</span><span class="d">'+(sub||'&nbsp;')+'</span></div>'};
   var SB={wait:'b-warn',mgr:'b-warn',hr:'b-warn',chg:'b-info',ok:'b-ok',no:'b-bad',back:'b-warn',cancel:'b-mute'};
   var chip=function(v,l,dis){return '<button class="chip" data-aty="'+v+'" aria-pressed="'+(T===v)+'"'+(dis?' disabled title="เร็ว ๆ นี้"':'')+'>'+l+'</button>'};
-  $('#ap-body').innerHTML='<div class="grid g4">'+kpi('คำขอทั้งหมดเดือนนี้',k.month)+kpi('รออนุมัติ',k.pending,'ของคุณ',k.pending?'warn':'')+kpi('อนุมัติแล้ว',k.approved,'เดือนนี้','ok')+kpi('ไม่อนุมัติ / ส่งกลับ',k.rejected+' / '+k.back,'เดือนนี้')+'</div>'+
+  $('#ap-body').innerHTML='<div class="grid g4">'+kpi('คำขอทั้งหมด',k.month,esc(rngTxt(A.apa,A.apb)))+kpi('รออนุมัติ',k.pending,'ของคุณ (ทุกช่วงเวลา)',k.pending?'warn':'')+kpi('อนุมัติแล้ว',k.approved,esc(rngTxt(A.apa,A.apb)),'ok')+kpi('ไม่อนุมัติ / ส่งกลับ',k.rejected+' / '+k.back,esc(rngTxt(A.apa,A.apb)))+'</div>'+
    '<div class="toolbar" style="margin-top:14px"><div class="segt"><button data-atab="pending" aria-pressed="'+(A.apTab==='pending')+'">รออนุมัติ'+(k.pending?' ('+k.pending+')':'')+'</button><button data-atab="done" aria-pressed="'+(A.apTab==='done')+'">ดำเนินการแล้ว</button><button data-atab="no" aria-pressed="'+(A.apTab==='no')+'">ไม่อนุมัติ</button></div>'+
     chip('all','ทุกประเภท')+chip('leave','คำขอลา')+chip('line','เชื่อม LINE')+chip('device','อุปกรณ์ใหม่')+chip('ot','OT',1)+chip('time','แก้ไขเวลา',1)+chip('shift','เปลี่ยนตารางงาน',1)+'</div>'+
    '<section class="card"><div class="tw"><table style="min-width:900px"><thead><tr><th>เลขที่</th><th>ผู้ขอ</th><th>ประเภท</th><th>รายละเอียด</th><th>ผู้อนุมัติ</th><th>ยื่นเมื่อ</th><th>สถานะ</th></tr></thead><tbody>'+
@@ -854,10 +869,10 @@ function bAudit(){var load=function(){aCall('auditList',A.auq||'',500).then(func
 
 /* ───────── ลงเวลาวันนี้ (Phase 2b) ───────── */
 var AST={ok:['ปกติ','b-ok'],late:['มาสาย','b-warn'],not_yet:['ยังไม่ลงเวลา','b-bad'],working:['กำลังทำงาน','b-info'],missing_out:['ไม่มีลงเวลาออก','b-warn'],missing_in:['ไม่มีลงเวลาเข้า','b-warn'],leave:['ลา','b-info'],leave_wait:['ลา (รออนุมัติ)','b-warn'],holiday:['วันหยุด','b-mute'],off:['วันหยุด','b-mute'],absent:['ขาดงาน','b-bad']};
-function vAtt(){return '<div class="ph"><div><h1>ลงเวลาวันนี้</h1><div class="sub" id="att-sub">กำลังโหลด…</div></div><span class="sp"></span>'+(isHR()?'<button class="btn" id="att-fix" title="แก้เวลา ลงเวลาแทน หรือยกเลิกรายการที่ผิด · ย้อนหลังได้">แก้เวลา / ลงแทน</button><button class="btn" id="att-sync" title="ปกติระบบทำเองตอน 23:30">ย้ายเข้าแท็บเดือน + สรุปตอนนี้</button>':'')+'<button class="btn" id="att-re">รีเฟรช</button></div><div id="att-body"><div class="loading"><span class="spin"></span></div></div>'}
+function vAtt(){return '<div class="ph"><div><h1>ลงเวลาวันนี้</h1><div class="sub" id="att-sub">กำลังโหลด…</div></div><span class="sp"></span>'+ofSel('att')+(isHR()?'<button class="btn" id="att-fix" title="แก้เวลา ลงเวลาแทน หรือยกเลิกรายการที่ผิด · ย้อนหลังได้">แก้เวลา / ลงแทน</button><button class="btn" id="att-sync" title="ปกติระบบทำเองตอน 23:30">ย้ายเข้าแท็บเดือน + สรุปตอนนี้</button>':'')+'<button class="btn" id="att-re">รีเฟรช</button></div><div id="att-body"><div class="loading"><span class="spin"></span></div></div>'}
 function bAtt(){
   var load=function(){aCall('attendanceToday').then(function(d){A.att=d;drawAtt()}).catch(function(e){if($('#att-body'))$('#att-body').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})};
-  $('#att-re').onclick=load;A.attLoad=load;var sy=$('#att-sync');if($('#att-fix'))$('#att-fix').onclick=function(){openFix('',A.att?A.att.date:'')};
+  ofBind('att',drawAtt);$('#att-re').onclick=load;A.attLoad=load;var sy=$('#att-sync');if($('#att-fix'))$('#att-fix').onclick=function(){openFix('',A.att?A.att.date:'')};
   if(sy)sy.onclick=function(){sy.disabled=true;aCall('syncNow').then(function(r){toast('ย้าย '+r.moved+' รายการเข้าแท็บเดือน + สรุปแล้ว');sy.disabled=false;load()}).catch(function(e){sy.disabled=false;toast(e.message,1)})};
   load();
 }
@@ -866,6 +881,8 @@ function attAt(t,a,loc0,bad0){if(!t)return '<span class="faint">—</span>';a=a|
   return '<div class="num" style="font-weight:600">'+esc(t)+'</div>'+(a&&(a.loc||a.adj)?'<div class="at-loc">'+(a.loc?'<span class="badge '+(a.ok?'b-ok':'b-warn')+'"'+(a.dist?' title="ห่างจุดลงเวลา '+(a.dist>=1000?(a.dist/1000).toFixed(1)+' กม.':a.dist+' ม.')+'"':'')+'>'+(a.ok||a.loc==='นอกพื้นที่'?'':'นอกพื้นที่ · ')+esc(a.loc)+'</span>':'')+
     (a.gps?'<a href="https://www.google.com/maps?q='+encodeURIComponent(a.gps)+'" target="_blank" rel="noopener" class="at-map" title="เปิดแผนที่">แผนที่</a>':'')+(a.adj?'<span class="badge b-mute">แก้โดย HR</span>':'')+'</div>':'')}
 function drawAtt(){if(!$('#att-body'))return;var d=A.att,c=d.counts,f=A.attF||'all';
+  // กรองแผนก/ทีม → นับตัวเลขใหม่จากรายชื่อที่เหลือ
+  var ofs=ofSt('att');if(ofs.d!=='all'||ofs.t!=='all'){var pp=d.people.filter(function(p){return ofOk('att',p.department,org('teams',p.team_id))});c={total:pp.length,in:0,late:0,leave:0,absent:0,out_of_area:0,exempt:c.exempt};pp.forEach(function(p){if(p.first_in)c.in++;if(p.status==='late')c.late++;if(/leave/.test(p.status))c.leave++;if(p.status==='not_yet')c.absent++;if(p.out_of_area)c.out_of_area++});d={date:d.date,counts:c,people:pp}}
   $('#att-sub').innerHTML=esc(d.date)+' · '+c.total+' คน'+(c.exempt?' · <span title="ตั้งที่ ข้อมูลพนักงาน › ประเภทการลงเวลา">ไม่รวม '+c.exempt+' คนที่ไม่ต้องลงเวลา</span>':'');
   var sb=function(k,l,n,w){return '<button data-af="'+k+'" class="'+(w&&n?'w':'')+'" aria-pressed="'+(f===k)+'"><b class="num">'+n+'</b><span>'+l+'</span></button>'};
   var rows=d.people.filter(function(p){return f==='all'||(f==='in'&&p.first_in)||(f==='late'&&p.status==='late')||(f==='leave'&&/leave/.test(p.status))||(f==='absent'&&p.status==='not_yet')||(f==='out'&&p.out_of_area)});
@@ -1018,17 +1035,17 @@ function repCsv(){var d=A.rpm;if(!d)return;var rows=repRows(),q=function(v){v=St
 var FLOW={lead:'หัวหน้าทีม',lead_dept:'หัวหน้าทีม → หัวหน้าแผนก',dept:'หัวหน้าแผนก'};
 var LVS={wait:['รอหัวหน้า','b-warn'],mgr:['รอขั้นที่ 2','b-warn'],hr:['รอ HR','b-warn'],ok:['อนุมัติแล้ว','b-ok'],chg:['ขอยกเลิก','b-info'],back:['ส่งกลับแก้ไข','b-warn'],no:['ไม่อนุมัติ','b-bad'],cancel:['ยกเลิก','b-mute']};
 function vLv(){if(A.lva===undefined){var tm=dpPresets(dIso(new Date())).filter(function(x){return x[0]==='tm'})[0];A.lva=tm[2];A.lvb=tm[3]}// ค่าเริ่มต้น = เดือนปัจจุบัน
-  return '<div class="ph"><div><h1>การลา</h1><div class="sub" id="lv-sub">กำลังโหลด…</div></div><span class="sp"></span>'+dpBtn('lv-rg',A.lva,A.lvb)+'<button class="btn" id="lv-re">รีเฟรช</button></div><div id="lv-body"><div class="loading"><span class="spin"></span></div></div>'}
+  return '<div class="ph"><div><h1>การลา</h1><div class="sub" id="lv-sub">กำลังโหลด…</div></div><span class="sp"></span>'+ofSel('lv')+dpBtn('lv-rg',A.lva,A.lvb)+'<button class="btn" id="lv-re">รีเฟรช</button></div><div id="lv-body"><div class="loading"><span class="spin"></span></div></div>'}
 function bLv(){var load=function(){var t=dIso(new Date());
     // ลาล่วงหน้า = ใบลาที่เริ่มหลังวันนี้ · ดึงแยก ไม่ขึ้นกับช่วงวันที่เลือก (ช่วงวันเลือกได้ถึงวันนี้เท่านั้น)
     Promise.all([aCall('leaveAdminList','all',A.lva?A.lva+'..'+A.lvb:''),aCall('leaveAdminList','all',dAdd(t,1)+'..9999-12-31')]).then(function(x){A.lvd=x[0];A.lvfut=x[1];A.lvadv=x[1].filter(function(r){return r.date_from>t&&r.status!=='no'&&r.status!=='cancel'});drawLv()}).catch(function(e){if($('#lv-body'))$('#lv-body').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})};
-  $('#lv-re').onclick=load;$('#lv-rg').onclick=function(){var b=this;dpRange(b,{a:A.lva,b:A.lvb,max:dIso(new Date())},function(a,z){A.lva=a;A.lvb=z;b.querySelector('span').textContent=rngTxt(a,z);load()})};load()}
-function drawLv(){if(!$('#lv-body'))return;var d=A.lvd,f=A.lvf||'all',c={all:d.length,mine:0,wait:0,hr:0,ok:0,ack:0,adv:(A.lvadv||[]).length};
+  ofBind('lv',drawLv);$('#lv-re').onclick=load;$('#lv-rg').onclick=function(){var b=this;dpRange(b,{a:A.lva,b:A.lvb,max:dIso(new Date())},function(a,z){A.lva=a;A.lvb=z;b.querySelector('span').textContent=rngTxt(a,z);load()})};load()}
+function drawLv(){if(!$('#lv-body'))return;var of=function(r){return ofOk('lv',r.department,r.team)},d=A.lvd.filter(of),adv=(A.lvadv||[]).filter(of),f=A.lvf||'all',c={all:d.length,mine:0,wait:0,hr:0,ok:0,ack:0,adv:adv.length};
   // ไม่อนุมัติ = ในช่วงวันที่เลือก + ใบลาล่วงหน้าที่ไม่อนุมัติ (วันลาเลยวันนี้ เลือกช่วงไม่ถึง)
-  var ids={},rej=d.concat(A.lvfut||[]).filter(function(r){if(r.status!=='no'||ids[r.id])return false;ids[r.id]=1;return true});c.no=rej.length;
+  var ids={},rej=d.concat((A.lvfut||[]).filter(of)).filter(function(r){if(r.status!=='no'||ids[r.id])return false;ids[r.id]=1;return true});c.no=rej.length;
   d.forEach(function(r){if(r.step)c.mine++;if(r.status==='wait'||r.status==='mgr'||r.status==='chg')c.wait++;if(r.status==='hr')c.hr++;if(r.status==='ok')c.ok++;if(r.status==='ok'&&r.need_hr&&!r.hr_ack)c.ack++});
   $('#lv-sub').textContent=d.length+' ใบ'+' · '+rngTxt(A.lva,A.lvb);
-  var rows=f==='adv'?(A.lvadv||[]):f==='no'?rej:d.filter(function(r){return f==='all'||(f==='mine'&&r.step)||(f==='wait'&&(r.status==='wait'||r.status==='mgr'||r.status==='chg'))||(f==='hr'&&r.status==='hr')||(f==='ok'&&r.status==='ok')||(f==='ack'&&r.status==='ok'&&r.need_hr&&!r.hr_ack)});
+  var rows=f==='adv'?adv:f==='no'?rej:d.filter(function(r){return f==='all'||(f==='mine'&&r.step)||(f==='wait'&&(r.status==='wait'||r.status==='mgr'||r.status==='chg'))||(f==='hr'&&r.status==='hr')||(f==='ok'&&r.status==='ok')||(f==='ack'&&r.status==='ok'&&r.need_hr&&!r.hr_ack)});
   var sb=function(k,l,n,w){return '<button data-lf="'+k+'" class="'+(w&&n?'w':'')+'" aria-pressed="'+(f===k)+'"><b class="num">'+n+'</b><span>'+l+'</span></button>'};
   $('#lv-body').innerHTML='<div class="sum">'+sb('all','ทั้งหมด',c.all)+sb('mine','รอคุณพิจารณา',c.mine,1)+sb('wait','รอหัวหน้า',c.wait)+sb('hr','รอ HR อนุมัติ',c.hr,1)+(isHR()?sb('ack','รอ HR รับทราบ',c.ack,1):'')+sb('ok','อนุมัติแล้ว',c.ok)+sb('adv','ลาล่วงหน้า',c.adv)+sb('no','ไม่อนุมัติ',c.no)+'</div>'+
    '<section class="card"><div class="tw"><table style="min-width:860px"><thead><tr><th>เลขที่</th><th>พนักงาน</th><th>ประเภท</th><th>วันที่</th><th>วัน</th><th>เหตุผล</th><th>สถานะ</th><th></th></tr></thead><tbody>'+
