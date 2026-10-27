@@ -1,4 +1,4 @@
-<!-- สร้างอัตโนมัติจาก Workforce Task Manager (wtm-fe226e6.html) ด้วย app/tools/build-planner.mjs · 2026-10-26 · อย่าแก้ไฟล์นี้ตรง ๆ -->
+<!-- สร้างอัตโนมัติจาก Workforce Task Manager (wtm-fe226e6.html) ด้วย app/tools/build-planner.mjs · 2026-10-27 · อย่าแก้ไฟล์นี้ตรง ๆ -->
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -1325,6 +1325,7 @@ body,button,input,select,textarea{font-family:'IBM Plex Sans Thai',system-ui,san
 #hr-scope{height:34px;border:1px solid #DADADA;border-radius:10px;padding:0 10px;background:#fff;font-size:13px;font-weight:600;color:#141414;max-width:190px}
 .hr-sep{width:1px;height:24px;background:#E2E2E2;flex:none}
 .hr-r{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.hr-r .hb-ex{gap:8px;font-weight:500}
 .hr-r .hb{height:34px;display:inline-flex;align-items:center;gap:6px;border:1px solid #DADADA;border-radius:10px;padding:0 12px;background:#fff;font-size:13px;cursor:pointer;color:#141414}
 .hr-r .hb.on{background:#141414;color:#fff;border-color:#141414}
 .hr-top{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
@@ -14543,7 +14544,11 @@ function _hideLineLoading() {
     var lbl = q('.wpick-label'), pmf = q('.rp-pmfs'), tot = pmf && pmf.querySelector('b');
     var ph = document.createElement('div'); ph.className = 'hr-ph';
     ph.innerHTML = '<div class="t"><h1>ตารางงาน</h1><div class="s">' + (lbl ? lbl.textContent.trim() : '') + (tot ? ' · ' + tot.textContent + ' งาน' : '') + ' · เวลาเข้างานจากระบบลงเวลา</div></div>';
-    var exp = oc(/rpOpenExport/); if (exp) { var d = document.createElement('button'); d.className = 'hb'; d.innerHTML = '⤓ ดาวน์โหลด'; d.onclick = function () { rpOpenExport(); }; ph.appendChild(d); exp.remove(); }
+    var exp = oc(/rpOpenExport/); if (exp) {   // 27 ต.ค. 2569: ปุ่ม Export Excel / Export PDF แบบเดียวกับหลังบ้าน (ไอคอนไฟล์) · กดแล้วเปิดหน้าต่างเดิมโดยเลือกรูปแบบไว้ให้
+      var FIC = function (k) { var c = k === 'pdf' ? '#DC2626' : '#15803D', l = k === 'pdf' ? 'PDF' : 'XLS'; return '<svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true" style="flex:none"><path d="M4 1.5h8l5 5v12H4z" fill="none" stroke="' + c + '" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 1.5v5h5" fill="none" stroke="' + c + '" stroke-width="1.5" stroke-linejoin="round"/><rect x="1" y="10" width="13" height="7" rx="2" fill="' + c + '"/><text x="7.5" y="15.2" text-anchor="middle" font-size="4.8" font-weight="700" fill="#fff" font-family="Arial,sans-serif">' + l + '</text></svg>'; };
+      [['xlsx', 'xls', 'Export Excel'], ['pdf', 'pdf', 'Export PDF']].forEach(function (f) { var d = document.createElement('button'); d.className = 'hb hb-ex'; d.innerHTML = FIC(f[1]) + f[2];
+        d.onclick = function () { rpOpenExport(); var r = document.querySelector('input[name="rpx-fmt"][value="' + f[0] + '"]'); if (r) { r.checked = true; if (typeof _rpExportFmtChanged === 'function') _rpExportFmtChanged(); } }; ph.appendChild(d); });
+      exp.remove(); }
     var right = bar.querySelector('.hr-r'); if (right) { while (right.firstChild) ph.appendChild(right.firstChild); right.remove(); }
     if (H.cu && H.cu.hr) { var sb = document.createElement('button'); sb.className = 'hb'; sb.id = 'hr-set'; sb.textContent = 'ตั้งค่าตารางงาน'; sb.title = 'สีตำแหน่งงาน · ค่าเบี้ย (ตั้งค่าระบบ › ตารางงาน)';
       sb.onclick = function () { try { window.top.hrNav('set', 'sched'); } catch (e) { window.top.location.href = 'admin.html'; } };

@@ -4,7 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="icon" href="favicon.svg?v=3" type="image/svg+xml"><link rel="icon" href="favicon-32.png?v=3" sizes="32x32" type="image/png"><link rel="apple-touch-icon" href="apple-touch-icon.png?v=3"><meta name="theme-color" content="#111111">
-<title>Push Media HR · Admin</title>
+<title>Push Media Center</title>
+<meta name="description" content="ระบบหลังบ้านสำหรับ HR และหัวหน้างาน · Push Media Co., Ltd">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Push Media Center">
+<meta property="og:title" content="Push Media Center">
+<meta property="og:description" content="ระบบหลังบ้านสำหรับ HR และหัวหน้างาน · Push Media Co., Ltd">
+<meta property="og:image" content="https://itsupport2-pixel.github.io/pushmedia-hr/og-image.png?v=1">
+<meta property="og:image:width" content="800">
+<meta property="og:image:height" content="800">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
@@ -387,11 +395,56 @@ button.kpi:hover{border-color:var(--fnt)}.kpi .l{color:var(--mut);font-size:13px
 .rp-t .si.none::before{top:3px;border-bottom:5px solid #A3A3A3}.rp-t .si.none::after{top:10px;border-top:5px solid #A3A3A3}
 .rp-t .si.desc,.rp-t .si.asc{background:#111}.rp-t .si.desc::before{top:6.5px;border-top:5px solid #fff}.rp-t .si.asc::before{top:6.5px;border-bottom:5px solid #fff}
 @media print{.rp-t .si{display:none}}
-.btn-ex{display:inline-flex;align-items:center;gap:8px;background:#fff}.btn-ex .fic{flex:none}
+.btn-ex{display:inline-flex;align-items:center;gap:8px;background:#fff}.btn-ex:disabled{opacity:.5}.btn-ex:disabled .fic{filter:grayscale(1)}.btn-ex .fic{flex:none}
 .rp-empty{padding:40px;text-align:center;color:var(--fnt)}
 @media print{.side,.tb,.rp-tabs,.rp-tools,.rp-f,.scb,.rp-noprint{display:none!important}.main{padding:0!important}.rp-tw{max-height:none;overflow:visible}.rp-t{font-size:9px}.rp-t .dy{min-width:0}@page{size:A4 landscape;margin:6mm}}
 #fo-bar{position:fixed;top:0;left:0;right:0;z-index:2147483646;background:#C2410C;color:#fff;font:600 13px/1.3 'IBM Plex Sans Thai',system-ui,sans-serif;padding:8px 16px;text-align:center}
 body.fo{padding-top:36px}body.fo .tb{top:36px}body.fo .side{top:36px;height:calc(100vh - 36px)}
+/* เลือกเดือน (หน้าตาเดียวกับปฏิทินเลือกช่วงวัน .dp) */
+.mpt{min-width:190px;justify-content:flex-start}.f .mpt{width:100%}
+.dp.mp{display:block;padding:12px;width:264px}.mp-g{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
+.mp-g button{border:1px solid transparent;background:none;border-radius:8px;padding:9px 0;font:inherit;font-size:13.5px;cursor:pointer;color:var(--fg)}.mp-g button:hover{background:var(--sf2)}
+.mp-g button.td{border-color:var(--line);font-weight:600}.mp-g button[aria-pressed=true]{background:var(--nav);color:#fff}
+.mp-f{display:flex;gap:8px;justify-content:flex-end;border-top:1px solid var(--line);margin-top:10px;padding-top:10px}
+.us-ch{display:flex;gap:8px;height:150px}.us-y{display:flex;flex-direction:column;justify-content:space-between;font-size:10.5px;color:var(--fnt);text-align:right;min-width:52px;padding-bottom:0}
+.us-bars{flex:1;display:flex;align-items:stretch;gap:3px;border-bottom:1px solid var(--line);border-left:1px solid var(--line);background:repeating-linear-gradient(to bottom,transparent 0,transparent calc(50% - 1px),#EFEFEF calc(50% - 1px),#EFEFEF 50%)}
+.us-bars i{flex:1;display:flex;align-items:flex-end;justify-content:center;min-width:3px}.us-bars i b{display:block;width:100%;max-width:16px;background:#BDBDBD;border-radius:3px 3px 0 0}.us-bars i.on b{background:var(--acc)}.us-bars i.over b{background:var(--bad)}.us-bars i:hover b{opacity:.75}
+.us-x{display:flex;justify-content:space-between;font-size:10.5px;color:var(--fnt);margin:4px 0 0 60px}
+.cf-logo{display:inline-grid;place-items:center;width:44px;height:30px;border-radius:8px;background:#FFF4EA;border:1px solid #FBD9B8}
+/* เงินเดือน (27 ต.ค. 2569) */
+.pyq{display:flex;align-items:center;gap:8px;height:40px;padding:0 12px;border:1px solid var(--line);border-radius:10px;background:#F7F7F7;color:var(--mut);min-width:240px;max-width:320px;flex:1}.pyq svg{width:17px;height:17px;flex:none}
+.pyq input{border:0;background:none;outline:none;font:inherit;font-size:14px;width:100%;color:var(--fg)}.pyq:focus-within{border-color:var(--acc);background:#fff}
+.pg-tabs{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap}.pg-tabs button{display:grid;grid-template-columns:auto 1fr;column-gap:10px;align-items:center;text-align:left;border:1px solid var(--line);background:var(--sf);border-radius:12px;padding:10px 16px;font:inherit;cursor:pointer;min-width:260px}
+.pg-tabs button b{grid-row:span 2;width:26px;height:26px;border-radius:50%;background:#EDEDED;display:grid;place-items:center;font-size:12.5px}.pg-tabs button small{color:var(--fnt);font-size:12px}
+.pg-tabs button[aria-pressed=true]{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc)}.pg-tabs button[aria-pressed=true] b{background:var(--acc);color:#fff}
+.pg-bar{display:flex;align-items:center;gap:10px;padding:10px 14px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+.pg-w{overflow:auto;max-height:calc(100vh - 260px)}.pg-t{border-collapse:separate;border-spacing:0;font-size:12.5px}
+.pg-t th{position:sticky;top:0;background:#F7F7F7;z-index:2;font-weight:600;color:var(--mut);font-size:11.5px;padding:7px 8px;border-bottom:1px solid var(--line);border-right:1px solid #EFEFEF;white-space:nowrap;text-align:center}
+.pg-t thead tr:nth-child(2) th{top:31px}.pg-t th small{display:block;font-weight:400;color:var(--fnt);font-size:10.5px}
+.pg-t th.gh.inc{background:#EAF6EE;color:var(--ok)}.pg-t th.gh.ded{background:#FCEDEB;color:var(--bad)}.pg-t th.gh.auto,.pg-t th.au{background:#EFEFEF}
+.pg-t td{border-bottom:1px solid #EFEFEF;border-right:1px solid #F3F3F3;padding:0;white-space:nowrap;background:var(--sf)}
+.pg-t .pg-n{position:sticky;left:0;z-index:1;min-width:200px;text-align:left;padding:6px 10px;border-right:1px solid var(--line)}.pg-t th.pg-n{z-index:3}.pg-t td.pg-n b{display:block;font-weight:600}.pg-t td.pg-n small{color:var(--fnt);font-size:11px}
+.pg-t td.gi input{width:96px;border:0;background:transparent;padding:8px;text-align:right;font:inherit;font-size:13px;font-variant-numeric:tabular-nums}.pg-t td.gi input:focus{outline:2px solid var(--acc);outline-offset:-2px;background:#fff}
+.pg-t td.gi input::placeholder{color:#B8B8B8}.pg-t td.gi.dirty{background:#FFF8E1}.pg-t td.gi.bad{background:var(--bad-s)}.pg-t .pg-net{position:sticky;right:0;z-index:1;border-left:1px solid var(--line);background:#F4F4F4;color:var(--fg)}.pg-t th.pg-net{z-index:3}
+.pg-t td.au{background:#FAFAFA;color:var(--mut);padding:6px 10px;text-align:right}
+.pg-save{position:sticky;bottom:0;z-index:4;display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--sf);border-top:1px solid var(--line);flex-wrap:wrap}.pg-save.on{background:#FFF8E1}.pg-save input{flex:1;min-width:240px;height:38px;border:1px solid #DADADA;border-radius:9px;padding:0 12px;font:inherit}.pg-save input.bad{border-color:var(--bad)}
+.pk-c{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}.pk-chip{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:99px;padding:3px 6px 3px 3px;background:var(--sf)}
+.pk-chip .av,.pk-r .av{width:30px;height:30px;font-size:12px}.pk-chip b,.pk-r b{display:block;font-size:13px;font-weight:600}.pk-chip small,.pk-r small{display:block;font-size:11px;color:var(--fnt)}
+.pk-chip button{border:0;background:none;color:var(--mut);cursor:pointer;padding:2px 6px}.pk-s{position:relative}.pk-s input{width:100%}
+.pk-r{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:20;background:var(--sf);border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 24px rgba(0,0,0,.12);max-height:320px;overflow:auto}
+.pk-r button{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;padding:8px 12px;text-align:left;font:inherit;cursor:pointer}.pk-r button:hover{background:var(--sf2)}
+
+.py-t{border-collapse:collapse;width:100%;font-size:13px}.py-t th{font-size:11.5px;font-weight:600;color:var(--mut);text-align:left;background:#F7F7F7;padding:9px 12px;white-space:nowrap;border-bottom:1px solid var(--line)}
+.py-t td{padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:middle}.py-t .r{text-align:right}.py-t tr.ck{cursor:pointer}.py-t tr.ck:hover td{background:#FAFAFA}.py-t.sm td,.py-t.sm th{padding:6px 8px;font-size:12.5px}
+.py-hd{display:flex;align-items:flex-end;gap:12px;margin-bottom:12px;flex-wrap:wrap}.py-hd h2{font-size:24px}.py-acts{display:flex;gap:8px;flex-wrap:wrap}
+.py-steps{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}.py-steps span{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:99px;background:var(--sf);border:1px solid var(--line);font-size:13px;color:var(--fnt)}
+.py-steps i{font-style:normal;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:#EDEDED;font-size:11px;font-weight:600}.py-steps .on{color:var(--fg);font-weight:600;border-color:var(--acc)}.py-steps .on i{background:var(--acc);color:#fff}.py-steps .done{color:var(--ok)}.py-steps .done i{background:var(--ok-s);color:var(--ok)}
+.py-ks{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:14px}.py-k{background:var(--sf);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:flex;flex-direction:column;gap:2px}
+.py-k span{font-size:12.5px;color:var(--mut)}.py-k b{font-size:22px;font-weight:700}.py-k small{font-size:11.5px;color:var(--fnt)}
+.note-b,.note-w{border-radius:10px;padding:10px 14px;font-size:13px;margin-bottom:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}.note-b{background:var(--info-s);color:var(--info)}.note-w{background:var(--warn-s);color:var(--warn);font-weight:600}
+.py-dg{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px}.py-dg h4{margin:0 0 6px;font-size:14px}.py-dl{display:flex;align-items:center;gap:10px;padding:6px 0}.py-dl>div{flex:1;min-width:0}.py-dl small{display:block;font-size:11.5px;color:var(--fnt)}.py-dl b{font-weight:500}
+.py-dl.tot{border-top:1px solid var(--line);margin-top:4px;padding-top:8px}.py-dl.tot b{font-weight:600;flex:1}.py-net{display:flex;align-items:center;justify-content:space-between;background:#F2F2F2;border-radius:12px;padding:14px 16px;margin-bottom:14px}.py-net b{font-size:22px}
+.py-h5{margin:12px 0 4px;font-size:12.5px;color:var(--mut)}.py-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:14px;align-items:start}
 </style>
 </head>
 <body>
@@ -450,7 +503,8 @@ function inSc(e,sc){var me=A.d.me;if(!e)return false;if(sc==='all')return true;i
 function canEdit(e){return isHR()||inSc(e,acc('edit'))}
 function selfOnly(){return !isHR()&&A.d.me.id!=='admin'&&acc('emp')==='self'}
 function scopeTxt(a){var me=A.d.me,sc=acc(a);return sc==='all'?'ทั้งบริษัท':sc==='dept'?'แผนก '+org('departments',me.department_id):sc==='team'?'ทีม '+org('teams',me.team_id):sc==='self'?'ตัวเอง':'—'}
-function navFor(me){if(isHR()||me.role==='admin')return ROLE_NAV[me.role]||ROLE_NAV.hr;
+function navFor(me){var a=navFor0(me).slice();if(me.pay&&a.indexOf('pay')<0)a.push('pay');return a}// เงินเดือน: me.pay (เปิดใช้ + HR/ผู้ดูแลระบบ/ฝ่ายบัญชีที่ได้รับสิทธิ์)
+function navFor0(me){if(isHR()||me.role==='admin')return ROLE_NAV[me.role]||ROLE_NAV.hr;
   var b=(ROLE_NAV[me.role]||[]).filter(function(k){return SOON[k]}),add=function(k,on){if(on&&b.indexOf(k)<0)b.push(k)};
   add('dash',1);add('list',['team','dept','all'].indexOf(acc('emp'))>=0);add('att',acc('att')!=='none');add('lv',acc('leave')!=='none');add('sched',acc('att')!=='none');add('conf',me.role==='manager'||me.role==='exec');add('appr',acc('approve')!=='none'&&acc('approve')!=='self');add('rep',(ROLE_NAV[me.role]||[]).indexOf('rep')>=0&&acc('att')!=='none');return b}
 function org(t,id){var r=(A.d.org[t]||[]).filter(function(x){return x.id===id})[0];return r?r.name:''}
@@ -473,9 +527,9 @@ function thd(s){if(!s)return '—';var p=s.split('-');return +p[2]+'/'+p[1]+'/'+
 function emp(id){return A.d.employees.filter(function(e){return e.id===id})[0]}
 
 /* ───────── login ───────── */
-function lgBrand(p){return (p.logo?'<img class="lg-logo" src="'+esc(p.logo)+'" alt="">':'<span class="mk" style="width:30px;height:30px;color:var(--fg)">'+MARK+'</span>')+esc(p.app||'Push Media HR')}
+function lgBrand(p){return (p.logo?'<img class="lg-logo" src="'+esc(p.logo)+'" alt="">':'<span class="mk" style="width:30px;height:30px;color:var(--fg)">'+MARK+'</span>')+esc(p.app||'Push Media Center')}
 function renderLogin(){
-  call('publicInfo').then(function(p){store('hr_pub',p);document.title=(p.app||'Push Media HR')+' · Admin';var b=$('#lg-app');if(b)b.textContent=p.app||'Push Media HR'}).catch(function(){});
+  call('publicInfo').then(function(p){store('hr_pub',p);document.title=(p.app||'Push Media Center');var b=$('#lg-app');if(b)b.textContent=p.app||'Push Media Center'}).catch(function(){});
   var pub=store('hr_pub')||{};
   var IC={line:'<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3C6.5 3 2 6.6 2 11c0 3.9 3.5 7.2 8.3 7.9.3.1.8.2.9.5.1.3.1.7 0 1l-.1.9c0 .3-.2 1 .9.5s5.9-3.5 8-6c1.5-1.6 2-3.2 2-4.8C22 6.6 17.5 3 12 3Zm-4.6 10.6H5.5a.5.5 0 0 1-.5-.5V9.2a.5.5 0 0 1 1 0v3.4h1.4a.5.5 0 0 1 0 1Zm2-.5a.5.5 0 0 1-1 0V9.2a.5.5 0 0 1 1 0Zm4.7 0a.5.5 0 0 1-.9.3l-2-2.7v2.4a.5.5 0 0 1-1 0V9.2a.5.5 0 0 1 .9-.3l2 2.7V9.2a.5.5 0 0 1 1 0Zm3.1-2.4a.5.5 0 0 1 0 1h-1.4v.9h1.4a.5.5 0 0 1 0 1h-1.9a.5.5 0 0 1-.5-.5V9.2c0-.3.2-.5.5-.5h1.9a.5.5 0 0 1 0 1h-1.4v.9Z"/></svg>',
    goo:'<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>',
@@ -484,7 +538,7 @@ function renderLogin(){
   var GOO=!!CFG.googleClientId||DEV;   // ปุ่ม Google แสดงเมื่อตั้ง OAuth Client ID ใน config.js แล้ว (เครื่องผู้พัฒนาใช้บัญชีจำลอง)
   $('#app').innerHTML='<div class="login"><svg class="lg-wave" viewBox="0 0 1440 400" preserveAspectRatio="none" aria-hidden="true"><path fill="#2B2B2B" d="M0 40 C 432 150, 1008 140, 1440 -70 L 1440 400 L 0 400 Z"/><path fill="#111111" d="M0 90 C 461 210, 1037 200, 1440 -10 L 1440 400 L 0 400 Z"/></svg>'+
    '<header class="lg-top"><img src="push-media-logo-black.svg" alt="Push Media · Innovative solutions"></header>'+
-   '<main class="lg-card"><div class="lg-h"><h1><span>เข้าสู่ระบบ</span><b id="lg-app">'+esc(pub.app||'Push Media HR')+'</b></h1><p><b>ใช้ครั้งแรก?</b> เปิดแอปพนักงานใน LINE แล้วเชื่อมบัญชี หรือขอลิงก์เชิญจาก HR</p></div>'+
+   '<main class="lg-card"><div class="lg-h"><h1><span>เข้าสู่ระบบ</span><b id="lg-app">'+esc(pub.app||'Push Media Center')+'</b></h1><p><b>ใช้ครั้งแรก?</b> เปิดแอปพนักงานใน LINE แล้วเชื่อมบัญชี หรือขอลิงก์เชิญจาก HR</p></div>'+
     '<div class="lg-cols"><section class="lg-col"><h2>บัญชีพนักงาน</h2><div class="lg-alert" id="lg-noemail" role="alert" hidden></div><div class="lg-note">HR หัวหน้างาน ผู้จัดการ · เปิดเมนูตามสิทธิ์</div>'+
      '<button class="lg-btn lg-line" id="lg-line"><span class="ic">'+IC.line+'</span><span class="lb">เข้าสู่ระบบด้วย LINE</span></button>'+
      (GOO?'<button class="lg-btn lg-goo" id="lg-goo"><span class="ic">'+IC.goo+'</span><span class="lb">เข้าสู่ระบบด้วย Google</span></button><div class="lg-hint">Google: ใช้อีเมลเดียวกับที่ลงทะเบียนในข้อมูลพนักงาน</div>':'<div class="lg-hint">ใช้บัญชี LINE เดียวกับที่ลงเวลาในแอปพนักงาน</div>')+'</section>'+
@@ -535,8 +589,8 @@ function render(){
   var me=A.d.me,lr=A.d.linkRequests.length,allowed=navFor(me),cur=NAVOF[A.view]||A.view;
   if(selfOnly()&&(A.view==='profile'||A.view==='form'))A.view='dash';
   if(allowed.indexOf(cur)<0){A.view=allowed[0];cur=A.view}
-  var V={dash:selfOnly()?[vMine,bMine]:[vDash,bDash],list:[vList,bList],profile:[vProfile,bProfile],form:[vForm,bForm],req:[vReq,bReq],org:[vOrg,bOrg],att:[vAtt,bAtt],lv:[vLv,bLv],appr:[vAppr,bAppr],set:[vSet,bSet],audit:[vAudit,bAudit],sched:[vPlanner,bNone],conf:[vConf,bNone],ot:[vSoon,bNone],rep:[vRep,bRep]}[A.view]||[vDash,bDash];
-  var pend=(A.d.pendingCount||0)+lr,wide=navWide(),app=A.d.app||'Push Media HR';
+  var V={dash:selfOnly()?[vMine,bMine]:[vDash,bDash],list:[vList,bList],profile:[vProfile,bProfile],form:[vForm,bForm],req:[vReq,bReq],org:[vOrg,bOrg],att:[vAtt,bAtt],lv:[vLv,bLv],appr:[vAppr,bAppr],set:[vSet,bSet],audit:[vAudit,bAudit],sched:[vPlanner,bNone],conf:[vConf,bNone],ot:[vSoon,bNone],rep:[vRep,bRep],pay:[vPay,bPay]}[A.view]||[vDash,bDash];
+  var pend=(A.d.pendingCount||0)+lr,wide=navWide(),app=A.d.app||'Push Media Center';
   var item=function(n){var c=n[0]==='appr'?pend:0;return '<a data-nav="'+n[0]+'" class="'+(cur===n[0]?'on':'')+(SOON[n[0]]?' soon-i':'')+'"'+(cur===n[0]?' aria-current="page"':'')+' title="'+n[1]+'">'+ic(n[2])+'<span>'+(wide?n[1]:(SHORT[n[0]]||n[1]))+'</span>'+(SOON[n[0]]?'<span class="soon">เร็ว ๆ นี้</span>':c?'<span class="cnt">'+c+'</span>':'')+'</a>'};
   var SUB={sched:['sched','conf']};
   var par=function(k){var kids=SUB[k].filter(function(x){return allowed.indexOf(x)>=0});if(kids.length<2)return item(NAV.filter(function(n){return n[0]===k})[0]);
@@ -584,19 +638,358 @@ function go(v,id){A.view=v;A.id=id||null;if(v!=='form'){A.f=null;A.err={}}closeD
 window.hrNav=function(v,stab){if(!A.d)return;if(stab)A.stab=stab;go(v)};
 
 /* ───────── เมนูตาม Figma หน้า 03 (ไอคอนจาก prototype/index.html) ───────── */
-var ICON={box:'<path d="M21 16V8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4a2 2 0 0 0 1-1.7z"/><path d="M3.3 7 12 12l8.7-5M12 22V12"/>',alarm:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M5 3 2 6M19 3l3 3"/>',clockx:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5M12 16v.01"/>',search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0"/>',help:'<circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"/>',caret:'<path d="m6 9 6 6 6-6"/>',chevR:'<path d="m9 6 6 6-6 6"/>',out:'<path d="M14 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>',pin:'<path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/>',dash:'<path d="M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z"/>',emp:'<circle cx="9" cy="8" r="4"/><path d="M2 21c0-4 3-6 7-6s7 2 7 6M17 11a3 3 0 1 0 0-6M22 21c0-3-2-5-5-5"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',cal:'<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/>',leave:'<path d="M4 20c4-1 6-4 6-9V4M10 4c5 0 9 3 10 8-5 1-9-1-10-8z"/>',ot:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4h3M9 2h6"/>',check:'<path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',org:'<rect x="9" y="2" width="6" height="5"/><rect x="2" y="17" width="6" height="5"/><rect x="16" y="17" width="6" height="5"/><path d="M12 7v5M5 17v-5h14v5"/>',rep:'<path d="M3 21h18M6 17V10M11 17V5M16 17v-8M21 17v-4"/>',set:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-2.7-1.1l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.6 1.6 0 0 0 3.6 15H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.1-2.7l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.6 1.6 0 0 0 9 4.6V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 2.7 1.1l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0 1.1 2.7H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/>',log:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/>'};
+var ICON={wallet:'<path d="M20 7H5a2 2 0 0 1 0-4h13v4"/><path d="M3 5v14a2 2 0 0 0 2 2h15V7"/><path d="M16 14h.01"/>',box:'<path d="M21 16V8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4a2 2 0 0 0 1-1.7z"/><path d="M3.3 7 12 12l8.7-5M12 22V12"/>',alarm:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M5 3 2 6M19 3l3 3"/>',clockx:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5M12 16v.01"/>',search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0"/>',help:'<circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"/>',caret:'<path d="m6 9 6 6 6-6"/>',chevR:'<path d="m9 6 6 6-6 6"/>',out:'<path d="M14 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>',pin:'<path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/>',dash:'<path d="M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z"/>',emp:'<circle cx="9" cy="8" r="4"/><path d="M2 21c0-4 3-6 7-6s7 2 7 6M17 11a3 3 0 1 0 0-6M22 21c0-3-2-5-5-5"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',cal:'<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/>',leave:'<path d="M4 20c4-1 6-4 6-9V4M10 4c5 0 9 3 10 8-5 1-9-1-10-8z"/>',ot:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4h3M9 2h6"/>',check:'<path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',org:'<rect x="9" y="2" width="6" height="5"/><rect x="2" y="17" width="6" height="5"/><rect x="16" y="17" width="6" height="5"/><path d="M12 7v5M5 17v-5h14v5"/>',rep:'<path d="M3 21h18M6 17V10M11 17V5M16 17v-8M21 17v-4"/>',set:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-2.7-1.1l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.6 1.6 0 0 0 3.6 15H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.1-2.7l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.6 1.6 0 0 0 9 4.6V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 2.7 1.1l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0 1.1 2.7H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/>',log:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/>'};
 function ic(k){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+ICON[k]+'</svg>'}
 var MARK='<svg viewBox="0 0 64 64" aria-hidden="true"><path fill="currentColor" d="M10 4h13v19a9 9 0 0 0 18 0V4h13a6 6 0 0 1 6 6v44a6 6 0 0 1-6 6H10a6 6 0 0 1-6-6V10a6 6 0 0 1 6-6z"/></svg>';
-var NAV=[['dash','Dashboard','dash'],['list','พนักงาน','emp'],['att','ลงเวลา','clock'],['sched','ตารางงาน','cal'],['conf','Confirmed','box'],['lv','การลา','leave'],['ot','OT','ot'],['appr','ศูนย์อนุมัติ','check'],['org','โครงสร้างองค์กร','org'],['rep','รายงาน','rep'],['set','ตั้งค่าระบบ','set'],['audit','Audit Log','log']];
+var NAV=[['dash','Dashboard','dash'],['list','พนักงาน','emp'],['att','ลงเวลา','clock'],['sched','ตารางงาน','cal'],['conf','Confirmed','box'],['lv','การลา','leave'],['ot','OT','ot'],['appr','ศูนย์อนุมัติ','check'],['org','โครงสร้างองค์กร','org'],['pay','เงินเดือน','wallet'],['rep','รายงาน','rep'],['set','ตั้งค่าระบบ','set'],['audit','Audit Log','log']];
 var ROLE_NAV={hr:['dash','list','att','sched','conf','lv','ot','appr','org','rep','set','audit'],admin:['dash','list','att','sched','conf','lv','ot','appr','org','rep','set','audit'],manager:['dash','list','att','sched','lv','ot','appr','rep'],lead:['dash','list','att','sched','lv','ot','appr'],exec:['dash','appr','rep','sched']};
 var SOON={ot:['OT','คำขอ OT และเทียบกับเวลาลงเวลาจริง']};
 var NAVOF={conf:'conf',profile:'list',form:'list',req:'appr'};
 var SHORT={appr:'อนุมัติ',org:'โครงสร้าง',set:'ตั้งค่า'};
-var NAV_GROUPS=[['ภาพรวม',['dash','appr']],['พนักงาน',['list','att','lv','sched','ot']],['องค์กรและระบบ',['org','rep','set','audit']]];
+var NAV_GROUPS=[['ภาพรวม',['dash','appr']],['พนักงาน',['list','att','lv','sched','ot','pay']],['องค์กรและระบบ',['org','rep','set','audit']]];
 function navTitle(v){if(v==='dash'&&A.d&&selfOnly())return 'ภาพรวมของฉัน';var n=NAV.filter(function(x){return x[0]===(NAVOF[v]||v)})[0];return n?n[1]:''}
 function vSoon(){var s=SOON[A.view];return '<div class="ph"><div><h1>'+s[0]+'</h1><div class="sub">'+s[1]+'</div></div></div><section class="card state"><b>อยู่ระหว่างพัฒนา</b><span>หน้านี้ออกแบบไว้แล้วใน Figma (หน้า 03) · จะเปิดใช้ในรอบถัดไป</span></section>'}
 function bNone(){}
 function pct(a,b){return b?Math.round(a/b*100):0}
+
+/* ───────── สถิติการใช้งาน Cloudflare (27 ต.ค. 2569 · app-cf/src/meter.js) ─────────
+ * นับเองในระบบ: จำนวนคำสั่ง · แถวที่ D1 อ่าน/เขียน ต่อคำสั่ง ต่อเดือน + รวมรายวัน → จัดกลุ่มเป็นงานที่คนเข้าใจ · เทียบโควตาฟรี/รายเดือนของ Cloudflare
+ * โควตา (ตามเอกสาร Cloudflare ณ ต.ค. 2569): ฟรี/วัน คำขอ 100,000 · D1 อ่าน 5 ล้านแถว · เขียน 100,000 แถว · Workers Paid ($5/เดือน) รวม คำขอ 10 ล้าน · อ่าน 25,000 ล้านแถว · เขียน 50 ล้านแถว ต่อเดือน */
+var US=null;
+var USG=[['ลงเวลา (แอปพนักงาน)',/^(clock|todayInfo|myAttendance|clockBackup)$/],['แอปพนักงาน (เข้าระบบ · โปรไฟล์ · การลา)',/^(loginLine|refreshLine|my|updateMy|setMy|leaveInfo|previewLeave|submitLeave|leaveDetail|cancelLeave|redeemInvite|requestLink|publicInfo|backupInfo)/],
+  ['หลังบ้าน: เปิดหน้า · Dashboard · พนักงาน',/^(adminBootstrap|hrDashboard|listEmployees|getEmployee|empOverview|login|logout|getOrg|getAccess|saveEmployee|saveEmp|deleteEmp|revealBank|createInvites|unlinkLine|saveOrg|setOrg|firstHrSetup)/],
+  ['ลงเวลา (หลังบ้าน) · รายงาน Matrix',/^(attendanceToday|attMatrix|dayRecords|adjustTime|voidRecord|syncNow)$/],['ศูนย์อนุมัติ · การลา',/^(approvalsList|decideLeave|ackLeave|leaveAdminList|approvalCenter|photosFor|decideLink|listLinkRequests|decideDevice)$/],
+  ['ตารางงาน · Confirmed',/^(wtm|schedule|sched|saveJob|deleteJob|saveVehicle|listVehicles|saveSched)/],['เงินเดือน',/^pay/],['ตั้งค่า · Audit Log',/^(getSettings|saveSettings|saveLeaveType|auditList|saveCompanyLogo|perfStats|usage|saveShift|saveEmployeeShifts|saveHoliday|deleteHoliday|saveAccess)/],
+  ['สำเนา Google Sheets (อัตโนมัติทุก 15 นาที)',/^_mirror/],['สรุปลงเวลาประจำวัน (อัตโนมัติ 23:30)',/^_cron$/]];
+function usGroup(fn){for(var i=0;i<USG.length;i++)if(USG[i][1].test(fn))return USG[i][0];return 'อื่น ๆ'}
+function nfmt(n){n=+n||0;return n>=1e6?(n/1e6).toFixed(n>=1e7?0:1)+' ล้าน':n.toLocaleString('en-US')}
+function usDraw(){var d=US,b=$('#us-body');if(!b)return;var M={},cur=dIso(new Date()).slice(0,7);
+  d.months.forEach(function(r){var m=M[r.p]||(M[r.p]={p:r.p,n:0,rr:0,rw:0,ms:0,fns:[]});m.n+=r.n;m.rr+=r.rr;m.rw+=r.rw;m.ms+=r.ms;m.fns.push(r)});
+  var ms=Object.keys(M).sort().reverse();if(!ms.length){b.innerHTML='<span class="muted">ยังไม่มีข้อมูล · ระบบเริ่มนับตั้งแต่ขึ้นเวอร์ชันนี้ (ตัวเลขจะเพิ่มขึ้นเมื่อมีคนใช้งาน)</span>';return}
+  var sel=US.sel||ms[0],m=M[sel],DM={};d.days.forEach(function(x){DM[x.p]=x});
+  var days=[],t0=new Date();for(var k=44;k>=0;k--){var dt=new Date(t0);dt.setDate(dt.getDate()-k);var ds=dIso(dt);days.push(DM[ds]||{p:ds,n:0,rr:0,rw:0,none:1})}// แกน 45 วันเต็ม · วันที่ยังไม่มีข้อมูล = แท่งว่าง
+  var mx=Math.max.apply(null,days.map(function(x){return x.rr}).concat([1]));
+  var G={};m.fns.forEach(function(r){var g=usGroup(r.fn),x=G[g]||(G[g]={g:g,n:0,rr:0,rw:0});x.n+=r.n;x.rr+=r.rr;x.rw+=r.rw});
+  var gs=Object.keys(G).map(function(k){return G[k]}).sort(function(a,c){return c.rr-a.rr}),pc=function(a,t){return t?Math.round(a/t*1000)/10:0};
+  var dd=days.filter(function(x){return !x.none&&x.p.slice(0,7)===sel}),avg=function(k){return dd.length?Math.round(dd.reduce(function(s,x){return s+x[k]},0)/dd.length):0},peak=dd.reduce(function(a,x){return x.rr>a.rr?x:a},{rr:0,rw:0,n:0,p:''});
+  var kpi=function(l,v,s2){return '<div class="py-k"><span>'+l+'</span><b class="num">'+v+'</b><small>'+s2+'</small></div>'};
+  b.innerHTML='<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px"><span class="muted" style="font-size:12.5px">เดือน</span>'+ms.map(function(p){return '<button class="btn sm'+(p===sel?' pri':'')+'" data-usm="'+p+'">'+esc(ymTh(p,1))+'</button>'}).join('')+'<span class="sp"></span><span class="faint" style="font-size:12px">เริ่มนับ '+esc(d.since?dTh(d.since):'—')+' · ขนาดฐานข้อมูล '+(d.size/1048576).toFixed(1)+' MB (ฟรี 5,000 MB)</span></div>'+
+   '<div class="py-ks">'+kpi('คำสั่งทั้งเดือน',nfmt(m.n),'เฉลี่ย '+nfmt(avg('n'))+' / วัน (ฟรี 100,000 / วัน)')+kpi('D1 อ่าน (แถว)',nfmt(m.rr),'เฉลี่ย '+nfmt(avg('rr'))+' / วัน · สูงสุด '+nfmt(peak.rr)+(peak.p?' ('+dTh(peak.p)+')':'')+' · ฟรี 5 ล้าน / วัน')+kpi('D1 เขียน (แถว)',nfmt(m.rw),'เฉลี่ย '+nfmt(avg('rw'))+' / วัน · ฟรี 100,000 / วัน')+kpi('เวลาตอบเฉลี่ย',(m.n?Math.round(m.ms/m.n):0)+' ms','ต่อคำสั่ง')+'</div>'+
+   '<div style="display:grid;gap:18px"><div><h4 style="margin:0 0 8px">ใช้ไปกับอะไรบ้าง · '+esc(ymTh(sel))+'</h4><table class="py-t sm"><thead><tr><th>งาน</th><th class="r">ครั้ง</th><th class="r">D1 อ่าน</th><th style="width:34%">สัดส่วนการอ่าน</th><th class="r">D1 เขียน</th></tr></thead><tbody>'+
+     gs.map(function(x){var p1=pc(x.rr,m.rr);return '<tr><td>'+esc(x.g)+'</td><td class="r num">'+nfmt(x.n)+'</td><td class="r num">'+nfmt(x.rr)+'</td><td><div style="display:flex;align-items:center;gap:8px"><div class="meter" style="flex:1"><i style="width:'+p1+'%"></i></div><span class="num faint" style="font-size:11.5px;width:42px;text-align:right">'+p1+'%</span></div></td><td class="r num">'+nfmt(x.rw)+'</td></tr>'}).join('')+'</tbody></table>'+
+     '<details style="margin-top:10px"><summary class="muted" style="cursor:pointer;font-size:12.5px">ดูรายคำสั่ง (10 อันดับที่อ่านมากที่สุด)</summary><table class="py-t sm" style="margin-top:6px"><thead><tr><th>คำสั่ง</th><th>งาน</th><th class="r">ครั้ง</th><th class="r">อ่าน</th><th class="r">อ่าน/ครั้ง</th><th class="r">เขียน</th></tr></thead><tbody>'+
+     m.fns.slice().sort(function(a,c){return c.rr-a.rr}).slice(0,10).map(function(r){return '<tr><td class="num">'+esc(r.fn)+'</td><td class="faint">'+esc(usGroup(r.fn))+'</td><td class="r num">'+nfmt(r.n)+'</td><td class="r num">'+nfmt(r.rr)+'</td><td class="r num">'+nfmt(Math.round(r.rr/Math.max(1,r.n)))+'</td><td class="r num">'+nfmt(r.rw)+'</td></tr>'}).join('')+'</tbody></table></details></div>'+
+   '<div><h4 style="margin:0 0 8px">D1 อ่านรายวัน (45 วันล่าสุด)</h4><div class="us-ch"><div class="us-y"><span>'+nfmt(mx)+'</span><span>'+nfmt(Math.round(mx/2))+'</span><span>0</span></div><div class="us-bars">'+days.map(function(x){var h=x.rr?Math.max(3,Math.round(x.rr/mx*100)):0;return '<i title="'+esc(dTh(x.p))+(x.none?' · ยังไม่มีข้อมูล':' · อ่าน '+nfmt(x.rr)+' · เขียน '+nfmt(x.rw)+' · '+nfmt(x.n)+' คำสั่ง')+'" class="'+(x.none?'none':x.p.slice(0,7)===sel?'on':'')+(x.rr>5e6?' over':'')+'"><b style="height:'+h+'%"></b></i>'}).join('')+'</div></div>'+
+     '<div class="us-x"><span>'+esc(dTh(days[0].p))+'</span><span>'+esc(dTh(days[22].p))+'</span><span>'+esc(dTh(days[44].p))+'</span></div>'+
+     '<div class="faint" style="font-size:11.5px;margin-top:6px">ชี้ที่แท่งเพื่อดูตัวเลข · สีดำ = เดือนที่เลือก · แดง = เกินโควตาฟรีวันนั้น (5 ล้านแถว) · ช่องว่าง = ยังไม่มีข้อมูล (เริ่มนับ '+esc(d.since?dTh(d.since):'—')+')</div></div></div>'+
+   '<div class="note-b" style="margin-top:12px">ตัวเลขนับเองในระบบเพื่อดูแนวโน้ม ไม่ใช่ใบแจ้งหนี้ · ยอดจริงดูที่ Cloudflare Dashboard · แพ็กเกจ Workers Paid ($5/เดือน) รวมอ่าน 25,000 ล้านแถว · เขียน 50 ล้านแถว · คำขอ 10 ล้านครั้ง ต่อเดือน</div>';
+  $$('[data-usm]').forEach(function(x){x.onclick=function(){US.sel=x.dataset.usm;usDraw()}})}
+/* ปุ่มเลือกเดือน (แทน <input type="month"> ของเบราว์เซอร์ ให้หน้าตาเหมือนปฏิทินของระบบ) · ค่าอยู่ใน <input type="hidden" id> = 'YYYY-MM' (ค.ศ.) หรือ ''
+ * mpBtn(id, ym, {clear:true, attr:'data-pc="x"'}) · กดเลือกแล้ว hidden input ยิง event input + change */
+function mpTxt(ym,ph){return ym?DPM[+ym.slice(5,7)-1]+' '+(+ym.slice(0,4)+543):(ph||'เลือกเดือน')}
+function mpBtn(id,ym,o){o=o||{};return '<input type="hidden" id="'+id+'" value="'+esc(ym||'')+'"'+(o.attr?' '+o.attr:'')+'><button type="button" class="btn dpt mpt" data-mp="'+id+'"'+(o.clear?' data-mpc="1"':'')+(o.ph?' data-mpph="'+esc(o.ph)+'"':'')+(o.disabled?' disabled':'')+' aria-haspopup="dialog" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>'+esc(mpTxt(ym,o.ph))+'</span><svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>'}
+function mpBind(root){(root||document).querySelectorAll('[data-mp]').forEach(function(b){if(b._mp)return;b._mp=1;b.onclick=function(){mpOpen(b)}})}
+function mpOpen(btn){var old=document.querySelector('.dp');if(old){old._close();if(old._btn===btn)return}
+  var inp=document.getElementById(btn.dataset.mp),cur=inp.value,now=dIso(new Date()).slice(0,7),Y=+(cur||now).slice(0,4);
+  var el=document.createElement('div');el.className='dp mp';el.setAttribute('role','dialog');el.setAttribute('aria-label','เลือกเดือน');el._btn=btn;document.body.appendChild(el);btn.setAttribute('aria-expanded','true');
+  var close=function(){el.remove();btn.setAttribute('aria-expanded','false');document.removeEventListener('mousedown',om,true);document.removeEventListener('keydown',kd,true)},
+    om=function(e){if(!el.contains(e.target)&&!btn.contains(e.target))close()},kd=function(e){if(e.key==='Escape'){e.stopPropagation();close();btn.focus()}};el._close=close;
+  var set=function(v){inp.value=v;btn.querySelector('span').textContent=mpTxt(v,btn.dataset.mpph);['input','change'].forEach(function(t){inp.dispatchEvent(new Event(t,{bubbles:true}))});close();btn.focus()};
+  var draw=function(){el.innerHTML='<div class="dp-h"><button type="button" class="dp-nv" data-y="-1" aria-label="ปีก่อน">‹</button><b style="flex:1;text-align:center">'+(Y+543)+'</b><button type="button" class="dp-nv" data-y="1" aria-label="ปีถัดไป">›</button></div><div class="mp-g">'+
+      DPS.map(function(m,i){var v=Y+'-'+('0'+(i+1)).slice(-2);return '<button type="button" data-m="'+v+'" class="'+(v===now?'td':'')+'" aria-pressed="'+(v===cur)+'">'+m+'</button>'}).join('')+'</div>'+
+      '<div class="mp-f">'+(btn.dataset.mpc?'<button type="button" class="btn sm" data-clr>ไม่กำหนด</button>':'')+'<button type="button" class="btn sm" data-now>เดือนนี้</button></div>';
+    el.querySelectorAll('[data-y]').forEach(function(b){b.onclick=function(){Y+=+b.dataset.y;draw()}});
+    el.querySelectorAll('[data-m]').forEach(function(b){b.onclick=function(){set(b.dataset.m)}});
+    el.querySelector('[data-now]').onclick=function(){set(now)};var c=el.querySelector('[data-clr]');if(c)c.onclick=function(){set('')}};
+  draw();var r=btn.getBoundingClientRect(),w=el.offsetWidth,l=r.left+w<=innerWidth-8?r.left+window.scrollX:r.right+window.scrollX-w;el.style.left=Math.max(8+window.scrollX,l)+'px';el.style.top=(r.bottom+window.scrollY+6)+'px';
+  setTimeout(function(){document.addEventListener('mousedown',om,true);document.addEventListener('keydown',kd,true)},0);var f=el.querySelector('[aria-pressed=true]')||el.querySelector('.td');if(f)f.focus()}
+/* ───────── เงินเดือน (27 ต.ค. 2569 · ระยะ 1 · Payroll.js · Figma หน้า 03 section 550:8493) ─────────
+ * แท็บ: งวดเงินเดือน · ข้อมูลรายคน · หนี้สิน · รายการรายรับ–รายจ่าย · ตั้งค่า
+ * ข้อมูลเงินเดือนไม่เก็บในเครื่อง (ไม่ใช้ store) · ส่งออก Excel ทำในเบราว์เซอร์ (xlsx.full.min.js โหลดเมื่อกดเท่านั้น) */
+/* ช่องค้นหาแบบเดียวกับแถบบน (ไอคอนแว่น · พื้นเทา · มุมมน) */
+function pySearch(id,v,ph){return '<label class="pyq">'+ic('search')+'<input type="search" id="'+id+'" placeholder="'+esc(ph)+'" value="'+esc(v)+'" aria-label="ค้นหา" autocomplete="off"></label>'}
+var PY={tab:'runs',run:null,runId:null,q:'',dep:'all',warn:false,pq:'',pnone:false};
+var TMF=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+var TMS=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+function ymTh(ym,s){if(!ym)return '—';return (s?TMS:TMF)[+ym.slice(5,7)-1]+' '+(+ym.slice(0,4)+543)}
+function dTh(d){if(!d)return '—';return +d.slice(8,10)+' '+TMS[+d.slice(5,7)-1]+' '+(+d.slice(0,4)+543)}
+function m2(n){return (Number(n)||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function m2z(n){return n?m2(n):'—'}
+var PYST={draft:['ร่าง','b-mute'],review:['รอตรวจ/อนุมัติ','b-warn'],approved:['อนุมัติแล้ว · รอปิดงวด','b-info'],closed:['ปิดงวดแล้ว · รอโอน','b-ok'],paid:['จ่ายแล้ว','b-ok']};
+var PYSRC={auto:'อัตโนมัติ',fixed:'ประจำรายคน',input:'กรอกในงวด'};
+function pyBadge(s){var x=PYST[s]||[s,'b-mute'];return '<span class="badge '+x[1]+'">'+x[0]+'</span>'}
+function vPay(){var T=[['runs','งวดเงินเดือน'],['people','ข้อมูลรายคน'],['loans','หนี้สินพนักงาน'],['items','รายการรายรับ–รายจ่าย'],['cfg','ตั้งค่า']];
+  return '<div class="ph"><div><h1>เงินเดือน</h1><div class="sub">ตัดยอดทุกวันที่ '+esc(PY.bs?PY.bs.cfg.pay_cutoff_day:'25')+' · เห็นเฉพาะผู้ดูแลระบบ / HR / ฝ่ายบัญชีที่ได้รับสิทธิ์ · ทุกการแก้บันทึกใน Audit Log</div></div></div>'+
+   '<div class="rp-tabs" role="tablist">'+T.map(function(t){return '<button data-pyt="'+t[0]+'" aria-pressed="'+(PY.tab===t[0])+'">'+t[1]+'</button>'}).join('')+'</div><div id="py-body"><div class="loading"><span class="spin"></span>กำลังโหลด…</div></div>'}
+function bPay(){$$('[data-pyt]').forEach(function(b){b.onclick=function(){PY.tab=b.dataset.pyt;PY.runId=null;render()}});
+  var go2=function(){({runs:PY.runId?pyRun:pyRuns,people:pyPeople,loans:pyLoans,items:pyItems,cfg:pyCfg})[PY.tab]()};
+  if(PY.bs&&Date.now()-PY.bsAt<60000)return go2();
+  aCall('payBootstrap').then(function(r){PY.bs=r;PY.bsAt=Date.now();go2()}).catch(function(e){pyErr(e)})}
+function pyErr(e){var b=$('#py-body');if(b)b.innerHTML='<div class="alert">'+esc(e.message||e)+'</div>'}
+function pyReload(){PY.bsAt=0;render()}
+function pyBody(h){var b=$('#py-body');if(b){b.innerHTML=h;setTimeout(function(){mpBind(b)},0)}return !!b}
+
+/* ── รายการงวด ── */
+function pyRuns(){var bs=PY.bs,rs=bs.runs,open=rs.filter(function(r){return r.status!=='closed'&&r.status!=='paid'})[0];
+  var nx=(function(){var d=new Date(),c=+bs.cfg.pay_cutoff_day;if(d.getDate()>c)d.setMonth(d.getMonth()+1);return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)})();
+  pyBody((bs.profiles<bs.active?'<div class="note-b">มีฐานเงินเดือนแล้ว '+bs.profiles+' จาก '+bs.active+' คน · คนที่ยังไม่มีฐานจะไม่อยู่ในงวด'+(bs.canEdit?' <button class="btn sm" data-pyt2="people">ไปที่ข้อมูลรายคน</button>':'')+'</div>':'')+
+   '<section class="card"><div class="ch"><h3>งวดเงินเดือน</h3><span class="sp"></span>'+(bs.canEdit?(open?'<span class="faint" style="font-size:12.5px">ปิดงวด '+esc(ymTh(open.ym))+' ก่อนเปิดงวดใหม่</span>':''+mpBtn('py-ym',nx)+'<button class="btn pri" id="py-new">+ เปิดงวด</button>'):'')+'</div>'+
+   '<div class="tw"><table class="py-t"><thead><tr><th>งวด</th><th>รอบตัดยอด</th><th>วันจ่าย</th><th>สถานะ</th><th class="r">คน</th><th class="r">รวมรายรับ</th><th class="r">รวมรายจ่าย</th><th class="r">รับสุทธิ (ยอดโอน)</th><th class="r">ต้องตรวจ</th></tr></thead><tbody>'+
+   (rs.length?rs.map(function(r){var t=r.totals||{};return '<tr class="ck" data-run="'+r.id+'"><td><b>'+esc(ymTh(r.ym))+'</b></td><td>'+dTh(r.from)+' – '+dTh(r.to)+'</td><td>'+dTh(r.pay_date)+'</td><td>'+pyBadge(r.status)+'</td><td class="r num">'+(t.people||0)+'</td><td class="r num">'+m2(t.inc)+'</td><td class="r num">'+m2(t.ded)+'</td><td class="r num"><b>'+m2(t.net)+'</b></td><td class="r">'+(t.warn?'<span class="badge b-warn">'+t.warn+'</span>':'—')+'</td></tr>'}).join(''):'<tr><td colspan="9" class="muted" style="padding:28px;text-align:center">ยังไม่มีงวด · เลือกเดือนแล้วกด "เปิดงวด"</td></tr>')+'</tbody></table></div></section>');
+  $$('[data-run]').forEach(function(r){r.onclick=function(){PY.runId=r.dataset.run;PY.run=null;PYG={};PY.rv=null;pyRun()}});
+  $$('[data-pyt2]').forEach(function(b){b.onclick=function(){PY.tab=b.dataset.pyt2;render()}});
+  if($('#py-new'))$('#py-new').onclick=function(){var ym=$('#py-ym').value,b=this;if(!ym)return toast('เลือกเดือน',1);
+    ask({title:'เปิดงวด '+ymTh(ym)+'?',desc:'ระบบจะดึงเงินเดือน รายการประจำ หนี้สิน และวันขาดงานจากระบบลงเวลา แล้วคำนวณให้ทันที',buttons:[{k:'no',label:'ยกเลิก'},{k:'yes',label:'เปิดงวด',cls:'pri'}]}).then(function(k){if(k!=='yes')return;busy(b,1);
+      aCall('payCreateRun',ym).then(function(r){PY.runId=r.id;PY.bsAt=0;toast('เปิดงวดแล้ว');aCall('payBootstrap').then(function(x){PY.bs=x;PY.bsAt=Date.now();pyRun()})}).catch(function(e){busy(b,0);toast(e.message,1)})})}}
+
+/* ── รายละเอียดงวด ── */
+function pyRun(force){if(!force&&PY.run&&PY.run.run.id===PY.runId)return pyRunDraw();
+  pyBody('<div class="loading"><span class="spin"></span>กำลังโหลดงวด…</div>');
+  aCall('payRun',PY.runId).then(function(r){PY.run=r;if(!PY.rv)PY.rv=r.canEdit?'grid':'sum';pyRunDraw()}).catch(pyErr)}
+function pyRunDraw(){var R=PY.run,r=R.run,t=r.totals||{},st=r.status,STEP=['draft','review','approved','closed','paid'],si=STEP.indexOf(st);
+  var deps={};R.rows.forEach(function(x){if(x.dept)deps[x.dept]=1});
+  var q=PY.q.trim().toLowerCase(),rows=R.rows.filter(function(x){return (!q||(x.code+' '+x.name+' '+x.nickname).toLowerCase().indexOf(q)>=0)&&ofOk('py',x.dept,x.team)&&(!PY.warn||x.warn.length)});
+  var btns='';
+  if(R.isHR&&st==='draft')btns+='<button class="btn" id="py-calc">คำนวณใหม่</button><button class="btn pri" data-act="submit">ส่งตรวจ</button>';
+  if(st==='review'){if(R.isHR)btns+='<button class="btn" data-act="back">กลับไปแก้</button>';if(R.canApprove)btns+='<button class="btn pri" data-act="approve">อนุมัติ</button>'}
+  if(st==='approved'&&R.isHR)btns+='<button class="btn" data-act="back">กลับไปแก้</button><button class="btn pri" data-act="close">ปิดงวดบัญชี</button>';
+  if(st==='closed'&&R.isHR)btns+='<button class="btn pri" data-act="paid">ยืนยันโอนเงินแล้ว</button>';
+  if((st==='closed'||st==='paid')&&R.isAdmin)btns+='<button class="btn" data-act="reopen">ย้อนงวด</button>';
+  var kpi=function(l,v,d){return '<div class="py-k"><span>'+l+'</span><b class="num">'+v+'</b><small>'+(d||'&nbsp;')+'</small></div>'};
+  pyBody('<div class="py-hd"><div><a class="lnk" id="py-back">‹ รายการงวด</a><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><h2 style="margin:0">งวด '+esc(ymTh(r.ym))+'</h2>'+pyBadge(st)+(st==='closed'||st==='paid'?'<span class="badge b-mute">🔒 อ่านอย่างเดียว</span>':'')+'</div>'+
+    '<div class="muted" style="font-size:13px">'+dTh(r.from)+' – '+dTh(r.to)+' · จ่าย '+dTh(r.pay_date)+(r.calc_at?' · คำนวณล่าสุด '+esc(r.calc_at.slice(11,16))+' น. '+dTh(r.calc_at.slice(0,10)):'')+'</div></div><span class="sp"></span><div class="py-acts">'+btns+'</div></div>'+
+   '<div class="py-steps">'+['ร่าง · HR กรอก/คำนวณ','ส่งตรวจ','อนุมัติ','ปิดงวดบัญชี','จ่ายแล้ว'].map(function(s,i){return '<span class="'+(i<si?'done':i===si?'on':'')+'"><i>'+(i<si?'✓':i+1)+'</i>'+s+'</span>'}).join('')+'</div>'+
+   (st==='approved'?'<div class="note-w">งวด "'+esc(ymTh(r.ym))+'" อนุมัติแล้ว · กรุณาปิดงวดบัญชีเพื่อสร้างไฟล์โอนธนาคาร</div>':'')+
+   (R.missing&&st==='draft'?'<div class="note-b">พนักงาน '+R.missing+' คนยังไม่มีฐานเงินเดือน (ไม่อยู่ในงวดนี้)'+(R.isHR?' <button class="btn sm" data-pyt2="people">ไปที่ข้อมูลรายคน</button>':'')+'</div>':'')+
+   '<div class="py-ks">'+kpi('รวมรายรับ',m2(t.inc),(t.people||0)+' คน')+kpi('รวมรายจ่าย',m2(t.ded),'ประกันสังคม '+m2(t.sso)+(t.wht?' · หัก ณ ที่จ่าย '+m2(t.wht):''))+kpi('รับสุทธิ (ยอดโอน)',m2(t.net),'รวมรายรับ − รวมรายจ่าย')+kpi('หนี้สินที่หัก',m2(t.debt),t.welfare?'กองทุนสงเคราะห์ '+m2(t.welfare):'')+'</div>'+
+   '<div class="pg-tabs" role="tablist"><button data-rv="grid" aria-pressed="'+(PY.rv==='grid')+'"><b>1</b>กรอกรายรับ–รายจ่าย<small>'+(R.canEdit?'HR กรอกทุกคนในตารางเดียว':'ดูยอดที่กรอก')+'</small></button><button data-rv="sum" aria-pressed="'+(PY.rv!=='grid')+'"><b>2</b>สรุปผลคำนวณ<small>ตรวจรายคน · ต้องตรวจ '+(t.warn||0)+' คน</small></button></div>'+
+   '<section class="card"><div class="ch" style="flex-wrap:wrap;gap:8px">'+pySearch('py-q',PY.q,'ค้นหาชื่อ ชื่อเล่น รหัส')+ofSel('py',1)+
+    (PY.rv==='grid'?'':'<label class="chk"><input type="checkbox" id="py-w"'+(PY.warn?' checked':'')+'> ต้องตรวจ ('+(t.warn||0)+')</label>')+'<span class="sp"></span>'+exBtn('xls','py-xl')+(st==='closed'||st==='paid'?exBtn('txt','py-bank','Export Text','title="ไฟล์โอนเงินเดือนเข้าธนาคารกสิกรไทย (.txt)"'):exBtn('txt','py-bank0','Export Text','disabled title="ไฟล์โอนกสิกร · ปิดงวดบัญชีก่อนจึงดาวน์โหลดได้"'))+'</div>'+
+   (PY.rv==='grid'?'<div id="pg-body"></div></section>':'<div class="tw"><table class="py-t"><thead><tr><th>พนักงาน</th><th>แผนก</th><th>ประเภท</th><th class="r">อัตราค่าจ้าง</th><th class="r">วันทำงาน</th><th class="r">ขาดงาน</th><th class="r">รวมรายรับ</th><th class="r">รวมรายจ่าย</th><th class="r">รับสุทธิ</th><th>ต้องตรวจ</th></tr></thead><tbody>'+
+   (rows.length?rows.map(function(x){return '<tr class="ck" data-pe="'+x.employee_id+'"><td><b>'+esc(x.name)+'</b><div class="faint" style="font-size:11.5px">'+esc(x.code)+(x.nickname?' · '+esc(x.nickname):'')+'</div></td><td>'+esc(x.dept||'—')+'</td><td>'+esc(PY.bs.types[x.type]||x.type)+'</td><td class="r num">'+m2(x.base)+'</td><td class="r num">'+x.days+'</td><td class="r num">'+(x.absent?x.absent+' วัน':'—')+'</td><td class="r num">'+m2(x.inc)+'</td><td class="r num">'+m2(x.ded)+'</td><td class="r num"><b'+(x.net<0?' style="color:var(--bad)"':'')+'>'+m2(x.net)+'</b></td><td>'+x.warn.map(function(w){return '<span class="badge '+(/ติดลบ/.test(w)?'b-bad':'b-warn')+'">'+esc(w)+'</span>'}).join(' ')+'</td></tr>'}).join(''):'<tr><td colspan="10" class="muted" style="padding:24px;text-align:center">ไม่มีรายการ</td></tr>')+
+   '</tbody></table></div><div class="faint" style="font-size:12px;padding:10px 14px">แสดง '+rows.length+' จาก '+R.rows.length+' คน · กดแถวเพื่อดูรายละเอียด'+(R.canEdit?' / แก้รายรับ–รายจ่าย':'')+'</div></section>'));
+  $$('[data-rv]').forEach(function(b){b.onclick=function(){PY.rv=b.dataset.rv;pyRunDraw()}});if(PY.rv==='grid')pyGrid();
+  $('#py-back').onclick=function(){PY.runId=null;PY.run=null;pyRuns()};
+  $$('[data-pyt2]').forEach(function(b){b.onclick=function(){PY.tab=b.dataset.pyt2;PY.runId=null;render()}});
+  $('#py-q').oninput=function(){PY.q=this.value;var p=this.selectionStart;pyRunDraw();var i=$('#py-q');i.focus();i.setSelectionRange(p,p)};
+  ofBind('py',pyRunDraw,1);if($('#py-w'))$('#py-w').onchange=function(){PY.warn=this.checked;pyRunDraw()};
+  $$('[data-pe]').forEach(function(tr){tr.onclick=function(){pyPerson(tr.dataset.pe)}});
+  $('#py-xl').onclick=function(){pyExcel(R)};if($('#py-bank'))$('#py-bank').onclick=function(){pyBank(R)};
+  if($('#py-calc'))$('#py-calc').onclick=function(){var b=this;busy(b,1);aCall('payCalc',r.id).then(function(){toast('คำนวณใหม่แล้ว');pyRefreshRun()}).catch(function(e){busy(b,0);toast(e.message,1)})};
+  $$('[data-act]').forEach(function(b){b.onclick=function(){pyAct(b.dataset.act,b)}})}
+function pyRefreshRun(){PY.bsAt=0;aCall('payBootstrap').then(function(x){PY.bs=x;PY.bsAt=Date.now()});pyRun(true)}
+function pyAct(a,b){var r=PY.run.run,t=r.totals||{};
+  var M={submit:['ส่งตรวจงวด '+ymTh(r.ym)+'?','หลังส่งตรวจ HR แก้ตัวเลขไม่ได้ จนกว่าจะกด "กลับไปแก้"'],back:['กลับไปแก้งวดนี้?','สถานะจะกลับเป็นร่าง · ต้องส่งตรวจและอนุมัติใหม่'],
+    approve:['อนุมัติงวด '+ymTh(r.ym)+'?',(t.people||0)+' คน · รับสุทธิรวม '+m2(t.net)+' บาท'],close:['ปิดงวดบัญชี '+ymTh(r.ym)+'?','ตัวเลขจะถูกล็อก · หักงวดหนี้สินเป็น "หักแล้ว" · ดาวน์โหลดไฟล์โอนกสิกรได้ · ยอดโอนรวม '+m2(t.net)+' บาท'],
+    paid:['ยืนยันโอนเงินแล้ว?','ใช้หลังโอนเงินเข้าบัญชีพนักงานเรียบร้อย'],reopen:['ย้อนงวด '+ymTh(r.ym)+'?','งวดจะกลับเป็นร่าง · งวดหนี้สินที่หักในงวดนี้กลับเป็นรอหัก · ต้องระบุเหตุผล']}[a];
+  var go2=function(reason){busy(b,1);aCall('payAction',r.id,a,reason||'').then(function(){toast('บันทึกแล้ว');pyRefreshRun()}).catch(function(e){busy(b,0);toast(e.message,1)})};
+  if(a==='back'||a==='reopen'){drawer(M[0],'<p class="muted" style="margin-top:0">'+esc(M[1])+'</p><label class="f" id="w-rs"><span>เหตุผล <b class="req">*</b></span><textarea id="py-rs" rows="3" maxlength="300"></textarea></label>','<button class="btn" id="rx">ยกเลิก</button><button class="btn pri" id="rok">ยืนยัน</button>');
+    $('#rx').onclick=closeD;$('#rok').onclick=function(){var v=$('#py-rs').value.trim();if(!v){$('#w-rs').classList.add('bad');return}closeD();go2(v)};return}
+  ask({title:M[0],desc:M[1],tone:a==='close'?'warn':'',buttons:[{k:'no',label:'ยกเลิก'},{k:'yes',label:'ยืนยัน',cls:'pri'}]}).then(function(k){if(k==='yes')go2('')})}
+
+/* ── Drawer รายคน: รายได้ / รายการหัก / รับสุทธิ · HR แก้รายการกรอกในงวด + วันขาดงาน ── */
+function pyPerson(id){var R=PY.run,x=R.rows.filter(function(r){return r.employee_id===id})[0];if(!x)return;var it=PY.bs.items,ed=R.canEdit;
+  var grp=function(kind,title){var ls=x.lines.filter(function(l){return l.kind===kind}),tot=ls.reduce(function(s,l){return s+l.amount},0);
+    return '<div class="py-dg"><h4>'+title+'</h4>'+(ls.length?ls.map(function(l){return '<div class="py-dl"><div><b>'+esc(l.name)+'</b><small>'+esc(l.note||'')+(l.note?' · ':'')+PYSRC[l.src]+'</small></div><span class="num">'+m2(l.amount)+'</span></div>'}).join(''):'<div class="faint">—</div>')+'<div class="py-dl tot"><b>รวม'+title+'</b><span class="num">'+m2(tot)+'</span></div></div>'};
+  var form='';
+  if(ed){var cur=x.inputs||{},rec={};x.lines.forEach(function(l){if(l.src==='fixed')rec[l.code]=l.amount});
+    var fld=function(i){var v=cur[i.code]?cur[i.code].amount:'';return '<label class="f"><span>'+esc(i.name)+(i.source==='fixed'?' <small class="faint">ประจำ</small>':'')+'</span><input data-pin="'+i.code+'" inputmode="decimal" value="'+(v===''?'':v)+'" placeholder="'+(rec[i.code]?m2(rec[i.code])+' (ประจำ)':'0.00')+'"></label>'};
+    var ins=it.filter(function(i){return i.active&&i.source!=='auto'});
+    form='<div class="dfs"><h4><span class="n">✎</span>แก้รายการในงวดนี้</h4><p class="faint" style="margin:0 0 8px;font-size:12.5px">ช่องว่าง = ใช้รายการประจำ (ถ้ามี) · ใส่ 0 = ไม่จ่าย/ไม่หักงวดนี้ · ประกันสังคม หัก ณ ที่จ่าย กองทุน และหนี้สิน ระบบคำนวณเอง</p>'+
+      '<div class="dfg"><label class="f"><span>วันขาดงาน</span><input data-pin="_absent_days" inputmode="decimal" value="'+(cur._absent_days?cur._absent_days.amount:'')+'" placeholder="'+(x.absent||0)+' (จากระบบลงเวลา)"></label></div>'+
+      '<h5 class="py-h5">รายรับ</h5><div class="dfg">'+ins.filter(function(i){return i.kind==='inc'}).map(fld).join('')+'</div><h5 class="py-h5">รายจ่าย</h5><div class="dfg">'+ins.filter(function(i){return i.kind==='ded'}).map(fld).join('')+'</div>'+
+      '<label class="f" id="w-reason" style="margin-top:10px"><span>เหตุผลการแก้ไข (บันทึกใน Audit Log) <b class="req">*</b></span><input id="py-reason" placeholder="เช่น ค่าคอม ต.ค. ตามรายงานฝ่ายขาย"></label></div>'}
+  drawer(x.name+' · '+x.code,'<div class="muted" style="margin:-4px 0 12px;font-size:13px">'+esc(x.dept||'—')+' · '+esc(PY.bs.types[x.type]||'')+' · งวด '+esc(ymTh(R.run.ym))+' ('+dTh(R.run.from)+' – '+dTh(R.run.to)+')<br>บัญชี: '+esc(x.bank_name||'—')+' '+esc(x.bank_masked||'')+'</div>'+
+    (x.warn.length?'<div class="note-w" style="margin-bottom:12px">'+x.warn.map(esc).join(' · ')+'</div>':'')+grp('inc','รายได้')+grp('ded','รายการหัก')+
+    '<div class="py-net"><span>รับสุทธิ (โอน)</span><b class="num">'+m2(x.net)+'</b></div>'+form,
+    ed?'<button class="btn" id="px">ปิด</button><button class="btn pri" id="pok">บันทึก + คำนวณใหม่</button>':'<button class="btn" id="px">ปิด</button>');
+  $('.drw').classList.add('wide');$('#px').onclick=closeD;
+  if(ed)$('#pok').onclick=function(){var b=this,am={},rs=$('#py-reason').value.trim(),ab;$$('[data-pin]').forEach(function(i){var k=i.dataset.pin,v=i.value.replace(/,/g,'').trim(),o=k==='_absent_days'?(x.inputs._absent_days||{}).amount:(x.inputs[k]||{}).amount;if(String(v)!==String(o===undefined?'':o))(k==='_absent_days'?(ab=v):(am[k]=v))});
+    if(!Object.keys(am).length&&ab===undefined)return toast('ไม่มีอะไรเปลี่ยน');if(!rs){$('#w-reason').classList.add('bad');return}
+    var d={amounts:am,reason:rs};if(ab!==undefined)d.absent_days=ab;busy(b,1);
+    aCall('paySaveInputs',R.run.id,id,d).then(function(r){if(!r.ok){busy(b,0);var k=Object.keys(r.errors||{})[0];if(k==='reason')$('#w-reason').classList.add('bad');var el=$('[data-pin="'+k+'"]');if(el){el.closest('.f').classList.add('bad')}toast((r.errors||{})[k]||'ตรวจข้อมูล',1);return}
+      closeD();toast('บันทึกแล้ว · คำนวณใหม่');pyRefreshRun()}).catch(function(e){busy(b,0);toast(e.message,1)})}}
+
+/* ── ข้อมูลรายคน: ฐานเงินเดือน · ประเภทการจ้าง · กองทุนสงเคราะห์ · รายการประจำ ── */
+function pyPeople(force){if(!force&&PY.prof)return pyPeopleDraw();pyBody('<div class="loading"><span class="spin"></span>กำลังโหลด…</div>');aCall('payProfiles').then(function(r){PY.prof=r;pyPeopleDraw()}).catch(pyErr)}
+function pyPeopleDraw(){var q=PY.pq.trim().toLowerCase(),all=PY.prof.slice().sort(function(a,b){return a.code<b.code?-1:1}),ed=PY.bs.canEdit,items={};PY.bs.items.forEach(function(i){items[i.code]=i});
+  var rows=all.filter(function(p){return (!q||(p.code+' '+p.name+' '+p.nickname+' '+p.dept).toLowerCase().indexOf(q)>=0)&&ofOk('pp',p.dept,p.team)&&(!PY.pnone||!p.base_salary)}),none=all.filter(function(p){return !p.base_salary}).length;
+  pyBody('<section class="card"><div class="ch" style="gap:8px;flex-wrap:wrap">'+pySearch('pp-q',PY.pq,'ค้นหาชื่อ ชื่อเล่น รหัส')+ofSel('pp',1)+'<label class="chk"><input type="checkbox" id="pp-n"'+(PY.pnone?' checked':'')+'> ยังไม่มีฐานเงินเดือน ('+none+')</label><span class="sp"></span><span class="faint" style="font-size:12.5px">'+(ed?'กดแถวเพื่อแก้ไข':'ดูอย่างเดียว')+'</span></div>'+
+   '<div class="tw"><table class="py-t"><thead><tr><th>พนักงาน</th><th>แผนก / ทีม</th><th>ประเภทการจ้าง</th><th class="r">ฐานเงินเดือน</th><th>บัญชีธนาคาร</th><th>รายการประจำ</th><th class="r">หนี้คงเหลือ</th></tr></thead><tbody>'+
+   rows.map(function(p){return '<tr class="'+(ed?'ck':'')+'" data-pp="'+p.employee_id+'"><td><b>'+esc(p.name)+'</b><div class="faint" style="font-size:11.5px">'+esc(p.code)+(p.nickname?' · '+esc(p.nickname):'')+'</div></td><td>'+esc(p.dept||'—')+(p.team?' · '+esc(p.team):'')+'</td><td>'+esc(PY.bs.types[p.pay_type])+(p.pay_type!=='contractor'&&!p.welfare_on?' <span class="badge b-mute">ไม่หักกองทุน</span>':'')+'</td><td class="r num">'+(p.base_salary?m2(p.base_salary):'<span class="badge b-warn">ยังไม่มี</span>')+'</td><td>'+(p.has_bank?esc(p.bank_name)+' '+esc(p.bank_masked):'<span class="badge b-warn">ไม่มีเลขบัญชี</span>')+'</td><td>'+(p.recurring.length?p.recurring.map(function(r){return '<span class="badge b-mute">'+esc((items[r.item_code]||{}).name||r.item_code)+' '+m2(r.amount)+'</span>'}).join(' '):'—')+'</td><td class="r num">'+m2z(p.debt)+'</td></tr>'}).join('')+
+   '</tbody></table></div><div class="faint" style="font-size:12px;padding:10px 14px">'+rows.length+' คน · เลขบัญชีแก้ที่ ข้อมูลพนักงาน › แก้ไข</div></section>');
+  $('#pp-q').oninput=function(){PY.pq=this.value;var p=this.selectionStart;pyPeopleDraw();var i=$('#pp-q');i.focus();i.setSelectionRange(p,p)};$('#pp-n').onchange=function(){PY.pnone=this.checked;pyPeopleDraw()};ofBind('pp',pyPeopleDraw,1);
+  if(ed)$$('[data-pp]').forEach(function(tr){tr.onclick=function(){pyProfile(tr.dataset.pp)}})}
+function pyProfile(id){var p=PY.prof.filter(function(x){return x.employee_id===id})[0],T=PY.bs.types,items=PY.bs.items.filter(function(i){return i.active&&i.source!=='auto'}),nm={};PY.bs.items.forEach(function(i){nm[i.code]=i.name});
+  var ymNow=dIso(new Date()).slice(0,7);
+  drawer(p.name+' · '+p.code,'<div class="dfs"><h4><span class="n">1</span>เงินเดือน</h4><div class="dfg">'+
+    '<label class="f" id="w-base_salary"><span>ฐานเงินเดือน (บาท) <b class="req">*</b></span><input id="pf-b" inputmode="decimal" value="'+(p.base_salary||'')+'"></label>'+
+    '<label class="f" id="w-pay_type"><span>ประเภทการจ้าง</span><select id="pf-t">'+Object.keys(T).map(function(k){return '<option value="'+k+'"'+(p.pay_type===k?' selected':'')+'>'+T[k]+'</option>'}).join('')+'</select></label>'+
+    '<label class="f"><span>กองทุนเงินสงเคราะห์ลูกจ้าง</span><select id="pf-w"><option value="1"'+(p.welfare_on?' selected':'')+'>หัก (ตามตั้งค่า)</option><option value="0"'+(!p.welfare_on?' selected':'')+'>ไม่หัก</option></select></label>'+
+    '<label class="f s2"><span>หมายเหตุ</span><input id="pf-n" maxlength="200" value="'+esc(p.note)+'"></label>'+
+    '<label class="f s2" id="w-reason"><span>เหตุผลการแก้ไข <b class="req">*</b></span><input id="pf-r" placeholder="เช่น ปรับเงินเดือนประจำปี / ตั้งต้นจาก HumanSoft"></label></div>'+
+    '<p class="faint" style="font-size:12.5px;margin:6px 0 0">พนักงาน: ประกันสังคม 5% (83–875) · ยกเว้นประกันสังคม: ไม่หัก · สัญญาบริการ: ไม่หักประกันสังคม หัก ณ ที่จ่าย 3%</p></div>'+
+   '<div class="dfs"><h4><span class="n">2</span>รายการประจำ (ใส่ครั้งเดียว ระบบใส่ให้ทุกงวด)</h4>'+(p.recurring.length?p.recurring.map(function(r){return '<div class="py-dl"><div><b>'+esc(nm[r.item_code]||r.item_code)+'</b><small>'+esc(ymTh(r.from_ym,1))+' – '+(r.to_ym?esc(ymTh(r.to_ym,1)):'ไม่กำหนด')+(r.note?' · '+esc(r.note):'')+'</small></div><span class="num">'+m2(r.amount)+'</span><button class="btn sm" data-rdel="'+r.id+'">ลบ</button></div>'}).join(''):'<div class="faint">ยังไม่มี</div>')+
+    '<div class="dfg" style="margin-top:10px"><label class="f" id="w-item_code"><span>รายการ</span><select id="rc-i"><option value="">— เลือก —</option>'+items.map(function(i){return '<option value="'+i.code+'">'+(i.kind==='inc'?'รายรับ · ':'รายจ่าย · ')+esc(i.name)+'</option>'}).join('')+'</select></label>'+
+    '<label class="f" id="w-amount"><span>บาท/งวด</span><input id="rc-a" inputmode="decimal"></label><label class="f" id="w-from_ym"><span>เริ่มงวด</span>'+mpBtn('rc-f',ymNow)+'</label><label class="f" id="w-to_ym"><span>ถึงงวด (ว่าง = ไม่กำหนด)</span>'+mpBtn('rc-t','',{clear:1,ph:'ไม่กำหนด'})+'</label>'+
+    '<label class="f s2"><span>หมายเหตุ</span><input id="rc-n" maxlength="200" placeholder="เช่น ตามหนังสือแจ้ง กยศ."></label></div><button class="btn sm" id="rc-add" style="margin-top:8px">+ เพิ่มรายการประจำ</button></div>',
+   '<button class="btn" id="px">ปิด</button><button class="btn pri" id="pok">บันทึกเงินเดือน</button>');
+  $('.drw').classList.add('wide');$('#px').onclick=closeD;
+  var bad=function(er){$$('.drw .f').forEach(function(l){l.classList.remove('bad');var e=l.querySelector('.er');if(e)e.remove()});Object.keys(er||{}).forEach(function(n){var l=$('#w-'+n);if(l){l.classList.add('bad');l.insertAdjacentHTML('beforeend','<span class="er">'+esc(er[n])+'</span>')}})};
+  var after=function(m){toast(m);aCall('payProfiles').then(function(r){PY.prof=r;PY.bsAt=0;pyPeopleDraw();if($('.drw'))pyProfile(id)})};
+  $('#pok').onclick=function(){var b=this;busy(b,1);aCall('paySaveProfile',id,{base_salary:$('#pf-b').value.replace(/,/g,''),pay_type:$('#pf-t').value,welfare_on:$('#pf-w').value==='1',note:$('#pf-n').value,reason:$('#pf-r').value}).then(function(r){busy(b,0);if(!r.ok)return bad(r.errors);closeD();after('บันทึกแล้ว · มีผลกับงวดที่คำนวณหลังจากนี้')}).catch(function(e){busy(b,0);toast(e.message,1)})};
+  $('#rc-add').onclick=function(){var b=this;busy(b,1);aCall('paySaveRecurring',{employee_id:id,item_code:$('#rc-i').value,amount:$('#rc-a').value.replace(/,/g,''),from_ym:$('#rc-f').value,to_ym:$('#rc-t').value,note:$('#rc-n').value}).then(function(r){busy(b,0);if(!r.ok)return bad(r.errors);after('เพิ่มรายการประจำแล้ว')}).catch(function(e){busy(b,0);toast(e.message,1)})};
+  $$('[data-rdel]').forEach(function(b){b.onclick=function(){ask({title:'ลบรายการประจำนี้?',tone:'bad',icon:'del',buttons:[{k:'no',label:'ยกเลิก'},{k:'yes',label:'ลบ',cls:'pri'}]}).then(function(k){if(k!=='yes')return;aCall('payDeleteRecurring',b.dataset.rdel).then(function(){after('ลบแล้ว')}).catch(function(e){toast(e.message,1)})})}})}
+
+/* ── หนี้สินพนักงาน ── */
+function pyLoans(force){if(!force&&PY.loans)return pyLoansDraw();pyBody('<div class="loading"><span class="spin"></span>กำลังโหลด…</div>');
+  Promise.all([aCall('payLoans'),PY.prof?Promise.resolve(PY.prof):aCall('payProfiles')]).then(function(r){PY.loans=r[0];PY.prof=r[1];pyLoansDraw()}).catch(pyErr)}
+var LNST={active:['กำลังผ่อน','b-ok'],paused:['พักหนี้','b-warn'],closed:['ปิดแล้ว','b-mute'],cancelled:['ยกเลิก','b-mute']};
+function pyLoansDraw(){var lq=(PY.lq||'').trim().toLowerCase(),L=PY.loans.filter(function(l){return (!lq||(l.code+' '+l.name+' '+(l.title||'')).toLowerCase().indexOf(lq)>=0)&&ofOk('pl',l.dept,l.team)}),K=PY.bs.loanKinds,ed=PY.bs.canEdit,left=L.filter(function(l){return l.status==='active'}).reduce(function(s,l){return s+l.left},0);
+  pyBody('<section class="card"><div class="ch"><h3>หนี้สินพนักงาน</h3><span class="faint" style="font-size:12.5px;margin-left:10px">คงเหลือรวม '+m2(left)+' บาท · ปิดงวดเงินเดือนแล้วงวดที่หักเปลี่ยนเป็น ✓ เอง</span><span class="sp"></span>'+(ed?'<button class="btn pri" id="ln-add">+ เพิ่มหนี้สิน</button>':'')+'</div><div class="ch" style="gap:8px;flex-wrap:wrap">'+pySearch('pl-q',PY.lq||'','ค้นหาชื่อ รหัส รายละเอียด')+ofSel('pl',1)+'</div>'+
+   '<div class="tw"><table class="py-t"><thead><tr><th>พนักงาน</th><th>ประเภท</th><th>รายละเอียด</th><th class="r">ยอด</th><th class="r">ผ่อนงวดละ</th><th>เริ่มหัก</th><th class="r">หักแล้ว</th><th class="r">คงเหลือ</th><th>สถานะ</th></tr></thead><tbody>'+
+   (L.length?L.map(function(l){var s=LNST[l.status]||[l.status,'b-mute'];return '<tr class="ck" data-ln="'+l.id+'"><td><b>'+esc(l.name)+'</b><div class="faint" style="font-size:11.5px">'+esc(l.code)+'</div></td><td>'+esc(K[l.kind])+'</td><td>'+esc(l.title||'—')+'</td><td class="r num">'+m2(l.principal)+'</td><td class="r num">'+m2(l.installment)+'</td><td>'+esc(ymTh(l.start_ym,1))+'</td><td class="r num">'+m2(l.paid)+'</td><td class="r num"><b>'+m2(l.left)+'</b></td><td><span class="badge '+s[1]+'">'+s[0]+'</span></td></tr>'}).join(''):'<tr><td colspan="9" class="muted" style="padding:24px;text-align:center">ยังไม่มีหนี้สิน</td></tr>')+'</tbody></table></div></section>');
+  if($('#ln-add'))$('#ln-add').onclick=function(){pyLoan(null)};$('#pl-q').oninput=function(){PY.lq=this.value;var p=this.selectionStart;pyLoansDraw();var i=$('#pl-q');i.focus();i.setSelectionRange(p,p)};ofBind('pl',pyLoansDraw,1);$$('[data-ln]').forEach(function(tr){tr.onclick=function(){pyLoan(tr.dataset.ln)}})}
+function pyLoan(id){var l=id?PY.loans.filter(function(x){return x.id===id})[0]:{kind:'loan',status:'active',start_ym:dIso(new Date()).slice(0,7),skips:[]},K=PY.bs.loanKinds,ed=PY.bs.canEdit,dis=ed?'':' disabled';
+  var ppl=PY.prof.slice().sort(function(a,b){return a.code<b.code?-1:1}),skips=(l.skips||[]).slice();
+  drawer(id?'หนี้สิน · '+l.name:'เพิ่มหนี้สินพนักงาน','<div class="dfs"><div class="dfg">'+
+    '<label class="f s2" id="w-employee_id"><span>พนักงาน <b class="req">*</b></span><select id="ln-e"'+(id?' disabled':dis)+'><option value="">— เลือก —</option>'+ppl.map(function(p){return '<option value="'+p.employee_id+'"'+(l.employee_id===p.employee_id?' selected':'')+'>'+esc(p.code+' · '+p.name)+'</option>'}).join('')+'</select></label>'+
+    '<label class="f" id="w-kind"><span>ประเภท</span><select id="ln-k"'+dis+'>'+Object.keys(K).map(function(k){return '<option value="'+k+'"'+(l.kind===k?' selected':'')+'>'+K[k]+'</option>'}).join('')+'</select></label>'+
+    '<label class="f"><span>รายละเอียด</span><input id="ln-t" maxlength="80" value="'+esc(l.title||'')+'" placeholder="เช่น ยืมเงินบริษัท ต.ค. 69"'+dis+'></label>'+
+    '<label class="f" id="w-principal"><span>ยอด (บาท) <b class="req">*</b></span><input id="ln-p" inputmode="decimal" value="'+(l.principal||'')+'"'+dis+'></label>'+
+    '<label class="f" id="w-installment"><span>ผ่อนงวดละ (บาท) <b class="req">*</b></span><input id="ln-i" inputmode="decimal" value="'+(l.installment||'')+'"'+dis+'></label>'+
+    '<label class="f" id="w-start_ym"><span>เริ่มหักงวด <b class="req">*</b></span>'+mpBtn('ln-s',l.start_ym||'',{disabled:!ed})+'</label>'+
+    '<label class="f" id="w-status"><span>สถานะ</span><select id="ln-st"'+dis+'>'+Object.keys(LNST).map(function(k){return '<option value="'+k+'"'+(l.status===k?' selected':'')+'>'+LNST[k][0]+'</option>'}).join('')+'</select></label>'+
+    '<label class="f s2"><span>หมายเหตุ</span><input id="ln-n" maxlength="300" value="'+esc(l.note||'')+'"'+dis+'></label>'+
+    (id&&ed?'<label class="f s2" id="w-reason"><span>เหตุผลการแก้ไข <b class="req">*</b></span><input id="ln-r" placeholder="เช่น พนักงานขอเลื่อนงวด"></label>':'')+'</div></div>'+
+    '<div class="dfs"><h4><span class="n">⌗</span>ตารางผ่อน</h4><p class="faint" style="font-size:12.5px;margin:0 0 6px">ติ๊ก "เลื่อน" = งวดนั้นไม่หัก ต่อท้ายให้ · ไม่มีดอกเบี้ย (รอยืนยันจาก HR)</p><div id="ln-sc"></div></div>',
+   ed?'<button class="btn" id="px">ยกเลิก</button><button class="btn pri" id="pok">บันทึก</button>':'<button class="btn" id="px">ปิด</button>');
+  $('.drw').classList.add('wide');$('#px').onclick=closeD;
+  var sched=function(){var p=+String($('#ln-p').value).replace(/,/g,'')||0,i=+String($('#ln-i').value).replace(/,/g,'')||0,ym=$('#ln-s').value,el=$('#ln-sc');if(!(p>0&&i>0&&ym)){el.innerHTML='<div class="faint">ใส่ยอด ผ่อนงวดละ และงวดเริ่ม</div>';return}
+    var left=p,n=0,rows=[],cum=0,paid=id?l.paid:0,add=function(y,k){var a=+y.slice(0,4),m=+y.slice(5,7)-1+k;a+=Math.floor(m/12);m=(m%12+12)%12+1;return a+'-'+('0'+m).slice(-2)};
+    while(left>0.004&&rows.length<240){if(skips.indexOf(ym)>=0)rows.push({ym:ym,skip:1,left:left});else{var a=Math.min(i,left);a=Math.round(a*100)/100;n++;left=Math.round((left-a)*100)/100;cum=Math.round((cum+a)*100)/100;rows.push({ym:ym,n:n,a:a,left:left,done:cum<=paid+0.004})}ym=add(ym,1)}
+    el.innerHTML='<table class="py-t sm"><thead><tr><th>งวด</th><th>เดือน</th><th class="r">ยอดหัก</th><th class="r">คงเหลือ</th><th>สถานะ</th>'+(ed?'<th>เลื่อน</th>':'')+'</tr></thead><tbody>'+rows.map(function(r){return '<tr><td>'+(r.skip?'—':r.n)+'</td><td>'+esc(ymTh(r.ym,1))+'</td><td class="r num">'+(r.skip?'0.00':m2(r.a))+'</td><td class="r num">'+m2(r.left)+'</td><td>'+(r.skip?'<span class="badge b-warn">⏸ เลื่อน</span>':r.done?'<span class="badge b-ok">✓ หักแล้ว</span>':'<span class="badge b-mute">○ รอหัก</span>')+'</td>'+(ed?'<td>'+(r.done?'':'<input type="checkbox" data-sk="'+r.ym+'"'+(r.skip?' checked':'')+'>')+'</td>':'')+'</tr>'}).join('')+'</tbody></table><div class="faint" style="font-size:12px;margin-top:6px">'+n+' งวด</div>';
+    $$('[data-sk]').forEach(function(c){c.onchange=function(){var y=c.dataset.sk;if(c.checked){if(skips.indexOf(y)<0)skips.push(y)}else skips=skips.filter(function(z){return z!==y});sched()}})};
+  ['#ln-p','#ln-i','#ln-s'].forEach(function(s){$(s).addEventListener('input',sched)});sched();
+  if(ed)$('#pok').onclick=function(){var b=this;busy(b,1);var d={id:id||'',employee_id:id?l.employee_id:$('#ln-e').value,kind:$('#ln-k').value,title:$('#ln-t').value,principal:$('#ln-p').value.replace(/,/g,''),installment:$('#ln-i').value.replace(/,/g,''),start_ym:$('#ln-s').value,status:$('#ln-st').value,note:$('#ln-n').value,skips:skips,reason:id?$('#ln-r').value:''};
+    aCall('paySaveLoan',d).then(function(r){busy(b,0);if(!r.ok){$$('.drw .f').forEach(function(x){x.classList.remove('bad');var e=x.querySelector('.er');if(e)e.remove()});Object.keys(r.errors||{}).forEach(function(n){var x=$('#w-'+n);if(x){x.classList.add('bad');x.insertAdjacentHTML('beforeend','<span class="er">'+esc(r.errors[n])+'</span>')}});return}
+      closeD();toast('บันทึกแล้ว · หักอัตโนมัติในงวดที่คำนวณหลังจากนี้');PY.prof=null;pyLoans(true)}).catch(function(e){busy(b,0);toast(e.message,1)})}}
+
+/* ── รายการรายรับ–รายจ่าย ── */
+function pyItems(){var it=PY.bs.items,ed=PY.bs.canEdit,AUTO={salary:'ฐาน ÷ ตัวหาร × วัน',absent:'วันขาด × (ฐาน ÷ ตัวหาร)',sso:PY.bs.cfg.pay_sso_rate+'% (ต่ำสุด–สูงสุดตามตั้งค่า)',wht:PY.bs.cfg.pay_wht_rate+'% (สัญญาบริการ)',welfare:PY.bs.cfg.pay_welfare_rate+'% (เริ่ม '+ymTh(PY.bs.cfg.pay_welfare_from,1)+')',loan:'หนี้สิน',damage:'หนี้สิน',deposit:'หนี้สิน',late:'ยังไม่หัก',leave:'ยังไม่หัก'};
+  var tb=function(kind,title){var ls=it.filter(function(i){return i.kind===kind});return '<section class="card"><div class="ch"><h3>'+title+' ('+ls.filter(function(i){return i.active}).length+' ใช้งาน / '+ls.length+')</h3><span class="sp"></span>'+(ed?'<button class="btn sm" data-iadd="'+kind+'">+ เพิ่มรายการ</button>':'')+'</div><div class="tw"><table class="py-t"><thead><tr><th>รายการ</th><th>ที่มา</th><th>คิดประกันสังคม</th><th>คิดภาษี</th><th>ใช้</th></tr></thead><tbody>'+
+    ls.map(function(i){return '<tr class="'+(ed?'ck':'')+'" data-it="'+i.id+'"'+(i.active?'':' style="opacity:.55"')+'><td><b>'+esc(i.name)+'</b></td><td>'+(i.source==='auto'?'<span class="badge b-info">อัตโนมัติ · '+esc(AUTO[i.auto]||'')+'</span>':'<span class="badge b-mute">'+PYSRC[i.source]+'</span>')+'</td><td>'+(i.sso?'✓':'—')+'</td><td>'+(i.tax?'✓':'—')+'</td><td>'+(i.active?'✓':'ปิด')+'</td></tr>'}).join('')+'</tbody></table></div></section>'};
+  pyBody('<div class="py-2">'+tb('inc','รายรับ')+tb('ded','รายจ่าย')+'</div><div class="note-b" style="margin-top:12px">รับสุทธิ = รวมรายรับ − รวมรายจ่าย (ยอดโอน) · หัวข้อที่ปิด "ใช้" ไม่แสดงในงวดและ Excel · ที่มา "ประจำรายคน" ตั้งยอดที่ ข้อมูลรายคน · "กรอกในงวด" กรอกที่รายละเอียดงวด</div>');
+  var form=function(i,kind){var x=i||{kind:kind,source:'input',sso:false,tax:true,active:true};
+    drawer(i?'แก้ไขรายการ':'เพิ่มรายการ'+(kind==='inc'?'รายรับ':'รายจ่าย'),'<div class="dfs"><div class="dfg"><label class="f s2" id="w-name"><span>ชื่อรายการ <b class="req">*</b></span><input id="it-n" maxlength="60" value="'+esc(x.name||'')+'"></label>'+
+      (x.source==='auto'?'<div class="f s2"><span>ที่มา</span><b>อัตโนมัติ (ระบบคำนวณ)</b></div>':'<label class="f"><span>ที่มา</span><select id="it-s"><option value="input"'+(x.source==='input'?' selected':'')+'>กรอกในงวด</option><option value="fixed"'+(x.source==='fixed'?' selected':'')+'>ประจำรายคน</option></select></label>')+
+      (x.kind==='inc'?'<label class="f"><span>คิดประกันสังคม (ค่าจ้าง)</span><select id="it-so"><option value="1"'+(x.sso?' selected':'')+'>คิด</option><option value="0"'+(!x.sso?' selected':'')+'>ไม่คิด</option></select></label><label class="f"><span>คิดภาษี / หัก ณ ที่จ่าย</span><select id="it-tx"><option value="1"'+(x.tax?' selected':'')+'>คิด</option><option value="0"'+(!x.tax?' selected':'')+'>ไม่คิด</option></select></label>':'')+
+      '<label class="f"><span>ใช้งาน</span><select id="it-a"'+(x.auto==='salary'||x.auto==='sso'?' disabled':'')+'><option value="1"'+(x.active?' selected':'')+'>ใช้</option><option value="0"'+(!x.active?' selected':'')+'>ปิด</option></select></label></div></div>',
+     '<button class="btn" id="px">ยกเลิก</button><button class="btn pri" id="pok">บันทึก</button>');
+    $('#px').onclick=closeD;$('#pok').onclick=function(){var b=this;busy(b,1);aCall('paySaveItem',{id:x.id||'',kind:x.kind,name:$('#it-n').value,source:$('#it-s')?$('#it-s').value:x.source,sso:$('#it-so')?$('#it-so').value==='1':x.sso,tax:$('#it-tx')?$('#it-tx').value==='1':x.tax,active:$('#it-a').value==='1'}).then(function(r){busy(b,0);if(!r.ok){$('#w-name').classList.add('bad');toast(r.errors.name,1);return}closeD();toast('บันทึกแล้ว');pyReload()}).catch(function(e){busy(b,0);toast(e.message,1)})}};
+  if(ed){$$('[data-it]').forEach(function(tr){tr.onclick=function(){form(it.filter(function(i){return i.id===tr.dataset.it})[0])}});$$('[data-iadd]').forEach(function(b){b.onclick=function(){form(null,b.dataset.iadd)}})}}
+
+/* ── ตั้งค่าเงินเดือน ── */
+function pyCfg(){var c=PY.bs.cfg,ed=PY.bs.canEdit,adm=A.d.me.role==='admin',dis=ed?'':' disabled';
+  var F=[['pay_cutoff_day','ตัดยอดทุกวันที่','เช่น 25 → งวด ต.ค. = 26 ก.ย. – 25 ต.ค.'],['pay_day','วันจ่ายเงินเดือน','ว่าง = สิ้นเดือน'],['pay_divisor','ตัวหารวันทำงาน','เงินเดือน ÷ ตัวหาร = ค่าจ้างต่อวัน (ขาดงาน/เข้าใหม่)'],
+    ['pay_sso_rate','ประกันสังคม (%)','พนักงานจ่าย'],['pay_sso_min_base','ฐานต่ำสุด (บาท)','1,650 → หักต่ำสุด 83'],['pay_sso_max_base','ฐานสูงสุด (บาท)','17,500 → หักสูงสุด 875 (ปี 2569–2571)'],
+    ['pay_wht_rate','หัก ณ ที่จ่าย สัญญาบริการ (%)',''],['pay_welfare_rate','กองทุนเงินสงเคราะห์ลูกจ้าง (%)',''],['pay_welfare_from','กองทุนสงเคราะห์ เริ่มหักงวด','เดือน ค.ศ. เช่น 2027-01 = ม.ค. 2570'],['pay_welfare_max_base','กองทุนสงเคราะห์ ฐานสูงสุด (บาท)','ว่าง = ไม่มีเพดาน (รอยืนยัน)']];
+  var codes=function(ids){var m={};(PY.prof||[]).forEach(function(p){m[p.employee_id]=p.code});return String(ids||'').split(',').filter(String).map(function(i){return m[i]||i}).join(', ')};
+  var draw=function(){pyBody('<section class="card" style="max-width:920px"><div class="ch"><h3>ตั้งค่าเงินเดือน</h3></div><div class="cb"><div class="dfg" style="grid-template-columns:repeat(2,minmax(0,1fr))">'+F.map(function(f){return '<label class="f" id="w-'+f[0]+'"><span>'+f[1]+'</span>'+(f[0]==='pay_welfare_from'?mpBtn('pc-wf',c[f[0]],{attr:'data-pc="pay_welfare_from"',disabled:!ed}):'<input data-pc="'+f[0]+'" value="'+esc(c[f[0]])+'"'+dis+'>')+(f[2]?'<small class="faint">'+esc(f[2])+'</small>':'')+'</label>'}).join('')+'</div>'+
+    '<h4 style="margin:18px 0 6px">สิทธิ์ (เฉพาะผู้ดูแลระบบแก้ได้)</h4><div class="dfg" style="grid-template-columns:repeat(2,minmax(0,1fr))"><div class="f" id="w-pay_access"><span>ฝ่ายบัญชีที่ดูเงินเดือนได้</span>'+pyPick('pc-acc',c.pay_access,adm)+'<small class="faint">ดูได้อย่างเดียว · HR และผู้ดูแลระบบเห็นอยู่แล้ว</small></div>'+
+    '<div class="f" id="w-pay_approvers"><span>ผู้อนุมัติงวดเงินเดือน</span>'+pyPick('pc-apv',c.pay_approvers,adm)+'<small class="faint">ผู้ดูแลระบบอนุมัติได้เสมอ</small></div></div>'+
+    (ed?'<div style="display:flex;justify-content:flex-end;margin-top:14px"><button class="btn pri" id="pc-save">บันทึก</button></div>':'')+'</div></section>');
+    pyPickBind('pc-acc');pyPickBind('pc-apv');loadPhotos();
+    if(!ed)return;$('#pc-save').onclick=function(){var b=this,d={},bad=[];
+      $$('[data-pc]').forEach(function(i){if(i.value!==c[i.dataset.pc])d[i.dataset.pc]=i.value});
+      if(adm)[['pay_access','#pc-acc'],['pay_approvers','#pc-apv']].forEach(function(k){var ids=$(k[1]).value;if(ids!==c[k[0]])d[k[0]]=ids});
+      if(bad.length)return toast('ไม่พบรหัสพนักงาน: '+bad.join(', '),1);if(!Object.keys(d).length)return toast('ไม่มีอะไรเปลี่ยน');busy(b,1);
+      aCall('paySaveCfg',d).then(function(r){busy(b,0);if(!r.ok){Object.keys(r.errors).forEach(function(k){var l=$('#w-'+k);if(l){l.classList.add('bad');l.insertAdjacentHTML('beforeend','<span class="er">'+esc(r.errors[k])+'</span>')}});return}PY.bs.cfg=r.cfg;c=r.cfg;toast('บันทึกแล้ว · มีผลกับงวดที่คำนวณหลังจากนี้');draw()}).catch(function(e){busy(b,0);toast(e.message,1)})}};
+  if(PY.prof)draw();else{pyBody('<div class="loading"><span class="spin"></span>กำลังโหลด…</div>');aCall('payProfiles').then(function(r){PY.prof=r;draw()}).catch(pyErr)}}
+
+/* ── ตารางกรอกรายรับ–รายจ่ายทั้งงวด (แบบ HumanSoft "รายรับรายจ่าย") ──
+ * แถว = พนักงาน · คอลัมน์ = รายการที่ HR กรอก (กรอกในงวด / ประจำรายคน) + วันขาดงาน · คอลัมน์ขวา = ระบบคำนวณเอง (ประกันสังคม หนี้สิน ฯลฯ ไม่ต้องกรอก)
+ * วางจาก Excel ได้ (คัดลอกหลายช่อง → วางที่ช่องแรก) · Enter = ลงช่องล่าง · บันทึกทีเดียวทุกคน + เหตุผลเดียว → คำนวณใหม่ */
+var PYG={};
+function pyGridCols(){var it=PY.bs.items.filter(function(i){return i.active&&i.source!=='auto'});return {inc:it.filter(function(i){return i.kind==='inc'}),ded:it.filter(function(i){return i.kind==='ded'})}}
+function pyGrid(){var R=PY.run,ed=R.canEdit,C=pyGridCols(),q=PY.q.trim().toLowerCase(),ch=PYG.ch||(PYG.ch={});
+  var rows=R.rows.filter(function(x){return (!q||(x.code+' '+x.name+' '+x.nickname).toLowerCase().indexOf(q)>=0)&&ofOk('py',x.dept,x.team)});
+  var val=function(x,k){var c=ch[x.employee_id];if(c&&k in c)return c[k];var i=x.inputs[k];return i?String(i.amount):''};
+  var fixed=function(x,k){var l=x.lines.filter(function(l){return l.code===k&&l.src==='fixed'})[0];return l?l.amount:0};
+  var has=function(k){return R.rows.some(function(x){return val(x,k)!==''||fixed(x,k)})};
+  var cols=function(a){return PYG.only?a.filter(function(i){return has(i.code)}):a};
+  var inc=cols(C.inc),ded=cols(C.ded);
+  var amt=function(x,f){return x.lines.reduce(function(s,l){return s+(f(l)?l.amount:0)},0)};
+  var AUTO=[['ประกันสังคม',function(l){return l.code==='sso'}],['หัก ณ ที่จ่าย / กองทุน',function(l){return l.code==='wht'||l.code==='welfare'}],['หนี้สิน / ยืมบริษัท',function(l){return !!l.ref}],['ขาดงาน (บาท)',function(l){return l.code==='absent'}]];
+  var cell=function(x,k,ph){var v=val(x,k),dirty=ch[x.employee_id]&&k in ch[x.employee_id];return '<td class="gi'+(dirty?' dirty':'')+'"><input data-g="'+x.employee_id+'|'+k+'" value="'+esc(v)+'" placeholder="'+esc(ph||'')+'" inputmode="decimal"'+(ed?'':' disabled')+'></td>'};
+  var n=Object.keys(ch).reduce(function(s,k){return s+Object.keys(ch[k]).length},0);
+  var h='<div class="pg-bar">'+(ed?'<span class="muted" style="font-size:12.5px">กรอกเฉพาะช่องที่มียอด · ช่องว่าง = ใช้รายการประจำ (ตัวเลขจาง) · วางจาก Excel ได้ (คัดลอกหลายช่องแล้ววางที่ช่องแรก) · Enter = ช่องล่าง</span>':'<span class="note-w" style="margin:0">งวดนี้'+esc((PYST[R.run.status]||[''])[0])+' · ดูอย่างเดียว (แก้ได้เฉพาะสถานะร่าง)</span>')+
+    '<span class="sp"></span><label class="chk"><input type="checkbox" id="pg-only"'+(PYG.only?' checked':'')+'> แสดงเฉพาะคอลัมน์ที่มียอด</label></div>'+
+   '<div class="pg-w"><table class="pg-t"><thead><tr><th rowspan="2" class="pg-n">พนักงาน</th><th rowspan="2">วันขาดงาน</th>'+(inc.length?'<th colspan="'+inc.length+'" class="gh inc">รายรับ · HR กรอก</th>':'')+(ded.length?'<th colspan="'+ded.length+'" class="gh ded">รายจ่าย · HR กรอก</th>':'')+'<th colspan="'+(AUTO.length+3)+'" class="gh auto">ระบบคำนวณให้ (ไม่ต้องกรอก)</th></tr><tr>'+
+   inc.concat(ded).map(function(i){return '<th>'+esc(i.name)+(i.source==='fixed'?'<small>ประจำ</small>':'')+'</th>'}).join('')+AUTO.map(function(a){return '<th class="au">'+a[0]+'</th>'}).join('')+'<th class="au">รวมรายรับ</th><th class="au">รวมรายจ่าย</th><th class="au pg-net">รับสุทธิ</th></tr></thead><tbody>'+
+   rows.map(function(x){return '<tr><td class="pg-n"><b>'+esc(x.name)+'</b><small>'+esc(x.code)+' · '+esc(x.dept||'—')+'</small></td>'+cell(x,'_absent_days',String(x.absent||0))+
+     inc.concat(ded).map(function(i){var f=fixed(x,i.code);return cell(x,i.code,f?m2(f):'')}).join('')+
+     AUTO.map(function(a){var v=amt(x,a[1]);return '<td class="au num">'+(v?m2(v):'—')+'</td>'}).join('')+'<td class="au num">'+m2(x.inc)+'</td><td class="au num">'+m2(x.ded)+'</td><td class="au num pg-net"><b>'+m2(x.net)+'</b></td></tr>'}).join('')+
+   '</tbody></table></div>'+
+   (ed?'<div class="pg-save'+(n?' on':'')+'"><b>'+(n?'แก้ไข '+n+' ช่อง · ยังไม่บันทึก':'ยังไม่มีการแก้ไข')+'</b><input id="pg-rs" placeholder="เหตุผล เช่น ค่าคอม/เบี้ยขยัน ต.ค. ตามรายงาน" value="'+esc(PYG.rs||'')+'"><button class="btn" id="pg-x"'+(n?'':' disabled')+'>ยกเลิกที่แก้</button><button class="btn pri" id="pg-ok"'+(n?'':' disabled')+'>บันทึก + คำนวณใหม่</button></div>':'');
+  $('#pg-body').innerHTML=h;
+  $('#pg-only').onchange=function(){PYG.only=this.checked;pyGrid()};
+  if(!ed)return;
+  var ins=$$('#pg-body [data-g]'),W=inc.length+ded.length+1;
+  var bar=function(){var n=Object.keys(ch).reduce(function(s,k){return s+Object.keys(ch[k]).length},0),b=$('.pg-save');b.classList.toggle('on',!!n);b.querySelector('b').textContent=n?'แก้ไข '+n+' ช่อง · ยังไม่บันทึก':'ยังไม่มีการแก้ไข';$('#pg-x').disabled=$('#pg-ok').disabled=!n};
+  var put=function(el,v){var p=el.dataset.g.split('|'),x=R.rows.filter(function(r){return r.employee_id===p[0]})[0],o=x.inputs[p[1]]?String(x.inputs[p[1]].amount):'';v=String(v).replace(/[,\s฿]/g,'');el.value=v;
+    if(v===o){if(ch[p[0]]){delete ch[p[0]][p[1]];if(!Object.keys(ch[p[0]]).length)delete ch[p[0]]}el.parentNode.classList.remove('dirty')}else{(ch[p[0]]=ch[p[0]]||{})[p[1]]=v;el.parentNode.classList.add('dirty')}};
+  ins.forEach(function(el,i){el.oninput=function(){put(el,el.value);bar()};
+    el.onkeydown=function(e){if(e.key==='Enter'||e.key==='ArrowDown'){e.preventDefault();var t=ins[i+W];if(t){t.focus();t.select()}}else if(e.key==='ArrowUp'){e.preventDefault();var u=ins[i-W];if(u){u.focus();u.select()}}};
+    el.onpaste=function(e){var t=(e.clipboardData||window.clipboardData).getData('text');if(!/[\t\n]/.test(t.trim()))return;e.preventDefault();
+      t.replace(/\r/g,'').replace(/\n$/,'').split('\n').forEach(function(line,r){line.split('\t').forEach(function(v,c){var col=i%W+c,tg=ins[i+r*W+c];if(col<W&&tg)put(tg,v.trim())})});bar();toast('วางข้อมูลแล้ว · ตรวจแล้วกดบันทึก')}});
+  $('#pg-rs').oninput=function(){PYG.rs=this.value;this.classList.remove('bad')};
+  $('#pg-x').onclick=function(){PYG.ch={};pyGrid()};
+  $('#pg-ok').onclick=function(){var b=this,rs=$('#pg-rs').value.trim();if(!rs){$('#pg-rs').classList.add('bad');$('#pg-rs').focus();return toast('ใส่เหตุผลก่อนบันทึก',1)}busy(b,1);
+    aCall('paySaveInputsBulk',R.run.id,ch,rs).then(function(r){busy(b,0);if(!r.ok){var k=Object.keys(r.errors||{});k.forEach(function(z){var el=$('[data-g="'+z+'"]');if(el)el.parentNode.classList.add('bad')});toast((r.errors[k[0]]||'ตรวจข้อมูล')+(k.length>1?' (+'+(k.length-1)+')':''),1);return}
+      PYG.ch={};PYG.rs='';toast('บันทึก '+r.changed+' ช่อง · คำนวณใหม่แล้ว');PY.bsAt=0;aCall('payRun',R.run.id).then(function(x){PY.run=x;pyRunDraw()})}).catch(function(e){busy(b,0);toast(e.message,1)})}}
+
+/* ── เลือกพนักงาน (ค้นหาชื่อ/รหัส · เห็นรูปและชื่อ) · ค่าเก็บเป็น id คั่นด้วย , ใน hidden input ── */
+function pyPick(id,ids,on){var P={};(PY.prof||[]).forEach(function(p){P[p.employee_id]=p});var sel=String(ids||'').split(',').filter(function(x){return P[x]});
+  return '<div class="pk" id="pk-'+id+'"><input type="hidden" id="'+id+'" value="'+esc(sel.join(','))+'"><div class="pk-c">'+sel.map(function(x){var p=P[x];return '<span class="pk-chip"><span class="av" data-av="'+x+'">'+esc((p.nickname||p.name).slice(0,1))+'</span><span><b>'+esc(p.name)+'</b><small>'+esc(p.code)+(p.dept?' · '+esc(p.dept):'')+'</small></span>'+(on?'<button type="button" data-pkx="'+x+'" aria-label="เอาออก">✕</button>':'')+'</span>'}).join('')+(sel.length?'':'<span class="faint" style="font-size:12.5px">ยังไม่มี</span>')+'</div>'+
+   (on?'<div class="pk-s"><input type="search" data-pkq placeholder="ค้นหาชื่อ ชื่อเล่น หรือรหัสพนักงาน…" autocomplete="off"><div class="pk-r" hidden></div></div>':'')+'</div>'}
+function pyPickBind(id){var w=$('#pk-'+id);if(!w)return;var h=$('#'+id),q=w.querySelector('[data-pkq]'),box=w.querySelector('.pk-r'),P=PY.prof||[];
+  var redraw=function(){var on=!!q;w.outerHTML=pyPick(id,h.value,on);pyPickBind(id);loadPhotos()};
+  w.querySelectorAll('[data-pkx]').forEach(function(b){b.onclick=function(){h.value=h.value.split(',').filter(function(x){return x&&x!==b.dataset.pkx}).join(',');redraw()}});
+  if(!q)return;
+  var show=function(){var t=q.value.trim().toLowerCase(),cur=h.value.split(',');if(!t){box.hidden=true;return}
+    var m=P.filter(function(p){return cur.indexOf(p.employee_id)<0&&(p.code+' '+p.name+' '+p.nickname+' '+p.dept).toLowerCase().indexOf(t)>=0}).slice(0,8);
+    box.innerHTML=m.length?m.map(function(p){return '<button type="button" data-pka="'+p.employee_id+'"><span class="av" data-av="'+p.employee_id+'">'+esc((p.nickname||p.name).slice(0,1))+'</span><span><b>'+esc(p.name)+(p.nickname?' ('+esc(p.nickname)+')':'')+'</b><small>'+esc(p.code)+' · '+esc(p.dept||'—')+(p.team?' · '+esc(p.team):'')+'</small></span></button>'}).join(''):'<div class="faint" style="padding:10px 12px">ไม่พบ</div>';box.hidden=false;loadPhotos();
+    box.querySelectorAll('[data-pka]').forEach(function(b){b.onmousedown=function(e){e.preventDefault();h.value=h.value.split(',').filter(String).concat(b.dataset.pka).join(',');redraw();var nq=$('#pk-'+id+' [data-pkq]');if(nq)nq.focus()}})};
+  q.oninput=show;q.onfocus=show;q.onblur=function(){setTimeout(function(){box.hidden=true},150)};
+  q.onkeydown=function(e){if(e.key==='Enter'){e.preventDefault();var f=box.querySelector('[data-pka]');if(f)f.onmousedown(e)}}}
+/* ── ส่งออก Excel (รูปแบบรายงานผลการคำนวณเงินเดือนสุทธิเดิม · จัดกลุ่มแผนก + แถวรวม · ซ่อนคอลัมน์ที่เป็น 0 ทั้งงวด) ── */
+function pyXlsx(){return window.XLSX?Promise.resolve(window.XLSX):new Promise(function(ok,no){var s=document.createElement('script');s.src='xlsx.full.min.js';s.onload=function(){ok(window.XLSX)};s.onerror=function(){no(new Error('โหลดตัวสร้าง Excel ไม่สำเร็จ'))};document.head.appendChild(s)})}
+function pyExcel(R){pyXlsx().then(function(X){var r=R.run,it=PY.bs.items.filter(function(i){return i.active}),amt=function(x,c){return x.lines.reduce(function(s,l){return s+(l.code===c?l.amount:0)},0)};
+  var used=it.filter(function(i){return i.code==='salary'||R.rows.some(function(x){return amt(x,i.code)})}),inc=used.filter(function(i){return i.kind==='inc'}),ded=used.filter(function(i){return i.kind==='ded'});
+  var head=['รหัสพนักงาน','ชื่อ-นามสกุล (ชื่อเล่น)','ประเภทการจ้าง','มาทำงาน','วันทำงาน','อัตราค่าจ้าง'].concat(inc.map(function(i){return i.name}),['รวมรายรับ'],ded.map(function(i){return i.name}),['รวมรายจ่าย','รวมยอด (รับสุทธิ)','ธนาคาร','เลขบัญชี']);
+  var line=function(x){return [x.code,x.name+(x.nickname?' ('+x.nickname+')':''),PY.bs.types[x.type]||x.type,x.days-(x.absent||0),x.days,x.base].concat(inc.map(function(i){return amt(x,i.code)}),[x.inc],ded.map(function(i){return amt(x,i.code)}),[x.ded,x.net,x.bank_name,x.bank_masked])};
+  var sumRow=function(lbl,rs){var z=[lbl,'','','','',''];var a=function(f){return Math.round(rs.reduce(function(s,x){return s+f(x)},0)*100)/100};
+    return z.concat(inc.map(function(i){return a(function(x){return amt(x,i.code)})}),[a(function(x){return x.inc})],ded.map(function(i){return a(function(x){return amt(x,i.code)})}),[a(function(x){return x.ded}),a(function(x){return x.net}),'',''])};
+  var aoa=[[A.d.company||''],['รายงานผลการคำนวณเงินเดือนสุทธิประจำเดือน '+ymTh(r.ym)],['งวด '+dTh(r.from)+' – '+dTh(r.to)+' · วันจ่าย '+dTh(r.pay_date)+' · สถานะ '+(PYST[r.status]||[r.status])[0]],[],head],bold=[4];
+  var by={};R.rows.forEach(function(x){(by[x.dept||'ไม่ระบุแผนก']=by[x.dept||'ไม่ระบุแผนก']||[]).push(x)});
+  Object.keys(by).sort().forEach(function(d){aoa.push([d]);bold.push(aoa.length-1);by[d].forEach(function(x){aoa.push(line(x))});aoa.push(sumRow('รวม '+d+' ('+by[d].length+' คน)',by[d]));bold.push(aoa.length-1)});
+  aoa.push(sumRow('รวมทั้งหมด ('+R.rows.length+' คน)',R.rows));bold.push(aoa.length-1);
+  var ws=X.utils.aoa_to_sheet(aoa),rg=X.utils.decode_range(ws['!ref']);
+  for(var R2=5;R2<=rg.e.r;R2++)for(var C=5;C<head.length-2;C++){var c=ws[X.utils.encode_cell({r:R2,c:C})];if(c&&c.t==='n')c.z='#,##0.00'}
+  ws['!cols']=head.map(function(h,i){return {wch:i===1?30:i<6?12:Math.max(12,h.length+2)}});ws['!freeze']={xSplit:2,ySplit:5};
+  var wb=X.utils.book_new();X.utils.book_append_sheet(wb,ws,'เงินเดือน '+r.ym);X.writeFile(wb,'payroll_'+r.ym+'.xlsx');toast('ส่งออก Excel แล้ว')}).catch(function(e){toast(e.message,1)})}
+/* ── ไฟล์โอนกสิกร (Bulk Payment · ตามแม่แบบที่ใช้อยู่) · เลขบัญชีเต็ม · หลังปิดงวด ── */
+/* ── Export Text: ไฟล์โอนกสิกร (.txt · หลังปิดงวด · เลขบัญชีเต็ม · Audit Log)
+ * รูปแบบชั่วคราว (รอตัวอย่างไฟล์ .txt จากธนาคาร → ปรับให้ตรงทุกตัวอักษร): UTF-8 · คั่นด้วย Tab · ตามคอลัมน์แม่แบบ Bulk Payment
+ * บรรทัด 1 = จำนวนรายการ + ยอดรวม · บรรทัด 2 = หัวคอลัมน์ · ต่อด้วย 1 บรรทัดต่อ 1 รายการ · คนที่ไม่อยู่ในไฟล์ (ธนาคารอื่น/ไม่มีบัญชี) แจ้งในหน้าต่างก่อนดาวน์โหลด */
+function pyBank(R){aCall('payBankFile',R.run.id).then(function(f){var d=f.pay_date,eff=+d.slice(8,10)+'/'+(+d.slice(5,7))+'/'+d.slice(0,4);
+  var go2=function(){var L=['Total No. of Transaction\t'+f.kbank.length+'\tTotal Amount\t'+f.total.toFixed(2),['Bank Code','Account number','Account name','Amount','Effective Date (DD/MM/YYYY)'].join('\t')];
+    f.kbank.forEach(function(x){L.push(['004',x.account,x.name,x.amount.toFixed(2),eff].join('\t'))});
+    var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([L.join('\r\n')+'\r\n'],{type:'text/plain;charset=utf-8'}));a.download='KBANK_PAYROLL_'+f.ym.replace('-','')+'.txt';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500);
+    toast('ดาวน์โหลดแล้ว · '+f.kbank.length+' รายการ · '+m2(f.total)+' บาท')};
+  ask({title:'Export Text · ไฟล์โอนกสิกร',desc:f.kbank.length+' รายการ · ยอดรวม '+m2(f.total)+' บาท · วันที่เงินเข้า '+eff+' · ไฟล์มีเลขบัญชีเต็ม (บันทึกใน Audit Log) เก็บในที่ปลอดภัย'+(f.other.length?' · จ่ายแยก '+f.other.length+' คน (ไม่อยู่ในไฟล์):':''),
+    list:f.other.map(function(x){return [x.code+' '+x.name,x.why,m2(x.amount)]}),tone:'warn',buttons:[{k:'no',label:'ยกเลิก'},{k:'yes',label:'ดาวน์โหลด .txt',cls:'pri'}]}).then(function(k){if(k==='yes')go2()})}).catch(function(e){toast(e.message,1)})}
 
 /* ───────── Dashboard ───────── */
 function vDash(){var nm=String(A.d.me.nickname||A.d.me.name||'').split(' ')[0];return '<div class="ph"><div><h1>'+(A.d.me.id==='admin'?'Dashboard':'สวัสดี คุณ'+esc(nm))+'</h1><div class="sub" id="db-sub">กำลังโหลด…</div></div><span class="sp"></span><button class="btn" id="db-re">รีเฟรช</button></div><div id="db-body"><div class="loading"><span class="spin"></span>กำลังโหลด…</div></div>'}
@@ -635,13 +1028,13 @@ function vAppr(){if(A.apa===undefined){var tm=dpPresets(dIso(new Date())).filter
   return '<div class="ph"><div><h1>ศูนย์อนุมัติ</h1><div class="sub">คุณเป็นผู้อนุมัติในฐานะ '+ROLE[A.d.me.role]+' · คำขอทุกประเภทรวมไว้ที่นี่</div></div><span class="sp"></span>'+ofSel('ap')+dpBtn('ap-rg',A.apa,A.apb)+'</div><div id="ap-body"><div class="loading"><span class="spin"></span>กำลังโหลด…</div></div>'}
 /* ตัวกรองแผนก/ทีม ใช้ร่วมหลายหน้า (ศูนย์อนุมัติ · การลา · ลงเวลาวันนี้) · k = ชื่อหน้า · ทีมแสดงเฉพาะในแผนกที่เลือก */
 function ofSt(k){A.of=A.of||{};return A.of[k]||(A.of[k]={d:'all',t:'all'})}
-function ofSel(k){var s=ofSt(k),o=A.d.org,vd={},vt={};A.d.employees.forEach(function(e){vd[e.department_id]=1;vt[e.team_id]=1});// ไม่ใช่ HR: แสดงเฉพาะแผนก/ทีมที่มีคนในขอบเขตที่เห็น
-  var deps=o.departments.filter(function(d){return d.active!=='FALSE'&&(isHR()||vd[d.id])}).sort(function(a,b){return a.name.localeCompare(b.name)}),dep=deps.filter(function(d){return d.name===s.d})[0];
-  var ts=o.teams.filter(function(t){return t.active!=='FALSE'&&(isHR()||vt[t.id])&&(!dep||t.department_id===dep.id)}).sort(function(a,b){return a.name.localeCompare(b.name)});
+function ofSel(k,every){var s=ofSt(k),o=A.d.org,vd={},vt={};A.d.employees.forEach(function(e){vd[e.department_id]=1;vt[e.team_id]=1});// ไม่ใช่ HR: แสดงเฉพาะแผนก/ทีมที่มีคนในขอบเขตที่เห็น
+  var deps=o.departments.filter(function(d){return d.active!=='FALSE'&&(every||isHR()||vd[d.id])}).sort(function(a,b){return a.name.localeCompare(b.name)}),dep=deps.filter(function(d){return d.name===s.d})[0];
+  var ts=o.teams.filter(function(t){return t.active!=='FALSE'&&(every||isHR()||vt[t.id])&&(!dep||t.department_id===dep.id)}).sort(function(a,b){return a.name.localeCompare(b.name)});
   var op=function(v,l,cur){return '<option value="'+esc(v)+'"'+(cur===v?' selected':'')+'>'+esc(l)+'</option>'};
   return '<span class="ofs" id="ofs-'+k+'"><select class="fsel" data-ofd="'+k+'" aria-label="แผนก">'+op('all','ทุกแผนก',s.d)+deps.map(function(d){return op(d.name,d.name,s.d)}).join('')+'</select><select class="fsel" data-oft="'+k+'" aria-label="ทีม">'+op('all','ทุกทีม',s.t)+ts.map(function(t){return op(t.name,t.name,s.t)}).join('')+'</select></span>'}
-function ofBind(k,redraw){var w=$('#ofs-'+k);if(!w)return;var s=ofSt(k);
-  w.querySelector('[data-ofd]').onchange=function(){s.d=this.value;s.t='all';w.outerHTML=ofSel(k);ofBind(k,redraw);redraw()};
+function ofBind(k,redraw,every){var w=$('#ofs-'+k);if(!w)return;var s=ofSt(k);
+  w.querySelector('[data-ofd]').onchange=function(){s.d=this.value;s.t='all';w.outerHTML=ofSel(k,every);ofBind(k,redraw,every);redraw()};
   w.querySelector('[data-oft]').onchange=function(){s.t=this.value;redraw()}}
 function ofOk(k,dept,team){var s=ofSt(k);return (s.d==='all'||dept===s.d)&&(s.t==='all'||team===s.t)}
 function bAppr(){A.apTab=A.apTab||'pending';A.apType=A.apType||'all';
@@ -751,12 +1144,14 @@ function drawSet(){if(!$('#st-body'))return;var t=A.stab||'company',d=A.cfg,h=''
   if(t==='integ')h='<section class="card"><div class="ch"><h3>การเชื่อมต่อ</h3></div><div class="list">'+
      [['LINE MINI App (แอปพนักงาน)','เชื่อมแล้ว','b-ok','Channel '+d.line.channels.join(' / ')+' · LIFF '+d.line.liff],['LINE Messaging API (แจ้งเตือน)',d.notify.lineToken?'เชื่อมแล้ว':'ยังไม่เชื่อม',d.notify.lineToken?'b-ok':'b-warn','ใช้ส่งผลอนุมัติและคำขอใหม่ทาง LINE'],
       ['API Attendance (ระบบลงเวลาเดิม)','ยังไม่เชื่อม','b-mute','ระบบเดิมยังใช้งานแยก · ไม่แตะข้อมูลเดิมจนกว่าจะยืนยัน (INTEGRATION-DESIGN)'],['Workforce Task Manager (ตารางงาน)','ยังไม่เชื่อม','b-mute','เชื่อมเมื่อทำหน้าตารางงาน'],['HumanSoft (เงินเดือน)','ยังไม่เชื่อม','b-mute','เก็บรหัสพนักงานของแต่ละระบบไว้ที่หน้าพนักงานแล้ว']]
-     .map(function(r){return '<div class="li"><div style="flex:1;min-width:0"><b>'+r[0]+'</b><div class="muted" style="font-size:12.5px;overflow-wrap:anywhere">'+esc(r[3])+'</div></div><span class="badge '+r[2]+'">'+r[1]+'</span></div>'}).join('')+'</div></section>'+'<section class="card" style="margin-top:14px"><div class="ch"><h3>ช่อง LINE สำรอง</h3></div><div class="srows" style="margin:0 -20px -16px">'+fld('line_login_channel_id','Channel ID ของ LINE Login (สำรอง)','ใช้เมื่อแอป LINE MINI App ใช้ไม่ได้ · สร้างใต้ Provider เดียวกัน พนักงานไม่ต้องเชื่อม LINE ใหม่ · เว้นว่าง = ไม่ใช้')+'</div></section>'+'<section class="card" style="margin-top:14px"><div class="ch"><h3>ความเร็วของระบบ (60 คำสั่งล่าสุด)</h3><span class="sp"></span><button class="btn sm" id="pf-re">โหลด</button></div><div class="cb" id="pf-body"><span class="muted">กด “โหลด” เพื่อดูเวลาที่ใช้ต่อคำสั่ง</span></div></section>';
+     .map(function(r){return '<div class="li"><div style="flex:1;min-width:0"><b>'+r[0]+'</b><div class="muted" style="font-size:12.5px;overflow-wrap:anywhere">'+esc(r[3])+'</div></div><span class="badge '+r[2]+'">'+r[1]+'</span></div>'}).join('')+'</div></section>'+'<section class="card" style="margin-top:14px"><div class="ch"><h3>ช่อง LINE สำรอง</h3></div><div class="srows">'+fld('line_login_channel_id','Channel ID ของ LINE Login (สำรอง)','ใช้เมื่อแอป LINE MINI App ใช้ไม่ได้ · สร้างใต้ Provider เดียวกัน พนักงานไม่ต้องเชื่อม LINE ใหม่ · เว้นว่าง = ไม่ใช้')+'</div></section>'+'<section class="card" style="margin-top:14px"><div class="ch"><h3 style="display:flex;align-items:center;gap:10px"><span class="cf-logo" aria-hidden="true"><svg width="34" height="18" viewBox="0 0 68 36"><path fill="#F38020" d="M50.6 31.5H12.3a9.3 9.3 0 0 1-1.4-18.5A13.9 13.9 0 0 1 37.6 9a9.6 9.6 0 0 1 13 7.7h.4a7.4 7.4 0 0 1-.4 14.8z"/><path fill="#FBAE40" d="M58.4 18.1h-.6a6.9 6.9 0 0 0-6.6 5l-1.3 4.6c-.4 1.4.6 2.8 2.1 2.8h10.6A6.9 6.9 0 0 0 58.4 18z"/></svg></span>สถิติการใช้งาน Cloudflare</h3><span class="sp"></span><button class="btn sm" id="us-re">รีเฟรช</button></div><div class="cb" id="us-body"><div class="loading"><span class="spin"></span>กำลังโหลดสถิติ…</div></div></section>'+'<section class="card" style="margin-top:14px"><div class="ch"><h3>ความเร็วของระบบ (60 คำสั่งล่าสุด)</h3><span class="sp"></span><button class="btn sm" id="pf-re">โหลด</button></div><div class="cb" id="pf-body"><span class="muted">กด “โหลด” เพื่อดูเวลาที่ใช้ต่อคำสั่ง</span></div></section>';
   var cur=SETT.filter(function(x){return x[0]===t})[0];$('#st-body').innerHTML='<div class="shd"><h2>'+cur[1]+'</h2><p>'+SETT_SUB[t]+'</p></div>'+h;
   $$('[data-sv]').forEach(function(x){x.oninput=x.onchange=stMark});stMark();
   if(t==='roles')loadAccess();
   if(t==='sched')scLoad();
   var un=$('#st-undo');if(un)un.onclick=function(){drawSet();toast('คืนค่าเดิมแล้ว')};
+  var ur=$('#us-re');if(ur){if(US&&Date.now()-US.at<60000)usDraw();else setTimeout(function(){if($('#us-re'))$('#us-re').click()},0)}// เปิดหน้า Integration = โหลดเอง (จำไว้ 1 นาที)
+  if(ur)ur.onclick=function(){busy(ur,1);$('#us-body').innerHTML='<div class="loading"><span class="spin"></span>กำลังโหลดสถิติ…</div>';aCall('usageStats').then(function(d){busy(ur,0);US=d;US.at=Date.now();US.sel=null;usDraw()}).catch(function(e){busy(ur,0);$('#us-body').innerHTML='<div class="alert">'+esc(/ไม่รู้จักคำสั่ง/.test(e.message)?'ใช้ได้เฉพาะระบบบน Cloudflare':e.message)+'</div>'})};
   var pr=$('#pf-re');if(pr)pr.onclick=function(){busy(pr,1);aCall('perfStats').then(function(d){busy(pr,0);$('#pf-body').innerHTML=(d.photos?'<div class="muted" style="font-size:13px;margin-bottom:8px">รูปพนักงานในระบบ '+d.photos.rows+' รายการ · '+(d.photos.trigger?'กำลังแปลงรูปจาก Drive เบื้องหลัง (ทุก 10 นาที)':'แปลงรูปจาก Drive เสร็จแล้ว')+'</div>':'')+
     '<div class="tw"><table style="min-width:520px"><thead><tr><th>คำสั่ง</th><th>ครั้ง</th><th>เฉลี่ย (วินาที)</th><th>ช้าสุด</th><th>ผิดพลาด</th></tr></thead><tbody>'+(d.rows.length?d.rows.map(function(r){return '<tr><td class="mono">'+esc(r.fn)+'</td><td class="num">'+r.n+'</td><td class="num'+(r.avg>4000?'" style="color:var(--bad)':'')+'">'+(r.avg/1000).toFixed(1)+'</td><td class="num">'+(r.max/1000).toFixed(1)+'</td><td class="num">'+r.err+'</td></tr>'}).join(''):'<tr><td colspan="5" class="muted">ยังไม่มีข้อมูล</td></tr>')+'</tbody></table></div>'}).catch(function(e){busy(pr,0);toast(e.message,1)})};
   bShift();bHol();
@@ -970,12 +1365,14 @@ function dpRange(btn,cur,onApply){
 /* ───────── รายงาน (เมนู "รายงาน" · ข้อเสนอจัดเมนูใหม่ Figma 441:7719: Matrix · Dashboard ผู้บริหาร · สรุปทำเงินเดือน · รายงาน OT) ─────────
    Matrix (Figma 426:8186): ตารางคน × วัน · ช่วงวันที่เลือกได้ถึงวันนี้ · ตามขอบเขต "ลงเวลา" ของผู้ใช้ · ส่งออก Excel (CSV) / PDF (พิมพ์) */
 var RP_ST={ok:'มาทำงาน',late:'มาสาย',working:'กำลังทำงาน',missing_out:'ไม่มีออก',missing_in:'ไม่มีเข้า',leave:'ลา',leave_wait:'ลา (รออนุมัติ)',holiday:'วันหยุด',off:'วันหยุด',absent:'ขาดงาน',not_yet:'ยังไม่ลงเวลา'};
-function fileIc(kind){var c=kind==='pdf'?'#DC2626':'#15803D',l=kind==='pdf'?'PDF':'XLS';
+/* ปุ่มส่งออกแบบเดียวกันทั้งระบบ: ไอคอนไฟล์ + "Export Excel / PDF / Text" (ผู้ใช้ขอ 27 ต.ค. 2569) · exBtn(kind, id, label?, attr?) */
+function exBtn(kind,id,label,attr){return '<button class="btn btn-ex" id="'+id+'"'+(attr?' '+attr:'')+'>'+fileIc(kind)+esc(label||('Export '+{xls:'Excel',pdf:'PDF',txt:'Text'}[kind]))+'</button>'}
+function fileIc(kind){var c=kind==='pdf'?'#DC2626':kind==='txt'?'#2563EB':'#15803D',l=kind==='pdf'?'PDF':kind==='txt'?'TXT':'XLS';
   return '<svg class="fic" width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 1.5h8l5 5v12H4z" fill="none" stroke="'+c+'" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 1.5v5h5" fill="none" stroke="'+c+'" stroke-width="1.5" stroke-linejoin="round"/><rect x="1" y="10" width="13" height="7" rx="2" fill="'+c+'"/><text x="7.5" y="15.2" text-anchor="middle" font-size="4.8" font-weight="700" fill="#fff" font-family="Arial,sans-serif">'+l+'</text></svg>'}
 function vRep(){if(A.rpa===undefined){var tm=dpPresets(dIso(new Date())).filter(function(x){return x[0]==='tm'})[0];A.rpa=tm[2];A.rpb=tm[3];A.rpq='';A.rpd='all';A.rpt='all'}
   var sc=acc('att'),deps=A.d.org.departments.filter(function(d){return d.active!=='FALSE'}),tms=A.d.org.teams.filter(function(t){return t.active!=='FALSE'&&(A.rpd==='all'||t.department_id===A.rpd)});
   var tab=function(l,on,soon){return '<button type="button"'+(on?' aria-pressed="true"':'')+(soon?' disabled title="อยู่ระหว่างพัฒนา"':'')+'>'+l+(soon?' <span class="sn">เร็ว ๆ นี้</span>':'')+'</button>'};
-  return '<div class="ph"><div><h1>รายงาน</h1><div class="sub">ตารางสรุปรายวันต่อคน · ขอบเขต: '+esc(scopeTxt('att'))+'</div></div><span class="sp"></span><button class="btn btn-ex rp-noprint" id="rp-xls">'+fileIc('xls')+'ส่งออก Excel</button><button class="btn btn-ex rp-noprint" id="rp-pdf">'+fileIc('pdf')+'ส่งออก PDF</button></div>'+
+  return '<div class="ph"><div><h1>รายงาน</h1><div class="sub">ตารางสรุปรายวันต่อคน · ขอบเขต: '+esc(scopeTxt('att'))+'</div></div><span class="sp"></span><button class="btn btn-ex rp-noprint" id="rp-xls">'+fileIc('xls')+'Export Excel</button><button class="btn btn-ex rp-noprint" id="rp-pdf">'+fileIc('pdf')+'Export PDF</button></div>'+
    '<div class="rp-tabs" role="group" aria-label="รายงาน">'+tab('Matrix',1)+tab('Dashboard ผู้บริหาร',0,1)+tab('สรุปทำเงินเดือน',0,1)+tab('รายงาน OT',0,1)+'</div>'+
    '<section class="card rp-tools" style="padding:14px 16px"><div class="rp-f"><label>ช่วงวันที่'+dpBtn('rp-rg',A.rpa,A.rpb)+'</label>'+
     (sc==='all'?'<label>แผนก<select id="rp-dep"><option value="all">ทุกแผนก</option>'+deps.map(function(d){return '<option value="'+d.id+'"'+(A.rpd===d.id?' selected':'')+'>'+esc(d.name)+'</option>'}).join('')+'</select></label>':'')+
@@ -1192,7 +1589,7 @@ function drawLead(d){var k=d.kpi,L=d.lead,dt=new Date(d.date+'T12:00:00'),TD=['�
 function vMine(){A.id=A.d.me.id;return '<div class="scb"><span class="i">i</span><div><b>คุณเห็นเฉพาะข้อมูลของตัวเอง</b><small>ลงเวลา · การลา · โควตา ของคุณ · ดูอย่างเดียว (สิทธิ์แก้ข้อมูลขึ้นกับที่ HR กำหนด)</small></div></div>'+vProfile()}
 function bMine(){A.id=A.d.me.id;bProfile()}
 /* ───────── ตารางงาน = หน้าเว็บ Workforce Task Manager เดิมทั้งชุด (planner.html · สร้างด้วย app/tools/build-planner.mjs · หลังบ้าน app/gas/Wtm.js) ───────── */
-var PLANNER_V='mvpa1jv8';   // เลขรุ่นหน้า planner.html (build-planner.mjs ตั้งให้ทุกครั้ง · กันเบราว์เซอร์จำหน้าเก่า)
+var PLANNER_V='mvqpxwm4';   // เลขรุ่นหน้า planner.html (build-planner.mjs ตั้งให้ทุกครั้ง · กันเบราว์เซอร์จำหน้าเก่า)
 function vConf(){return '<iframe class="plf" src="planner.html?desktop=1&page=confirmed&v='+PLANNER_V+'" title="Confirmed"></iframe>'}
 function vPlanner(){return '<iframe class="plf" src="planner.html?desktop=1&v='+PLANNER_V+'" title="ตารางงาน" allow="geolocation"></iframe>'}
 /* (เดิม) ตารางงานช่วง 1 ที่เขียนใหม่ — ไม่ได้ใช้แล้ว เก็บไว้อ้างอิง */
@@ -1510,7 +1907,7 @@ function bForm(){
 }
 
 /* ───────── ลิงก์เชิญ LINE ───────── */
-function drawer(title,body,foot){$('#ov').innerHTML='<div class="dbg" id="dbg"></div><aside class="drw" role="dialog" aria-label="'+esc(title)+'"><div class="ch"><h3>'+esc(title)+'</h3><span class="sp"></span><button class="btn sm" id="dx" aria-label="ปิด">✕</button></div><div class="cb">'+body+'</div>'+(foot?'<div class="ch" style="border-top:1px solid var(--line);border-bottom:0;justify-content:flex-end">'+foot+'</div>':'')+'</aside>';$('#dbg').onclick=$('#dx').onclick=closeD}
+function drawer(title,body,foot){$('#ov').innerHTML='<div class="dbg" id="dbg"></div><aside class="drw" role="dialog" aria-label="'+esc(title)+'"><div class="ch"><h3>'+esc(title)+'</h3><span class="sp"></span><button class="btn sm" id="dx" aria-label="ปิด">✕</button></div><div class="cb">'+body+'</div>'+(foot?'<div class="ch" style="border-top:1px solid var(--line);border-bottom:0;justify-content:flex-end">'+foot+'</div>':'')+'</aside>';$('#dbg').onclick=$('#dx').onclick=closeD;mpBind($('#ov'))}
 function closeD(){$('#ov').innerHTML=''}
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeD()});
 function invite(ids){
