@@ -792,7 +792,7 @@ const sb=()=>{const d=new Date(),el=$("#sbt");if(el)el.textContent=`${d.getHours
 $("#views").innerHTML=`<div class="view white"><div class="okv"><span class="spin" style="width:34px;height:34px;border-color:var(--blue-soft);border-top-color:var(--blue)"></span><span class="muted">กำลังเปิดแอป…</span></div></div>`;
 /* ===== โมดูลการลา (Phase 2c) · หน้าตาตาม Figma หน้า 05 section "LIFF · โมดูลการลา" ===== */
 const PART={full:"เต็มวัน",am:"ครึ่งวันเช้า",pm:"ครึ่งวันบ่าย"};
-const LST={wait:["รอหัวหน้าอนุมัติ","c-orange"],mgr:["รอหัวหน้าแผนกอนุมัติ","c-orange"],hr:["รอ HR อนุมัติ","c-orange"],ok:["อนุมัติแล้ว","c-green"],chg:["รออนุมัติการยกเลิก","c-blue"],back:["ส่งกลับแก้ไข","c-yellow"],no:["ไม่อนุมัติ","c-red"],cancel:["ยกเลิกแล้ว","c-grey"]};
+const LST={wait:["รอหัวหน้าอนุมัติ","c-orange"],mgr:["รอผู้อนุมัติขั้นที่ 2","c-orange"],hr:["รอ HR อนุมัติ","c-orange"],ok:["อนุมัติแล้ว","c-green"],chg:["รออนุมัติการยกเลิก","c-blue"],back:["ส่งกลับแก้ไข","c-yellow"],no:["ไม่อนุมัติ","c-red"],cancel:["ยกเลิกแล้ว","c-grey"]};
 const lchip=(st,ap)=>`<span class="chip ${(LST[st]||["",""])[1]} mini" style="white-space:nowrap">${ap&&st==="wait"?"รออนุมัติ":(LST[st]||[st])[0]}</span>`;
 const nt=(c,i,t)=>`<div class="note ${c}">${ic(i)}<span>${t}</span></div>`;
 const er=(i,t)=>`<div class="eff">${ic(i)}<span>${t}</span></div>`;
@@ -805,9 +805,9 @@ const rangeTxt=(a,b)=>!a?"—":a===b||!b?fDY(a):(a.slice(0,7)===b.slice(0,7)?`${
 const tl=steps=>steps.map((s,i,a)=>`<div class="tli"><span class="tlr"><i style="background:${s[3]?s[0]:"#fff"};border-color:${s[0]}"></i>${i<a.length-1?"<em></em>":""}</span><span><span style="display:block">${s[1]}</span><span class="cap">${s[2]}</span></span></div>`).join("");
 const ACT={ok:"อนุมัติ",partial:"อนุมัติบางวัน",no:"ไม่อนุมัติ",back:"ส่งกลับแก้ไข",ack:"HR รับทราบ"};
 function stepsOf(r){const A=[["var(--green)","ยื่นคำขอ",esc(r.employee||"คุณ")+" · "+fAt(r.created_at),true]];
-  (r.history||[]).forEach(h=>A.push([h.action==="no"?"var(--red)":h.action==="back"?"var(--yellow)":"var(--green)",(h.step==="hr"?"HR":h.step==="mgr"?"หัวหน้าแผนก":"หัวหน้าทีม")+" · "+(ACT[h.action]||h.action),esc(h.by)+" · "+fAt(h.at)+(h.note?" · "+esc(h.note):""),true]));
+  (r.history||[]).forEach(h=>A.push([h.action==="no"?"var(--red)":h.action==="back"?"var(--yellow)":"var(--green)",(h.step==="hr"?"HR":h.step==="mgr"?"ขั้นที่ 2":"ขั้นที่ 1")+" · "+(ACT[h.action]||h.action),esc(h.by)+" · "+fAt(h.at)+(h.note?" · "+esc(h.note):""),true]));
   if(r.status==="wait")A.push(["var(--orange)","หัวหน้าทีม"+(L.info&&L.info.lead&&!r.mine_lead?" · "+esc(L.info.lead):""),"รอพิจารณา",false]);
-  if(r.status==="mgr")A.push(["var(--orange)","หัวหน้าแผนก","รอพิจารณา",false]);
+  if(r.status==="mgr")A.push(["var(--orange)","ผู้อนุมัติขั้นที่ 2","รอพิจารณา",false]);
   if(r.status==="hr")A.push(["var(--orange)","ฝ่ายบุคคล (HR)","รออนุมัติ",false]);
   if(r.status==="chg")A.push(["var(--orange)","หัวหน้าทีม","รอพิจารณาการยกเลิก · วันลาเดิมยังมีผล",false]);
   if(r.status==="back")A.push(["var(--yellow)","รอคุณแก้ไขแล้วส่งใหม่","",false]);return A}
