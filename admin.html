@@ -631,14 +631,15 @@ function loadMine(){var draw=function(li){var q=$('#db-quota');if(!q)return;var 
 /* ───────── ศูนย์อนุมัติ ───────── */
 function vAppr(){return '<div class="ph"><div><h1>ศูนย์อนุมัติ</h1><div class="sub">คุณเป็นผู้อนุมัติในฐานะ '+ROLE[A.d.me.role]+' · คำขอทุกประเภทรวมไว้ที่นี่</div></div></div><div id="ap-body"><div class="loading"><span class="spin"></span>กำลังโหลด…</div></div>'}
 function bAppr(){A.apTab=A.apTab||'pending';A.apType=A.apType||'all';if(A.ap&&A.apFor===A.apTab)drawAppr();loadAppr()}
-function loadAppr(){var t=A.apTab;aCall('approvalCenter',t).then(function(d){if(t!==A.apTab)return;A.ap=d;A.apFor=t;drawAppr()}).catch(function(e){if($('#ap-body'))$('#ap-body').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})}
+function loadAppr(){var t=A.apTab;aCall('approvalCenter',t==='no'?'done':t).then(function(d){if(t!==A.apTab)return;A.ap=d;A.apFor=t;drawAppr()}).catch(function(e){if($('#ap-body'))$('#ap-body').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})}
 function drawAppr(){if(!$('#ap-body'))return;var d=A.ap,k=d.kpi,T=A.apType;
-  var items=d.items.filter(function(x){return T==='all'||x.kind===T});
+  // แท็บ "ไม่อนุมัติ" = รายการที่ดำเนินการแล้วซึ่งไม่อนุมัติหรือส่งกลับแก้ไข
+  var items=d.items.filter(function(x){return (T==='all'||x.kind===T)&&(A.apTab!=='no'||x.status==='no'||x.status==='back')});
   var kpi=function(l,v,sub,cls){return '<div class="kpi"><span class="l">'+l+'</span><span class="v num '+(cls||'')+'">'+v+'</span><span class="d">'+(sub||'&nbsp;')+'</span></div>'};
   var SB={wait:'b-warn',hr:'b-warn',chg:'b-info',ok:'b-ok',no:'b-bad',back:'b-warn',cancel:'b-mute'};
   var chip=function(v,l,dis){return '<button class="chip" data-aty="'+v+'" aria-pressed="'+(T===v)+'"'+(dis?' disabled title="เร็ว ๆ นี้"':'')+'>'+l+'</button>'};
   $('#ap-body').innerHTML='<div class="grid g4">'+kpi('คำขอทั้งหมดเดือนนี้',k.month)+kpi('รออนุมัติ',k.pending,'ของคุณ',k.pending?'warn':'')+kpi('อนุมัติแล้ว',k.approved,'เดือนนี้','ok')+kpi('ไม่อนุมัติ / ส่งกลับ',k.rejected+' / '+k.back,'เดือนนี้')+'</div>'+
-   '<div class="toolbar" style="margin-top:14px"><div class="segt"><button data-atab="pending" aria-pressed="'+(A.apTab==='pending')+'">รออนุมัติ'+(k.pending?' ('+k.pending+')':'')+'</button><button data-atab="done" aria-pressed="'+(A.apTab==='done')+'">ดำเนินการแล้ว</button></div>'+
+   '<div class="toolbar" style="margin-top:14px"><div class="segt"><button data-atab="pending" aria-pressed="'+(A.apTab==='pending')+'">รออนุมัติ'+(k.pending?' ('+k.pending+')':'')+'</button><button data-atab="done" aria-pressed="'+(A.apTab==='done')+'">ดำเนินการแล้ว</button><button data-atab="no" aria-pressed="'+(A.apTab==='no')+'">ไม่อนุมัติ</button></div>'+
     chip('all','ทุกประเภท')+chip('leave','คำขอลา')+chip('line','เชื่อม LINE')+chip('device','อุปกรณ์ใหม่')+chip('ot','OT',1)+chip('time','แก้ไขเวลา',1)+chip('shift','เปลี่ยนตารางงาน',1)+'</div>'+
    '<section class="card"><div class="tw"><table style="min-width:900px"><thead><tr><th>เลขที่</th><th>ผู้ขอ</th><th>ประเภท</th><th>รายละเอียด</th><th>ขั้นตอน</th><th>ยื่นเมื่อ</th><th>สถานะ</th></tr></thead><tbody>'+
    (items.length?items.map(function(x,i){return '<tr class="ck" data-api="'+i+'"><td class="mono">'+esc(x.no)+'</td><td><div class="who-c">'+av(emp(x.employee_id)||{id:x.employee_id,first_name:x.employee,last_name:''},28)+'<span>'+esc(x.employee)+'<small>'+esc(x.dept||'')+'</small></span></div></td>'+
