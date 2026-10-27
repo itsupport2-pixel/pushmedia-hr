@@ -863,7 +863,7 @@ function attAt(t,a,loc0,bad0){if(!t)return '<span class="faint">—</span>';a=a|
   return '<div class="num" style="font-weight:600">'+esc(t)+'</div>'+(a&&(a.loc||a.adj)?'<div class="at-loc">'+(a.loc?'<span class="badge '+(a.ok?'b-ok':'b-warn')+'"'+(a.dist?' title="ห่างจุดลงเวลา '+(a.dist>=1000?(a.dist/1000).toFixed(1)+' กม.':a.dist+' ม.')+'"':'')+'>'+(a.ok||a.loc==='นอกพื้นที่'?'':'นอกพื้นที่ · ')+esc(a.loc)+'</span>':'')+
     (a.gps?'<a href="https://www.google.com/maps?q='+encodeURIComponent(a.gps)+'" target="_blank" rel="noopener" class="at-map" title="เปิดแผนที่">แผนที่</a>':'')+(a.adj?'<span class="badge b-mute">แก้โดย HR</span>':'')+'</div>':'')}
 function drawAtt(){if(!$('#att-body'))return;var d=A.att,c=d.counts,f=A.attF||'all';
-  $('#att-sub').textContent=d.date+' · '+c.total+' คน';
+  $('#att-sub').innerHTML=esc(d.date)+' · '+c.total+' คน'+(c.exempt?' · <span title="ตั้งที่ ข้อมูลพนักงาน › ประเภทการลงเวลา">ไม่รวม '+c.exempt+' คนที่ไม่ต้องลงเวลา</span>':'');
   var sb=function(k,l,n,w){return '<button data-af="'+k+'" class="'+(w&&n?'w':'')+'" aria-pressed="'+(f===k)+'"><b class="num">'+n+'</b><span>'+l+'</span></button>'};
   var rows=d.people.filter(function(p){return f==='all'||(f==='in'&&p.first_in)||(f==='late'&&p.status==='late')||(f==='leave'&&/leave/.test(p.status))||(f==='absent'&&p.status==='not_yet')||(f==='out'&&p.out_of_area)});
   $('#att-body').innerHTML='<div class="sum">'+sb('all','ทั้งหมด',c.total)+sb('in','ลงเวลาแล้ว',c.in)+sb('absent','ยังไม่ลงเวลา',c.absent,1)+sb('late','มาสาย',c.late,1)+sb('out','นอกพื้นที่',c.out_of_area,1)+sb('leave','ลา',c.leave)+'</div>'+
