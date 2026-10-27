@@ -511,19 +511,30 @@ function shiftPicker(t,sf,open,selId){const list=open&&!sf.list.some(x=>x.id===o
   return `<div class="shead"><span class="lab">เลือกกะการทำงาน</span><span class="cap">${open?"ล็อกตามกะที่เข้างาน":sel.id===sf.suggested?"เลือกให้ตามเวลาตอนนี้":"แตะเพื่อเปลี่ยนกะ"}</span></div>
   <div class="shifts" role="radiogroup" aria-label="เลือกกะการทำงาน" style="grid-template-columns:repeat(${list.length},minmax(0,1fr))">${list.map(x=>{const k=SHC(x.id);return `<button class="shc${open&&x.id!==sel.id?" lock":""}" role="radio" aria-checked="${x.id===sel.id}" data-shift="${esc(x.id)}" ${open?"disabled":""} style="--s:var(--sh-${k});--ss:var(--sh-${k}-soft)"><span class="ck">${ic("chk")}</span><span class="bd">${ic(SHI[k])}</span><b>${esc(x.name)}</b><small>${esc(x.start)}–${esc(x.end)}</small></button>`}).join("")}</div>
   <div class="late${!open&&def&&sel.id!==def.id?" warn":""}" style="--s:var(--sh-${c});--ss:var(--sh-${c}-soft)">${ic("alarm")}<span>${msg}</span></div>`}
+const hhmm=()=>{const d=new Date();return p2(d.getHours())+":"+p2(d.getMinutes())};
+const mm=s=>{const m=/^(\d{1,2}):(\d{2})/.exec(s||"");return m?+m[1]*60+ +m[2]:null};
+/* แบบ C (Figma 544:5065): วันนี้ลงเวลาครบแล้ว → สรุป เข้า/ออก/ชั่วโมง + ออกก่อนเวลา · ไม่มีปุ่มเข้ารอบใหม่ (ให้หัวหน้า/HR ลงแทน) */
+function daySummary(t,sf,firstIn,last){const sid=(t.records.find(r=>r.kind==="IN"&&r.shift)||{}).shift,sh=sid&&sf?sf.list.find(x=>x.id===sid):null;
+  const st=sh?sh.start:t.workStart,en=sh?sh.end:t.workEnd,ov=mm(en)<=mm(st),a=mm(firstIn),b0=mm(last.time),b=ov&&b0<mm(st)-360?b0+1440:b0,e=mm(en)+(ov?1440:0);
+  const w=a!=null&&b!=null&&b>a?b-a:0,early=b!=null&&e!=null&&b<e?e-b:0,dur=m=>Math.floor(m/60)+":"+p2(m%60);
+  const cell=(l,v)=>`<div><div class="cap">${l}</div><b style="font-size:22px;font-weight:600">${esc(v)}</b></div>`;
+  return `<div class="fcard" style="gap:10px"><b>สรุปวันนี้ · ${sh?"กะ"+esc(sh.name)+" ":""}${esc(st||"")}–${esc(en||"")}</b><div style="display:flex;gap:14px;align-items:flex-end">${cell("เข้า",firstIn)}<span class="cap" style="font-size:18px">→</span>${cell("ออก",last.time)}${cell("ทำงาน",dur(w)+" ชม.")}</div>${early?`<span class="chip c-orange mini" style="align-self:flex-start">ออกก่อนเวลา ${early>=60?Math.floor(early/60)+" ชม. ":""}${early%60} นาที</span>`:""}</div>
+  ${nt("c-blue","info",'กลับมาทำงานต่อ กด "อัปเดตเวลาออกงาน" · ถ้ายังไม่ถึงเวลาเลิกกะ ระบบจะให้ระบุเหตุผลก่อน · ต้องเริ่มงานรอบใหม่ แจ้งหัวหน้า / HR ให้ลงเวลาแทน')}`}
 V.clock=()=>{const t=S.today,p=S.pos;if(!t||!p)return wbar("ลงเวลาการทำงาน")+`<section class="clk"><div class="d" id="cd"></div><div class="t" id="ct">--:--:--</div><div class="s">${ic("clock")}เวลาที่ใช้ในการบันทึก</div></section><div class="pad" style="background:#fff;flex:1"><div class="skel" style="height:90px"></div><div class="cap" style="text-align:center">กำลังหาตำแหน่งของคุณ…</div></div>`;
   const sf=t.shift,open=sf&&sf.open,lockId=open?open.shift.id:"",last=t.records[t.records.length-1],out=last&&last.kind==="IN"||!!open;
+  // วันนี้เข้า-ออกครบแล้ว: ไม่ให้เลือกกะทันที · เสนอ "อัปเดตเวลาออก" ก่อน · เข้ารอบใหม่ต้องกดยืนยันอีกชั้น
+  const done=!out&&last&&last.kind==="OUT",again=done&&S.again,firstIn=(t.records.find(r=>r.kind==="IN")||{}).time||"—",prevSh=sf&&(t.records.find(r=>r.kind==="IN"&&r.shift)||{}).shift,prevName=prevSh&&sf?((sf.list.find(x=>x.id===prevSh)||{}).name||""):"";
   if(sf&&!lockId&&!sf.list.some(x=>x.id===S.shift))S.shift=sf.suggested;
   const selId=lockId||S.shift,sel=sf?(open?open.shift:sf.list.find(x=>x.id===selId)):null,shName=sel?"กะ"+sel.name:"";
   const tg=t.targets.map(g=>{const d=p.err||g.lat==null?null:dist(p.lat,p.lng,g.lat,g.lng);return {g,d,inside:d!=null&&d<=g.radius_m}}).sort((a,b)=>(a.d==null?1e9:a.d-a.g.radius_m)-(b.d==null?1e9:b.d-b.g.radius_m));
   const inA=tg.some(x=>x.inside),near=tg[0];if(S.opt>=tg.length)S.opt=0;
   return wbar("ลงเวลาการทำงาน")+`<section class="clk"><div class="d" id="cd"></div><div class="t" id="ct">--:--:--</div><div class="s">${ic("clock")}เวลาที่ใช้ในการบันทึก</div></section>
-  <div class="pad" style="gap:12px;background:#fff;flex:1">${sf?shiftPicker(t,sf,open,selId):""}<span class="lab">ตำแหน่งที่ลงเวลา</span>
+  <div class="pad" style="gap:12px;background:#fff;flex:1">${done?daySummary(t,sf,firstIn,last):""}${sf&&!done?shiftPicker(t,sf,open,selId):""}<span class="lab">ตำแหน่งที่ลงเวลา</span>
   <div class="loc"><div style="flex:1;min-width:0">${p.err?`<b style="color:var(--red)">หาตำแหน่งไม่ได้</b><div class="s">${esc(p.err)}</div>`:`<b style="color:${inA?"#1FB25A":"var(--red)"}">${inA?"สามารถลงเวลาได้":"อยู่นอกพื้นที่ลงเวลา"}</b><div class="s">${inA?"คุณอยู่ในพื้นที่ลงเวลา":near?"ห่างจุดลงเวลาที่ใกล้ที่สุด "+fmtDist(near.d):"วันนี้ไม่มีจุดหรืองานที่กำหนด"}<br>${inA?esc(near.g.name)+" · ห่าง "+fmtDist(near.d):"ต้องระบุเหตุผล หัวหน้าทีมจะตรวจสอบ"}</div>`}</div><button class="locbtn" data-loc aria-label="อัปเดตตำแหน่ง">${ic("target")}</button></div>
   ${tg.length?`<span class="lab">จุดลงเวลา</span>${tg.map((x,i)=>`<button class="opt" role="radio" aria-checked="${S.opt===i}" data-opt="${i}"><span class="rad"></span><span style="min-width:0"><b>${x.g.kind==="job"?"หน้างาน: "+esc(x.g.title||x.g.name):sf?esc(x.g.name):"กะปกติ ("+esc(x.g.name)+")"}</b><span class="s">${ic(sf&&x.g.kind!=="job"?"pin":"clock")}${x.g.kind==="job"?esc(x.g.name)+" · จากตารางงานวันนี้":sf?"รัศมี "+esc(x.g.radius_m)+" ม."+(x.d!=null?" · ห่าง "+fmtDist(x.d):""):esc(shiftTxt(t))}</span></span></button>`).join("")}`:""}
   <span class="lab" ${inA?"":'style="color:var(--red)"'}>${inA?"รายละเอียด":"เหตุผลที่ลงเวลานอกพื้นที่ *"}</span>
   <textarea class="ta" id="cn" placeholder="${inA?"ระบุรายละเอียดเพิ่มเติม (ถ้ามี)":"เช่น เดินทางไปหน้างานโดยตรง"}"></textarea><span class="emsg" id="cn-e" hidden></span></div>
-  <div class="foot"><button class="btn pri" data-clock="${out?"out":"in"}" ${p.err?"disabled":""}>${out?"ลงเวลาออกงาน"+(shName?" · "+shName:""):sf?"ลงเวลาเข้างาน · "+shName:"ลงเวลาการทำงาน"}</button>${out?"":`<button class="btn out" data-clock="out" ${p.err?"disabled":""}>ลงเวลาออกงาน</button>`}</div>`;};
+  <div class="foot">${done?`<button class="btn pri" data-clock="out" ${p.err?"disabled":""}>อัปเดตเวลาออกงาน · <span id="cbt">${hhmm()}</span></button>`:`<button class="btn pri" data-clock="${out?"out":"in"}" ${p.err?"disabled":""}>${out?"ลงเวลาออกงาน"+(shName?" · "+shName:""):(again?"ยืนยันเข้างานรอบใหม่":"ลงเวลาเข้างาน")+(sf?" · "+shName:"")}</button>${again?`<button class="btn out" data-again="0">ยกเลิก</button>`:""}`}</div>`;};
 
 /* รหัสเครื่อง: สุ่มครั้งแรกแล้วเก็บในแอป LINE ของมือถือ (ล้างข้อมูล LINE = เครื่องใหม่) + รุ่นเครื่องจาก User-Agent */
 function devLabel(){const u=navigator.userAgent;let m;
@@ -714,7 +725,7 @@ function getPos(){
       ()=>ok({err:"ไม่ได้รับอนุญาตให้ใช้ตำแหน่ง กรุณาเปิดตำแหน่งที่ตั้ง (GPS) แล้วกดปุ่มอัปเดตตำแหน่ง"}),{enableHighAccuracy:true,timeout:15000,maximumAge:0})});
 }
 function dist(a,b,c,d){const R=6371000,r=Math.PI/180,x=Math.sin((c-a)*r/2),y=Math.sin((d-b)*r/2),h=x*x+Math.cos(a*r)*Math.cos(c*r)*y*y;return Math.round(2*R*Math.atan2(Math.sqrt(h),Math.sqrt(1-h)))}
-function openClock(){S.pos=null;S.opt=0;S.shift=null;go("clock");Promise.all([refreshToday().then(t=>t||(S.today&&S.today.date===ISO(new Date())?S.today:null)||(CFG.backup&&(S.today=outageToday()))),getPos()]).then(x=>{S.pos=x[1];if(cur()==="clock"){repaint();startClock()}})}
+function openClock(){S.pos=null;S.opt=0;S.shift=null;S.again=false;go("clock");Promise.all([refreshToday().then(t=>t||(S.today&&S.today.date===ISO(new Date())?S.today:null)||(CFG.backup&&(S.today=outageToday()))),getPos()]).then(x=>{S.pos=x[1];if(cur()==="clock"){repaint();startClock()}})}
 
 /* ---------- navigation (เหมือนต้นแบบ) ---------- */
 const TABS=[["home","หน้าหลัก","home"],["sched","ตารางงาน","cal"],["clock","ลงเวลางาน","finger"],["req","เอกสาร","doc"],["menu","เมนู","menu"]];
@@ -735,7 +746,7 @@ function show(mode){const box=$("#views");box.querySelectorAll(".out-r").forEach
   if(mode==="back"&&old&&old.classList.contains("view")){const v=build();box.insertBefore(v,old);old.classList.add("out-r");old.addEventListener("animationend",()=>old.remove(),{once:true});setTimeout(()=>old.remove(),400);}
   else{const v=build(mode==="push"?"in-r":"fade");box.appendChild(v);if(old){if(mode==="push")setTimeout(()=>old.remove(),300);else old.remove();}}
   paintChrome();if(cur()==="clock")startClock();tabsToActive();fitChips();}
-function startClock(){clearInterval(tick);const up=()=>{const d=new Date(),t=$("#ct"),c=$("#cd");if(!t)return clearInterval(tick);t.textContent=`${p2(d.getHours())}:${p2(d.getMinutes())}:${p2(d.getSeconds())}`;c.textContent=`วัน${TH_D[d.getDay()]}ที่ ${d.getDate()} ${TH_M[d.getMonth()]} ${d.getFullYear()+543}`;};up();tick=setInterval(up,1000);}
+function startClock(){clearInterval(tick);const up=()=>{const d=new Date(),t=$("#ct"),c=$("#cd");if(!t)return clearInterval(tick);t.textContent=`${p2(d.getHours())}:${p2(d.getMinutes())}:${p2(d.getSeconds())}`;const cb=$("#cbt");if(cb)cb.textContent=`${p2(d.getHours())}:${p2(d.getMinutes())}`;c.textContent=`วัน${TH_D[d.getDay()]}ที่ ${d.getDate()} ${TH_M[d.getMonth()]} ${d.getFullYear()+543}`;};up();tick=setInterval(up,1000);}
 function go(s){S.stack.push(s);try{history.pushState({pm:1},"")}catch(x){}show("push");onEnter()}
 /* ปุ่มย้อนกลับของเครื่อง (Android) / ปัดขอบจอ → ย้อนหน้าในแอปแทนการปิดแอป */
 addEventListener("popstate",()=>{if(S.skipPop){S.skipPop=0;return}if(S.stack.length)back()});
@@ -758,6 +769,7 @@ function act(a){if(a==="soon"){toast("เมนูนี้กำลังพั
   if(a.startsWith("go:"))go(a.slice(3));else if(a.startsWith("tab:"))toTab(a.slice(4));}
 document.addEventListener("click",e=>{const t=e.target.closest("button,[data-dclose]");if(!t)return;const d=t.dataset||{};
   if(d.dclose!==undefined){drawer(false);return}
+  if(d.again!==undefined){S.again=d.again==="1";repaint();return}
   if(d.dlogout!==undefined){drawer(false);call("logout",S.tok);setTok(null);if(window.liff&&liff.closeWindow&&!DEV){try{liff.closeWindow()}catch(_){}}toast("ออกจากระบบแล้ว");return}
   if(d.toast){toast(d.toast);return}
   if(d.dgo){drawer(false);act(d.dgo);return}
@@ -768,9 +780,17 @@ document.addEventListener("click",e=>{const t=e.target.closest("button,[data-dcl
   if(d.loc!==undefined){t.classList.add("busy");getPos().then(p=>{S.pos=p;t.classList.remove("busy");if(cur()==="clock")repaint();toast(p.err?p.err:"อัปเดตตำแหน่งแล้ว · ความแม่นยำ ±"+Math.round(p.acc||0)+" ม.")});return}
   if(d.shift&&!t.disabled){const n=$("#cn"),v=n?n.value:"";S.shift=d.shift;repaint();const n2=$("#cn");if(n2)n2.value=v;return}
   if(d.opt){document.querySelectorAll(".opt").forEach(o=>o.setAttribute("aria-checked",o===t));S.opt=+d.opt;return}
-  if(d.clock){const n=$("#cn"),note=n.value.trim(),p=S.pos;
+  if(d.earlyok!==undefined){const v=($("#er")||{}).value||"";if(!v.trim()){$("#er-e").hidden=false;$("#er").classList.add("err");return}$("#ov").innerHTML="";const b=document.querySelector('[data-clock="out"]');if(b)doClock("out",b,v.trim());return}
+  if(d.clock){doClock(d.clock,t,"");return}
+  if(d.ptab){S.ptab=+d.ptab;repaint();return}
+});
+/* ลงเวลา · early = เหตุผลออกก่อนเวลา (จากหน้าต่างเตือน) */
+function earlySheet(r){sheet(`<div style="align-self:center;width:52px;height:52px;border-radius:50%;background:var(--orange-soft,#FFF3DC);color:var(--orange,#B26A00);display:grid;place-items:center">${ic("alarm")}</div><h3 style="text-align:center;margin:0">ยังไม่ถึงเวลาเลิกงาน</h3><span class="cap" style="text-align:center">${r.shift?"กะ"+esc(r.shift)+" ":""}เลิก ${esc(r.end)} น. · ตอนนี้ ${hhmm()} น.<br>ออกก่อนเวลา ${r.early_min>=60?Math.floor(r.early_min/60)+" ชม. ":""}${r.early_min%60} นาที · ระบบจะบันทึกเป็น "ออกก่อนเวลา"</span>${fl("er","เหตุผลที่ออกก่อนเวลา *",`<textarea class="ta" id="er" placeholder="เช่น ลาครึ่งบ่าย · ไปหน้างานต่อ · ป่วยกลับบ้าน"></textarea><span class="emsg" id="er-e" hidden>กรุณาระบุเหตุผลก่อนลงเวลาออก (หัวหน้าจะเห็นเหตุผลนี้)</span>`)}<button class="btn pri" data-earlyok disabled>ลงเวลาออกตอนนี้</button><button class="btn out" data-dclose>ยังไม่ออก · กลับ</button>`);
+  const x=$("#er"),ok=$("[data-earlyok]");x.oninput=()=>{ok.disabled=!x.value.trim();if(x.value.trim()){x.classList.remove("err");$("#er-e").hidden=true}};setTimeout(()=>x.focus(),300)}
+function doClock(kind,t,early){const n=$("#cn"),note=n?n.value.trim():"",p=S.pos;{const d={clock:kind};
     t.disabled=true;const old=t.innerHTML;t.innerHTML='<span class="spin"></span>กำลังบันทึก…';
-    api("clock",d.clock,p.lat,p.lng,p.acc,note,devInfo(),d.clock==="in"?S.shift||"":"").then(r=>{
+    api("clock",d.clock,p.lat,p.lng,p.acc,note,devInfo(),d.clock==="in"?S.shift||"":"",early||"").then(r=>{
+      if(!r.ok&&r.need_early_note){t.disabled=false;t.innerHTML=old;earlySheet(r);return}
       if(!r.ok&&r.need_shift){t.disabled=false;t.innerHTML=old;toast("เลือกกะการทำงานก่อนลงเวลา");return}
       if(!r.ok&&(r.device_pending||r.device_blocked)){t.disabled=false;t.innerHTML=old;S.devmsg=r;S.stack[S.stack.length-1]="devwait";show("fade");return}
       if(!r.ok&&r.need_note){t.disabled=false;t.innerHTML=old;n.classList.add("err");const er=$("#cn-e");er.hidden=false;er.textContent="อยู่นอกพื้นที่"+(r.target?" (ห่าง "+r.target+" "+fmtDist(r.distance_m)+")":"")+" กรุณาระบุเหตุผล";n.focus();return}
@@ -780,9 +800,7 @@ document.addEventListener("click",e=>{const t=e.target.closest("button,[data-dcl
       if(CFG.backup&&DOWN_RE.test(err.message)){t.innerHTML='<span class="spin"></span>ระบบหลักขัดข้อง · กำลังบันทึกสำรอง…';
         return backupClock(d.clock,p,note,d.clock==="in"?S.shift||"":"").then(r=>{S.last={ok:true,backup:true,time:r.time,kind:r.kind,location:"บันทึกสำรอง (รอนำเข้า)",in_area:true,lat:p.lat,lng:p.lng};S.stack[S.stack.length-1]="done";show("fade")})
           .catch(e2=>{t.disabled=false;t.innerHTML=old;toast(e2.message)})}
-      t.disabled=false;t.innerHTML=old;toast(err.message)});return}
-  if(d.ptab){S.ptab=+d.ptab;repaint();return}
-});
+      t.disabled=false;t.innerHTML=old;toast(err.message)})}}
 document.addEventListener("change",e=>{const id=e.target.id;
   if(id==="wy"||id==="wm"){S.wym=`${$("#wy").value}-${p2($("#wm").value)}`;S.wdata=null;repaint();onEnter()}});
 document.addEventListener("input",e=>{if(e.target.classList.contains("err")){e.target.classList.remove("err");const er=$("#"+e.target.id+"-e");if(er)er.hidden=true}});
