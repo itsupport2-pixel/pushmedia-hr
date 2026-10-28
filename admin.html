@@ -126,7 +126,10 @@ td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:middle}tr
 .brand .mk{width:30px;height:30px;color:#fff;display:grid;place-items:center}.brand .mk svg{width:30px;height:30px}
 .side a svg{width:17px;height:17px;flex:none}.side a .soon{margin-left:auto;font-size:10.5px;color:var(--fnt);white-space:nowrap}
 .crumb{font-size:12px;color:var(--fnt)}
-.grid{display:grid;gap:14px}.g5{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}.g4{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.grid{display:grid;gap:14px}.g5{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.g6{grid-template-columns:repeat(6,minmax(0,1fr))}@media(max-width:1300px){.g6{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:700px){.g6{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.kv2{display:flex;align-items:baseline;gap:5px;flex-wrap:nowrap;white-space:nowrap;min-width:0}.kv2 b{font-weight:700;font-size:26px}.kv2 b.warn{color:var(--warn)}.kv2 b.bad{color:var(--bad)}.kv2 b.info{color:#2a4fd6}.kv2 b.mut{color:var(--fnt)}.kv2 small{font-size:12.5px;font-weight:600;color:var(--mut)}.kv2 b.warn+small{color:var(--warn)}.kv2 b.bad+small{color:var(--bad)}.kv2 i{width:1px;height:24px;background:var(--line);margin:0 5px;align-self:center;flex:none}.kv2 small{font-size:12px!important}
+.kpi.t-info .kh i{background:#EEF2FD;color:#2a4fd6}.g4{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
 .g2{grid-template-columns:repeat(auto-fit,minmax(340px,1fr))}.g3-1{grid-template-columns:minmax(0,2fr) minmax(0,1fr)}@media(max-width:1000px){.g3-1{grid-template-columns:1fr}}
 .kpi{padding:14px 16px;display:flex;flex-direction:column;gap:2px;text-align:left;border:1px solid var(--line);background:var(--sf);border-radius:var(--r);min-width:0}
 button.kpi:hover{border-color:var(--fnt)}.kpi .l{color:var(--mut);font-size:13px}.kpi .v{font-size:28px;font-weight:600;line-height:1.25}.kpi .v.warn{color:var(--warn)}.kpi .v.bad{color:var(--bad)}.kpi .v.ok{color:var(--ok)}.kpi .d{font-size:12px;color:var(--fnt)}
@@ -1073,12 +1076,17 @@ function drawDash(){if(!$('#db-body'))return;var d=A.db,k=d.kpi,dt=new Date(d.da
   var kpi=function(go,icn,l,v,sub,tone){return '<button class="kpi'+(tone?' t-'+tone:'')+'" data-go="'+go+'"><span class="kh"><i>'+ic(icn)+'</i><span class="l">'+l+'</span></span><span class="v num">'+v+'</span><span class="d">'+sub+'</span></button>'};
   var SEV={bad:['clockx','#FCE8E6','#C0392B'],warn:['alarm','#FFF3DC','#B26A00']},mine=A.d.me.id!=='admin';
   var tr=d.trend.length?'<div class="bars2">'+d.trend.map(function(t,i){var last=i===d.trend.length-1,dd=new Date(t.date+'T12:00:00');return '<div class="bc'+(last?' hi':'')+'" title="'+t.date+' · '+t.pct+'%"><span>'+t.pct+'%</span><i style="height:calc((100% - 44px) * '+(Math.max(3,t.pct)/100)+')"></i><em>'+dd.getDate()+' '+TM[dd.getMonth()]+'</em></div>'}).join('')+'</div><div class="faint" style="font-size:12px;margin-top:10px">ล่าสุด '+d.trend[d.trend.length-1].pct+'%'+(d.trend[d.trend.length-1].live?' (วันนี้ · ยังลงเวลาไม่ครบ)':'')+' · เข้างานวันนี้ '+k.present+' จาก '+k.expected+' คน</div>':'<div class="muted">ยังไม่มีข้อมูลสรุปรายวัน (ระบบสรุปทุกคืน 23:30)</div>';
-  $('#db-body').innerHTML='<div class="grid g5">'+
+  /* แบบ C (Figma 03 · 6 ใบ): รวม "มาสาย" + "ยังไม่ลงเวลา" เป็น "ต้องติดตามวันนี้" · เพิ่มลาวันนี้ + วันหยุดถัดไป */
+  var two=function(a,al,b,bl,ca,cb){return '<span class="kv2"><b class="'+ca+'">'+a+'</b><small>'+al+'</small><i></i><b class="'+cb+'">'+b+'</b><small>'+bl+'</small></span>'};
+  var lt=(k.leaveTypes||[]).map(function(x){return x.name.replace(/^ลา/,'')+' '+x.n}).join(' · '),nh=k.nextHoliday,pk=k.pendingKinds||{};
+  var follow=(k.late||0)+(k.absent||0);
+  $('#db-body').innerHTML='<div class="grid g6">'+
     kpi('list','emp','พนักงานทั้งหมด',k.total,'ทดลองงาน '+k.probation+' · ลาระยะยาว '+k.longLeave)+
     kpi('att','clock','เข้างานวันนี้',k.present+' / '+k.expected,pct(k.present,k.expected)+'% · ลา '+k.leaveToday+' คน','ok')+
-    kpi('att','alarm','มาสาย',k.late,k.late?'เฉลี่ย '+k.lateAvg+' นาที':'ไม่มีคนมาสาย',k.late?'warn':'')+
-    kpi('att','clockx','ยังไม่ลงเวลา / ลืมลงเวลา',k.absent+' / '+k.missing,'ต้องตรวจสอบ',k.absent||k.missing?'bad':'')+
-    kpi('appr','check','รออนุมัติ',k.pending,'คำขอที่รอคุณ')+'</div>'+
+    kpi('att','clockx','ต้องติดตามวันนี้',two(k.late||0,'มาสาย',k.absent||0,'ยังไม่ลงเวลา','warn','bad'),follow?'กดเพื่อดูรายชื่อ':'ทุกคนลงเวลาแล้ว',follow?'bad':'ok')+
+    kpi('lv','leave','ลาวันนี้',two(k.leaveToday||0,'',(k.leaveAhead?'+'+k.leaveAhead:'0'),'ล่วงหน้า 7 วัน','info','mut'),lt||'ไม่มีคนลาวันนี้','info')+
+    kpi('set','cal','วันหยุดถัดไป',nh?(+nh.date.slice(8,10))+' '+TM[+nh.date.slice(5,7)-1]:'—',nh?esc(nh.name)+' · '+(nh.days?'อีก '+nh.days+' วัน':'วันนี้'):'ยังไม่มีวันหยุดที่กำหนด')+
+    kpi('appr','check','รออนุมัติ',k.pending,(pk.leave||pk.line||pk.device)?['ลา '+(pk.leave||0),'เชื่อม LINE '+(pk.line||0)].concat(pk.device?['เครื่องใหม่ '+pk.device]:[]).join(' · '):'ไม่มีคำขอค้าง')+'</div>'+
    '<div class="grid '+(mine?'g-side':'')+'" style="margin-top:14px"><section class="card"><div class="ch"><h3>อัตราเข้างาน '+d.trend.length+' วันล่าสุด</h3><span class="sp"></span><button class="btn sm" data-go="att">ลงเวลาวันนี้</button></div><div class="cb">'+tr+'</div></section>'+
     (mine?'<section class="card mine"><div class="ch"><h3>ของฉัน</h3><span class="sp"></span>'+(A.d.me.role!=='exec'?'<button class="btn sm" data-go="profile" data-id="'+esc(A.d.me.id)+'">ข้อมูลพนักงาน</button>':'')+'</div><div class="cb" id="db-mine"><div class="who2"><span class="av" data-av="'+esc(A.d.me.id)+'" style="width:52px;height:52px">'+esc((A.d.me.nickname||A.d.me.name||'?').slice(0,1))+'</span><div><b style="font-size:15px">'+esc(A.d.me.name)+(A.d.me.nickname?' ('+esc(A.d.me.nickname)+')':'')+'</b><div class="muted" style="font-size:12.5px">รหัส '+esc(A.d.me.code||'-')+' · '+esc(ROLE[A.d.me.role]||A.d.me.role)+'</div></div></div><div id="db-quota" class="faint" style="font-size:13px">กำลังโหลดโควตาการลา…</div></div></section>':'')+'</div>'+
    '<div class="grid g-side" style="margin-top:14px"><section class="card"><div class="ch"><h3>คำขอรออนุมัติ'+(d.pending.length?' ('+k.pending+')':'')+'</h3><span class="sp"></span><button class="btn sm" data-go="appr">ศูนย์อนุมัติ</button></div><div class="list">'+
