@@ -2675,20 +2675,6 @@ function _pctChange(cur, prev) {
 
 
 
-function dailyCostForDate(task, ds) {
-  var mc = taskMembersOn(task, ds).length || 0;
-  var c = 0;
-  if (mc) {
-    if (isHolStrict(ds))    c += HOL_BONUS  * mc;
-    if (task.isProvince)    c += PROV_BONUS * mc;
-  }
-  
-  var startStr = _normDateStr(task.start);
-  if (startStr && ds === startStr) {
-    c += (task.dailyWorkers||[]).reduce(function(s,w){ return s+(w.wage||0); }, 0);
-  }
-  return c;
-}
 
 
 
@@ -3603,50 +3589,6 @@ function renderGantt() {
 
   
   
-  function _hexToHsl(hex) {
-    hex = String(hex||'#94A3B8').replace('#','');
-    if (hex.length===3) hex = hex.split('').map(function(c){return c+c;}).join('');
-    var r = parseInt(hex.substr(0,2),16)/255, g = parseInt(hex.substr(2,2),16)/255, b = parseInt(hex.substr(4,2),16)/255;
-    var max=Math.max(r,g,b), min=Math.min(r,g,b), h=0,s=0,l=(max+min)/2;
-    if (max!==min) {
-      var d=max-min;
-      s = l>0.5 ? d/(2-max-min) : d/(max+min);
-      if (max===r) h=(g-b)/d+(g<b?6:0);
-      else if (max===g) h=(b-r)/d+2;
-      else h=(r-g)/d+4;
-      h/=6;
-    }
-    return [h*360, s*100, l*100];
-  }
-  function _hslToHex(h,s,l) {
-    s/=100; l/=100;
-    var c=(1-Math.abs(2*l-1))*s, x=c*(1-Math.abs((h/60)%2-1)), m=l-c/2, r,g,b;
-    if(h<60){r=c;g=x;b=0;} else if(h<120){r=x;g=c;b=0;} else if(h<180){r=0;g=c;b=x;}
-    else if(h<240){r=0;g=x;b=c;} else if(h<300){r=x;g=0;b=c;} else {r=c;g=0;b=x;}
-    function toHex(v){ var s=Math.round((v+m)*255).toString(16); return s.length<2?'0'+s:s; }
-    return '#'+toHex(r)+toHex(g)+toHex(b);
-  }
-  function _strHash(s) {
-    var h=0; s=String(s||'');
-    for (var i=0;i<s.length;i++) { h = (h<<5)-h + s.charCodeAt(i); h|=0; }
-    return Math.abs(h);
-  }
-  function ganttBarColor(t) {
-    var dept = dOfN(t.deptName);
-    var base = dept ? dept.color : '#94A3B8';
-    var hsl  = _hexToHsl(base);
-    var offset = (_strHash(t.teamName) % 7) - 3; 
-    var l = Math.min(66, Math.max(30, hsl[2] + offset*6));
-    return _hslToHex(hsl[0], hsl[1], l);
-  }
-  function progPct(t) {
-    var ts=_normDateStr(t.start), te=_normDateStr(t.end||t.start);
-    if(!ts||!te) return 0;
-    var s=new Date(ts+'T00:00:00'), e=new Date(te+'T00:00:00');
-    var total=Math.round((e-s)/86400000)+1;
-    var elapsed=Math.round((today-s)/86400000);
-    return Math.min(100,Math.max(0,Math.round(elapsed/total*100)));
-  }
 
   
   var SCHED_GANTT_DEPTS = ['LED','Digital Signage & Retail','Business Development'];
@@ -4246,11 +4188,6 @@ function _drpRenderCals() {
   });
 }
 
-function _fmtDateSlash(ds) {
-  if (!ds) return '';
-  var p = ds.split('-');
-  return p[2]+'/'+p[1]+'/'+p[0];
-}
 
 
 function _drpInputChange(which, ds) {
@@ -4914,11 +4851,6 @@ function _xdActions(c, p, named) {
 }
 
 // ข้อความสรุป "ตำแหน่งอื่นๆ" ที่ถูกลงตารางงาน (ไม่นับรวมในตัวชี้วัด)
-function _xdOtherText(c) {
-  var o = c.other; if (!o || !o.pd) return '';
-  var ppl = o.byPos.reduce(function(s, x){ return s + x.n; }, 0);  // ใช้ในข้อความสรุป
-  return ppl + ' คน · ลงงาน ' + o.pd + ' ครั้ง' + (o.cost ? ' · ค่าใช้จ่ายพิเศษ ' + Math.round(o.cost).toLocaleString('th-TH') + '฿' : '') + ' · ' + o.byPos.map(function(x){ return x.pos + ' ' + x.n; }).join(', ');
-}
 function _xdOtherRow(c) {
   var o = c.other; if (!o || !o.pd) return '';
   var fm = function(n){ return Math.round(n).toLocaleString('th-TH'); };
@@ -7538,14 +7470,6 @@ function renderPlannerList() {
     }
   }
 
-  function emptySiteCell(deptName, tname, ds) {
-    return mkCell(
-      '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--line);font-size:11px;" onmouseover="this.style.color=\'var(--teal)\'" onmouseout="this.style.color=\'var(--line)\'">+ เพิ่มงาน</div>',
-      'padding:0;cursor:pointer;background:var(--bg);',
-      deptName ? 'rpQuickAdd(\''+deptName.replace(/'/g,"\\'")+'\',\''+tname.replace(/'/g,"\\'")+'\',\''+ds+'\')' : '',
-      'คลิกเพื่อเพิ่มงาน'
-    );
-  }
 
   var sections = dates.map(function(d) {
     var ds      = _localDateStr(d);
@@ -10174,7 +10098,6 @@ function _pickTitleSuggest(title, inputId, boxId) {
 }
 // ชื่อเดิม (ใช้กับฟอร์มสร้างงานใหม่) เก็บไว้เพื่อไม่ต้องแก้ markup ที่มีอยู่แล้ว
 function crTitleSuggest(q) { _titleSuggest(q, 'f-tit', 'f-tit-suggest'); }
-function crPickTitleSuggest(title) { _pickTitleSuggest(title, 'f-tit', 'f-tit-suggest'); }
 
 function crUpdTeams() {
   const dname = document.getElementById('f-dep').value;
@@ -13445,9 +13368,6 @@ function _startRealtimePoll() {
   if (_pollTimer) return;
   var _iv = (window.isMobileMode && window.isMobileMode()) ? 30000 : _pollInterval;  // มือถือ poll ช้าลง (30s) ลดโหลด
   _pollTimer = setInterval(_pollForChanges, _iv);
-}
-function _stopRealtimePoll() {
-  if (_pollTimer) { clearInterval(_pollTimer); _pollTimer = null; }
 }
 async function _pollForChanges() {
   if (!CONFIG.GAS_URL || !DB.cu) return; 
