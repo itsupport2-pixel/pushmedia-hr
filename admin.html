@@ -585,11 +585,12 @@ var SAM={S938:'S25 Ultra',S936:'S25+',S931:'S25',S928:'S24 Ultra',S926:'S24+',S9
   F956:'Z Fold6',F946:'Z Fold5',F936:'Z Fold4',F741:'Z Flip6',F731:'Z Flip5',F721:'Z Flip4',A566:'A56',A556:'A55',A546:'A54',A536:'A53',A366:'A36',A356:'A35',A346:'A34',A336:'A33',A266:'A26',A256:'A25',A245:'A24',A166:'A16 5G',A165:'A16',A156:'A15 5G',A155:'A15',A146:'A14 5G',A145:'A14',A057:'A05s',A055:'A05'};
 function devModel(c){var m;c=String(c||'').trim();if(m=/^SM-([A-Z]\d{3})/i.exec(c))return SAM[m[1].toUpperCase()]?'Samsung Galaxy '+SAM[m[1].toUpperCase()]:'Samsung '+c;
   if(/^RMX\d/i.test(c))return 'realme '+c;if(/^CPH\d/i.test(c))return 'OPPO '+c;if(/^V\d{4}/i.test(c))return 'vivo '+c;return c}
-function devName(label){var m,l=String(label||'').replace(/ · เครื่องใหม่$/,'');
-  if(m=/^(iPhone|iPad) · (iOS|iPadOS) ([\d.]+)/.exec(l))return m[1]+' ('+m[2]+' '+m[3]+')';
-  if(m=/^Android ([\d.]+) · (.+)$/.exec(l))return devModel(m[2])+' (Android '+m[1]+')';return l}
+/* สั้น (28 ต.ค. 2569 ผู้ใช้ขอ): ชื่อรุ่นอย่างเดียว ไม่มียี่ห้อ Samsung/เวอร์ชันระบบ · os = เวอร์ชันระบบไว้ใส่ป้ายชี้เมาส์ */
+function devName(label,os){var m,l=String(label||'').replace(/ · เครื่องใหม่$/,'');
+  if(m=/^(iPhone|iPad) · (iOS|iPadOS) ([\d.]+)/.exec(l))return os?m[2]+' '+m[3]:m[1];
+  if(m=/^Android ([\d.]+) · (.+)$/.exec(l))return os?'Android '+m[1]:devModel(m[2]).replace(/^Samsung (Galaxy )?/,'Galaxy ');return os?'':l}
 /* "ป้าย · รหัสเครื่อง 8 หลัก" → ชื่อที่อ่านง่าย + รหัสในป้ายชี้เมาส์ */
-function devHtml(s){var p=String(s||'').replace(/ · เครื่องใหม่/,'').split(' · '),id=/^[0-9a-f]{6,12}$/i.test(p[p.length-1])?p.pop():'';return '<span'+(id?' data-tip="รหัสเครื่อง '+esc(id)+'"':'')+'>'+(/^(Mac|Windows)/.test(p[0])?'💻 ':'📱 ')+esc(devName(p.join(' · ')))+'</span>'}
+function devHtml(s){var p=String(s||'').replace(/ · เครื่องใหม่/,'').split(' · '),id=/^[0-9a-f]{6,12}$/i.test(p[p.length-1])?p.pop():'',os=devName(p.join(' · '),1),tip=[os,id?'รหัสเครื่อง '+id:''].filter(String).join(' · ');return '<span'+(tip?' data-tip="'+esc(tip)+'"':'')+'>'+(/^(Mac|Windows)/.test(p[0])?'💻 ':'📱 ')+esc(devName(p.join(' · ')))+'</span>'}
 function store(k,v){try{if(v===undefined)return JSON.parse(localStorage.getItem(k)||'null');if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,JSON.stringify(v))}catch(e){return null}}
 /* เครือข่ายสะดุด (fetch โยน TypeError "Failed to fetch") → คำสั่งอ่านอย่างเดียวลองใหม่เอง 1 ครั้ง · คำสั่งบันทึกไม่ลองซ้ำ (กันบันทึกซ้ำ) */
 var READ_FN=/^(list|get|empOverview|attendanceToday|dayRecords|hrDashboard|approvalCenter|approvalsList|leaveAdminList|leaveInfo|leaveDetail|adminBootstrap|auditList|perfStats|photosFor|publicInfo|schedSettings|schedTeamsGet|scheduleWeek|myProfile|myAttendance|todayInfo)/;
