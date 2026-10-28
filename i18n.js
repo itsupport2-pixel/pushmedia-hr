@@ -57,6 +57,8 @@
     'ไม่มีคนมาสาย': 'No one late', 'ยังไม่ลงเวลา': 'Not clocked in', 'ลืมลงเวลา': 'Missed clock-out', 'ต้องตรวจสอบ': 'Needs review', 'รออนุมัติ': 'Pending', 'คำขอที่รอคุณ': 'Waiting for you',
     'อัตราเข้างาน': 'Attendance rate', 'วันล่าสุด': 'latest days', 'ลงเวลาวันนี้': "Today's attendance", 'ยังลงเวลาไม่ครบ': 'not everyone has clocked in', 'ยังไม่มีข้อมูลสรุปรายวัน': 'No daily summary yet',
     'ระบบสรุปทุกคืน': 'summarized nightly', 'ข้อมูลพนักงาน': 'Employee info', 'รวมที่รออนุมัติ': 'incl. pending', 'โหลดโควตาไม่สำเร็จ': 'Could not load quota', 'กำลังโหลดโควตาการลา': 'Loading leave quota',
+    'ลาวันนี้': 'On leave today', 'ล่วงหน้า 7 วัน': 'next 7 days', 'ไม่มีคนลาวันนี้': 'No one on leave today', 'กดเพื่อดูรายชื่อ': 'Click to see names',   // การ์ด Dashboard แบบ C (28 ต.ค.)
+    'ทุกคนลงเวลาแล้ว': 'Everyone has clocked in', 'ไม่มีคำขอค้าง': 'No pending requests',
     'ไม่มีคำขอรออนุมัติ': 'No pending requests', 'รายการผิดปกติวันนี้': "Today's exceptions", 'ไม่มีรายการผิดปกติวันนี้': 'No exceptions today', 'กำลังคนวันนี้ตามแผนก': "Today's staffing by department",
     'ยังไม่มีพนักงาน': 'No employees yet', 'ขอบเขตข้อมูล': 'Data scope', 'อัปเดต': 'Updated', 'คนในทีม': 'Team members', 'คนในแผนก': 'Department members', 'รอคุณอนุมัติ': 'Awaiting your approval',
     'คำขอของ': 'requests from', 'ทีมวันนี้': 'Team today', 'งานของทีมวันนี้': "Team's jobs today", 'ไม่มีงานในตารางวันนี้': 'No scheduled jobs today', 'ลาของทีม': 'Team leave', 'วันข้างหน้า': 'days ahead',
