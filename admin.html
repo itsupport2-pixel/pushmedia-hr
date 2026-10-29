@@ -18,7 +18,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js" charset="utf-8"></script>
 <script src="config.js"></script>
-<script src="i18n.js?v=202610290959"></script>
+<script src="i18n.js?v=202610291056"></script>
 <style>
 /* สี Push Media ขาว–ดำ ตามโลโก้ (22 ต.ค. 2569) · สีสถานะ ok/warn/bad คงไว้ */
 :root{--nav:#0B0B0B;--nav2:#1F1F1F;--nav-ink:#C8C8C8;--acc:#111111;--acc-soft:#EDEDED;--bg:#F4F4F4;--sf:#FFFFFF;--sf2:#F8F8F8;--line:#E3E3E3;
@@ -1174,17 +1174,18 @@ var PSL={ch:{},q:'',none:false};
 function pySal(force){if(!force&&PY.prof)return pySalDraw();pyBody('<div class="loading"><span class="spin"></span>กำลังโหลด…</div>');aCall('payProfiles').then(function(r){PY.prof=r;pySalDraw()}).catch(pyErr)}
 function pySalDraw(){var ed=PY.bs.canEdit,T=PY.bs.types,TM=PY.bs.taxModes,ch=PSL.ch,q=PSL.q.trim().toLowerCase(),wr=PY.bs.cfg.pay_wht_rate||3;
   var all=PY.prof.slice().sort(function(a,b){return a.code<b.code?-1:1}),rows=all.filter(function(p){return (!q||(p.code+' '+p.name+' '+p.nickname+' '+p.dept+' '+(p.position||'')).toLowerCase().indexOf(q)>=0)&&ofOk('ps',p.dept,p.team)&&(!PSL.none||!p.base_salary)});
-  var v=function(p,k){var c=ch[p.employee_id];return c&&k in c?c[k]:(k==='base_salary'?(p.base_salary?String(p.base_salary):''):k==='tax_value'?(p.tax_value?String(p.tax_value):''):(p[k]||''))};
+  var v=function(p,k){var c=ch[p.employee_id];return c&&k in c?c[k]:(k==='base_salary'||k==='fuel_amt'?(p[k]?String(p[k]):''):k==='tax_value'?(p.tax_value?String(p.tax_value):''):(p[k]||''))};
   var dt=function(p,k){var c=ch[p.employee_id];return c&&k in c?' dirty':''};
   var fmt=function(x){var n=Number(String(x).replace(/,/g,''));return x===''||isNaN(n)?x:n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})};
   var n=Object.keys(ch).reduce(function(s,k){return s+Object.keys(ch[k]).length},0),dis=ed?'':' disabled';
   pyBody('<section class="card"><div class="ch" style="gap:8px;flex-wrap:wrap">'+pySearch('ps-q',PSL.q,'ค้นหาชื่อ ชื่อเล่น รหัส ตำแหน่ง')+ofSel('ps',1)+'<label class="chk"><input type="checkbox" id="ps-n"'+(PSL.none?' checked':'')+'> ยังไม่มีฐานเงินเดือน ('+all.filter(function(p){return !p.base_salary}).length+')</label></div>'+
    '<div class="note-b" style="margin:0 16px 12px">ภาษีที่ตั้งไว้หักอัตโนมัติในคอลัมน์ "หัก ณ ที่จ่าย" ของงวด · ภ.ง.ด.1 คงที่ = บาท/เดือน · ภ.ง.ด.1 % = % ของรายได้ที่คิดภาษี · ภ.ง.ด.3 = '+wr+'% (รวม / ไม่รวมเงินเดือน)</div>'+
-   '<div class="ps-w"><table class="ps-t"><thead><tr><th class="ps-n">พนักงาน</th><th>ตำแหน่ง</th><th>ประเภทการจ้าง</th><th class="r">ฐานเงินเดือน (บาท)</th><th>ประกันสังคม</th><th>ภาษี</th><th class="r">จำนวนภาษีคงที่ต่อเดือน /<br>% ภาษีของรายได้</th><th>เลขประจำตัวประชาชน</th><th>บัญชีธนาคาร</th></tr></thead><tbody>'+
+   '<div class="ps-w"><table class="ps-t"><thead><tr><th class="ps-n">พนักงาน</th><th>ตำแหน่ง</th><th>ประเภทการจ้าง</th><th class="r">ฐานเงินเดือน (บาท)</th><th class="r" title="รายรับประจำทุกงวด เฉพาะคนที่ได้ · ยอดขึ้นในงวดเงินเดือนคอลัมน์ ค่าครองชีพ / ค่าสวัสดิการอื่น ประจำเดือน (อยู่ใน ภงด 1)">ค่าน้ำมันและ<br>ค่าสึกหรอรถยนต์</th><th>ประกันสังคม</th><th>ภาษี</th><th class="r">จำนวนภาษีคงที่ต่อเดือน /<br>% ภาษีของรายได้</th><th>เลขประจำตัวประชาชน</th><th>บัญชีธนาคาร</th></tr></thead><tbody>'+
    rows.map(function(p){var id=p.employee_id,ty=v(p,'pay_type')||'employee',tm=v(p,'tax_mode'),useV=tm==='p1_fixed'||tm==='p1_pct',sso=ty==='employee';
      return '<tr><td class="ps-n"><b>'+esc(p.name)+'</b><small>'+esc(p.code)+(p.nickname?' · '+esc(p.nickname):'')+'</small></td><td><span class="ps-pos">'+esc(p.position||'—')+'</span><small>'+esc(p.dept||'')+'</small></td>'+
        '<td><select class="ps-in'+dt(p,'pay_type')+'" data-ps="'+id+'|pay_type"'+dis+'>'+Object.keys(T).map(function(k){return '<option value="'+k+'"'+(ty===k?' selected':'')+'>'+esc(T[k])+'</option>'}).join('')+'</select></td>'+
        '<td class="r"><input class="ps-in r'+dt(p,'base_salary')+'" data-ps="'+id+'|base_salary" inputmode="decimal" value="'+esc(fmt(v(p,'base_salary')))+'" placeholder="ยังไม่มี"'+dis+'></td>'+
+       '<td class="r"><input class="ps-in r'+dt(p,'fuel_amt')+'" data-ps="'+id+'|fuel_amt" inputmode="decimal" value="'+esc(fmt(v(p,'fuel_amt')))+'" placeholder="—"'+dis+'></td>'+
        '<td><span class="badge '+(sso?'b-ok':'b-mute')+'">'+(sso?'คิดตามฐานเงินเดือนจริง':'ไม่คิดประกันสังคม')+'</span></td>'+
        '<td><select class="ps-in ps-tax'+dt(p,'tax_mode')+'" data-ps="'+id+'|tax_mode"'+dis+'>'+Object.keys(TM).map(function(k){return '<option value="'+k+'"'+(tm===k?' selected':'')+'>'+esc(TM[k])+'</option>'}).join('')+'</select></td>'+
        '<td class="r"><input class="ps-in r'+dt(p,'tax_value')+'" data-ps="'+id+'|tax_value" inputmode="decimal" value="'+esc(useV?fmt(v(p,'tax_value')):'')+'" placeholder="'+(tm==='p1_fixed'?'บาท / เดือน':tm==='p1_pct'?'%':'ใส่ยอด หรือ %')+'"'+(ed?'':' disabled')+'></td>'+
@@ -1193,9 +1194,9 @@ function pySalDraw(){var ed=PY.bs.canEdit,T=PY.bs.types,TM=PY.bs.taxModes,ch=PSL
    '<div class="faint" style="font-size:12px;padding:10px 14px">'+rows.length+' คน · เลขประจำตัวประชาชน / ที่อยู่ แก้ที่แท็บ ข้อมูลรายคน · เลขบัญชีแก้ที่ ข้อมูลพนักงาน</div></section>');
   $('#ps-q').oninput=function(){PSL.q=this.value;var c=this.selectionStart;pySalDraw();var i=$('#ps-q');i.focus();i.setSelectionRange(c,c)};$('#ps-n').onchange=function(){PSL.none=this.checked;pySalDraw()};ofBind('ps',pySalDraw,1);
   if(!ed)return;
-  var orig=function(p,k){return k==='base_salary'?(p.base_salary?String(p.base_salary):''):k==='tax_value'?(p.tax_value?String(p.tax_value):''):(p[k]||(k==='pay_type'?'employee':''))};
+  var orig=function(p,k){return k==='base_salary'||k==='fuel_amt'?(p[k]?String(p[k]):''):k==='tax_value'?(p.tax_value?String(p.tax_value):''):(p[k]||(k==='pay_type'?'employee':''))};
   var put=function(el){var x=el.dataset.ps.split('|'),p=PY.prof.filter(function(r){return r.employee_id===x[0]})[0],o=orig(p,x[1]),val=String(el.value).replace(/[,\s฿%]/g,'');
-    if(x[1]==='base_salary'||x[1]==='tax_value'){if(val!==''&&Number(val)===Number(o))val=o}
+    if(x[1]==='base_salary'||x[1]==='tax_value'||x[1]==='fuel_amt'){if(val!==''&&Number(val)===Number(o))val=o;if(x[1]==='fuel_amt'&&val!==''&&Number(val)===0&&o==='')val=''}
     if(val===o){if(ch[x[0]]){delete ch[x[0]][x[1]];if(!Object.keys(ch[x[0]]).length)delete ch[x[0]]}}else (ch[x[0]]=ch[x[0]]||{})[x[1]]=val;
     /* ใส่ยอดภาษีเอง (28 ต.ค. 2569 ผู้ใช้ขอ): ช่องนี้กรอกได้ทุกแถว · วิธีภาษีที่ไม่ใช้ยอด → เปลี่ยนเป็น ภ.ง.ด.1 คงที่ (หรือ % ถ้าพิมพ์ %) ให้เอง · ลบยอดออก → กลับเป็นวิธีเดิม */
     if(x[1]==='tax_value'){var c=ch[x[0]]||{},m0=orig(p,'tax_mode'),m=('tax_mode' in c)?c.tax_mode:m0,raw=String(el.value);
@@ -2730,8 +2731,8 @@ function orgForm(r){var t=A.otab,def=OT[t];r=r||{};
 boot();
 })();
 </script>
-<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610290959 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
-(function(){var B='202610290959';if(!/^\d{12}$/.test(B))return;var shown=0;
+<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610291056 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
+(function(){var B='202610291056';if(!/^\d{12}$/.test(B))return;var shown=0;
   function chk(){if(shown||document.hidden)return;fetch('build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=String(t||'').trim();if(!/^\d{12}$/.test(t)||t<=B)return;shown=1;
     var d=document.createElement('div');d.setAttribute('role','status');d.style.cssText='position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:99999;background:#141414;color:#fff;border-radius:999px;padding:8px 8px 8px 18px;display:flex;gap:12px;align-items:center;font:14px "IBM Plex Sans Thai",sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25)';
     d.innerHTML='<span>มีเวอร์ชันใหม่ของระบบ</span><button type="button" style="border:0;border-radius:999px;background:#fff;color:#141414;padding:6px 14px;font:inherit;font-weight:600;cursor:pointer">โหลดใหม่</button>';
