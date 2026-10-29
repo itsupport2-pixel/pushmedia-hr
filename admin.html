@@ -18,7 +18,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js" charset="utf-8"></script>
 <script src="config.js"></script>
-<script src="i18n.js?v=202610291639"></script>
+<script src="i18n.js?v=202610291649"></script>
 <style>
 /* สี Push Media ขาว–ดำ ตามโลโก้ (22 ต.ค. 2569) · สีสถานะ ok/warn/bad คงไว้ */
 :root{--nav:#0B0B0B;--nav2:#1F1F1F;--nav-ink:#C8C8C8;--acc:#111111;--acc-soft:#EDEDED;--bg:#F4F4F4;--sf:#FFFFFF;--sf2:#F8F8F8;--line:#E3E3E3;
@@ -1429,12 +1429,13 @@ function pyCfg(){var c=PY.bs.cfg,ed=PY.bs.canEdit,adm=A.d.me.role==='admin',dis=
   var codes=function(ids){var m={};(PY.prof||[]).forEach(function(p){m[p.employee_id]=p.code});return String(ids||'').split(',').filter(String).map(function(i){return m[i]||i}).join(', ')};
   var draw=function(){pyBody('<section class="card" style="max-width:920px"><div class="ch"><h3>ตั้งค่าเงินเดือน</h3></div><div class="cb"><div class="dfg" style="grid-template-columns:repeat(2,minmax(0,1fr))">'+F.map(function(f){return '<label class="f" id="w-'+f[0]+'"><span>'+f[1]+'</span>'+(f[0]==='pay_welfare_from'?mpBtn('pc-wf',c[f[0]],{attr:'data-pc="pay_welfare_from"',disabled:!ed}):'<input data-pc="'+f[0]+'" value="'+esc(c[f[0]])+'"'+dis+'>')+(f[2]?'<small class="faint">'+esc(f[2])+'</small>':'')+'</label>'}).join('')+'</div>'+
     '<h4 style="margin:18px 0 6px">สิทธิ์ (เฉพาะผู้ดูแลระบบแก้ได้)</h4><div class="dfg" style="grid-template-columns:repeat(2,minmax(0,1fr))"><div class="f" id="w-pay_access"><span>ฝ่ายบัญชีที่ดูเงินเดือนได้</span>'+pyPick('pc-acc',c.pay_access,adm)+'<small class="faint">ดูได้อย่างเดียว · HR และผู้ดูแลระบบเห็นอยู่แล้ว</small></div>'+
-    '<div class="f" id="w-pay_approvers"><span>ผู้อนุมัติงวดเงินเดือน</span>'+pyPick('pc-apv',c.pay_approvers,adm)+'<small class="faint">ผู้ดูแลระบบอนุมัติได้เสมอ</small></div></div>'+
+    '<div class="f" id="w-pay_approvers"><span>ผู้อนุมัติงวดเงินเดือน</span>'+pyPick('pc-apv',c.pay_approvers,adm)+'<small class="faint">ผู้ดูแลระบบอนุมัติได้เสมอ</small></div>'+
+    '<div class="f" id="w-pay_reopen"><span>ผู้ย้อนงวดได้ (ช่วงทดสอบ)</span>'+pyPick('pc-reo',c.pay_reopen,adm)+'<small class="faint">ย้อนงวดที่ปิดแล้ว / จ่ายแล้ว กลับเป็นร่างได้ (ต้องระบุเหตุผล · บันทึก Audit Log) · ผู้ดูแลระบบย้อนได้เสมอ · HR ย้อนได้เฉพาะงวดที่ปิดแล้วยังไม่จ่าย · เอาออกเมื่อเลิกทดสอบ</small></div></div>'+
     (ed?'<div style="display:flex;justify-content:flex-end;margin-top:14px"><button class="btn pri" id="pc-save">บันทึก</button></div>':'')+'</div></section>');
-    pyPickBind('pc-acc');pyPickBind('pc-apv');loadPhotos();
+    pyPickBind('pc-acc');pyPickBind('pc-apv');pyPickBind('pc-reo');loadPhotos();
     if(!ed)return;$('#pc-save').onclick=function(){var b=this,d={},bad=[];
       $$('[data-pc]').forEach(function(i){if(i.value!==c[i.dataset.pc])d[i.dataset.pc]=i.value});
-      if(adm)[['pay_access','#pc-acc'],['pay_approvers','#pc-apv']].forEach(function(k){var ids=$(k[1]).value;if(ids!==c[k[0]])d[k[0]]=ids});
+      if(adm)[['pay_access','#pc-acc'],['pay_approvers','#pc-apv'],['pay_reopen','#pc-reo']].forEach(function(k){var ids=$(k[1]).value;if(ids!==c[k[0]])d[k[0]]=ids});
       if(bad.length)return toast('ไม่พบรหัสพนักงาน: '+bad.join(', '),1);if(!Object.keys(d).length)return toast('ไม่มีอะไรเปลี่ยน');busy(b,1);
       aCall('paySaveCfg',d).then(function(r){busy(b,0);if(!r.ok){Object.keys(r.errors).forEach(function(k){var l=$('#w-'+k);if(l){l.classList.add('bad');l.insertAdjacentHTML('beforeend','<span class="er">'+esc(r.errors[k])+'</span>')}});return}PY.bs.cfg=r.cfg;c=r.cfg;toast('บันทึกแล้ว · มีผลกับงวดที่คำนวณหลังจากนี้');draw()}).catch(function(e){busy(b,0);toast(e.message,1)})}};
   if(PY.prof)draw();else{pyBody('<div class="loading"><span class="spin"></span>กำลังโหลด…</div>');aCall('payProfiles').then(function(r){PY.prof=r;draw()}).catch(pyErr)}}
@@ -2903,8 +2904,8 @@ function orgForm(r){var t=A.otab,def=OT[t];r=r||{};
 boot();
 })();
 </script>
-<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610291639 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
-(function(){var B='202610291639';if(!/^\d{12}$/.test(B))return;var shown=0;
+<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610291649 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
+(function(){var B='202610291649';if(!/^\d{12}$/.test(B))return;var shown=0;
   function chk(){if(shown||document.hidden)return;fetch('build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=String(t||'').trim();if(!/^\d{12}$/.test(t)||t<=B)return;shown=1;
     var d=document.createElement('div');d.setAttribute('role','status');d.style.cssText='position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:99999;background:#141414;color:#fff;border-radius:999px;padding:8px 8px 8px 18px;display:flex;gap:12px;align-items:center;font:14px "IBM Plex Sans Thai",sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25)';
     d.innerHTML='<span>มีเวอร์ชันใหม่ของระบบ</span><button type="button" style="border:0;border-radius:999px;background:#fff;color:#141414;padding:6px 14px;font:inherit;font-weight:600;cursor:pointer">โหลดใหม่</button>';
