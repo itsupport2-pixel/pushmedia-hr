@@ -18,7 +18,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js" charset="utf-8"></script>
 <script src="config.js"></script>
-<script src="i18n.js?v=202610291351"></script>
+<script src="i18n.js?v=202610291403"></script>
 <style>
 /* สี Push Media ขาว–ดำ ตามโลโก้ (22 ต.ค. 2569) · สีสถานะ ok/warn/bad คงไว้ */
 :root{--nav:#0B0B0B;--nav2:#1F1F1F;--nav-ink:#C8C8C8;--acc:#111111;--acc-soft:#EDEDED;--bg:#F4F4F4;--sf:#FFFFFF;--sf2:#F8F8F8;--line:#E3E3E3;
@@ -624,6 +624,10 @@ body.fo{padding-top:36px}body.fo .tb{top:36px}body.fo .side{top:36px;height:calc
 .pg-t thead tr.pg-sum th{background:#F4F8FE;color:var(--fg);font-weight:700;font-size:12.5px;text-align:right;padding:7px 10px;border-top:1px solid var(--line)}.pg-t thead tr.pg-sum th.pg-n{text-align:left}.pg-t thead tr.pg-sum th.au{background:#EEF3FB}
 .pk[data-one] .pk-s input{width:100%;max-width:420px}
 .mp-in{display:flex;gap:6px;margin-bottom:8px}.mp-in input{flex:1;min-width:0;border:1px solid var(--line);border-radius:8px;padding:6px 10px;font:inherit;font-size:13px}.mp-in input.bad{border-color:var(--bad);background:var(--bad-s)}
+/* ฟอร์มหนี้สิน: ทุกช่องสูงเท่ากัน 44px · คู่ ยอด/ผ่อน และ เริ่มหัก/สถานะ อยู่แถวเดียวกัน (29 ต.ค. 2569) */
+.lnf .f.h{grid-column:span 3}.lnf input,.lnf select,.lnf .mpt,.lnf .pyq,.lnf .pk1-sel{height:44px;min-height:44px;box-sizing:border-box;border-radius:10px}
+.lnf .mpt,.lnf .pk1-sel{border:1px solid var(--line);background:#F7F7F7}.lnf .mpt{font-size:14px;font-weight:400;color:var(--fg)}.lnf .pk1-sel.on{background:var(--sf)}.lnf .pk1-sel{padding:4px 10px}.lnf .pyq input{height:auto}
+@media(max-width:700px){.lnf .f.h{grid-column:span 6}}
 .pk1{width:100%;align-self:stretch}.pk1 .pyq{min-width:0}
 .pk1-g{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;align-items:stretch}.pk1 .pk-s .pyq{width:100%;max-width:none}.pk1 .pk-s input{max-width:none}
 .pk1-sel{display:flex;align-items:center;gap:10px;border:1px dashed var(--line);border-radius:10px;padding:6px 10px;min-height:44px;background:var(--sf)}.pk1-sel.on{border-style:solid}.pk1-sel .av{width:30px;height:30px;font-size:12px;flex:none}
@@ -1289,15 +1293,15 @@ function pyLoanAct(id,act){var l=PY.loans.filter(function(x){return x.id===id})[
     busy(b,1);aCall('paySaveLoan',d).then(function(x){busy(b,0);if(!x.ok){toast((x.errors&&x.errors[Object.keys(x.errors)[0]])||'ตรวจข้อมูล',1);return}closeD();toast((act==='pp'?'เลื่อนงวดแล้ว':'ยกเลิกหนี้สินแล้ว')+(x.recalc?' · คำนวณงวดร่างใหม่แล้ว':''));PY.run=null;pyLoans(true)}).catch(function(e){busy(b,0);toast(e.message,1)})}}
 function pyLoan(id){var l=id?PY.loans.filter(function(x){return x.id===id})[0]:{kind:'loan',status:'active',start_ym:dIso(new Date()).slice(0,7),skips:[]},K=PY.bs.loanKinds,ed=PY.bs.canEdit,dis=ed?'':' disabled';
   var ppl=PY.prof.slice().sort(function(a,b){return a.code<b.code?-1:1}),skips=(l.skips||[]).slice();
-  drawer(id?'หนี้สิน · '+l.name:'เพิ่มหนี้สินพนักงาน','<div class="dfs"><div class="dfg">'+
+  drawer(id?'หนี้สิน · '+l.name:'เพิ่มหนี้สินพนักงาน','<div class="dfs"><div class="dfg lnf">'+
     '<div class="f" id="w-employee_id"><span>พนักงาน <b class="req">*</b></span>'+pyPick('ln-e',l.employee_id||'',!id&&ed,true)+'</div>'+
     '<label class="f" id="w-kind"><span>ประเภท</span><select id="ln-k"'+dis+'>'+Object.keys(K).map(function(k){return '<option value="'+k+'"'+(l.kind===k?' selected':'')+'>'+K[k]+'</option>'}).join('')+'</select></label>'+
     '<label class="f"><span>รายละเอียด</span><input id="ln-t" maxlength="80" value="'+esc(l.title||'')+'" placeholder="เช่น ยืมเงินบริษัท ต.ค. 69"'+dis+'></label>'+
-    '<label class="f" id="w-principal"><span>ยอด (บาท) <b class="req">*</b></span><input id="ln-p" inputmode="decimal" value="'+(l.principal||'')+'"'+dis+'></label>'+
-    '<label class="f" id="w-installment"><span>ผ่อนงวดละ (บาท) <b class="req">*</b></span><input id="ln-i" inputmode="decimal" value="'+(l.installment||'')+'"'+dis+'></label>'+
-    '<label class="f" id="w-start_ym"><span>เริ่มหักงวด <b class="req">*</b></span>'+mpBtn('ln-s',l.start_ym||'',{disabled:!ed})+'</label>'+
-    '<label class="f" id="w-status"><span>สถานะ</span><select id="ln-st"'+dis+'>'+Object.keys(LNST).map(function(k){return '<option value="'+k+'"'+(l.status===k?' selected':'')+'>'+(k==='paused'?'พักหนี้งวดปัจจุบัน (เลื่อนไปต่อท้าย)':LNST[k][0])+'</option>'}).join('')+'</select><span class="hint" id="ln-sth"></span></label>'+
-    '<label class="f s2"><span>หมายเหตุ</span><input id="ln-n" maxlength="300" value="'+esc(l.note||'')+'"'+dis+'></label>'+
+    '<label class="f h" id="w-principal"><span>ยอด (บาท) <b class="req">*</b></span><input id="ln-p" inputmode="decimal" value="'+(l.principal||'')+'"'+dis+'></label>'+
+    '<label class="f h" id="w-installment"><span>ผ่อนงวดละ (บาท) <b class="req">*</b></span><input id="ln-i" inputmode="decimal" value="'+(l.installment||'')+'"'+dis+'></label>'+
+    '<label class="f h" id="w-start_ym"><span>เริ่มหักงวด <b class="req">*</b></span>'+mpBtn('ln-s',l.start_ym||'',{disabled:!ed})+'</label>'+
+    '<label class="f h" id="w-status"><span>สถานะ</span><select id="ln-st"'+dis+'>'+Object.keys(LNST).map(function(k){return '<option value="'+k+'"'+(l.status===k?' selected':'')+'>'+(k==='paused'?'พักหนี้งวดปัจจุบัน (เลื่อนไปต่อท้าย)':LNST[k][0])+'</option>'}).join('')+'</select><span class="hint" id="ln-sth"></span></label>'+
+    '<label class="f"><span>หมายเหตุ</span><input id="ln-n" maxlength="300" value="'+esc(l.note||'')+'"'+dis+'></label>'+
     (id&&ed?'<label class="f s2" id="w-reason"><span>เหตุผลการแก้ไข <b class="req">*</b></span><input id="ln-r" placeholder="เช่น พนักงานขอเลื่อนงวด"></label>':'')+'</div></div>'+
     '<div class="dfs"><h4><span class="n">⌗</span>ตารางผ่อน</h4><p class="faint" style="font-size:12.5px;margin:0 0 6px">ติ๊ก "พักหนี้" = งวดนั้นไม่หัก (ยอด 0) แล้วต่อท้ายให้ 1 งวด · ไม่มีดอกเบี้ย (รอยืนยันจาก HR)</p><div id="ln-sc"></div></div>',
    ed?'<button class="btn" id="px">ยกเลิก</button><button class="btn pri" id="pok">บันทึก</button>':'<button class="btn" id="px">ปิด</button>');
@@ -2774,8 +2778,8 @@ function orgForm(r){var t=A.otab,def=OT[t];r=r||{};
 boot();
 })();
 </script>
-<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610291351 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
-(function(){var B='202610291351';if(!/^\d{12}$/.test(B))return;var shown=0;
+<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610291403 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
+(function(){var B='202610291403';if(!/^\d{12}$/.test(B))return;var shown=0;
   function chk(){if(shown||document.hidden)return;fetch('build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=String(t||'').trim();if(!/^\d{12}$/.test(t)||t<=B)return;shown=1;
     var d=document.createElement('div');d.setAttribute('role','status');d.style.cssText='position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:99999;background:#141414;color:#fff;border-radius:999px;padding:8px 8px 8px 18px;display:flex;gap:12px;align-items:center;font:14px "IBM Plex Sans Thai",sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25)';
     d.innerHTML='<span>มีเวอร์ชันใหม่ของระบบ</span><button type="button" style="border:0;border-radius:999px;background:#fff;color:#141414;padding:6px 14px;font:inherit;font-weight:600;cursor:pointer">โหลดใหม่</button>';
