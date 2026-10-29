@@ -18,7 +18,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js" charset="utf-8"></script>
 <script src="config.js"></script>
-<script src="i18n.js?v=202610290904"></script>
+<script src="i18n.js?v=202610290949"></script>
 <style>
 /* สี Push Media ขาว–ดำ ตามโลโก้ (22 ต.ค. 2569) · สีสถานะ ok/warn/bad คงไว้ */
 :root{--nav:#0B0B0B;--nav2:#1F1F1F;--nav-ink:#C8C8C8;--acc:#111111;--acc-soft:#EDEDED;--bg:#F4F4F4;--sf:#FFFFFF;--sf2:#F8F8F8;--line:#E3E3E3;
@@ -120,8 +120,8 @@ td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:middle}tr
 .lg-dots{position:absolute;width:150px;height:110px;background:radial-gradient(#DADADA 1.6px,transparent 1.8px) 0 0/15px 15px}.lg-dots.d1{left:7%;bottom:9%}.lg-dots.d2{right:6%;top:7%;width:110px;height:150px}
 .lg-chev{position:absolute;width:130px;color:#F0F0F0}.lg-chev.c1{top:9%;left:42%}.lg-chev.c2{bottom:7%;right:12%;width:160px}.lg-chev.c3{top:46%;left:4%;width:80px}
 .lg-orb{position:relative;width:600px;height:600px;flex:none;transform:scale(var(--lgs,1))}
-.lg-ring{position:absolute;left:50%;top:50%;border-radius:50%;border:2px solid #141414;transform:translate(-50%,-50%)}.lg-ring.r1{width:570px;height:570px;opacity:.16}.lg-ring.r2{width:440px;height:440px;opacity:.24}.lg-ring.r3{width:300px;height:300px;opacity:.32}
-.lg-ping{position:absolute;left:50%;top:50%;width:570px;height:570px;margin:-285px 0 0 -285px;border-radius:50%;background:radial-gradient(circle,rgba(20,20,20,.07),rgba(20,20,20,0) 70%);animation:lgPing 3.6s cubic-bezier(.2,.8,.2,1) infinite}
+.lg-ring{position:absolute;left:50%;top:50%;border-radius:50%;border:2px solid #141414;transform:translate(-50%,-50%)}.lg-ring.r1{width:640px;height:640px;opacity:.07}.lg-ring.r2{width:500px;height:500px;opacity:.1}.lg-ring.r3{width:370px;height:370px;opacity:.13}   /* 29 ต.ค. 2569: กว้างขึ้น + จางลง ไม่แย่งซีนมือถือ */
+.lg-ping{position:absolute;left:50%;top:50%;width:640px;height:640px;margin:-320px 0 0 -320px;border-radius:50%;background:radial-gradient(circle,rgba(20,20,20,.07),rgba(20,20,20,0) 70%);animation:lgPing 3.6s cubic-bezier(.2,.8,.2,1) infinite}
 @keyframes lgPing{from{transform:scale(.25);opacity:1}to{transform:scale(1);opacity:0}}
 .lg-pin{position:absolute;left:50%;top:50%;width:24px;height:30px;margin:-30px 0 0 -12px;transform:rotate(var(--a)) translateY(calc(var(--r)*-1)) rotate(calc(var(--a)*-1))}
 .lg-pin svg{display:block;width:100%;height:100%;animation:lgBob 3s ease-in-out var(--d) infinite;filter:drop-shadow(0 4px 6px rgba(0,0,0,.18))}
@@ -139,6 +139,42 @@ td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:middle}tr
 .ph-or{display:flex;align-items:center;gap:8px;color:#C2C2C2;font-size:9px}.ph-or i{flex:1;height:1px;background:#EEE}
 .ph-btn2{height:34px;border-radius:10px;border:1px solid #E3E3E3;display:grid;place-items:center;font-weight:600;font-size:11.5px}
 .ph-home{display:block;width:96px;height:4px;border-radius:4px;background:#111;margin:4px auto 8px}
+/* มือถือในหน้าเข้าสู่ระบบ · หน้าลงเวลาแบบแอปจริง + แผนที่แบบ A (29 ต.ค. 2569) · วนทุก 6 วิ */
+.lg-ph.pa{padding:0;gap:0}.lg-ph.pa .ph-sb{padding:12px 16px 0;height:34px;flex:none}
+.pa-hd{position:relative;text-align:center;font-weight:700;font-size:11.5px;padding:6px 0 7px;border-bottom:1px solid #EFEFEF;flex:none}.pa-hd span{position:absolute;left:12px;top:1px;font-size:17px;font-weight:400}
+.pa-tm{text-align:center;padding:7px 0 8px;border-bottom:1px solid #EFEFEF;flex:none}.pa-tm small{display:block;font-size:9.5px;color:#6B6B6B}
+.pa-tm b{display:block;font-size:30px;line-height:1.1;font-weight:700;color:#1A8A4A;letter-spacing:-.01em;font-variant-numeric:tabular-nums}.pa-tm em{font-style:normal;font-size:9px;color:#1A8A4A}
+.pa-bd{padding:8px 12px 0;display:flex;flex-direction:column;gap:6px;flex:1;min-height:0}
+.pa-lb{display:flex;justify-content:space-between;align-items:baseline;font-size:9.5px}.pa-lb b{font-size:10px}.pa-lb span{color:#8A8A8A;font-size:8.5px}
+.pa-sh{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.pa-sh>div{border:1px solid #E6E6E6;border-radius:9px;text-align:center;padding:5px 2px 4px;font-size:8px;color:#6B6B6B}
+.pa-sh b{display:block;font-size:9.5px;color:#141414;margin-top:2px}.pa-sh i{display:block;width:16px;height:16px;border-radius:50%;margin:0 auto}
+.pa-sh .s1{background:#F59E0B;box-shadow:inset 0 0 0 4px #FDE7C2}.pa-sh .s2{background:#FCE3DA;box-shadow:inset 0 -6px 0 #F97316}.pa-sh .s3{background:#E7E9FB;box-shadow:inset 4px -2px 0 #6366F1}
+.pa-sh .on{border-color:#F59E0B;background:#FFF7E8;box-shadow:0 0 0 1px #F59E0B}
+.pa-map{position:relative;height:98px;border-radius:12px;overflow:hidden;background:#EEF1EE;border:1px solid #E5E7E5;flex:none}
+.pa-rd{position:absolute;inset:0;background:linear-gradient(115deg,transparent 46%,#fff 46% 52%,transparent 52%),linear-gradient(20deg,transparent 60%,#fff 60% 64%,transparent 64%),linear-gradient(0deg,transparent 30%,#E3E7E3 30% 31%,transparent 31%),linear-gradient(90deg,transparent 70%,#E3E7E3 70% 71%,transparent 71%)}
+.pa-zone,.pa-pulse{position:absolute;left:50%;top:50%;width:72px;height:72px;margin:-36px 0 0 -36px;border-radius:50%}
+.pa-zone{background:rgba(229,50,45,.1);border:1.5px solid rgba(229,50,45,.6)}   /* วงพื้นที่สีแดง (29 ต.ค. 2569) */.pa-pulse{border:1px solid rgba(229,50,45,.45);animation:paPulse 2s ease-out infinite}   /* คลื่นสีแดงบาง ๆ (29 ต.ค. 2569) */
+.pa-off{position:absolute;left:50%;top:50%;width:16px;height:20px;margin:-22px 0 0 -8px;animation:paDrop 6s ease infinite}.pa-off svg{display:block;width:100%;height:100%;filter:drop-shadow(0 2px 3px rgba(220,38,38,.35))}.pa-off svg path{fill:#E5322D}   /* หมุดสำนักงานในแผนที่ = สีแดง (29 ต.ค. 2569) */
+.pa-me{position:absolute;left:50%;top:50%;width:10px;height:10px;margin:-5px;border-radius:50%;background:#2563EB;box-shadow:0 0 0 2.5px #fff,0 2px 6px rgba(37,99,235,.45);animation:paWalk 6s cubic-bezier(.4,0,.2,1) infinite}
+.pa-chip{position:absolute;left:6px;bottom:6px;font-size:8.5px;font-weight:600;background:#fff;border-radius:99px;padding:2px 8px;box-shadow:0 2px 6px rgba(0,0,0,.08);display:flex;gap:4px;align-items:center}
+.pa-chip i{width:6px;height:6px;border-radius:50%;background:#D97706;animation:paDot 6s steps(1) infinite}
+.pa-sw{display:grid}.pa-sw>*{grid-area:1/1;white-space:nowrap}.pa-sw .t1{animation:paT1 6s steps(1) infinite}.pa-sw .t2{opacity:0;animation:paT2 6s steps(1) infinite}
+.pa-chip .t2,.pa-loc .t2{color:#1A8A4A}.pa-loc .t1{color:#B26A00}
+.pa-loc{border:1px solid #E6E6E6;border-radius:10px;padding:5px 9px;font-size:10.5px}.pa-loc small{display:block;font-size:8.5px;color:#6B6B6B}
+.pa-btn{position:relative;margin:auto 12px 22px;height:34px;border-radius:10px;background:#141414;color:#fff;display:grid;place-items:center;font-weight:600;font-size:10.5px;overflow:hidden;flex:none;animation:paPress 6s ease infinite}
+.pa-btn .t1{animation:paB1 6s steps(1) infinite}.pa-btn .t2{opacity:0;animation:paB2 6s steps(1) infinite}
+.pa-btn::after{content:"";position:absolute;left:50%;top:50%;width:14px;height:14px;margin:-7px;border-radius:50%;background:rgba(255,255,255,.45);transform:scale(0);animation:paRip 6s ease-out infinite}
+.pa-tap{position:absolute;left:60%;bottom:30px;width:26px;height:26px;border-radius:50%;background:rgba(20,20,20,.18);border:2px solid rgba(255,255,255,.9);opacity:0;animation:paTap 6s ease infinite;z-index:4}
+@keyframes paPulse{from{transform:scale(.35);opacity:1}to{transform:scale(1.4);opacity:0}}
+@keyframes paWalk{0%{transform:translate(-52px,24px)}35%,100%{transform:none}}
+@keyframes paDrop{0%,4%{transform:translateY(-30px);opacity:0}12%{transform:translateY(2px);opacity:1}16%,100%{transform:none;opacity:1}}
+@keyframes paDot{0%{background:#D97706}35%{background:#1A8A4A}}
+@keyframes paT1{0%{opacity:1}35%{opacity:0}}@keyframes paT2{0%{opacity:0}35%{opacity:1}}
+@keyframes paB1{0%{opacity:1}57%{opacity:0}93%{opacity:1}}@keyframes paB2{0%{opacity:0}57%{opacity:1}93%{opacity:0}}
+@keyframes paPress{0%,52%{transform:none;background:#141414}55%{transform:scale(.96)}58%,92%{transform:none;background:#1A8A4A}100%{background:#141414}}
+@keyframes paRip{0%,53%{transform:scale(0);opacity:1}62%{transform:scale(16);opacity:0}100%{opacity:0}}
+@keyframes paTap{0%,44%{opacity:0;transform:translate(18px,26px) scale(1.2)}50%{opacity:1;transform:none}55%{transform:scale(.8)}60%,100%{opacity:0;transform:scale(.8)}}
+@media(prefers-reduced-motion:reduce){.lg-ph.pa *{animation:none!important}.pa-sw .t1{opacity:0}.pa-sw .t2{opacity:1}.pa-me{transform:none}}
 @media(max-height:760px){.lg-orb{--lgs:.85}}
 @media(max-width:1180px){.lg-orb{--lgs:.82}}
 @media(max-width:999px){.login.split{grid-template-columns:1fr;background:#F7F7F7}.lg-art{display:none}.login.split .lg-side{padding:40px 20px}.login.split .lg-card{background:#fff;padding:32px 22px 24px;border-radius:20px;box-shadow:0 14px 40px rgba(0,0,0,.07)}}
@@ -730,16 +766,24 @@ function lgIntro(){
 }
 /* หน้าเข้าสู่ระบบแบบแบ่ง 2 ฝั่ง (28 ต.ค. 2569 · ผู้ใช้ส่งตัวอย่าง Login Page Community): ซ้าย = ภาพประกอบ (มือถือแอปลงเวลา + วง GPS + หมุด) · ขวา = ปุ่ม LINE / Google
  * ภาพวาดเองด้วย HTML/CSS (ไม่ใช้ภาพจากไฟล์ตัวอย่าง) · ข้อมูลในมือถือเป็นตัวอย่าง · จอแคบ (<1000px) ซ่อนภาพประกอบ */
+/* วินาทีบนนาฬิกาในมือถือหน้าเข้าสู่ระบบ (เดินจริง · หยุดเองเมื่อไม่มีหน้าเข้าสู่ระบบ) */
+setInterval(function(){var e=document.querySelector('.pa-s');if(e)e.textContent=('0'+((+e.textContent+1)%60)).slice(-2)},1000);
 function lgSplit(pub,IC,GOO){
   var pin='<svg viewBox="0 0 24 30" aria-hidden="true"><path d="M12 0C5.4 0 0 5.3 0 11.8 0 20.6 12 30 12 30s12-9.4 12-18.2C24 5.3 18.6 0 12 0Z" fill="#141414"/><circle cx="12" cy="11.6" r="4.3" fill="#fff"/></svg>';
-  var P=[[285,-28],[285,58],[285,148],[285,232],[220,12],[220,196],[220,300],[150,110]].map(function(x,i){return '<i class="lg-pin" style="--r:'+x[0]+'px;--a:'+x[1]+'deg;--d:'+(i*.35).toFixed(2)+'s">'+pin+'</i>'}).join('');
+  var P=[[320,-28],[320,58],[320,148],[320,232],[250,42],[250,196],[250,300],[185,110]].map(function(x,i){return '<i class="lg-pin" style="--r:'+x[0]+'px;--a:'+x[1]+'deg;--d:'+(i*.35).toFixed(2)+'s">'+pin+'</i>'}).join('');
   var art='<div class="lg-art" aria-hidden="true">'+
     '<div class="lg-orb"><span class="lg-ring r1"></span><span class="lg-ring r2"></span><span class="lg-ring r3"></span><span class="lg-ping"></span>'+P+
-    '<div class="lg-ph"><div class="ph-sb"><b>9:41</b><span class="ph-notch"></span><span class="ph-ic"><i></i><i></i><i></i></span></div>'+
-     '<div class="ph-hi">สวัสดี,<b>คุณสมชาย</b><small>พุธ 28 ต.ค. 2569</small></div>'+
-     '<div class="ph-map"><span class="ph-rad"></span><span class="ph-me">'+pin+'</span><em>● ในพื้นที่ · สำนักงาน</em></div>'+
-     '<div class="ph-t"><b>08:47</b><small>เวลาเข้างาน 09:00 · ตรงเวลา</small></div>'+
-     '<div class="ph-btn">ลงเวลาเข้างาน</div><div class="ph-or"><i></i>หรือ<i></i></div><div class="ph-btn2">ขอลา / ดูตารางงาน</div><span class="ph-home"></span></div></div></div>';
+    /* จอในมือถือ = หน้า "ลงเวลาการทำงาน" ของแอปจริง + แผนที่แบบ A (29 ต.ค. 2569 ผู้ใช้เลือก): จุดตำแหน่งเดินเข้าพื้นที่สีเขียว → สามารถลงเวลาได้ → กดปุ่ม → ลงเวลาสำเร็จ · วนทุก 6 วิ */
+    '<div class="lg-ph pa"><div class="ph-sb"><b>9:41</b><span class="ph-notch"></span><span class="ph-ic"><i></i><i></i><i></i></span></div>'+
+     '<div class="pa-hd"><span>‹</span>ลงเวลาการทำงาน</div>'+
+     '<div class="pa-tm"><small>วันพุธที่ 28 ตุลาคม 2569</small><b>08:47:<span class="pa-s">12</span></b><em>เวลาที่ใช้ในการบันทึก</em></div>'+
+     '<div class="pa-bd"><div class="pa-lb"><b>เลือกกะการทำงาน</b><span>เลือกให้ตามเวลาตอนนี้</span></div>'+
+      '<div class="pa-sh"><div class="on"><i class="s1"></i><b>เช้า</b><small>08:30–17:30</small></div><div><i class="s2"></i><b>บ่าย</b><small>13:00–22:00</small></div><div><i class="s3"></i><b>ดึก</b><small>20:00–05:00</small></div></div>'+
+      '<div class="pa-lb"><b>ตำแหน่งที่ลงเวลา</b></div>'+
+      '<div class="pa-map"><span class="pa-rd"></span><span class="pa-zone"></span><span class="pa-pulse"></span><span class="pa-off">'+pin+'</span><span class="pa-me"></span>'+
+       '<span class="pa-chip"><i></i><span class="pa-sw"><span class="t1">ห่างสำนักงาน 120 ม.</span><span class="t2">ในพื้นที่ · สำนักงาน</span></span></span></div>'+
+      '<div class="pa-loc"><span class="pa-sw"><b class="t1">ยังไม่อยู่ในพื้นที่</b><b class="t2">สามารถลงเวลาได้</b></span><small>สำนักงานใหญ่ · รัศมี 150 ม.</small></div></div>'+
+     '<div class="pa-btn"><span class="pa-sw"><span class="t1">ลงเวลาเข้างาน · กะเช้า</span><span class="t2">✓ ลงเวลาสำเร็จ 08:47</span></span></div><span class="pa-tap"></span><span class="ph-home"></span></div></div></div>';
   return '<div class="login one split">'+art+'<div class="lg-side"><div class="lg-top-sp"><div class="lang" role="group" aria-label="ภาษา / Language" data-noi18n><button type="button" data-lang="th" aria-pressed="'+(window.hrLang&&hrLang()==='th')+'">TH</button><button type="button" data-lang="en" aria-pressed="'+(window.hrLang&&hrLang()==='en')+'">EN</button></div></div><main class="lg-card">'+
     '<div class="lg-h"><h1>ยินดีต้อนรับ</h1><p><span>เข้าใช้งาน</span> <b id="lg-app">'+esc(pub.app||'Push Media Center')+'</b><br><span>ด้วยบัญชีพนักงานของคุณ</span></p></div>'+
     '<div class="lg-alert" id="lg-noemail" role="alert" hidden></div>'+
@@ -2684,8 +2728,8 @@ function orgForm(r){var t=A.otab,def=OT[t];r=r||{};
 boot();
 })();
 </script>
-<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610290904 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
-(function(){var B='202610290904';if(!/^\d{12}$/.test(B))return;var shown=0;
+<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610290949 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
+(function(){var B='202610290949';if(!/^\d{12}$/.test(B))return;var shown=0;
   function chk(){if(shown||document.hidden)return;fetch('build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=String(t||'').trim();if(!/^\d{12}$/.test(t)||t<=B)return;shown=1;
     var d=document.createElement('div');d.setAttribute('role','status');d.style.cssText='position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:99999;background:#141414;color:#fff;border-radius:999px;padding:8px 8px 8px 18px;display:flex;gap:12px;align-items:center;font:14px "IBM Plex Sans Thai",sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25)';
     d.innerHTML='<span>มีเวอร์ชันใหม่ของระบบ</span><button type="button" style="border:0;border-radius:999px;background:#fff;color:#141414;padding:6px 14px;font:inherit;font-weight:600;cursor:pointer">โหลดใหม่</button>';
