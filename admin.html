@@ -18,7 +18,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js" charset="utf-8"></script>
 <script src="config.js"></script>
-<script src="i18n.js?v=202610291211"></script>
+<script src="i18n.js?v=202610291351"></script>
 <style>
 /* สี Push Media ขาว–ดำ ตามโลโก้ (22 ต.ค. 2569) · สีสถานะ ok/warn/bad คงไว้ */
 :root{--nav:#0B0B0B;--nav2:#1F1F1F;--nav-ink:#C8C8C8;--acc:#111111;--acc-soft:#EDEDED;--bg:#F4F4F4;--sf:#FFFFFF;--sf2:#F8F8F8;--line:#E3E3E3;
@@ -623,6 +623,12 @@ body.fo{padding-top:36px}body.fo .tb{top:36px}body.fo .side{top:36px;height:calc
 .py-steps{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
 .pg-t thead tr.pg-sum th{background:#F4F8FE;color:var(--fg);font-weight:700;font-size:12.5px;text-align:right;padding:7px 10px;border-top:1px solid var(--line)}.pg-t thead tr.pg-sum th.pg-n{text-align:left}.pg-t thead tr.pg-sum th.au{background:#EEF3FB}
 .pk[data-one] .pk-s input{width:100%;max-width:420px}
+.mp-in{display:flex;gap:6px;margin-bottom:8px}.mp-in input{flex:1;min-width:0;border:1px solid var(--line);border-radius:8px;padding:6px 10px;font:inherit;font-size:13px}.mp-in input.bad{border-color:var(--bad);background:var(--bad-s)}
+.pk1{width:100%;align-self:stretch}.pk1 .pyq{min-width:0}
+.pk1-g{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;align-items:stretch}.pk1 .pk-s .pyq{width:100%;max-width:none}.pk1 .pk-s input{max-width:none}
+.pk1-sel{display:flex;align-items:center;gap:10px;border:1px dashed var(--line);border-radius:10px;padding:6px 10px;min-height:44px;background:var(--sf)}.pk1-sel.on{border-style:solid}.pk1-sel .av{width:30px;height:30px;font-size:12px;flex:none}
+.pk1-n{flex:1;min-width:0}.pk1-n b{display:block;font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pk1-n small{display:block;font-size:11px;color:var(--fnt)}.pk1-sel button{border:0;background:none;color:var(--mut);cursor:pointer;padding:2px 6px}
+@media(max-width:700px){.pk1-g{grid-template-columns:1fr}}
 .cl-list{display:flex;flex-direction:column;gap:6px}.cl-row{display:flex;align-items:center;gap:6px;padding:6px 8px;border:1px solid var(--line);border-radius:10px;background:#fff}.cl-row.off{opacity:.55;background:#F6F6F6}.cl-row.off .cl-in{text-decoration:line-through}.cl-n{width:22px;text-align:right;color:var(--fnt);font-size:12px}.cl-in{flex:1;min-width:0;height:34px;border:1px solid var(--line);border-radius:8px;padding:0 10px;font:inherit;font-size:14px}
 .ps-w{overflow:auto;max-height:calc(100vh - 300px);border-top:1px solid var(--line)}
 .ps-t{border-collapse:separate;border-spacing:0;width:100%;min-width:1280px;font-size:13.5px}
@@ -1045,12 +1051,19 @@ function mpOpen(btn){var old=document.querySelector('.dp');if(old){old._close();
   var close=function(){el.remove();btn.setAttribute('aria-expanded','false');document.removeEventListener('mousedown',om,true);document.removeEventListener('keydown',kd,true)},
     om=function(e){if(!el.contains(e.target)&&!btn.contains(e.target))close()},kd=function(e){if(e.key==='Escape'){e.stopPropagation();close();btn.focus()}};el._close=close;
   var set=function(v){inp.value=v;btn.querySelector('span').textContent=mpTxt(v,btn.dataset.mpph);['input','change'].forEach(function(t){inp.dispatchEvent(new Event(t,{bubbles:true}))});close();btn.focus()};
-  var draw=function(){el.innerHTML='<div class="dp-h"><button type="button" class="dp-nv" data-y="-1" aria-label="ปีก่อน">‹</button><b style="flex:1;text-align:center">'+(Y+543)+'</b><button type="button" class="dp-nv" data-y="1" aria-label="ปีถัดไป">›</button></div><div class="mp-g">'+
+  /* พิมพ์เดือนเองได้ (29 ต.ค. 2569 ผู้ใช้ขอ): 10/2569 · 10/69 · 10/2026 · 2026-10 · ต.ค. 2569 */
+  var parse=function(t){t=String(t||'').trim();var m,y,k;if((k=t.match(/^(\d{4})-(\d{1,2})$/))){y=+k[1];m=+k[2]}else if((k=t.match(/^(\d{1,2})\s*[\/.\- ]\s*(\d{2}|\d{4})$/))){m=+k[1];y=+k[2]}
+      else{var ix=-1;DPS.concat(DPM).forEach(function(n,i){if(ix<0&&n&&t.indexOf(n)===0)ix=i%12});k=t.match(/(\d{2,4})\s*$/);if(ix>=0&&k){m=ix+1;y=+k[1]}}
+      if(!m||m<1||m>12||!y)return '';if(y<100)y+=2500;if(y>2400)y-=543;return y<1900||y>2200?'':y+'-'+('0'+m).slice(-2)};
+  var draw=function(){el.innerHTML='<div class="mp-in"><input type="text" data-mpi placeholder="พิมพ์ เช่น 10/2569" value="'+(cur?cur.slice(5,7)+'/'+(+cur.slice(0,4)+543):'')+'" aria-label="พิมพ์เดือน/ปี"><button type="button" class="btn sm" data-mpok>ตกลง</button></div><div class="dp-h"><button type="button" class="dp-nv" data-y="-1" aria-label="ปีก่อน">‹</button><b style="flex:1;text-align:center">'+(Y+543)+'</b><button type="button" class="dp-nv" data-y="1" aria-label="ปีถัดไป">›</button></div><div class="mp-g">'+
       DPS.map(function(m,i){var v=Y+'-'+('0'+(i+1)).slice(-2);return '<button type="button" data-m="'+v+'" class="'+(v===now?'td':'')+'" aria-pressed="'+(v===cur)+'">'+m+'</button>'}).join('')+'</div>'+
       '<div class="mp-f">'+(btn.dataset.mpc?'<button type="button" class="btn sm" data-clr>ไม่กำหนด</button>':'')+'<button type="button" class="btn sm" data-now>เดือนนี้</button></div>';
     el.querySelectorAll('[data-y]').forEach(function(b){b.onclick=function(){Y+=+b.dataset.y;draw()}});
     el.querySelectorAll('[data-m]').forEach(function(b){b.onclick=function(){set(b.dataset.m)}});
-    el.querySelector('[data-now]').onclick=function(){set(now)};var c=el.querySelector('[data-clr]');if(c)c.onclick=function(){set('')}};
+    el.querySelector('[data-now]').onclick=function(){set(now)};var c=el.querySelector('[data-clr]');if(c)c.onclick=function(){set('')};
+    var ti=el.querySelector('[data-mpi]'),go=function(){var v=parse(ti.value);if(v)set(v);else{ti.classList.add('bad');ti.title='รูปแบบ เดือน/ปี เช่น 10/2569'}};
+    ti.oninput=function(){ti.classList.remove('bad');var v=parse(ti.value);if(v&&+v.slice(0,4)!==Y){Y=+v.slice(0,4);var p=ti.value,c0=ti.selectionStart;draw();var t2=el.querySelector('[data-mpi]');t2.value=p;t2.focus();t2.setSelectionRange(c0,c0)}};
+    ti.onkeydown=function(e){if(e.key==='Enter'){e.preventDefault();go()}};el.querySelector('[data-mpok]').onclick=go};
   draw();var r=btn.getBoundingClientRect(),w=el.offsetWidth,l=r.left+w<=innerWidth-8?r.left+window.scrollX:r.right+window.scrollX-w;el.style.left=Math.max(8+window.scrollX,l)+'px';el.style.top=(r.bottom+window.scrollY+6)+'px';
   setTimeout(function(){document.addEventListener('mousedown',om,true);document.addEventListener('keydown',kd,true)},0);var f=el.querySelector('[aria-pressed=true]')||el.querySelector('.td');if(f)f.focus()}
 /* ───────── เงินเดือน (27 ต.ค. 2569 · ระยะ 1 · Payroll.js · Figma หน้า 03 section 550:8493) ─────────
@@ -1277,7 +1290,7 @@ function pyLoanAct(id,act){var l=PY.loans.filter(function(x){return x.id===id})[
 function pyLoan(id){var l=id?PY.loans.filter(function(x){return x.id===id})[0]:{kind:'loan',status:'active',start_ym:dIso(new Date()).slice(0,7),skips:[]},K=PY.bs.loanKinds,ed=PY.bs.canEdit,dis=ed?'':' disabled';
   var ppl=PY.prof.slice().sort(function(a,b){return a.code<b.code?-1:1}),skips=(l.skips||[]).slice();
   drawer(id?'หนี้สิน · '+l.name:'เพิ่มหนี้สินพนักงาน','<div class="dfs"><div class="dfg">'+
-    '<div class="f s2" id="w-employee_id"><span>พนักงาน <b class="req">*</b></span>'+pyPick('ln-e',l.employee_id||'',!id&&ed,true)+'</div>'+
+    '<div class="f" id="w-employee_id"><span>พนักงาน <b class="req">*</b></span>'+pyPick('ln-e',l.employee_id||'',!id&&ed,true)+'</div>'+
     '<label class="f" id="w-kind"><span>ประเภท</span><select id="ln-k"'+dis+'>'+Object.keys(K).map(function(k){return '<option value="'+k+'"'+(l.kind===k?' selected':'')+'>'+K[k]+'</option>'}).join('')+'</select></label>'+
     '<label class="f"><span>รายละเอียด</span><input id="ln-t" maxlength="80" value="'+esc(l.title||'')+'" placeholder="เช่น ยืมเงินบริษัท ต.ค. 69"'+dis+'></label>'+
     '<label class="f" id="w-principal"><span>ยอด (บาท) <b class="req">*</b></span><input id="ln-p" inputmode="decimal" value="'+(l.principal||'')+'"'+dis+'></label>'+
@@ -1429,6 +1442,10 @@ function pyColLayout(){var it=PY.bs.items.slice(),G={inc:it.filter(function(i){r
       closeD();toast(r.changed?'บันทึกหัวคอลัมน์แล้ว · คำนวณงวดร่างใหม่แล้ว':'ไม่มีการเปลี่ยนแปลง');PY.run=null;pyReload()}).catch(function(e){busy(b,0);toast(e.message,1)})}}
 /* ── เลือกพนักงาน (ค้นหาชื่อ/รหัส · เห็นรูปและชื่อ) · ค่าเก็บเป็น id คั่นด้วย , ใน hidden input ── */
 function pyPick(id,ids,on,one){var P={};(PY.prof||[]).forEach(function(p){P[p.employee_id]=p});var sel=String(ids||'').split(',').filter(function(x){return P[x]});if(one)sel=sel.slice(0,1);   // one = เลือกได้คนเดียว (หนี้สิน · 28 ต.ค. 2569)
+  /* เลือกคนเดียว + แก้ได้: ช่องค้นหา กับ ชื่อที่เลือก แยกกันคนละช่อง (29 ต.ค. 2569 ผู้ใช้ขอ) · ค้นหาใหม่ได้ตลอด = เปลี่ยนคน */
+  if(one&&on){var p1=sel.length?P[sel[0]]:null;return '<div class="pk pk1" id="pk-'+id+'" data-one="1"><input type="hidden" id="'+id+'" value="'+esc(sel.join(','))+'"><div class="pk1-g">'+
+    '<div class="pk-s"><label class="pyq">'+ic('search')+'<input type="search" data-pkq placeholder="ค้นหาชื่อ / ชื่อเล่น / รหัส" autocomplete="off" aria-label="ค้นหาพนักงาน"></label><div class="pk-r" hidden></div></div>'+
+    '<div class="pk1-sel'+(p1?' on':'')+'">'+(p1?'<span class="av" data-av="'+sel[0]+'">'+esc((p1.nickname||p1.name).slice(0,1))+'</span><span class="pk1-n"><b>'+esc(p1.name)+(p1.nickname?' ('+esc(p1.nickname)+')':'')+'</b><small>'+esc(p1.code)+(p1.dept?' · '+esc(p1.dept):'')+'</small></span><button type="button" data-pkx="'+sel[0]+'" aria-label="เอาออก">✕</button>':'<span class="faint">ยังไม่ได้เลือกพนักงาน</span>')+'</div></div></div>'}
   return '<div class="pk" id="pk-'+id+'"'+(one?' data-one="1"':'')+'><input type="hidden" id="'+id+'" value="'+esc(sel.join(','))+'"><div class="pk-c">'+sel.map(function(x){var p=P[x];return '<span class="pk-chip"><span class="av" data-av="'+x+'">'+esc((p.nickname||p.name).slice(0,1))+'</span><span><b>'+esc(p.name)+'</b><small>'+esc(p.code)+(p.dept?' · '+esc(p.dept):'')+'</small></span>'+(on?'<button type="button" data-pkx="'+x+'" aria-label="เอาออก">✕</button>':'')+'</span>'}).join('')+(sel.length||one?'':'<span class="faint" style="font-size:12.5px">ยังไม่มี</span>')+'</div>'+
    (on&&!(one&&sel.length)?'<div class="pk-s"><input type="search" data-pkq placeholder="ค้นหาชื่อ ชื่อเล่น หรือรหัสพนักงาน…" autocomplete="off"><div class="pk-r" hidden></div></div>':'')+'</div>'}
 function pyPickBind(id){var w=$('#pk-'+id);if(!w)return;var h=$('#'+id),q=w.querySelector('[data-pkq]'),box=w.querySelector('.pk-r'),P=PY.prof||[];
@@ -2757,8 +2774,8 @@ function orgForm(r){var t=A.otab,def=OT[t];r=r||{};
 boot();
 })();
 </script>
-<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610291211 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
-(function(){var B='202610291211';if(!/^\d{12}$/.test(B))return;var shown=0;
+<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610291351 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
+(function(){var B='202610291351';if(!/^\d{12}$/.test(B))return;var shown=0;
   function chk(){if(shown||document.hidden)return;fetch('build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=String(t||'').trim();if(!/^\d{12}$/.test(t)||t<=B)return;shown=1;
     var d=document.createElement('div');d.setAttribute('role','status');d.style.cssText='position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:99999;background:#141414;color:#fff;border-radius:999px;padding:8px 8px 8px 18px;display:flex;gap:12px;align-items:center;font:14px "IBM Plex Sans Thai",sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25)';
     d.innerHTML='<span>มีเวอร์ชันใหม่ของระบบ</span><button type="button" style="border:0;border-radius:999px;background:#fff;color:#141414;padding:6px 14px;font:inherit;font-weight:600;cursor:pointer">โหลดใหม่</button>';
