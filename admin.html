@@ -18,7 +18,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js" charset="utf-8"></script>
 <script src="config.js"></script>
-<script src="i18n.js?v=202610291600"></script>
+<script src="i18n.js?v=202610291609"></script>
 <style>
 /* สี Push Media ขาว–ดำ ตามโลโก้ (22 ต.ค. 2569) · สีสถานะ ok/warn/bad คงไว้ */
 :root{--nav:#0B0B0B;--nav2:#1F1F1F;--nav-ink:#C8C8C8;--acc:#111111;--acc-soft:#EDEDED;--bg:#F4F4F4;--sf:#FFFFFF;--sf2:#F8F8F8;--line:#E3E3E3;
@@ -1266,7 +1266,8 @@ function pyPerson(id){var R=PY.run,x=R.rows.filter(function(r){return r.employee
   drawer(x.name+' · '+x.code,'<div class="muted" style="margin:-4px 0 12px;font-size:13px">'+esc(x.dept||'—')+' · '+esc(PY.bs.types[x.type]||'')+' · งวด '+esc(ymTh(R.run.ym))+' ('+dTh(R.run.from)+' – '+dTh(R.run.to)+')<br>บัญชี: '+esc(x.bank_name||'—')+' '+esc(x.bank_masked||'')+'</div>'+
     (x.warn.length?'<div class="note-w" style="margin-bottom:12px">'+x.warn.map(esc).join(' · ')+'</div>':'')+grp('inc','รายได้')+grp('ded','รายการหัก')+
     '<div class="py-net"><span>รับสุทธิ (โอน)'+(x.rnd?'<small class="py-raw">ก่อนปัด '+m2(x.net-x.rnd)+' · ปัดเศษ '+pyRnd(x.rnd)+'</small>':'')+'</span><b class="num">'+m2(x.net)+'</b></div>'+form,
-    ed?'<button class="btn" id="px">ปิด</button><button class="btn pri" id="pok">บันทึก + คำนวณใหม่</button>':'<button class="btn" id="px">ปิด</button>');
+    (R.run.status==='closed'||R.run.status==='paid'?'<button class="btn" id="pslip">สลิปเงินเดือน (PDF)</button><span class="sp"></span>':'')+(ed?'<button class="btn" id="px">ปิด</button><button class="btn pri" id="pok">บันทึก + คำนวณใหม่</button>':'<button class="btn" id="px">ปิด</button>'));
+  if($('#pslip'))$('#pslip').onclick=function(){pySlips(R,[x],'สลิปเงินเดือน '+x.code+' '+ymTh(R.run.ym))};
   $('.drw').classList.add('wide');$('#px').onclick=closeD;
   if(ed)$('#pok').onclick=function(){var b=this,am={},rs=$('#py-reason').value.trim(),ab;$$('[data-pin]').forEach(function(i){var k=i.dataset.pin,v=i.value.replace(/,/g,'').trim(),o=k==='_absent_days'?(x.inputs._absent_days||{}).amount:(x.inputs[k]||{}).amount;if(String(v)!==String(o===undefined?'':o))(k==='_absent_days'?(ab=v):(am[k]=v))});
     if(!Object.keys(am).length&&ab===undefined)return toast('ไม่มีอะไรเปลี่ยน');if(!rs){$('#w-reason').classList.add('bad');return}
@@ -1553,7 +1554,7 @@ function pyDocs(){var dc=pyDco(),RW=PY.run.rows.filter(function(x){return !dc||x
   var dsel=pyCos().length>1?'<div class="segt" role="group" aria-label="บริษัท" style="margin-left:auto">'+pyCos().map(function(c){return '<button type="button" data-dco="'+esc(c.id)+'" aria-pressed="'+(dc===c.id)+'">'+esc(c.short)+' ('+PY.run.rows.filter(function(x){return x.co===c.id}).length+')</button>'}).join('')+'</div>':'';
   var row=function(name,cnt,btns,sub){return '<tr><td><b>'+name+'</b>'+(sub?'<div class="faint" style="font-size:12px">'+sub+'</div>':'')+'</td><td class="r num">'+cnt+' คน</td><td class="r" style="white-space:nowrap">'+btns+'</td></tr>'};
   return '<section class="card" style="margin-bottom:14px"><div class="ch"><h3>เอกสารหลังปิดงวด</h3><span class="faint" style="font-size:12.5px;margin-left:10px">'+(dc?esc((pyCos().filter(function(c){return c.id===dc})[0]||{}).name_th||'')+' · ':'')+'จ่าย '+dTh(PY.run.run.pay_date)+' · จ่ายภาษี '+dTh(PY.run.run.tax_date)+'</span>'+dsel+'</div><div class="tw"><table class="py-t"><thead><tr><th>รายงาน</th><th class="r">จำนวนพนักงาน</th><th></th></tr></thead><tbody>'+
-    '<tr class="grp"><td colspan="3">เงินเดือน</td></tr>'+row('รายงานผลการคำนวณเงินเดือนสุทธิ',n,exBtn('xls','pd-net'))+row('ไฟล์โอนเงินเดือน (กสิกรไทย)',n,exBtn('txt','pd-bank','Export Text'))+
+    '<tr class="grp"><td colspan="3">เงินเดือน</td></tr>'+row('รายงานผลการคำนวณเงินเดือนสุทธิ',n,exBtn('xls','pd-net'))+row('ไฟล์โอนเงินเดือน (กสิกรไทย)',n,exBtn('txt','pd-bank','Export Text'))+row('สลิปเงินเดือน',n,exBtn('pdf','pd-slip'),'1 คน 1 หน้า · หัวสลิปเป็นของบริษัทที่เลือก · พิมพ์หรือบันทึกเป็น PDF')+
     '<tr class="grp"><td colspan="3">ภาษี / ประกันสังคม</td></tr>'+row('รายงานประกันสังคม',ss,exBtn('pdf','pd-sso-p')+' '+exBtn('xls','pd-sso-x'),'ยอดเงินสมทบลูกจ้าง '+m2(t.sso)+' · นายจ้างสมทบเท่ากัน · Excel ตามแบบอัปโหลด e-Service')+
     row('รายงานภาษี ภ.ง.ด.1',n-ct,exBtn('pdf','pd-p1-p')+' '+exBtn('txt','pd-p1-t','Export Text'),'พนักงาน (เงินเดือน ค่าจ้าง) · ภาษีที่ HR กรอก · Text เฉพาะคนที่มีภาษี (รูปแบบยื่นจริง)')+
     row('รายงานภาษี ภ.ง.ด.3 <span class="badge b-mute">รอพัฒนา</span>',ct,exBtn('pdf','pd-p3-p','Export PDF','aria-disabled="true" data-tip="ภ.ง.ด.3 พักไว้ก่อน · จะพัฒนาอีกที"')+' '+exBtn('xls','pd-p3-x','Export Excel','aria-disabled="true" data-tip="ภ.ง.ด.3 พักไว้ก่อน · จะพัฒนาอีกที"')+' '+exBtn('txt','pd-p3-t','Export Text','aria-disabled="true" data-tip="ภ.ง.ด.3 พักไว้ก่อน · จะพัฒนาอีกที"'),'สัญญาบริการ · หัก ณ ที่จ่าย '+m2(t.wht)+' · พักไว้ก่อน (28 ต.ค. 2569)')+
@@ -1587,10 +1588,40 @@ function pyDocsBind(R){if(!$('#pd-sso-p'))return;var dc=pyDco(),ld=null,get=func
   var ssoXls=function(){get().then(function(r){warn(r);return pyXlsx().then(function(X){var aoa=[['เลขบัตรประจำตัวประชาชน / ผู้เสียภาษี','คำนำหน้าชื่อ','ชื่อผู้ประกันตน','นามสกุลผู้ประกันตน','ค่าจ้าง','จำนวนเงินสมทบ']].concat(r.sso.map(function(x){return [x.id_card,x.title,x.first,x.last,x.wage,x.sso]}));
     var ws=X.utils.aoa_to_sheet(aoa);r.sso.forEach(function(x,i){var a='A'+(i+2);if(ws[a])ws[a].t='s';['E','F'].forEach(function(c){var k=c+(i+2);if(ws[k]){ws[k].t='n';ws[k].z='#,##0.00'}})});ws['!cols']=[{wch:22},{wch:10},{wch:18},{wch:20},{wch:12},{wch:14}];
     var wb=X.utils.book_new();X.utils.book_append_sheet(wb,ws,'00000');X.writeFile(wb,pre+'ยื่น ปกส. ด. '+mo()+'.xlsx')})}).catch(function(e){toast(e.message,1)})};
-  $('#pd-net').onclick=function(){pyExcel(R,dc)};$('#pd-bank').onclick=function(){pyBank(R,dc)};
+  $('#pd-net').onclick=function(){pyExcel(R,dc)};$('#pd-slip').onclick=function(){pySlips(R,R.rows.filter(function(x){return !dc||x.co===dc}).sort(function(a,b){return a.code<b.code?-1:1}),pre+'สลิปเงินเดือน '+ymTh(R.run.ym))};$('#pd-bank').onclick=function(){pyBank(R,dc)};
   $('#pd-sso-p').onclick=function(){pdf('sso','รายงานประกันสังคม','sso',function(r){return ['','','','','รวม '+r.sso.length+' คน',m2(r.totals.sso_wage),m2(r.totals.sso)]})};$('#pd-sso-x').onclick=ssoXls;
   $('#pd-p1-p').onclick=function(){pdf('p1','รายงานภาษี ภ.ง.ด.1','pnd1',function(r){return ['','','รวม '+r.pnd1.length+' คน',m2(r.totals.pnd1_income),m2(r.totals.pnd1_tax)]})};$('#pd-p1-t').onclick=pnd1Txt;
   if(false)$('#pd-p3-p').onclick=function(){pdf('p3','รายงานภาษี ภ.ง.ด.3','pnd3',function(r){return ['','','รวม '+r.pnd3.length+' คน','','','',m2(r.totals.pnd3_income),m2(r.totals.pnd3_wht)]})};/* ภ.ง.ด.3 พักไว้ (ผู้ใช้ 28 ต.ค. 2569) · โค้ด xls/txt ยังอยู่: xls('p3',…) txt('pnd3',T3) */}
+/* ── สลิปเงินเดือน (29 ต.ค. 2569 ผู้ใช้ขอ) · แบบเดียวกันทุกบริษัท · หัวสลิป (โลโก้ ชื่อ ที่อยู่ เลขผู้เสียภาษี) ตามบริษัทของพนักงาน · พิมพ์ / บันทึกเป็น PDF จากเบราว์เซอร์ · 1 คน = 1 หน้า A4 ── */
+function bahtTxt(n){n=Math.round((+n||0)*100)/100;var neg=n<0;n=Math.abs(n);var D=['','หนึ่ง','สอง','สาม','สี่','ห้า','หก','เจ็ด','แปด','เก้า'],P=['','สิบ','ร้อย','พัน','หมื่น','แสน'];
+  var rd=function(x){var s='',t=String(x),L=t.length;for(var i=0;i<L;i++){var d=+t[i],pos=L-i-1;if(!d)continue;if(pos===1&&d===1)s+='สิบ';else if(pos===1&&d===2)s+='ยี่สิบ';else if(pos===0&&d===1&&L>1)s+='เอ็ด';else s+=D[d]+P[pos]}return s};
+  var big=function(x){if(x===0)return 'ศูนย์';var s='',parts=[];while(x>0){parts.unshift(x%1000000);x=Math.floor(x/1000000)}parts.forEach(function(v,i){s+=rd(v)+(i<parts.length-1?'ล้าน':'')});return s};
+  var b=Math.floor(n),st=Math.round((n-b)*100);return (neg?'ลบ':'')+big(b)+'บาท'+(st?rd(st)+'สตางค์':'ถ้วน')}
+function slipCo(id){var L=pyCos(),c=L.filter(function(x){return x.id===id})[0]||L[0]||{};return c}
+function slipPage(R,x){var r=R.run,c=slipCo(x.co),lg=c.logo||(c.id===(pyCos()[0]||{}).id?A.d.logo:'');
+  var inc=x.lines.filter(function(l){return l.kind==='inc'}),ded=x.lines.filter(function(l){return l.kind==='ded'}),n=Math.max(inc.length,ded.length,4);
+  var cell=function(l){return l?'<td>'+esc(l.name)+'</td><td class="r">'+m2(l.amount)+'</td>':'<td></td><td></td>'};
+  var rows='';for(var i=0;i<n;i++)rows+='<tr>'+cell(inc[i])+cell(ded[i])+'</tr>';
+  return '<section class="slip"><header><div class="lg">'+(lg?'<img src="'+esc(lg)+'" alt="">':'<span>'+esc(coIni(c))+'</span>')+'</div><div class="co"><b>'+esc(c.name_th||A.d.company||'')+(c.branch?' ('+esc(c.branch)+')':'')+'</b>'+(c.name_en?'<small>'+esc(c.name_en)+'</small>':'')+'<small>'+esc(c.address||'')+'</small><small>'+(c.tax_id?'เลขประจำตัวผู้เสียภาษี '+esc(c.tax_id):'')+(c.phone?' · โทร '+esc(c.phone):'')+'</small></div>'+
+    '<div class="tt"><b>ใบแจ้งเงินเดือน</b><small>PAY SLIP</small><small>งวด '+esc(ymTh(r.ym))+'</small></div></header>'+
+    '<div class="em"><div><span>รหัสพนักงาน</span><b>'+esc(x.code)+'</b></div><div><span>ชื่อ - นามสกุล</span><b>'+esc(x.name)+'</b></div><div><span>แผนก</span><b>'+esc(x.dept||'—')+'</b></div>'+
+    '<div><span>ช่วงคำนวณ</span><b>'+dTh(x.pfrom||r.from)+' – '+dTh(x.pto||r.to)+'</b></div><div><span>วันที่จ่าย</span><b>'+dTh(r.pay_date)+'</b></div><div><span>โอนเข้าบัญชี</span><b>'+esc((x.bank_name||'—')+' '+(x.bank_masked||''))+'</b></div>'+
+    '<div><span>อัตราค่าจ้าง</span><b>'+m2(x.base)+'</b></div><div><span>วันทำงาน</span><b>'+x.days+' วัน'+(x.absent?' · ขาด '+x.absent+' วัน':'')+'</b></div></div>'+
+    '<table><thead><tr><th>รายได้</th><th class="r">จำนวนเงิน</th><th>รายการหัก</th><th class="r">จำนวนเงิน</th></tr></thead><tbody>'+rows+'</tbody>'+
+    '<tfoot><tr><td>รวมรายได้</td><td class="r">'+m2(x.inc)+'</td><td>รวมรายการหัก</td><td class="r">'+m2(x.ded)+'</td></tr></tfoot></table>'+
+    '<div class="net"><div><span>เงินได้สุทธิ</span><small>('+esc(bahtTxt(x.net))+')</small></div><b>'+m2(x.net)+'</b></div>'+
+    '<footer><span>เอกสารนี้ออกจากระบบ '+esc(A.d.app||'Push Media Center')+' · เป็นความลับเฉพาะผู้รับ</span><span class="sg">ผู้รับเงิน ______________________</span></footer></section>'}
+function pySlips(R,list,title){if(!list.length)return toast('ไม่มีพนักงานในรายการ',1);var w=window.open('','_blank');if(!w)return toast('เบราว์เซอร์บล็อกหน้าต่าง · อนุญาตป๊อปอัปก่อน',1);
+  w.document.open();w.document.write('<!doctype html><html lang="th"><head><meta charset="utf-8"><title>'+esc(title)+'</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;600;700&display=swap"><style>'+
+    '@page{size:A4;margin:12mm}body{font-family:"IBM Plex Sans Thai",Tahoma,sans-serif;color:#111;margin:0;font-size:12.5px}.slip{max-width:760px;margin:0 auto 18px;border:1px solid #d8d8d8;border-radius:10px;padding:22px 24px;page-break-after:always;break-after:page}.slip:last-child{page-break-after:auto;break-after:auto}'+
+    'header{display:flex;gap:14px;align-items:flex-start;border-bottom:2px solid #111;padding-bottom:12px;margin-bottom:12px}.lg{width:58px;height:58px;flex:none;display:grid;place-items:center;border-radius:12px;overflow:hidden;background:#f3f3f3}.lg img{width:100%;height:100%;object-fit:contain}.lg span{font-weight:700;font-size:18px}'+
+    '.co{flex:1;min-width:0}.co b{display:block;font-size:15px}.co small,.tt small{display:block;color:#555;font-size:11.5px;line-height:1.5}.tt{text-align:right}.tt b{display:block;font-size:17px}'+
+    '.em{display:grid;grid-template-columns:repeat(4,1fr);gap:8px 14px;margin-bottom:12px}.em span{display:block;color:#666;font-size:11px}.em b{font-size:12.5px;font-weight:600}'+
+    'table{width:100%;border-collapse:collapse}th,td{border:1px solid #cfcfcf;padding:6px 8px}th{background:#f2f2f2;text-align:left}td.r,th.r{text-align:right;font-variant-numeric:tabular-nums;width:110px}tfoot td{font-weight:700;background:#fafafa}tbody td{height:30px;box-sizing:border-box}'+
+    '.net{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding:12px 14px;border-radius:8px;background:#111;color:#fff}.net span{display:block;font-weight:600}.net small{color:#ccc}.net b{font-size:22px;font-variant-numeric:tabular-nums}'+
+    'footer{display:flex;justify-content:space-between;margin-top:22px;color:#777;font-size:11px}.sg{color:#333}@media print{.slip{border:0;border-radius:0;padding:0;margin:0}}</style></head><body>'+
+    list.map(function(x){return slipPage(R,x)}).join('')+'<script>(document.fonts?document.fonts.ready:Promise.resolve()).then(function(){setTimeout(function(){print()},250)})<\/script></body></html>');w.document.close();
+  aCall('payAudit',R.run.id,'payslip',list.length).catch(function(){})}
 function pyXlsx(){return window.XLSX?Promise.resolve(window.XLSX):new Promise(function(ok,no){var s=document.createElement('script');s.src='xlsx.full.min.js';s.onload=function(){ok(window.XLSX)};s.onerror=function(){no(new Error('โหลดตัวสร้าง Excel ไม่สำเร็จ'))};document.head.appendChild(s)})}
 function pyExcel(R,co){if(co===undefined)co=pyCo();var CO=co&&pyCos().filter(function(c){return c.id===co})[0];if(CO)R=Object.assign({},R,{rows:R.rows.filter(function(x){return x.co===co})});
   pyXlsx().then(function(X){var r=R.run,it=PY.bs.items.filter(function(i){return i.active}),amt=function(x,c){return x.lines.reduce(function(s,l){return s+(l.code===c?l.amount:0)},0)};
@@ -2867,8 +2898,8 @@ function orgForm(r){var t=A.otab,def=OT[t];r=r||{};
 boot();
 })();
 </script>
-<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610291600 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
-(function(){var B='202610291600';if(!/^\d{12}$/.test(B))return;var shown=0;
+<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610291609 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
+(function(){var B='202610291609';if(!/^\d{12}$/.test(B))return;var shown=0;
   function chk(){if(shown||document.hidden)return;fetch('build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=String(t||'').trim();if(!/^\d{12}$/.test(t)||t<=B)return;shown=1;
     var d=document.createElement('div');d.setAttribute('role','status');d.style.cssText='position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:99999;background:#141414;color:#fff;border-radius:999px;padding:8px 8px 8px 18px;display:flex;gap:12px;align-items:center;font:14px "IBM Plex Sans Thai",sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25)';
     d.innerHTML='<span>มีเวอร์ชันใหม่ของระบบ</span><button type="button" style="border:0;border-radius:999px;background:#fff;color:#141414;padding:6px 14px;font:inherit;font-weight:600;cursor:pointer">โหลดใหม่</button>';
