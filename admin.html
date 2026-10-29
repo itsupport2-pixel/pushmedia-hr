@@ -18,7 +18,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js" charset="utf-8"></script>
 <script src="config.js"></script>
-<script src="i18n.js?v=202610291056"></script>
+<script src="i18n.js?v=202610291114"></script>
 <style>
 /* สี Push Media ขาว–ดำ ตามโลโก้ (22 ต.ค. 2569) · สีสถานะ ok/warn/bad คงไว้ */
 :root{--nav:#0B0B0B;--nav2:#1F1F1F;--nav-ink:#C8C8C8;--acc:#111111;--acc-soft:#EDEDED;--bg:#F4F4F4;--sf:#FFFFFF;--sf2:#F8F8F8;--line:#E3E3E3;
@@ -599,11 +599,11 @@ body.fo{padding-top:36px}body.fo .tb{top:36px}body.fo .side{top:36px;height:calc
 .pg-bar{display:flex;align-items:center;gap:10px;padding:10px 14px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
 .pg-w{overflow:auto;max-height:calc(100vh - 260px)}.pg-t{border-collapse:separate;border-spacing:0;font-size:12.5px}
 .pg-t th{position:sticky;top:0;background:#F7F7F7;z-index:2;font-weight:600;color:var(--mut);font-size:11.5px;padding:7px 8px;border-bottom:1px solid var(--line);border-right:1px solid #EFEFEF;white-space:nowrap;text-align:center}
-.pg-t thead tr:nth-child(2) th{top:31px}.pg-t th small{display:block;font-weight:400;color:var(--fnt);font-size:10.5px}
+.pg-t thead tr:nth-child(2) th{top:31px}.pg-t thead tr:nth-child(2) th{white-space:normal;min-width:112px;max-width:170px;line-height:1.3;vertical-align:middle}.pg-t thead tr:nth-child(2) th.lg{min-width:200px;max-width:220px}   /* หัวยาวขึ้นบรรทัดใหม่ · ชื่อยาว = กว้างขึ้นให้จบใน 2 บรรทัด (29 ต.ค. 2569) */.pg-t th small{display:block;font-weight:400;color:var(--fnt);font-size:10.5px}
 .pg-t th.gh.inc{background:#EAF6EE;color:var(--ok)}.pg-t th.gh.ded{background:#FCEDEB;color:var(--bad)}.pg-t th.gh.auto,.pg-t th.au{background:#EFEFEF}
 .pg-t td{border-bottom:1px solid #EFEFEF;border-right:1px solid #F3F3F3;padding:0;white-space:nowrap;background:var(--sf)}
 .pg-t .pg-n{position:sticky;left:0;z-index:1;min-width:200px;text-align:left;padding:6px 10px;border-right:1px solid var(--line)}.pg-t th.pg-n{z-index:3}.pg-t td.pg-n b{display:block;font-weight:600}.pg-t td.pg-n small{color:var(--fnt);font-size:11px}
-.pg-t td.gi input{width:96px;border:0;background:transparent;padding:8px;text-align:right;font:inherit;font-size:13px;font-variant-numeric:tabular-nums}.pg-t td.gi input:focus{outline:2px solid var(--acc);outline-offset:-2px;background:#fff}
+.pg-t td.gi input{width:100%;min-width:96px;box-sizing:border-box;border:0;background:transparent;padding:8px;text-align:right;font:inherit;font-size:13px;font-variant-numeric:tabular-nums}.pg-t td.gi input:focus{outline:2px solid var(--acc);outline-offset:-2px;background:#fff}
 .pg-t td.gi input::placeholder{color:#B8B8B8}.pg-t td.gi.dirty{background:#FFF8E1}.pg-t td.gi.bad{background:var(--bad-s)}.pg-t .pg-net{position:sticky;right:0;z-index:1;border-left:1px solid var(--line);background:#F4F4F4;color:var(--fg)}.pg-t th.pg-net{z-index:3}
 .pg-t td.au{background:#FAFAFA;color:var(--mut);padding:6px 10px;text-align:right}
 .pg-save{position:sticky;bottom:0;z-index:4;display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--sf);border-top:1px solid var(--line);flex-wrap:wrap}.pg-save.on{background:#FFF8E1}.pg-save input{flex:1;min-width:240px;height:38px;border:1px solid #DADADA;border-radius:9px;padding:0 12px;font:inherit}.pg-save input.bad{border-color:var(--bad)}
@@ -1360,7 +1360,7 @@ function pyGrid(){var R=PY.run,ed=R.canEdit,C=pyGridCols(),q=PY.q.trim().toLower
   var h='<div class="pg-bar">'+(ed?'<span class="muted" style="font-size:12.5px">กรอกเฉพาะช่องที่มียอด · ช่องว่าง = ใช้รายการประจำ (ตัวเลขจาง) · วางจาก Excel ได้ (คัดลอกหลายช่องแล้ววางที่ช่องแรก) · Enter = ช่องล่าง</span>':'<span class="note-w" style="margin:0">งวดนี้'+esc((PYST[R.run.status]||[''])[0])+' · ดูอย่างเดียว (แก้ได้เฉพาะสถานะร่าง)</span>')+
     '</div><div class="pg-bar">'+pyKindBtns()+gSel()+(G?'<label class="chk"><input type="checkbox" id="pg-has"'+(PYG.has?' checked':'')+'> เฉพาะคนที่มียอด</label>':'')+'<span class="sp"></span>'+(PY.bs.canEdit?'<button class="btn sm" id="pg-cols" type="button" data-tip="เปลี่ยนชื่อ · ย้ายลำดับ · ซ่อนหัวคอลัมน์">⚙ จัดคอลัมน์</button>':'')+(G?'':'<label class="chk"><input type="checkbox" id="pg-only"'+(PYG.only?' checked':'')+'> แสดงเฉพาะคอลัมน์ที่มียอด</label>')+'</div>'+
    '<div class="pg-w"><table class="pg-t"><thead><tr><th rowspan="2" class="pg-n">พนักงาน</th>'+(absCol?'<th rowspan="2">วันขาดงาน</th>':'')+(inc.length?'<th colspan="'+inc.length+'" class="gh inc">รายรับ · HR กรอก</th>':'')+(ded.length?'<th colspan="'+ded.length+'" class="gh ded">รายจ่าย · HR กรอก</th>':'')+'<th colspan="'+(autoV.length+1+shInc+shDed)+'" class="gh auto">ระบบคำนวณให้ (ไม่ต้องกรอก)</th></tr><tr>'+
-   inc.concat(ded).map(function(i){return '<th>'+esc(i.name)+(i.source==='fixed'?'<small>ประจำ</small>':'')+'</th>'}).join('')+autoV.map(function(a){return '<th class="au">'+esc(a[0])+(a[2]?'<small>'+esc(a[2])+'</small>':'')+'</th>'}).join('')+''+(shInc?'<th class="au">รวมรายรับ</th>':'')+(shDed?'<th class="au">รวมรายจ่าย</th>':'')+'<th class="au pg-net">รับสุทธิ</th></tr>'+
+   inc.concat(ded).map(function(i){return '<th'+(i.name.length>22?' class="lg"':'')+'>'+esc(i.name)+(i.source==='fixed'?'<small>ประจำ</small>':'')+'</th>'}).join('')+autoV.map(function(a){return '<th class="au">'+esc(a[0])+(a[2]?'<small>'+esc(a[2])+'</small>':'')+'</th>'}).join('')+''+(shInc?'<th class="au">รวมรายรับ</th>':'')+(shDed?'<th class="au">รวมรายจ่าย</th>':'')+'<th class="au pg-net">รับสุทธิ</th></tr>'+
    /* แถวรวมใต้หัวคอลัมน์ (28 ต.ค. 2569 ผู้ใช้ขอ) · รวมเฉพาะแถวที่แสดง · ช่องที่ยังไม่บันทึกนับตามที่พิมพ์ (อัปเดตทันที) */
    '<tr class="pg-sum"><th class="pg-n">รวม · '+rows.length+' คน</th>'+(absCol?'<th class="num" data-gs="_absent_days"></th>':'')+inc.concat(ded).map(function(i){return '<th class="num" data-gs="'+esc(i.code)+'"></th>'}).join('')+autoV.map(function(a,i){var v=rows.reduce(function(s,x){return s+amt(x,a[1])},0);return '<th class="au num">'+(v?m2(v):'—')+'</th>'}).join('')+
    (shInc?'<th class="au num">'+m2(rows.reduce(function(s,x){return s+x.inc},0))+'</th>':'')+(shDed?'<th class="au num">'+m2(rows.reduce(function(s,x){return s+x.ded},0))+'</th>':'')+'<th class="au num pg-net">'+m2(rows.reduce(function(s,x){return s+x.net},0))+'</th></tr></thead><tbody>'+
@@ -2731,8 +2731,8 @@ function orgForm(r){var t=A.otab,def=OT[t];r=r||{};
 boot();
 })();
 </script>
-<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610291056 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
-(function(){var B='202610291056';if(!/^\d{12}$/.test(B))return;var shown=0;
+<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610291114 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
+(function(){var B='202610291114';if(!/^\d{12}$/.test(B))return;var shown=0;
   function chk(){if(shown||document.hidden)return;fetch('build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=String(t||'').trim();if(!/^\d{12}$/.test(t)||t<=B)return;shown=1;
     var d=document.createElement('div');d.setAttribute('role','status');d.style.cssText='position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:99999;background:#141414;color:#fff;border-radius:999px;padding:8px 8px 8px 18px;display:flex;gap:12px;align-items:center;font:14px "IBM Plex Sans Thai",sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25)';
     d.innerHTML='<span>มีเวอร์ชันใหม่ของระบบ</span><button type="button" style="border:0;border-radius:999px;background:#fff;color:#141414;padding:6px 14px;font:inherit;font-weight:600;cursor:pointer">โหลดใหม่</button>';
