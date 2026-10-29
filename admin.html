@@ -18,7 +18,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js" charset="utf-8"></script>
 <script src="config.js"></script>
-<script src="i18n.js?v=202610290949"></script>
+<script src="i18n.js?v=202610290959"></script>
 <style>
 /* สี Push Media ขาว–ดำ ตามโลโก้ (22 ต.ค. 2569) · สีสถานะ ok/warn/bad คงไว้ */
 :root{--nav:#0B0B0B;--nav2:#1F1F1F;--nav-ink:#C8C8C8;--acc:#111111;--acc-soft:#EDEDED;--bg:#F4F4F4;--sf:#FFFFFF;--sf2:#F8F8F8;--line:#E3E3E3;
@@ -2209,11 +2209,13 @@ function bLv(){var load=function(){var t=dIso(new Date());
 function drawLv(){if(!$('#lv-body'))return;var of=function(r){return ofOk('lv',r.department,r.team)},d=A.lvd.filter(of),adv=(A.lvadv||[]).filter(of),f=A.lvf||'all',c={all:d.length,mine:0,wait:0,hr:0,ok:0,ack:0,adv:adv.length};
   // ไม่อนุมัติ = ในช่วงวันที่เลือก + ใบลาล่วงหน้าที่ไม่อนุมัติ (วันลาเลยวันนี้ เลือกช่วงไม่ถึง)
   var ids={},rej=d.concat((A.lvfut||[]).filter(of)).filter(function(r){if(r.status!=='no'||ids[r.id])return false;ids[r.id]=1;return true});c.no=rej.length;
+  // ยกเลิก (29 ต.ค. 2569) = ในช่วงวันที่เลือก + ใบลาล่วงหน้าที่ถูกยกเลิก
+  var idc={},can=d.concat((A.lvfut||[]).filter(of)).filter(function(r){if(r.status!=='cancel'||idc[r.id])return false;idc[r.id]=1;return true});c.cancel=can.length;
   d.forEach(function(r){if(r.step)c.mine++;if(r.status==='wait'||r.status==='mgr'||r.status==='chg')c.wait++;if(r.status==='hr')c.hr++;if(r.status==='ok')c.ok++;if(r.status==='ok'&&r.need_hr&&!r.hr_ack)c.ack++});
   $('#lv-sub').textContent=d.length+' ใบ'+' · '+rngTxt(A.lva,A.lvb);
-  var rows=f==='adv'?adv:f==='no'?rej:d.filter(function(r){return f==='all'||(f==='mine'&&r.step)||(f==='wait'&&(r.status==='wait'||r.status==='mgr'||r.status==='chg'))||(f==='hr'&&r.status==='hr')||(f==='ok'&&r.status==='ok')||(f==='ack'&&r.status==='ok'&&r.need_hr&&!r.hr_ack)});
+  var rows=f==='adv'?adv:f==='no'?rej:f==='cancel'?can:d.filter(function(r){return f==='all'||(f==='mine'&&r.step)||(f==='wait'&&(r.status==='wait'||r.status==='mgr'||r.status==='chg'))||(f==='hr'&&r.status==='hr')||(f==='ok'&&r.status==='ok')||(f==='ack'&&r.status==='ok'&&r.need_hr&&!r.hr_ack)});
   var sb=function(k,l,n,w){return '<button data-lf="'+k+'" class="'+(w&&n?'w':'')+'" aria-pressed="'+(f===k)+'"><b class="num">'+n+'</b><span>'+l+'</span></button>'};
-  $('#lv-body').innerHTML='<div class="sum">'+sb('all','ทั้งหมด',c.all)+sb('mine','รอคุณพิจารณา',c.mine,1)+sb('wait','รอหัวหน้า',c.wait)+sb('hr','รอ HR อนุมัติ',c.hr,1)+(isHR()?sb('ack','รอ HR รับทราบ',c.ack,1):'')+sb('ok','อนุมัติแล้ว',c.ok)+sb('adv','ลาล่วงหน้า',c.adv)+sb('no','ไม่อนุมัติ',c.no)+'</div>'+
+  $('#lv-body').innerHTML='<div class="sum">'+sb('all','ทั้งหมด',c.all)+sb('mine','รอคุณพิจารณา',c.mine,1)+sb('wait','รอหัวหน้า',c.wait)+sb('hr','รอ HR อนุมัติ',c.hr,1)+(isHR()?sb('ack','รอ HR รับทราบ',c.ack,1):'')+sb('ok','อนุมัติแล้ว',c.ok)+sb('adv','ลาล่วงหน้า',c.adv)+sb('no','ไม่อนุมัติ',c.no)+sb('cancel','ยกเลิกแล้ว',c.cancel)+'</div>'+
    '<section class="card"><div class="tw"><table style="min-width:860px"><thead><tr><th>เลขที่</th><th>พนักงาน</th><th>ประเภท</th><th>วันที่</th><th>วัน</th><th>เหตุผล</th><th>สถานะ</th><th></th></tr></thead><tbody>'+
    (rows.length?rows.map(function(r){var s=LVS[r.status]||[r.status,'b-mute'];return '<tr><td class="num">'+esc(r.req_no)+'</td><td><div style="display:flex;align-items:center;gap:10px">'+av(emp(r.employee_id)||{id:r.employee_id,first_name:r.employee,last_name:''},34)+'<div><b>'+esc(r.code)+'</b> '+esc(r.employee)+'<div class="muted" style="font-size:12px">'+esc(r.department)+'</div></div></div></td><td>'+esc(r.type)+(r.edited?' <span class="badge b-info">แก้ไขแล้ว</span>':'')+'</td><td class="num">'+esc(r.date_from)+(r.date_to!==r.date_from?' – '+esc(r.date_to):'')+'</td><td class="num">'+r.days_total+'</td><td style="max-width:220px;font-size:12.5px">'+esc(r.reason)+'</td><td><span class="badge '+s[1]+'">'+s[0]+'</span>'+(r.need_hr&&r.status==='ok'?(r.hr_ack?' <span class="badge b-ok">HR รับทราบ</span>':' <span class="badge b-warn">รอ HR รับทราบ</span>'):'')+'</td><td style="white-space:nowrap">'+
      (r.step?'<button class="btn sm pri" data-ld="'+r.id+'|ok">อนุมัติ</button> <button class="btn sm" data-ld="'+r.id+'|no">ไม่อนุมัติ</button>':'')+(isHR()&&r.status==='ok'&&r.need_hr&&!r.hr_ack?'<button class="btn sm" data-lack="'+r.id+'">รับทราบ</button>':'')+'</td></tr>'}).join(''):'<tr><td colspan="8" class="muted" style="text-align:center;padding:24px">ไม่มีรายการ</td></tr>')+'</tbody></table></div></section>';
@@ -2728,8 +2730,8 @@ function orgForm(r){var t=A.otab,def=OT[t];r=r||{};
 boot();
 })();
 </script>
-<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610290949 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
-(function(){var B='202610290949';if(!/^\d{12}$/.test(B))return;var shown=0;
+<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610290959 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
+(function(){var B='202610290959';if(!/^\d{12}$/.test(B))return;var shown=0;
   function chk(){if(shown||document.hidden)return;fetch('build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=String(t||'').trim();if(!/^\d{12}$/.test(t)||t<=B)return;shown=1;
     var d=document.createElement('div');d.setAttribute('role','status');d.style.cssText='position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:99999;background:#141414;color:#fff;border-radius:999px;padding:8px 8px 8px 18px;display:flex;gap:12px;align-items:center;font:14px "IBM Plex Sans Thai",sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25)';
     d.innerHTML='<span>มีเวอร์ชันใหม่ของระบบ</span><button type="button" style="border:0;border-radius:999px;background:#fff;color:#141414;padding:6px 14px;font:inherit;font-weight:600;cursor:pointer">โหลดใหม่</button>';
