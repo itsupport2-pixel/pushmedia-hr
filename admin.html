@@ -18,7 +18,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js" charset="utf-8"></script>
 <script src="config.js"></script>
-<script src="i18n.js?v=202610291658"></script>
+<script src="i18n.js?v=202610291725"></script>
 <style>
 /* สี Push Media ขาว–ดำ ตามโลโก้ (22 ต.ค. 2569) · สีสถานะ ok/warn/bad คงไว้ */
 :root{--nav:#0B0B0B;--nav2:#1F1F1F;--nav-ink:#C8C8C8;--acc:#111111;--acc-soft:#EDEDED;--bg:#F4F4F4;--sf:#FFFFFF;--sf2:#F8F8F8;--line:#E3E3E3;
@@ -618,6 +618,8 @@ body.fo{padding-top:36px}body.fo .tb{top:36px}body.fo .side{top:36px;height:calc
 .va-r .btn{flex:none}.va-app{position:fixed;inset:0;z-index:9500;background:rgba(0,0,0,.55);display:grid;place-items:center}.va-ph{width:min(400px,96vw);height:min(840px,94vh);background:#111;border-radius:28px;padding:10px;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.4)}
 .va-hd{display:flex;align-items:center;gap:8px;color:#FCD34D;font-size:12px;padding:2px 8px 8px}.va-hd span{flex:1;min-width:0}.va-hd button{border:0;background:#333;color:#fff;border-radius:99px;width:28px;height:28px;cursor:pointer}.va-ph iframe{flex:1;border:0;border-radius:20px;background:#fff;width:100%}
 [data-maq][hidden]{display:none}
+.imp-ks{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.imp-k{border:1px solid var(--line);border-radius:10px;padding:10px 12px}.imp-k b{display:block;font-size:20px}.imp-k span{font-size:12px;color:var(--mut)}
+.imp-f{display:flex;flex-wrap:wrap;gap:6px}.imp-f span{border:1px solid var(--line);border-radius:99px;padding:3px 10px;font-size:12.5px}.imp-l{max-height:160px;overflow:auto;font-size:12.5px;border:1px solid var(--line);border-radius:8px;padding:6px 10px}
 .ma-r{display:flex;gap:10px;align-items:center;padding:8px 6px;border-bottom:1px solid var(--line);cursor:pointer}.ma-r small{display:block;color:var(--fnt);font-size:12px}.ma-r input:disabled+img,.ma-r input:disabled~span{opacity:.75}
 .py-raw{display:block;font-size:11px;color:var(--fnt);font-weight:400}.py-rd{color:#1E7A45}.py-rd.n{color:#B3261E}
 .py-t thead tr.py-sum th{background:#F4F8FE;color:var(--fg);font-weight:700;font-size:12.5px;border-top:1px solid var(--line)}.py-t thead tr.py-sum th.ic{color:#1E7A45}.py-t thead tr.py-sum th.dc{color:#B3261E}   /* แถวรวมใต้หัว แบบตารางกรอก (29 ต.ค. 2569) */.py-t th.py-ic{white-space:normal;min-width:96px;max-width:170px;line-height:1.3}.py-t th.ki{background:#EEF8F1;color:#1E7A45}.py-t th.kd{background:#FCEFEE;color:#B3261E}.py-t td.ic{color:#1E7A45}.py-t td.dc{color:#B3261E}   /* หัวยาวขึ้นบรรทัดใหม่ · ชื่อยาว = กว้างขึ้นให้จบใน 2 บรรทัด (29 ต.ค. 2569) */.pg-t th small{display:block;font-weight:400;color:var(--fnt);font-size:10.5px}
@@ -960,6 +962,30 @@ function boot(){var va=ss('hr_va');if(va){if(va.exp>Date.now()&&store('hr_tok'))
   aCall('adminBootstrap',A.view==='dash').then(function(d){if(!d||!d.me)throw new Error('โหลดข้อมูลไม่สำเร็จ ลองใหม่อีกครั้ง');A.d=d;try{store('hr_who',d.me.code||d.me.id||'')}catch(e){}if(d.dash){A.db=d.dash;A.dbAt=Date.now()}ss('hr_boot',d);
     if(!c||['dash','list'].indexOf(A.view)>=0)render();else updNav()}).catch(function(e){if(A.tok&&!c)$('#app').innerHTML='<div class="loading">'+esc(e.message)+' <button class="btn" onclick="location.reload()">ลองใหม่</button></div>'})}
 function updNav(){var a=$('.side a[data-nav="appr"]');if(!a)return;var dot=$('#tb-bell .dot'),pn=(A.d.pendingCount||0)+A.d.linkRequests.length;if(pn&&!dot&&$('#tb-bell'))$('#tb-bell').insertAdjacentHTML('beforeend','<span class="dot"></span>');else if(!pn&&dot)dot.remove();var n=(A.d.pendingCount||0)+A.d.linkRequests.length,c=a.querySelector('.cnt');if(n){if(!c){c=document.createElement('span');c.className='cnt';a.appendChild(c)}c.textContent=n}else if(c)c.remove()}
+/* ── นำเข้าพนักงานจาก Excel (29 ต.ค. 2569 ผู้ใช้ขอ) · อ่านไฟล์ในเบราว์เซอร์ (ไม่อัปโหลดไฟล์) → ดูตัวอย่าง → ยืนยันจึงบันทึก
+ * รองรับไฟล์ "Employee Master … กรองแล้ว.xlsx": แผ่น "ทำงานอยู่ (นำเข้า)" + "ลาออกแล้ว" (หัวตารางแถวที่มีคำว่า รหัสพนักงาน) */
+function empImport(){var fi=document.createElement('input');fi.type='file';fi.accept='.xlsx,.xls';fi.hidden=true;document.body.appendChild(fi);fi.onchange=function(){var f=fi.files[0];fi.remove();if(!f)return;toast('กำลังอ่านไฟล์…');
+  f.arrayBuffer().then(function(buf){return pyXlsx().then(function(X){var wb=X.read(buf,{type:'array'}),rows=[];
+    wb.SheetNames.forEach(function(sn){if(/สรุป|ต้องตรวจ/.test(sn))return;var a=X.utils.sheet_to_json(wb.Sheets[sn],{header:1,raw:false,defval:''}),hi=-1;
+      for(var i=0;i<Math.min(6,a.length);i++){if(a[i].map(function(x){return String(x).trim()}).indexOf('รหัสพนักงาน')>=0){hi=i;break}}if(hi<0)return;
+      var H=a[hi].map(function(x){return String(x).trim()}),g=function(r,k){var j=H.indexOf(k);return j<0?'':String(r[j]==null?'':r[j]).trim()},res=/ลาออก/.test(sn);
+      a.slice(hi+1).forEach(function(r){var code=g(r,'รหัสพนักงาน');if(!code)return;rows.push({code:code,status:g(r,'สถานะ (ระบบ)')||(res?'ลาออก':''),company:g(r,'บริษัท'),title:g(r,'คำนำหน้า'),first:g(r,'ชื่อ'),last:g(r,'นามสกุล'),nickname:g(r,'ชื่อเล่น'),
+        phone:g(r,'มือถือ'),email:g(r,'อีเมล'),position:g(r,'ตำแหน่ง'),dept:g(r,'แผนก (ฝ่าย)'),team:g(r,'ทีม (แผนก)'),start:g(r,'วันเริ่มงาน'),last_day:g(r,'วันทำงานวันสุดท้าย')||g(r,'วันลาออก (มีผล)'),
+        id_card:g(r,'เลขบัตรประชาชน'),bank_name:g(r,'ธนาคาร'),bank_account:g(r,'เลขที่บัญชี'),address:g(r,'ที่อยู่ทะเบียนบ้าน')||g(r,'ที่อยู่ปัจจุบัน')})})});
+    if(!rows.length)throw new Error('ไม่พบแผ่นงานที่มีคอลัมน์ "รหัสพนักงาน" · ใช้ไฟล์ Employee Master ที่กรองแล้ว');
+    return aCall('importEmployeesXlsx',rows,false).then(function(r){empImportView(rows,r,f.name)})})}).catch(function(e){toast(e.message,1)})};fi.click()}
+function empImportView(rows,r,fname){var FL={title:'คำนำหน้า',first_name:'ชื่อ',last_name:'นามสกุล',nickname:'ชื่อเล่น',phone:'มือถือ',email:'อีเมล',company_id:'บริษัท',department_id:'แผนก',team_id:'ทีม',position_id:'ตำแหน่ง',start_date:'วันเริ่มงาน',status:'สถานะ',bank_account:'เลขบัญชี (เติมที่ว่าง)',id_card:'เลขบัตร (เติมที่ว่าง)',tax_address:'ที่อยู่ (เติมที่ว่าง)',last_day:'วันทำงานวันสุดท้าย (เติมที่ว่าง)'};
+  var li=function(t,a){return a.length?'<h4 style="margin:14px 0 6px">'+t+' ('+a.length+')</h4><div class="imp-l">'+a.map(function(x){return '<div>'+esc(x)+'</div>'}).join('')+'</div>':''};
+  var kpi=function(l,v){return '<div class="imp-k"><b class="num">'+v+'</b><span>'+l+'</span></div>'};
+  drawer('นำเข้าพนักงาน · ตรวจก่อนบันทึก','<p class="muted" style="margin-top:0">ไฟล์ '+esc(fname)+' · '+rows.length+' แถว · ยังไม่ได้บันทึก · จับคู่ด้วยรหัสพนักงาน · ไม่ลบใคร · ไม่แตะบทบาท เวลาทำงาน LINE และสายอนุมัติ · เลขบัตร / บัญชี / ที่อยู่ เติมเฉพาะช่องที่ยังว่าง</p>'+
+    '<div class="imp-ks">'+kpi('เพิ่มใหม่',r.add)+kpi('อัปเดต',r.update)+kpi('ไม่เปลี่ยน',r.same)+kpi('ลาออก (ในไฟล์)',r.resigned)+'</div>'+
+    (Object.keys(r.fields).length?'<h4 style="margin:14px 0 6px">ช่องที่จะเปลี่ยน</h4><div class="imp-f">'+Object.keys(r.fields).map(function(k){return '<span>'+esc(FL[k]||k)+' <b>'+r.fields[k]+'</b></span>'}).join('')+'</div>':'')+
+    li('แผนกที่จะสร้างใหม่',r.made.departments)+li('ทีมที่จะสร้างใหม่',r.made.teams)+li('ตำแหน่งที่จะสร้างใหม่',r.made.positions)+li('ข้าม',r.skipped)+li('คำเตือน',r.warn)+
+    (r.changes.length?'<h4 style="margin:14px 0 6px">รายการ ('+r.changes.length+(r.changes.length>=400?'+':'')+')</h4><div class="tw"><table class="py-t sm"><thead><tr><th>รหัส</th><th>ชื่อ</th><th>เปลี่ยน</th></tr></thead><tbody>'+r.changes.map(function(c){return '<tr><td class="mono">'+esc(c.code)+'</td><td>'+esc(c.name)+'</td><td>'+esc(c.fields.map(function(k){return FL[k]||k}).join(' · '))+'</td></tr>'}).join('')+'</tbody></table></div>':''),
+    '<button class="btn" id="imx">ยกเลิก</button><button class="btn pri" id="imok"'+(r.add+r.update+Object.keys(r.fields).length?'':' disabled')+'>บันทึก · เพิ่ม '+r.add+' · อัปเดต '+r.update+'</button>');
+  $('.drw').classList.add('wide');$('#imx').onclick=closeD;
+  $('#imok').onclick=function(){var b=this;ask({title:'นำเข้าพนักงาน?',desc:'เพิ่มใหม่ '+r.add+' คน · อัปเดต '+r.update+' คน · บันทึกใน Audit Log',buttons:[{k:'no',label:'ยกเลิก'},{k:'yes',label:'นำเข้า',cls:'pri'}]}).then(function(k){if(k!=='yes')return;busy(b,1);
+    aCall('importEmployeesXlsx',rows,true).then(function(x){closeD();toast('นำเข้าแล้ว · เพิ่ม '+x.add+' · อัปเดต '+x.update+' คน');return reload()}).catch(function(e){busy(b,0);toast(e.message,1)})})}}
 function reload(keep){return aCall('adminBootstrap').then(function(d){if(!d||!d.me)return;d.dash=A.db;A.d=d;ss('hr_boot',d);if(keep!==false)render();else updNav()})}
 
 /* ───────── shell ───────── */
@@ -2419,7 +2445,7 @@ function vList(){
   var sc=acc('emp'),tms=sc==='dept'?A.d.org.teams.filter(function(t){return t.active!=='FALSE'&&cur.some(function(e){return e.team_id===t.id})}):[];
   var bar=isHR()?'':'<div class="scb"><span class="i">i</span><div><b>แสดงเฉพาะ'+esc(scopeTxt('emp'))+' ('+cur.length+' คน)</b><small>ดูข้อมูลได้ตามขอบเขตที่ HR กำหนด'+(acc('edit')==='none'?' · แก้ข้อมูลพนักงานได้เฉพาะ HR':'')+' · เลขบัญชีเห็นเฉพาะ HR</small></div></div>'+
     (tms.length>1?'<div class="tchips" role="group" aria-label="กรองตามทีม"><button data-team="all" aria-pressed="'+(A.team==='all')+'">ทุกทีม · '+cur.length+'</button>'+tms.map(function(t){return '<button data-team="'+t.id+'" aria-pressed="'+(A.team===t.id)+'">'+esc(t.name)+' · '+cur.filter(function(e){return e.team_id===t.id}).length+'</button>'}).join('')+'</div>':'');
-  return '<div class="ph"><div><h1>พนักงาน</h1><div class="sub">'+cur.length+' คน'+(nres?' · ลาออก '+nres+' คน (ดูได้ที่ตัวกรองสถานะ)':'')+(isHR()?'':' · '+esc(scopeTxt('emp')))+'</div></div><span class="sp"></span><div class="evs" role="group" aria-label="มุมมอง"><button data-ev="table" aria-pressed="'+(A.ev!=='card')+'">ตาราง</button><button data-ev="card" aria-pressed="'+(A.ev==='card')+'">การ์ด</button></div>'+(isHR()?'<button class="btn pri" id="add">+ เพิ่มพนักงาน</button>':'')+'</div>'+bar+
+  return '<div class="ph"><div><h1>พนักงาน</h1><div class="sub">'+cur.length+' คน'+(nres?' · ลาออก '+nres+' คน (ดูได้ที่ตัวกรองสถานะ)':'')+(isHR()?'':' · '+esc(scopeTxt('emp')))+'</div></div><span class="sp"></span><div class="evs" role="group" aria-label="มุมมอง"><button data-ev="table" aria-pressed="'+(A.ev!=='card')+'">ตาราง</button><button data-ev="card" aria-pressed="'+(A.ev==='card')+'">การ์ด</button></div>'+(isHR()?'<button class="btn" id="imp" data-tip="นำเข้าจากไฟล์ Employee Master ที่กรองแล้ว · ดูตัวอย่างก่อนบันทึก">นำเข้า Excel</button><button class="btn pri" id="add">+ เพิ่มพนักงาน</button>':'')+'</div>'+bar+
    '<div class="sum">'+sb('all','all','ทั้งหมด',c.all)+sb('line','none','ยังไม่เชื่อม LINE',c.no,1)+sb('line','wait','รอยืนยัน LINE',c.wait,1)+sb('chk','none-set','ยังไม่ระบุการลงเวลา',c.chk,1)+sb('st','probation','ทดลองงาน',c.prob)+'</div>'+
    '<div class="tools"><input id="q" placeholder="ค้นหา ชื่อ ชื่อเล่น รหัส ทีม ตำแหน่ง เบอร์ อีเมล" value="'+esc(A.q)+'" aria-label="ค้นหา">'+
    (sc==='all'?'<select id="fd" aria-label="แผนก"><option value="all">ทุกแผนก</option>'+A.d.org.departments.filter(function(d){return d.active!=='FALSE'}).map(function(d){return '<option value="'+d.id+'"'+(A.dept===d.id?' selected':'')+'>'+esc(d.name)+'</option>'}).join('')+'</select>':'')+
@@ -2464,7 +2490,7 @@ function bList(){
   $$('tr.ck,.ec.ck').forEach(function(tr){tr.onclick=function(ev){if(ev.target.closest('[data-no]'))return;go('profile',tr.dataset.id)}});
   $$('[data-sel]').forEach(function(c){c.onchange=function(){var id=c.dataset.sel;A.sel=c.checked?A.sel.concat(id):A.sel.filter(function(x){return x!==id});render()}});
   var sa=$('#sa');if(sa)sa.onchange=function(){var ids=$$('[data-sel]').map(function(c){return c.dataset.sel});A.sel=sa.checked?A.sel.concat(ids.filter(function(i){return A.sel.indexOf(i)<0})):A.sel.filter(function(x){return ids.indexOf(x)<0});render()};
-  if($('#add'))$('#add').onclick=function(){go('form')};if($('#inv'))$('#inv').onclick=function(){invite(A.sel)};if($('#clr'))$('#clr').onclick=function(){A.sel=[];render()};
+  if($('#add'))$('#add').onclick=function(){go('form')};if($('#imp'))$('#imp').onclick=empImport;if($('#inv'))$('#inv').onclick=function(){invite(A.sel)};if($('#clr'))$('#clr').onclick=function(){A.sel=[];render()};
   if($('#pp'))$('#pp').onclick=function(){A.page--;render()};if($('#pn'))$('#pn').onclick=function(){A.page++;render()};if($('#rs'))$('#rs').onclick=function(){A.q='';A.dept=A.chk=A.line='all';A.st='cur';render()};
 }
 
@@ -2909,8 +2935,8 @@ function orgForm(r){var t=A.otab,def=OT[t];r=r||{};
 boot();
 })();
 </script>
-<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610291658 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
-(function(){var B='202610291658';if(!/^\d{12}$/.test(B))return;var shown=0;
+<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610291725 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
+(function(){var B='202610291725';if(!/^\d{12}$/.test(B))return;var shown=0;
   function chk(){if(shown||document.hidden)return;fetch('build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=String(t||'').trim();if(!/^\d{12}$/.test(t)||t<=B)return;shown=1;
     var d=document.createElement('div');d.setAttribute('role','status');d.style.cssText='position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:99999;background:#141414;color:#fff;border-radius:999px;padding:8px 8px 8px 18px;display:flex;gap:12px;align-items:center;font:14px "IBM Plex Sans Thai",sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25)';
     d.innerHTML='<span>มีเวอร์ชันใหม่ของระบบ</span><button type="button" style="border:0;border-radius:999px;background:#fff;color:#141414;padding:6px 14px;font:inherit;font-weight:600;cursor:pointer">โหลดใหม่</button>';
