@@ -14290,7 +14290,7 @@ function _hideLineLoading() {
   var photo = function (p) { return /^hrphoto:/.test(p || '') ? (HR.backend === 'cf' ? String(API).replace(/\/+$/, '') + '/photo/' + p.slice(8) : '') : (p || ''); };
   function hrCall(action, params) {
     if (!H.tok) return Promise.resolve({ ok: false, error: 'ยังไม่ได้เข้าสู่ระบบ' });
-    return fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ fn: 'wtm', args: [H.tok, action, params || {}] }) })
+    return fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ fn: 'wtm', args: [H.tok, action, params || {}], _c: { a: 'planner' } }) })
       .then(function (r) { return r.text(); }).then(function (t) {
         var j; try { j = JSON.parse(t); } catch (e) { return { ok: false, error: 'เชื่อมต่อเซิร์ฟเวอร์ไม่สำเร็จ' }; }
         if (!j.ok) { if (j.error === 'SESSION_EXPIRED') { try { window.top.location.href = 'admin.html'; } catch (e) {} } return { ok: false, error: j.error }; }
