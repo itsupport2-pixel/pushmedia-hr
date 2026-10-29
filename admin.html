@@ -18,7 +18,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js" charset="utf-8"></script>
 <script src="config.js"></script>
-<script src="i18n.js?v=202610291649"></script>
+<script src="i18n.js?v=202610291655"></script>
 <style>
 /* สี Push Media ขาว–ดำ ตามโลโก้ (22 ต.ค. 2569) · สีสถานะ ok/warn/bad คงไว้ */
 :root{--nav:#0B0B0B;--nav2:#1F1F1F;--nav-ink:#C8C8C8;--acc:#111111;--acc-soft:#EDEDED;--bg:#F4F4F4;--sf:#FFFFFF;--sf2:#F8F8F8;--line:#E3E3E3;
@@ -1645,13 +1645,18 @@ function pyExcel(R,co){if(co===undefined)co=pyCo();var CO=co&&pyCos().filter(fun
  * บรรทัด 1 = จำนวนรายการ + ยอดรวม · บรรทัด 2 = หัวคอลัมน์ · ต่อด้วย 1 บรรทัดต่อ 1 รายการ · คนที่ไม่อยู่ในไฟล์ (ธนาคารอื่น/ไม่มีบัญชี) แจ้งในหน้าต่างก่อนดาวน์โหลด */
 /* ไฟล์โอนกสิกร = Excel แบบ K BIZ "Template Upload Payroll" (29 ต.ค. 2569 · ตามไฟล์จริงที่ผู้ใช้อัปโหลดเข้า K BIZ: KBIZTemplateUploadPayroll PM 10.69.xlsx)
  * แผ่นงาน Transaction Upload · A1/C1 ป้ายรวม + B1 =COUNTA · D1 =SUM · แถว 3 หัวคอลัมน์ 2 ภาษา · ข้อมูลเริ่มแถว 4: A =IF(B<>"","004","") · B เลขบัญชี (ข้อความ) · C ชื่อ (ไม่มีคำนำหน้า) · D จำนวนเงิน #,##0.00 · E วันที่เงินเข้า DD/MM/YYYY (ข้อความ) */
+/* สีตามไฟล์จริง (29 ต.ค. 2569 ผู้ใช้ขอ): Tahoma 10 · ป้าย/หัวคอลัมน์ เขียว 00B050 ตัวหนา · ช่องยอดรวม เทา A5A5A5 ตัวหนา · A/E ข้อมูล เทา A5A5A5 · B–D ข้อมูล เทาอ่อน F2F2F2 · ขอบดำบาง · กึ่งกลาง ตัดบรรทัด */
+var KB_B={style:'thin',color:{rgb:'000000'}},KB_S=function(fill,bold){return {font:{name:'Tahoma',sz:10,bold:!!bold,color:{rgb:'000000'}},fill:{patternType:'solid',fgColor:{rgb:fill}},border:{top:KB_B,bottom:KB_B,left:KB_B,right:KB_B},alignment:{horizontal:'center',vertical:'center',wrapText:true}}};
+var KB_ST={lab:KB_S('00B050',1),tot:KB_S('A5A5A5',1),hd:KB_S('00B050',1),grey:KB_S('A5A5A5'),data:KB_S('F2F2F2')};
+/* ตัวเขียน Excel ที่ใส่สี/ขอบได้ (xlsx-js-style 1.2.0 · Apache-2.0 · xlsx-style.min.js · ผู้ใช้อนุญาต 29 ต.ค. 2569) · โหลดเมื่อกดเท่านั้น · ไม่ทับ XLSX ตัวเดิม */
+function pyXlsxS(){if(window.XLSXS)return Promise.resolve(window.XLSXS);return new Promise(function(ok,no){var prev=window.XLSX,sc=document.createElement('script');sc.src='xlsx-style.min.js';sc.onload=function(){window.XLSXS=window.XLSX;if(prev)window.XLSX=prev;ok(window.XLSXS)};sc.onerror=function(){no(new Error('โหลดตัวสร้าง Excel ไม่สำเร็จ'))};document.head.appendChild(sc)})}
 function pyBank(R,co){aCall('payBankFile',R.run.id,co||pyDco()).then(function(f){var cs=f.company?f.company.short:'',ab=f.company?coIni(f.company):'';var d=f.pay_date,eff=d.slice(8,10)+'/'+d.slice(5,7)+'/'+d.slice(0,4);
   var mo=(+f.ym.slice(5,7))+'.'+String(+f.ym.slice(0,4)+543).slice(-2),fn='KBIZTemplateUploadPayroll '+(ab?ab+' ':'')+mo+'.xlsx';
-  var go2=function(){pyXlsx().then(function(X){var n=f.kbank.length,last=Math.max(4,n+3),ws={},put=function(a,c){ws[a]=c};
+  var go2=function(){pyXlsxS().then(function(X){var n=f.kbank.length,last=Math.max(4,n+3),ws={},put=function(a,c){var r=+a.slice(1),st=r===1?(/^[AC]/.test(a)?'lab':'tot'):r===3?'hd':(/^[AE]/.test(a)?'grey':'data');c.s=Object.assign({},KB_ST[st],c.z?{numFmt:c.z}:{});ws[a]=c};
       put('A1',{t:'s',v:'Total No. of Transaction / จำนวนรายการทั้งหมด '});put('B1',{t:'n',f:'COUNTA(B4:B'+last+')',v:n});put('C1',{t:'s',v:'Total Amount / จำนวนเงินทั้งหมด '});put('D1',{t:'n',f:'SUM(D4:D'+last+')',v:f.total,z:'#,##0.00'});
       ['Bank Code / \nรหัสธนาคาร','Account number / \nเลขบัญชีรับเงิน','Account name / \nชื่อบัญชีรับเงิน','Amount/ \nจำนวนเงิน','Effective Date /\nวันที่เงินเข้าบัญชี\n(DD/MM/YYYY) '].forEach(function(h,k){put('ABCDE'[k]+'3',{t:'s',v:h})});
       f.kbank.forEach(function(x,k){var r=k+4;put('A'+r,{t:'s',f:'IF(B'+r+'<>"","004","")',v:'004'});put('B'+r,{t:'s',v:x.account,z:'@'});put('C'+r,{t:'s',v:x.name});put('D'+r,{t:'n',v:x.amount,z:'#,##0.00'});put('E'+r,{t:'s',v:eff,z:'@'})});
-      ws['!ref']='A1:E'+last;ws['!cols']=[{wch:30},{wch:20},{wch:30},{wch:20},{wch:20}];
+      ws['!ref']='A1:E'+last;ws['!cols']=[{wch:29.82},{wch:19.82},{wch:29.82},{wch:19.82},{wch:19.82}];ws['!rows']=[{hpt:39.75},{hpt:15},{hpt:39.75}].concat(f.kbank.map(function(){return {hpt:15}}));
       var wb=X.utils.book_new();X.utils.book_append_sheet(wb,ws,'Transaction Upload');X.writeFile(wb,fn);toast('ดาวน์โหลดแล้ว · '+n+' รายการ · '+m2(f.total)+' บาท')}).catch(function(e){toast(e.message,1)})};
   ask({title:'ไฟล์โอนกสิกร (K BIZ)'+(cs?' · '+cs:''),desc:f.kbank.length+' รายการ · ยอดรวม '+m2(f.total)+' บาท · วันที่เงินเข้า '+eff+' · Excel แบบ K BIZ Template Upload Payroll · ไฟล์มีเลขบัญชีเต็ม (บันทึกใน Audit Log) เก็บในที่ปลอดภัย'+(f.other.length?' · จ่ายแยก '+f.other.length+' คน (ไม่อยู่ในไฟล์):':''),
     list:f.other.map(function(x){return [x.code+' '+x.name,x.why,m2(x.amount)]}),tone:'warn',buttons:[{k:'no',label:'ยกเลิก'},{k:'yes',label:'ดาวน์โหลด Excel',cls:'pri'}]}).then(function(k){if(k==='yes')go2()})}).catch(function(e){toast(e.message,1)})}
@@ -2904,8 +2909,8 @@ function orgForm(r){var t=A.otab,def=OT[t];r=r||{};
 boot();
 })();
 </script>
-<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610291649 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
-(function(){var B='202610291649';if(!/^\d{12}$/.test(B))return;var shown=0;
+<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610291655 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
+(function(){var B='202610291655';if(!/^\d{12}$/.test(B))return;var shown=0;
   function chk(){if(shown||document.hidden)return;fetch('build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=String(t||'').trim();if(!/^\d{12}$/.test(t)||t<=B)return;shown=1;
     var d=document.createElement('div');d.setAttribute('role','status');d.style.cssText='position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:99999;background:#141414;color:#fff;border-radius:999px;padding:8px 8px 8px 18px;display:flex;gap:12px;align-items:center;font:14px "IBM Plex Sans Thai",sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25)';
     d.innerHTML='<span>มีเวอร์ชันใหม่ของระบบ</span><button type="button" style="border:0;border-radius:999px;background:#fff;color:#141414;padding:6px 14px;font:inherit;font-weight:600;cursor:pointer">โหลดใหม่</button>';
