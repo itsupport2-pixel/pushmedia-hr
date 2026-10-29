@@ -18,7 +18,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js" charset="utf-8"></script>
 <script src="config.js"></script>
-<script src="i18n.js?v=202610291403"></script>
+<script src="i18n.js?v=202610291412"></script>
 <style>
 /* สี Push Media ขาว–ดำ ตามโลโก้ (22 ต.ค. 2569) · สีสถานะ ok/warn/bad คงไว้ */
 :root{--nav:#0B0B0B;--nav2:#1F1F1F;--nav-ink:#C8C8C8;--acc:#111111;--acc-soft:#EDEDED;--bg:#F4F4F4;--sf:#FFFFFF;--sf2:#F8F8F8;--line:#E3E3E3;
@@ -601,6 +601,10 @@ body.fo{padding-top:36px}body.fo .tb{top:36px}body.fo .side{top:36px;height:calc
 .pg-t th{position:sticky;top:0;background:#F7F7F7;z-index:2;font-weight:600;color:var(--mut);font-size:11.5px;padding:7px 8px;border-bottom:1px solid var(--line);border-right:1px solid #EFEFEF;white-space:nowrap;text-align:center}
 .pg-t thead tr:nth-child(2) th{top:31px}.pg-t thead tr:nth-child(2) th{white-space:normal;min-width:112px;max-width:170px;line-height:1.3;vertical-align:middle}.pg-t thead tr:nth-child(2) th.lg{min-width:200px;max-width:220px}.pg-t thead tr:nth-child(2) th.ki{background:#EEF8F1;color:#1E7A45}.pg-t thead tr:nth-child(2) th.kd{background:#FCEFEE;color:#B3261E}.pg-t thead tr:nth-child(2) th.ki small,.pg-t thead tr:nth-child(2) th.kd small{color:inherit;opacity:.7}   /* หัวรายรับเขียว · รายจ่ายแดง (29 ต.ค. 2569) */
 .py-t tr.ck td:first-child{min-width:170px}#mp-map{isolation:isolate}   /* Leaflet z-index ไม่ทับ drawer/เมนู (29 ต.ค. 2569) */
+#va-bar{position:fixed;left:0;right:0;top:0;z-index:9000;background:#F59E0B;color:#1F1300;font-size:13px;display:flex;align-items:center;justify-content:center;gap:14px;padding:7px 14px;box-shadow:0 2px 8px rgba(0,0,0,.15)}#va-bar button{border:0;border-radius:99px;background:#1F1300;color:#fff;padding:5px 14px;font:inherit;font-weight:600;cursor:pointer}body.va-on{padding-top:38px}body.va-on .side{top:38px;height:calc(100vh - 38px)}
+.va-r .btn{flex:none}.va-app{position:fixed;inset:0;z-index:9500;background:rgba(0,0,0,.55);display:grid;place-items:center}.va-ph{width:min(400px,96vw);height:min(840px,94vh);background:#111;border-radius:28px;padding:10px;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.va-hd{display:flex;align-items:center;gap:8px;color:#FCD34D;font-size:12px;padding:2px 8px 8px}.va-hd span{flex:1;min-width:0}.va-hd button{border:0;background:#333;color:#fff;border-radius:99px;width:28px;height:28px;cursor:pointer}.va-ph iframe{flex:1;border:0;border-radius:20px;background:#fff;width:100%}
+[data-maq][hidden]{display:none}
 .ma-r{display:flex;gap:10px;align-items:center;padding:8px 6px;border-bottom:1px solid var(--line);cursor:pointer}.ma-r small{display:block;color:var(--fnt);font-size:12px}.ma-r input:disabled+img,.ma-r input:disabled~span{opacity:.75}
 .py-raw{display:block;font-size:11px;color:var(--fnt);font-weight:400}.py-rd{color:#1E7A45}.py-rd.n{color:#B3261E}
 .py-t thead tr.py-sum th{background:#F4F8FE;color:var(--fg);font-weight:700;font-size:12.5px;border-top:1px solid var(--line)}.py-t thead tr.py-sum th.ic{color:#1E7A45}.py-t thead tr.py-sum th.dc{color:#B3261E}   /* แถวรวมใต้หัว แบบตารางกรอก (29 ต.ค. 2569) */.py-t th.py-ic{white-space:normal;min-width:96px;max-width:170px;line-height:1.3}.py-t th.ki{background:#EEF8F1;color:#1E7A45}.py-t th.kd{background:#FCEFEE;color:#B3261E}.py-t td.ic{color:#1E7A45}.py-t td.dc{color:#B3261E}   /* หัวยาวขึ้นบรรทัดใหม่ · ชื่อยาว = กว้างขึ้นให้จบใน 2 บรรทัด (29 ต.ค. 2569) */.pg-t th small{display:block;font-weight:400;color:var(--fnt);font-size:10.5px}
@@ -695,7 +699,7 @@ function post(fn,args,n){return fetch(API,{method:'POST',headers:{'Content-Type'
   .catch(function(e){if(!n&&READ_FN.test(fn))return new Promise(function(r){setTimeout(r,900)}).then(function(){return post(fn,args,1)});if(fn!=='backupInfo')foCheck();throw new Error('เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ (อินเทอร์เน็ตหรือเซิร์ฟเวอร์สะดุดชั่วคราว) กรุณากดรีเฟรชอีกครั้ง')})}
 function call(fn){var args=Array.prototype.slice.call(arguments,1);
   return post(fn,args,0).then(function(r){return r.text()})
-   .then(function(t){var j;try{j=JSON.parse(t)}catch(e){foCheck();throw new Error('เชื่อมต่อเซิร์ฟเวอร์ไม่สำเร็จ')}if(!j.ok){if(FO_RE.test(j.error||''))foCheck();if(j.error==='SESSION_EXPIRED'){store('hr_tok',null);A.tok=null;toast('หมดเวลาการใช้งาน กรุณาเข้าสู่ระบบใหม่',1);renderLogin()}throw new Error(j.error)}return j.r})}
+   .then(function(t){var j;try{j=JSON.parse(t)}catch(e){foCheck();throw new Error('เชื่อมต่อเซิร์ฟเวอร์ไม่สำเร็จ')}if(!j.ok){if(FO_RE.test(j.error||''))foCheck();if(j.error==='SESSION_EXPIRED'&&ss('hr_va')){vaExit('หมดเวลาดูในมุมมอง (30 นาที) · กลับเป็นบัญชีของคุณแล้ว');throw new Error(j.error)}if(j.error==='SESSION_EXPIRED'){store('hr_tok',null);A.tok=null;toast('หมดเวลาการใช้งาน กรุณาเข้าสู่ระบบใหม่',1);renderLogin()}throw new Error(j.error)}return j.r})}
 function aCall(fn){return call.apply(null,[fn,A.tok].concat(Array.prototype.slice.call(arguments,1)))}
 /* หน้าต่างยืนยันของระบบ (แทน confirm() ของเบราว์เซอร์ · Figma 310:5751) → Promise คืนค่า k ของปุ่มที่กด · Esc / คลิกนอกกล่อง = ปุ่มที่ไม่มี cls (ยกเลิก/อยู่หน้านี้) */
 function ask(o){return new Promise(function(res){var prev=document.activeElement,w=document.createElement('div');w.className='ask-w';
@@ -880,8 +884,27 @@ function loginWith(idt){call('loginLine',idt).then(function(r){if(!r.linked){$('
 function done(tok){A.tok=tok;store('hr_tok',tok);boot()}
 /* เปิดหน้าเร็ว: แสดงข้อมูลชุดล่าสุดของแท็บนี้ทันที (sessionStorage · ปิดแท็บ/ออกจากระบบ = ล้าง) แล้วโหลดของใหม่ทับ
  * หน้าแรกเรียกเซิร์ฟเวอร์ครั้งเดียว (adminBootstrap รวม Dashboard) */
+/* ── View as · ดูในมุมมองของพนักงาน (29 ต.ค. 2569 ผู้ใช้ขอ) · เฉพาะผู้ดูแลระบบ · อ่านอย่างเดียว (เซิร์ฟเวอร์ตรวจ) · 30 นาที · Audit Log
+ * หลังบ้าน: token มุมมองเก็บใน sessionStorage 'hr_va' (บัญชีจริงยังอยู่ใน hr_tok) · แอป LINE: เปิด liff.html?viewas= ในกรอบมือถือ */
+function vaPick(){drawer('ดูในมุมมองของพนักงาน','<div class="loading"><span class="spin"></span>กำลังโหลด…</div>');aCall('mapAccess').then(function(d){
+  var row=function(p){return '<div class="ma-r va-r" data-maq="'+esc((p.code+' '+p.name+' '+p.nickname+' '+p.dept+' '+(ROLE[p.role]||p.role)).toLowerCase())+'">'+av(p,28)+'<span style="flex:1;min-width:0"><b>'+esc(p.code)+' '+esc(p.name)+(p.nickname?' ('+esc(p.nickname)+')':'')+'</b><small>'+esc(p.dept||'—')+' · '+esc(ROLE[p.role]||p.role)+'</small></span><button class="btn sm" data-va="'+p.id+'|web">หลังบ้าน</button><button class="btn sm" data-va="'+p.id+'|app">แอป LINE</button></div>'};
+  $('#ov .cb').innerHTML='<p class="muted" style="margin-top:0">เปิดหน้าเว็บ / แอป LINE แบบที่พนักงานคนนั้นเห็น เพื่อตรวจเมนูและสิทธิ์ · <b>ดูได้อย่างเดียว</b> (บันทึก อนุมัติ ลงเวลาไม่ได้) · 30 นาที · บันทึกใน Audit Log</p><input type="search" id="va-q" class="amp-in" placeholder="ค้นหา ชื่อ / รหัส / แผนก / บทบาท" style="width:100%;margin-bottom:8px"><div>'+d.people.map(row).join('')+'</div>';loadPhotos();
+  $('#va-q').oninput=function(){var q=this.value.trim().toLowerCase();$$('[data-maq]').forEach(function(r){r.hidden=!!q&&r.dataset.maq.indexOf(q)<0})};$('#va-q').focus();
+  $$('[data-va]').forEach(function(b){b.onclick=function(){var x=b.dataset.va.split('|');busy(b,1);aCall('viewAs',x[0]).then(function(r){busy(b,0);closeD();
+    if(x[1]==='app')return vaApp(r);ss('hr_va',{token:r.token,exp:r.exp,me:r.me});ss('hr_boot',null);A.view='dash';location.hash='';location.reload()}).catch(function(e){busy(b,0);toast(e.message,1)})}})
+}).catch(function(e){$('#ov .cb').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})}
+function vaExit(msg){ss('hr_va',null);ss('hr_boot',null);if(msg)try{sessionStorage.setItem('hr_va_msg',msg)}catch(e){}location.hash='';location.reload()}
+function vaBar(){var va=ss('hr_va'),b=document.getElementById('va-bar');try{var mg=sessionStorage.getItem('hr_va_msg');if(mg){sessionStorage.removeItem('hr_va_msg');setTimeout(function(){toast(mg)},600)}}catch(e){}
+  if(!va){if(b)b.remove();document.body.classList.remove('va-on');return}
+  if(!b){b=document.createElement('div');b.id='va-bar';b.setAttribute('role','status');document.body.appendChild(b);document.body.classList.add('va-on');
+    var tick=function(){var v=ss('hr_va');if(!v){clearInterval(b._t);return}var left=Math.max(0,v.exp-Date.now()),mm=Math.floor(left/60000),s2=('0'+Math.floor(left/1000)%60).slice(-2);var t=b.querySelector('.va-t');if(t)t.textContent='เหลือ '+mm+':'+s2;if(!left)vaExit('หมดเวลาดูในมุมมอง (30 นาที) · กลับเป็นบัญชีของคุณแล้ว')};
+    b.innerHTML='<span>👁 กำลังดูในมุมมองของ <b>'+esc(va.me.code+' '+va.me.name+(va.me.nickname?' ('+va.me.nickname+')':''))+'</b> · '+esc(ROLE[va.me.role]||va.me.role)+' · ดูได้อย่างเดียว · <span class="va-t"></span></span><button type="button" id="va-x">ออกจากมุมมอง</button>';
+    b.querySelector('#va-x').onclick=function(){vaExit()};tick();b._t=setInterval(tick,1000)}}
+function vaApp(r){var o=document.createElement('div');o.className='va-app';o.innerHTML='<div class="va-ph"><div class="va-hd"><span>👁 แอป LINE ในมุมมองของ <b>'+esc(r.me.code+' '+r.me.name)+'</b> · ดูได้อย่างเดียว</span><button type="button" aria-label="ปิด">✕</button></div><iframe src="liff.html?viewas='+encodeURIComponent(r.token)+'" title="แอป LINE"></iframe></div>';
+  document.body.appendChild(o);var cl=function(){o.remove();document.removeEventListener('keydown',kd)},kd=function(e){if(e.key==='Escape')cl()};o.querySelector('.va-hd button').onclick=cl;o.onclick=function(e){if(e.target===o)cl()};document.addEventListener('keydown',kd)}
 function ss(k,v){try{if(v===undefined)return JSON.parse(sessionStorage.getItem(k)||'null');if(v===null)sessionStorage.removeItem(k);else sessionStorage.setItem(k,JSON.stringify(v))}catch(e){return null}}
-function boot(){if(!A.tok)return renderLogin();var c=ss('hr_boot');
+function boot(){var va=ss('hr_va');if(va){if(va.exp>Date.now()&&store('hr_tok'))A.tok=va.token;else{ss('hr_va',null);ss('hr_boot',null);A.tok=store('hr_tok')}}vaBar();
+  if(!A.tok)return renderLogin();var c=ss('hr_boot');
   if(c&&c.me){A.d=c;A.db=c.dash;A.dbAt=0;render()}else $('#app').innerHTML='<div class="loading"><span class="spin"></span>กำลังโหลดข้อมูล…</div>';
   aCall('adminBootstrap',A.view==='dash').then(function(d){if(!d||!d.me)throw new Error('โหลดข้อมูลไม่สำเร็จ ลองใหม่อีกครั้ง');A.d=d;try{store('hr_who',d.me.code||d.me.id||'')}catch(e){}if(d.dash){A.db=d.dash;A.dbAt=Date.now()}ss('hr_boot',d);
     if(!c||['dash','list'].indexOf(A.view)>=0)render();else updNav()}).catch(function(e){if(A.tok&&!c)$('#app').innerHTML='<div class="loading">'+esc(e.message)+' <button class="btn" onclick="location.reload()">ลองใหม่</button></div>'})}
@@ -922,8 +945,8 @@ function render(){
   $('#tb-bell').onclick=function(){go('appr')};
   $('#tb-help').onclick=function(){drawer('ช่วยเหลือ','<p>เข้าใช้ไม่ได้ หรือข้อมูลไม่ถูกต้อง ติดต่อ HR หรือผู้ดูแลระบบ</p><p class="faint" style="font-size:13px">ทางลัด: ช่องค้นหาด้านบนพิมพ์ชื่อ ชื่อเล่น หรือรหัสพนักงาน เพื่อเปิดโปรไฟล์ได้ทันที · กดลูกศรที่แถบเมนูซ้ายเพื่อย่อ/ขยาย</p><p class="faint" style="font-size:12.5px">สถานะระบบ: '+(CFG.failover?'Safe Mode':'Online')+'</p>')};
   $('#tb-me').onclick=function(e){e.stopPropagation();var m=$('.um');if(m)return m.remove();m=document.createElement('div');m.className='um';m.setAttribute('role','menu');
-    m.innerHTML='<div>เข้าสู่ระบบเป็น<br><b style="color:#141414">คุณ'+esc(me.name)+'</b> · '+esc(ROLE[me.role]||me.role)+'</div>'+(me.id!=='admin'&&me.role!=='exec'?'<button data-um="me">ข้อมูลของฉัน</button>':'')+'<button id="out">ออกจากระบบ</button>';
-    document.body.appendChild(m);$('#out').onclick=logout;var mb=m.querySelector('[data-um="me"]');if(mb)mb.onclick=function(){m.remove();go('profile',me.id)};
+    m.innerHTML='<div>เข้าสู่ระบบเป็น<br><b style="color:#141414">คุณ'+esc(me.name)+'</b> · '+esc(ROLE[me.role]||me.role)+'</div>'+(me.id!=='admin'&&me.role!=='exec'?'<button data-um="me">ข้อมูลของฉัน</button>':'')+(me.role==='admin'&&!me.viewAs?'<button data-um="va">👁 ดูในมุมมองของพนักงาน</button>':'')+(me.viewAs?'<button data-um="vax">ออกจากมุมมอง</button>':'<button id="out">ออกจากระบบ</button>');
+    document.body.appendChild(m);if($('#out'))$('#out').onclick=logout;var vb=m.querySelector('[data-um="va"]');if(vb)vb.onclick=function(){m.remove();vaPick()};var vx=m.querySelector('[data-um="vax"]');if(vx)vx.onclick=function(){vaExit()};var mb=m.querySelector('[data-um="me"]');if(mb)mb.onclick=function(){m.remove();go('profile',me.id)};
     setTimeout(function(){document.addEventListener('click',function h(){var x=$('.um');if(x)x.remove();document.removeEventListener('click',h)})},0)};
   bSearch(allowed);
   V[1]();
@@ -2778,8 +2801,8 @@ function orgForm(r){var t=A.otab,def=OT[t];r=r||{};
 boot();
 })();
 </script>
-<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610291403 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
-(function(){var B='202610291403';if(!/^\d{12}$/.test(B))return;var shown=0;
+<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610291412 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
+(function(){var B='202610291412';if(!/^\d{12}$/.test(B))return;var shown=0;
   function chk(){if(shown||document.hidden)return;fetch('build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=String(t||'').trim();if(!/^\d{12}$/.test(t)||t<=B)return;shown=1;
     var d=document.createElement('div');d.setAttribute('role','status');d.style.cssText='position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:99999;background:#141414;color:#fff;border-radius:999px;padding:8px 8px 8px 18px;display:flex;gap:12px;align-items:center;font:14px "IBM Plex Sans Thai",sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25)';
     d.innerHTML='<span>มีเวอร์ชันใหม่ของระบบ</span><button type="button" style="border:0;border-radius:999px;background:#fff;color:#141414;padding:6px 14px;font:inherit;font-weight:600;cursor:pointer">โหลดใหม่</button>';
