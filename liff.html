@@ -405,7 +405,7 @@ input[type=date].inp,input[type=time].inp{min-width:0;display:block}
 .ph-row{display:flex;gap:16px;align-items:center}.ph-row .ava.lg{border-color:var(--line)}
 /* ช่องเลือกไฟล์ต้องแตะโดนตรง ๆ (iOS ไม่เปิดตัวเลือกรูปจาก input ที่ display:none) */
 .vh{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:0;z-index:2}
-#va-bar{position:fixed;left:0;right:0;bottom:0;z-index:9999;background:#F59E0B;color:#1F1300;font-size:12px;font-weight:600;text-align:center;padding:4px 8px;pointer-events:none}   /* View as (29 ต.ค. 2569) */
+#va-bar .va-i{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-2px;margin-right:5px}#va-bar{position:fixed;left:0;right:0;bottom:0;z-index:9999;background:#F59E0B;color:#1F1300;font-size:12px;font-weight:600;text-align:center;padding:4px 8px;pointer-events:none}   /* View as (29 ต.ค. 2569) */
 </style>
 </head>
 <body>
@@ -712,7 +712,7 @@ function getIdToken(){
 /* ชื่อระบบ + โลโก้บริษัท (ตั้งค่าระบบ › ข้อมูลบริษัท) · ไม่ต้องล็อกอิน · จำไว้ในเครื่อง */
 function loadPub(){S.pub=LS.get("pub");return call("publicInfo").then(p=>{S.pub=p;LS.set("pub",p);if(p.app)document.title=p.app}).catch(()=>{})}
 function start(){loadPub();
-  if(VA){S.tok=VA;["today","leave"].forEach(x=>LS.del(x));const b=document.createElement("div");b.id="va-bar";b.textContent="👁 มุมมองผู้ดูแลระบบ · ดูได้อย่างเดียว";document.body.appendChild(b);boot();return}
+  if(VA){S.tok=VA;["today","leave"].forEach(x=>LS.del(x));const b=document.createElement("div");b.id="va-bar";b.innerHTML='<svg class="va-i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="7" r="3.2"/><path d="M3.5 19.5c0-3.1 2.5-5.5 5.5-5.5 1.2 0 2.3.4 3.2 1"/><path d="M15.5 13.5h5.5l-2-2"/><path d="M21 17.5h-5.5l2 2"/></svg>มุมมองผู้ดูแลระบบ · ดูได้อย่างเดียว';document.body.appendChild(b);boot();return}
   const t=LS.get("tok");
   if(t&&!S.invite){S.tok=t;if(window.liff&&CFG.liffId&&!DEV)liff.init({liffId:CFG.liffId}).then(refreshLine).catch(()=>{});boot();return}
   startLine()}
@@ -985,8 +985,8 @@ document.addEventListener("input",e=>{if(e.target.id==="lr"&&L.f)L.f.reason=e.ta
 start();
 
 </script>
-<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610291412 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
-(function(){var B='202610291412';if(!/^\d{12}$/.test(B))return;var shown=0;
+<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610291419 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
+(function(){var B='202610291419';if(!/^\d{12}$/.test(B))return;var shown=0;
   function chk(){if(shown||document.hidden)return;fetch('build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=String(t||'').trim();if(!/^\d{12}$/.test(t)||t<=B)return;shown=1;
     var d=document.createElement('div');d.setAttribute('role','status');d.style.cssText='position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:99999;background:#141414;color:#fff;border-radius:999px;padding:8px 8px 8px 18px;display:flex;gap:12px;align-items:center;font:14px "IBM Plex Sans Thai",sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25)';
     d.innerHTML='<span>มีเวอร์ชันใหม่ของระบบ</span><button type="button" style="border:0;border-radius:999px;background:#fff;color:#141414;padding:6px 14px;font:inherit;font-weight:600;cursor:pointer">โหลดใหม่</button>';
