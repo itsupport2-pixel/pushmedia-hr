@@ -18,7 +18,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js" charset="utf-8"></script>
 <script src="config.js"></script>
-<script src="i18n.js?v=202610291114"></script>
+<script src="i18n.js?v=202610291122"></script>
 <style>
 /* สี Push Media ขาว–ดำ ตามโลโก้ (22 ต.ค. 2569) · สีสถานะ ok/warn/bad คงไว้ */
 :root{--nav:#0B0B0B;--nav2:#1F1F1F;--nav-ink:#C8C8C8;--acc:#111111;--acc-soft:#EDEDED;--bg:#F4F4F4;--sf:#FFFFFF;--sf2:#F8F8F8;--line:#E3E3E3;
@@ -1355,7 +1355,9 @@ function pyGrid(){var R=PY.run,ed=R.canEdit,C=pyGridCols(),q=PY.q.trim().toLower
     return '<select class="fsel" id="pg-it" aria-label="เลือกรายการ" style="max-width:230px"><option value="">'+(K==='inc'?'ทุกรายการรายรับ':K==='ded'?'ทุกรายการรายจ่าย':'ทุกรายการ')+'</option>'+(K!=='ded'?'<optgroup label="รายรับ · HR กรอก">'+o(C.inc)+'</optgroup>':'')+(K!=='inc'?'<optgroup label="รายจ่าย · HR กรอก">'+o(C.ded)+'</optgroup><optgroup label="รายจ่าย · ระบบคำนวณ">'+AUTO.map(function(a,i){return '<option value="auto:'+i+'"'+(G==='auto:'+i?' selected':'')+'>'+a[0]+'</option>'}).join('')+'</optgroup>':'')+'</select>'};
   var gAmt=function(x){if(!G)return 0;if(G.indexOf('auto:')===0)return amt(x,AUTO[+G.slice(5)][1]);var v=val(x,G);return v!==''?(Number(String(v).replace(/,/g,''))||0):(amt(x,function(l){return l.code===G}))};
   if(G&&PYG.has)rows=rows.filter(function(x){return gAmt(x)!==0});
-  var cell=function(x,k,ph){var v=val(x,k),dirty=ch[x.employee_id]&&k in ch[x.employee_id];return '<td class="gi'+(dirty?' dirty':'')+'"><input data-g="'+x.employee_id+'|'+k+'" value="'+esc(v)+'" placeholder="'+esc(ph||'')+'" inputmode="decimal"'+(ed?'':' disabled')+'></td>'};
+  /* ยอดเงินแสดง 10,000.00 (29 ต.ค. 2569 ผู้ใช้ขอ) · ตอนพิมพ์เป็นตัวเลขล้วน · ช่องวันขาดงาน (_...) ไม่แตะ */
+  var gfm=function(k,v){if(k.charAt(0)==='_'||v==='')return v;var n=Number(String(v).replace(/,/g,''));return isNaN(n)?v:n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})};
+  var cell=function(x,k,ph){var v=gfm(k,val(x,k)),dirty=ch[x.employee_id]&&k in ch[x.employee_id];return '<td class="gi'+(dirty?' dirty':'')+'"><input data-g="'+x.employee_id+'|'+k+'" value="'+esc(v)+'" placeholder="'+esc(ph||'')+'" inputmode="decimal"'+(ed?'':' disabled')+'></td>'};
   var n=Object.keys(ch).reduce(function(s,k){return s+Object.keys(ch[k]).length},0);
   var h='<div class="pg-bar">'+(ed?'<span class="muted" style="font-size:12.5px">กรอกเฉพาะช่องที่มียอด · ช่องว่าง = ใช้รายการประจำ (ตัวเลขจาง) · วางจาก Excel ได้ (คัดลอกหลายช่องแล้ววางที่ช่องแรก) · Enter = ช่องล่าง</span>':'<span class="note-w" style="margin:0">งวดนี้'+esc((PYST[R.run.status]||[''])[0])+' · ดูอย่างเดียว (แก้ได้เฉพาะสถานะร่าง)</span>')+
     '</div><div class="pg-bar">'+pyKindBtns()+gSel()+(G?'<label class="chk"><input type="checkbox" id="pg-has"'+(PYG.has?' checked':'')+'> เฉพาะคนที่มียอด</label>':'')+'<span class="sp"></span>'+(PY.bs.canEdit?'<button class="btn sm" id="pg-cols" type="button" data-tip="เปลี่ยนชื่อ · ย้ายลำดับ · ซ่อนหัวคอลัมน์">⚙ จัดคอลัมน์</button>':'')+(G?'':'<label class="chk"><input type="checkbox" id="pg-only"'+(PYG.only?' checked':'')+'> แสดงเฉพาะคอลัมน์ที่มียอด</label>')+'</div>'+
@@ -1376,12 +1378,14 @@ function pyGrid(){var R=PY.run,ed=R.canEdit,C=pyGridCols(),q=PY.q.trim().toLower
   if(!ed)return;
   var ins=$$('#pg-body [data-g]'),W=inc.length+ded.length+(absCol?1:0);
   var bar=function(){var n=Object.keys(ch).reduce(function(s,k){return s+Object.keys(ch[k]).length},0),b=$('.pg-save');b.classList.toggle('on',!!n);b.querySelector('b').textContent=n?'แก้ไข '+n+' ช่อง · ยังไม่บันทึก':'ยังไม่มีการแก้ไข';$('#pg-x').disabled=$('#pg-ok').disabled=!n};
-  var put=function(el,v){var p=el.dataset.g.split('|'),x=R.rows.filter(function(r){return r.employee_id===p[0]})[0],o=x.inputs[p[1]]?String(x.inputs[p[1]].amount):'';v=String(v).replace(/[,\s฿]/g,'');el.value=v;
+  var put=function(el,v){var p=el.dataset.g.split('|'),x=R.rows.filter(function(r){return r.employee_id===p[0]})[0],o=x.inputs[p[1]]?String(x.inputs[p[1]].amount):'';v=String(v).replace(/[,\s฿]/g,'');el.value=v;if(v!==''&&o!==''&&Number(v)===Number(o))v=o;
     if(v===o){if(ch[p[0]]){delete ch[p[0]][p[1]];if(!Object.keys(ch[p[0]]).length)delete ch[p[0]]}el.parentNode.classList.remove('dirty')}else{(ch[p[0]]=ch[p[0]]||{})[p[1]]=v;el.parentNode.classList.add('dirty')}};
+  var gk=function(el){return el.dataset.g.split('|')[1]};
   ins.forEach(function(el,i){el.oninput=function(){put(el,el.value);bar();gsum()};
+    el.onfocus=function(){el.value=String(el.value).replace(/,/g,'');el.select()};el.onblur=function(){el.value=gfm(gk(el),el.value)};
     el.onkeydown=function(e){if(e.key==='Enter'||e.key==='ArrowDown'){e.preventDefault();var t=ins[i+W];if(t){t.focus();t.select()}}else if(e.key==='ArrowUp'){e.preventDefault();var u=ins[i-W];if(u){u.focus();u.select()}}};
     el.onpaste=function(e){var t=(e.clipboardData||window.clipboardData).getData('text');if(!/[\t\n]/.test(t.trim()))return;e.preventDefault();
-      t.replace(/\r/g,'').replace(/\n$/,'').split('\n').forEach(function(line,r){line.split('\t').forEach(function(v,c){var col=i%W+c,tg=ins[i+r*W+c];if(col<W&&tg)put(tg,v.trim())})});bar();gsum();toast('วางข้อมูลแล้ว · ตรวจแล้วกดบันทึก')}});
+      t.replace(/\r/g,'').replace(/\n$/,'').split('\n').forEach(function(line,r){line.split('\t').forEach(function(v,c){var col=i%W+c,tg=ins[i+r*W+c];if(col<W&&tg){put(tg,v.trim());if(tg!==document.activeElement)tg.value=gfm(gk(tg),tg.value)}})});bar();gsum();toast('วางข้อมูลแล้ว · ตรวจแล้วกดบันทึก')}});
   $('#pg-rs').oninput=function(){PYG.rs=this.value;this.classList.remove('bad')};
   $('#pg-x').onclick=function(){PYG.ch={};pyGrid()};
   $('#pg-ok').onclick=function(){var b=this,rs=$('#pg-rs').value.trim();busy(b,1);
@@ -2731,8 +2735,8 @@ function orgForm(r){var t=A.otab,def=OT[t];r=r||{};
 boot();
 })();
 </script>
-<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610291114 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
-(function(){var B='202610291114';if(!/^\d{12}$/.test(B))return;var shown=0;
+<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610291122 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
+(function(){var B='202610291122';if(!/^\d{12}$/.test(B))return;var shown=0;
   function chk(){if(shown||document.hidden)return;fetch('build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=String(t||'').trim();if(!/^\d{12}$/.test(t)||t<=B)return;shown=1;
     var d=document.createElement('div');d.setAttribute('role','status');d.style.cssText='position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:99999;background:#141414;color:#fff;border-radius:999px;padding:8px 8px 8px 18px;display:flex;gap:12px;align-items:center;font:14px "IBM Plex Sans Thai",sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25)';
     d.innerHTML='<span>มีเวอร์ชันใหม่ของระบบ</span><button type="button" style="border:0;border-radius:999px;background:#fff;color:#141414;padding:6px 14px;font:inherit;font-weight:600;cursor:pointer">โหลดใหม่</button>';
