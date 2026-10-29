@@ -18,7 +18,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js" charset="utf-8"></script>
 <script src="config.js"></script>
-<script src="i18n.js?v=202610292242"></script>
+<script src="i18n.js?v=202610292253"></script>
 <style>
 /* สี Push Media ขาว–ดำ ตามโลโก้ (22 ต.ค. 2569) · สีสถานะ ok/warn/bad คงไว้ */
 :root{--nav:#0B0B0B;--nav2:#1F1F1F;--nav-ink:#C8C8C8;--acc:#111111;--acc-soft:#EDEDED;--bg:#F4F4F4;--sf:#FFFFFF;--sf2:#F8F8F8;--line:#E3E3E3;
@@ -941,6 +941,8 @@ function coThemeApply(){var t=coTheme(coObj()),h=document.documentElement;['navy
 function coBrand(){var c=coObj();if(!c||c.id===(A.d.companies[0]||{}).id)return '';if(c.logo)return '<span class="co-brand lgc" title="'+esc(c.name_th)+'"><img data-trim src="'+esc(LOGO_TRIM[c.logo]||c.logo)+'" alt="'+esc(c.short)+'"></span>';return '<span class="co-brand">'+coAv(c)+'<span><b>'+esc(c.short)+'</b><small>'+esc(c.name_th)+'</small></span></span>'}
 /* ตัดขอบขาวรอบโลโก้ (ไฟล์โลโก้เป็นสี่เหลี่ยมพื้นขาว ตัวโลโก้อยู่กลาง) ตอนแสดงในเมนู · ไม่แก้ไฟล์ที่บันทึก · จำผลไว้ในหน้า */
 var LOGO_TRIM={};
+/* ไอคอนเมนูย่อรายบริษัท (แบบเดียวกับตัว U ของ Push Media) · Push Logix = P ขาว + X แดง (29 ต.ค. 2569 ผู้ใช้เลือกแบบ 1) */
+var CO_MARK={pl:'<svg viewBox="0 0 64 64" aria-hidden="true"><path fill="#fff" fill-rule="evenodd" d="M8 8h22a14 14 0 0 1 0 28H19v20H8z M19 18v8h10a4 4 0 0 0 0-8z"/><path fill="#EE344E" d="M33 8h9l17 48h-9z"/><path fill="#EE344E" d="M50 8h9L42 56h-9z"/></svg>'};
 function logoTrim(){$$('img[data-trim]').forEach(function(im){var src=im.getAttribute('src');if(LOGO_TRIM[src]||im.dataset.tdone)return;im.dataset.tdone=1;var o=new Image();o.onload=function(){try{var w=o.width,h=o.height,c=document.createElement('canvas');c.width=w;c.height=h;var x=c.getContext('2d');x.drawImage(o,0,0);var d=x.getImageData(0,0,w,h).data,l=w,t=h,r=-1,b=-1;
   for(var y=0;y<h;y++)for(var i=0;i<w;i++){var k=(y*w+i)*4;if(d[k+3]>24&&(d[k]<235||d[k+1]<235||d[k+2]<235)){if(i<l)l=i;if(i>r)r=i;if(y<t)t=y;if(y>b)b=y}}
   if(r<0)return;var p=Math.round(Math.max(r-l,b-t)*.04),L=Math.max(0,l-p),T=Math.max(0,t-p),W=Math.min(w,r+p+1)-L,H=Math.min(h,b+p+1)-T,c2=document.createElement('canvas');c2.width=W;c2.height=H;var x2=c2.getContext('2d');x2.fillStyle='#fff';x2.fillRect(0,0,W,H);x2.drawImage(c,L,T,W,H,0,0,W,H);
@@ -1037,7 +1039,7 @@ function render(){
       '<div class="subl"><div class="subi"><b class="fh">'+n[1]+'</b>'+kids.map(function(x){var m=NAV.filter(function(y){return y[0]===x})[0];return '<a data-nav="'+x+'" class="'+(cur===x?'on':'')+'"'+(cur===x?' aria-current="page"':'')+'>'+m[1]+'</a>'}).join('')+'</div></div></div>'};
   var nav=NAV_GROUPS.map(function(g){var its=g[1].filter(function(k){return allowed.indexOf(k)>=0});if(!its.length)return '';return '<div class="grp">'+g[0]+'</div>'+its.map(function(k){return SUB[k]?par(k):item(NAV.filter(function(n){return n[0]===k})[0])}).join('')}).join('');
   coThemeApply();
-  $('#app').innerHTML='<div class="shell'+(wide?' wide':'')+'"><nav class="side" aria-label="เมนูหลัก"><div class="rl-logo"><span class="mk">'+(coBrand()?(coLogo()?'<img data-trim src="'+esc(LOGO_TRIM[coLogo()]||coLogo())+'" alt="">':coAv(coObj())):A.d.logo?'<img src="'+esc(A.d.logo)+'" alt="">':MARK)+'</span>'+(coBrand()?'<span class="rl-full rl-co">'+coBrand()+'</span>':'<img class="rl-full" src="push-media-logo-white.svg" alt="Push Media">')+'</div>'+nav+
+  $('#app').innerHTML='<div class="shell'+(wide?' wide':'')+'"><nav class="side" aria-label="เมนูหลัก"><div class="rl-logo"><span class="mk">'+(coBrand()?CO_MARK[coObj().id]||(coLogo()?'<img data-trim src="'+esc(LOGO_TRIM[coLogo()]||coLogo())+'" alt="">':coAv(coObj())):A.d.logo?'<img src="'+esc(A.d.logo)+'" alt="">':MARK)+'</span>'+(coBrand()?'<span class="rl-full rl-co">'+coBrand()+'</span>':'<img class="rl-full" src="push-media-logo-white.svg" alt="Push Media">')+'</div>'+nav+
    '<div class="rl-sp"></div>'+coSw()+'<a id="out2" title="ออกจากระบบ">'+ic('out')+'<span>ออกจากระบบ</span></a><div class="ver">'+(CFG.failover?'Safe Mode':'Online')+'</div>'+
    '<button class="rl-tg" id="rl-tg" aria-label="'+(wide?'ย่อแถบเมนู':'ขยายแถบเมนู')+'">'+ic('chevR')+'</button></nav>'+
    '<main class="main"><header class="tb">'+(coBrand()?'<span class="tb-logo tb-co">'+coBrand()+'</span>':'<img class="tb-logo" src="push-media-logo-black.svg" alt="Push Media">')+'<span class="dv l"></span><div class="tt"><small>'+esc(app)+' / '+esc(navTitle(A.view))+'</small><b>'+esc(navTitle(A.view))+'</b></div>'+(isHR()||me.id==='admin'?'':'<span class="scp" title="ขอบเขตข้อมูลที่คุณเห็น"><i></i>ขอบเขต: '+esc(scopeTxt(selfOnly()?'emp':{att:'att',lv:'leave',appr:'approve'}[A.view]||'emp'))+'</span>')+'<span class="grow"></span>'+
@@ -2968,8 +2970,8 @@ function orgForm(r){var t=A.otab,def=OT[t];r=r||{};
 boot();
 })();
 </script>
-<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610292242 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
-(function(){var B='202610292242';if(!/^\d{12}$/.test(B))return;var shown=0;
+<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610292253 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
+(function(){var B='202610292253';if(!/^\d{12}$/.test(B))return;var shown=0;
   function chk(){if(shown||document.hidden)return;fetch('build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=String(t||'').trim();if(!/^\d{12}$/.test(t)||t<=B)return;shown=1;
     var d=document.createElement('div');d.setAttribute('role','status');d.style.cssText='position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:99999;background:#141414;color:#fff;border-radius:999px;padding:8px 8px 8px 18px;display:flex;gap:12px;align-items:center;font:14px "IBM Plex Sans Thai",sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25)';
     d.innerHTML='<span>มีเวอร์ชันใหม่ของระบบ</span><button type="button" style="border:0;border-radius:999px;background:#fff;color:#141414;padding:6px 14px;font:inherit;font-weight:600;cursor:pointer">โหลดใหม่</button>';
