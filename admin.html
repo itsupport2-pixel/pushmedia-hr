@@ -18,7 +18,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js" charset="utf-8"></script>
 <script src="config.js"></script>
-<script src="i18n.js?v=202610291545"></script>
+<script src="i18n.js?v=202610291553"></script>
 <style>
 /* สี Push Media ขาว–ดำ ตามโลโก้ (22 ต.ค. 2569) · สีสถานะ ok/warn/bad คงไว้ */
 :root{--nav:#0B0B0B;--nav2:#1F1F1F;--nav-ink:#C8C8C8;--acc:#111111;--acc-soft:#EDEDED;--bg:#F4F4F4;--sf:#FFFFFF;--sf2:#F8F8F8;--line:#E3E3E3;
@@ -749,12 +749,19 @@ function ini(e){return (e.first_name||'?')[0]+(e.last_name||'')[0]}
 function av(e,s){s=s||30;var ph=PH[e.id];return ph?'<img class="av" data-av="'+e.id+'" src="'+esc(ph)+'" alt="" style="width:'+s+'px;height:'+s+'px;object-fit:cover">':'<span class="av" data-av="'+e.id+'" style="width:'+s+'px;height:'+s+'px;font-size:'+Math.round(s/2.6)+'px">'+esc(ini(e))+'</span>'}
 /* รูปพนักงาน: โหลดเฉพาะคนที่อยู่บนหน้าจอ แล้วสลับตัวอักษรย่อเป็นรูป · จำไว้ในหน้า (PH) */
 var PH={},PHask={};
+/* จำรูปพนักงานไว้ในเครื่อง (IndexedDB · 29 ต.ค. 2569 ผู้ใช้ขอ: รูปขึ้นทันที) · แสดงรูปที่จำไว้ก่อน แล้วเช็กรูปล่าสุดจากเซิร์ฟเวอร์เบื้องหลังครั้งเดียวต่อการเปิดหน้า · ออกจากระบบ = ล้าง */
+var PHDB=null;
+function phDb(){if(!PHDB)PHDB=new Promise(function(ok){try{var r=indexedDB.open('pmhr_ph',1);r.onupgradeneeded=function(){r.result.createObjectStore('p')};r.onsuccess=function(){ok(r.result)};r.onerror=function(){ok(null)}}catch(e){ok(null)}});return PHDB}
+function phLoad(){return phDb().then(function(db){if(!db)return;return new Promise(function(ok){try{var q=db.transaction('p','readonly').objectStore('p').openCursor();q.onsuccess=function(){var c=q.result;if(c){if(!(c.key in PH))PH[c.key]=c.value;c.continue()}else ok()};q.onerror=function(){ok()}}catch(e){ok()}})}).then(applyPhotos)}
+function phSave(m){phDb().then(function(db){if(!db)return;try{var st=db.transaction('p','readwrite').objectStore('p');Object.keys(m).forEach(function(k){st.put(m[k],k)})}catch(e){}})}
+function phClear(){PH={};PHask={};phDb().then(function(db){if(db)try{db.transaction('p','readwrite').objectStore('p').clear()}catch(e){}})}
+phLoad();
 /* ใส่รูปที่โหลดไว้แล้วให้ทุกวงกลม [data-av] ในหน้า (หน้าถูกวาดใหม่ได้หลายรอบ) แล้วค่อยขอรูปที่ยังไม่มี */
 /* ไม่มีรูปในระบบ HR (โหลดแล้วได้ค่าว่าง) → ใช้รูปโปรไฟล์ LINE */
 function linePic(id){var e=(A.d&&A.d.employees||[]).filter(function(x){return x.id===id})[0];return e&&/^https:\/\//.test(e.line_picture||'')?e.line_picture:''}
-function applyPhotos(){$$('[data-av]').forEach(function(el){var d=PH[el.dataset.av];if(d===''&&!el.dataset.nol){d=linePic(el.dataset.av)}if(d&&el.tagName!=='IMG'){var w=el.style.width;var im=document.createElement('img');im.className='av';im.dataset.av=el.dataset.av;im.src=d;im.alt='';im.referrerPolicy='no-referrer';im.onerror=function(){el.dataset.nol=1;im.replaceWith(el)};im.style.cssText='width:'+w+';height:'+w+';object-fit:cover';el.replaceWith(im)}})}
-function loadPhotos(){applyPhotos();var ids=[];$$('[data-av]').forEach(function(el){var id=el.dataset.av;if(!(id in PH)&&!PHask[id]){PHask[id]=1;ids.push(id)}});if(!ids.length)return;
-  for(var i=0;i<ids.length;i+=40)(function(b){aCall('photosFor',b).then(function(m){b.forEach(function(id){PH[id]=m[id]||''});applyPhotos()}).catch(function(){b.forEach(function(id){delete PHask[id]})})})(ids.slice(i,i+40))}
+function applyPhotos(){$$('[data-av]').forEach(function(el){var d=PH[el.dataset.av];if(d===''&&!el.dataset.nol){d=linePic(el.dataset.av)}if(d&&el.tagName==='IMG'&&el.getAttribute('src')!==d&&!el.dataset.nol){el.src=d;return}if(d&&el.tagName!=='IMG'){var w=el.style.width;var im=document.createElement('img');im.className='av';im.dataset.av=el.dataset.av;im.src=d;im.alt='';im.referrerPolicy='no-referrer';im.onerror=function(){el.dataset.nol=1;im.replaceWith(el)};im.style.cssText='width:'+w+';height:'+w+';object-fit:cover';el.replaceWith(im)}})}
+function loadPhotos(){applyPhotos();var ids=[];$$('[data-av]').forEach(function(el){var id=el.dataset.av;if(!PHask[id]){PHask[id]=1;ids.push(id)}});if(!ids.length)return;   // รูปที่จำไว้ขึ้นแล้ว · ยังเช็กรูปใหม่ครั้งเดียวต่อการเปิดหน้า
+  for(var i=0;i<ids.length;i+=40)(function(b){aCall('photosFor',b).then(function(m){var ch={};b.forEach(function(id){var v=m[id]||'';if(PH[id]!==v){PH[id]=v;ch[id]=v}});if(Object.keys(ch).length){phSave(ch);applyPhotos()}}).catch(function(){b.forEach(function(id){delete PHask[id]})})})(ids.slice(i,i+40))}
 function chkB(c){return CHK[c]?'<span class="badge '+CHK[c][2]+'">'+CHK[c][0]+'</span>':'<span class="badge b-bad">ยังไม่ระบุ</span>'}
 function lineC(e){return e.line==='linked'?'<span class="ln-ok">● เชื่อมแล้ว</span>':e.line==='wait'?'<span class="ln-wait">● รอยืนยัน</span>':'<span class="ln-no">ยังไม่เชื่อม</span>'}
 function days(d){d=d||[];var s=d.slice().sort().join(',');return s==='1,2,3,4,5'?'จ.–ศ.':s==='1,2,3,4,5,6'?'จ.–ส.':d.map(function(x){return DOW[x]}).join(' ')}
@@ -983,7 +990,7 @@ function render(){
   $$('[data-nav]').forEach(function(a){a.onclick=function(){var w=a.closest('.nsub');if(w&&wide)(A.subOpen||(A.subOpen={}))[w.querySelector('[data-navpar]').dataset.navpar]=true;go(a.dataset.nav)}});
   $$('[data-navpar]').forEach(function(a){a.onclick=function(e){e.stopPropagation();var w=a.parentNode,o=!w.classList.contains('open');w.classList.toggle('open',o);a.setAttribute('aria-expanded',o);if($('.shell.wide')){(A.subOpen||(A.subOpen={}))[a.dataset.navpar]=o;if(a.dataset.navpar==='sched')store('nav_sub',o?'1':'0')}}});
   if(!$('.shell.wide'))document.addEventListener('click',function cl(e){var w=$('.nsub.open');if(w&&!w.contains(e.target)){w.classList.remove('open');w.querySelector('.npar').setAttribute('aria-expanded','false')}if(!document.body.contains(w))document.removeEventListener('click',cl)});
-  var logout=function(){call('logout',A.tok);store('hr_tok',null);A.tok=null;try{sessionStorage.clear()}catch(e){}renderLogin()};
+  var logout=function(){call('logout',A.tok);store('hr_tok',null);A.tok=null;try{sessionStorage.clear()}catch(e){}phClear();renderLogin()};
   $('#out2').onclick=logout;if($('#cosw'))$('#cosw').onclick=coMenu;
   $('#rl-tg').onclick=function(){try{localStorage.setItem('hr_nav',wide?'rail':'wide')}catch(e){}render()};
   $('#tb-bell').onclick=function(){go('appr')};
@@ -2854,8 +2861,8 @@ function orgForm(r){var t=A.otab,def=OT[t];r=r||{};
 boot();
 })();
 </script>
-<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610291545 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
-(function(){var B='202610291545';if(!/^\d{12}$/.test(B))return;var shown=0;
+<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610291553 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
+(function(){var B='202610291553';if(!/^\d{12}$/.test(B))return;var shown=0;
   function chk(){if(shown||document.hidden)return;fetch('build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=String(t||'').trim();if(!/^\d{12}$/.test(t)||t<=B)return;shown=1;
     var d=document.createElement('div');d.setAttribute('role','status');d.style.cssText='position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:99999;background:#141414;color:#fff;border-radius:999px;padding:8px 8px 8px 18px;display:flex;gap:12px;align-items:center;font:14px "IBM Plex Sans Thai",sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25)';
     d.innerHTML='<span>มีเวอร์ชันใหม่ของระบบ</span><button type="button" style="border:0;border-radius:999px;background:#fff;color:#141414;padding:6px 14px;font:inherit;font-weight:600;cursor:pointer">โหลดใหม่</button>';
