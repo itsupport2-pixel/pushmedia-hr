@@ -18,7 +18,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js" charset="utf-8"></script>
 <script src="config.js"></script>
-<script src="i18n.js?v=202610291148"></script>
+<script src="i18n.js?v=202610291202"></script>
 <style>
 /* สี Push Media ขาว–ดำ ตามโลโก้ (22 ต.ค. 2569) · สีสถานะ ok/warn/bad คงไว้ */
 :root{--nav:#0B0B0B;--nav2:#1F1F1F;--nav-ink:#C8C8C8;--acc:#111111;--acc-soft:#EDEDED;--bg:#F4F4F4;--sf:#FFFFFF;--sf2:#F8F8F8;--line:#E3E3E3;
@@ -600,7 +600,9 @@ body.fo{padding-top:36px}body.fo .tb{top:36px}body.fo .side{top:36px;height:calc
 .pg-w{overflow:auto;max-height:calc(100vh - 260px)}.pg-t{border-collapse:separate;border-spacing:0;font-size:12.5px}
 .pg-t th{position:sticky;top:0;background:#F7F7F7;z-index:2;font-weight:600;color:var(--mut);font-size:11.5px;padding:7px 8px;border-bottom:1px solid var(--line);border-right:1px solid #EFEFEF;white-space:nowrap;text-align:center}
 .pg-t thead tr:nth-child(2) th{top:31px}.pg-t thead tr:nth-child(2) th{white-space:normal;min-width:112px;max-width:170px;line-height:1.3;vertical-align:middle}.pg-t thead tr:nth-child(2) th.lg{min-width:200px;max-width:220px}.pg-t thead tr:nth-child(2) th.ki{background:#EEF8F1;color:#1E7A45}.pg-t thead tr:nth-child(2) th.kd{background:#FCEFEE;color:#B3261E}.pg-t thead tr:nth-child(2) th.ki small,.pg-t thead tr:nth-child(2) th.kd small{color:inherit;opacity:.7}   /* หัวรายรับเขียว · รายจ่ายแดง (29 ต.ค. 2569) */
-.py-t tr.ck td:first-child{min-width:170px}.py-t thead tr.py-sum th{background:#F4F8FE;color:var(--fg);font-weight:700;font-size:12.5px;border-top:1px solid var(--line)}.py-t thead tr.py-sum th.ic{color:#1E7A45}.py-t thead tr.py-sum th.dc{color:#B3261E}   /* แถวรวมใต้หัว แบบตารางกรอก (29 ต.ค. 2569) */.py-t th.py-ic{white-space:normal;min-width:96px;max-width:170px;line-height:1.3}.py-t th.ki{background:#EEF8F1;color:#1E7A45}.py-t th.kd{background:#FCEFEE;color:#B3261E}.py-t td.ic{color:#1E7A45}.py-t td.dc{color:#B3261E}   /* หัวยาวขึ้นบรรทัดใหม่ · ชื่อยาว = กว้างขึ้นให้จบใน 2 บรรทัด (29 ต.ค. 2569) */.pg-t th small{display:block;font-weight:400;color:var(--fnt);font-size:10.5px}
+.py-t tr.ck td:first-child{min-width:170px}#mp-map{isolation:isolate}   /* Leaflet z-index ไม่ทับ drawer/เมนู (29 ต.ค. 2569) */
+.ma-r{display:flex;gap:10px;align-items:center;padding:8px 6px;border-bottom:1px solid var(--line);cursor:pointer}.ma-r small{display:block;color:var(--fnt);font-size:12px}.ma-r input:disabled+img,.ma-r input:disabled~span{opacity:.75}
+.py-t thead tr.py-sum th{background:#F4F8FE;color:var(--fg);font-weight:700;font-size:12.5px;border-top:1px solid var(--line)}.py-t thead tr.py-sum th.ic{color:#1E7A45}.py-t thead tr.py-sum th.dc{color:#B3261E}   /* แถวรวมใต้หัว แบบตารางกรอก (29 ต.ค. 2569) */.py-t th.py-ic{white-space:normal;min-width:96px;max-width:170px;line-height:1.3}.py-t th.ki{background:#EEF8F1;color:#1E7A45}.py-t th.kd{background:#FCEFEE;color:#B3261E}.py-t td.ic{color:#1E7A45}.py-t td.dc{color:#B3261E}   /* หัวยาวขึ้นบรรทัดใหม่ · ชื่อยาว = กว้างขึ้นให้จบใน 2 บรรทัด (29 ต.ค. 2569) */.pg-t th small{display:block;font-weight:400;color:var(--fnt);font-size:10.5px}
 .pg-t th.gh.inc{background:#EAF6EE;color:var(--ok)}.pg-t th.gh.ded{background:#FCEDEB;color:var(--bad)}.pg-t th.gh.auto,.pg-t th.au{background:#EFEFEF}
 .pg-t td{border-bottom:1px solid #EFEFEF;border-right:1px solid #F3F3F3;padding:0;white-space:nowrap;background:var(--sf)}
 .pg-t .pg-n{position:sticky;left:0;z-index:1;min-width:200px;text-align:left;padding:6px 10px;border-right:1px solid var(--line)}.pg-t th.pg-n{z-index:3}.pg-t td.pg-n b{display:block;font-weight:600}.pg-t td.pg-n small{color:var(--fnt);font-size:11px}
@@ -1992,7 +1994,7 @@ function repCsv(){var d=A.rpm;if(!d)return;var rows=repRows(),q=function(v){v=St
   a.href=URL.createObjectURL(blob);a.download='matrix_'+d.from+'_'+d.to+'.csv';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500)}
 
 /* ───────── รายงาน › แท็บ (28 ต.ค. 2569): Matrix · Dashboard ผู้บริหาร (Figma 426:7739) · แผนที่ (Figma 426:9080 · admin + ผู้บริหาร) ───────── */
-function canMap(){var r=A.d&&A.d.me.role;return r==='admin'||r==='exec'}
+function canMap(){var m=A.d&&A.d.me;return !!m&&(m.map||m.role==='admin'||m.role==='exec')}   // 29 ต.ค. 2569: + คนที่ผู้ดูแลระบบให้สิทธิ์ (me.map)
 function vRep(){var t=A.rpTab||'mx';if(t==='map'&&!canMap())t=A.rpTab='mx';return t==='xd'?vXd():t==='map'?vMap():vRepMx()}
 function bRep(){$$('[data-rpt]').forEach(function(b){b.onclick=function(){if(A.rpTab===b.dataset.rpt)return;A.rpTab=b.dataset.rpt;render()}});var t=A.rpTab||'mx';if(t==='xd')bXd();else if(t==='map')bMap();else bRepMx()}
 function rpTabs(on){var tab=function(k,l,soon){return '<button type="button" data-rpt="'+(soon?'':k)+'"'+(on===k?' aria-pressed="true"':'')+(soon?' disabled title="อยู่ระหว่างพัฒนา"':'')+'>'+l+(soon?' <span class="sn">เร็ว ๆ นี้</span>':'')+'</button>'};
@@ -2111,13 +2113,23 @@ function loadLeaflet(){if(window.L&&L.map&&L.markerClusterGroup)return Promise.r
   window._llp=(window.L&&L.map?Promise.resolve():js(CD+'leaflet/1.9.4/leaflet.min.js')).then(function(){return js(CD+'leaflet.markercluster/1.5.3/leaflet.markercluster.js')}).catch(function(e){window._llp=null;throw e});return window._llp}
 function vMap(){var t=dIso(new Date());A.mpDate=A.mpDate||t;A.mpF=A.mpF||'gps';A.mpDep=A.mpDep||'all';A.mpQ=A.mpQ||'';
   var deps=A.d.org.departments.filter(function(d){return d.active!=='FALSE'});
-  return '<div class="ph"><div><h1>รายงาน</h1><div class="sub">ตำแหน่ง GPS ตอนลงเวลาเข้า · รวมหมุดที่อยู่ในรัศมีจุดลงเวลา · เห็นเฉพาะผู้ดูแลระบบและผู้บริหาร</div></div><span class="sp"></span><span class="faint" id="mp-up"></span>'+
+  return '<div class="ph"><div><h1>รายงาน</h1><div class="sub">ตำแหน่ง GPS ตอนลงเวลาเข้า · รวมหมุดที่อยู่ในรัศมีจุดลงเวลา · เห็นเฉพาะผู้ดูแลระบบ ผู้บริหาร และคนที่ได้รับสิทธิ์</div></div><span class="sp"></span><span class="faint" id="mp-up"></span>'+
    '<input type="date" id="mp-date" class="amp-in" value="'+A.mpDate+'" max="'+t+'" aria-label="วันที่"><select id="mp-dep" class="amp-in" aria-label="แผนก"><option value="all">ทุกแผนก</option>'+deps.map(function(d){return '<option value="'+d.id+'"'+(A.mpDep===d.id?' selected':'')+'>'+esc(d.name)+'</option>'}).join('')+'</select>'+
-   '<input type="search" id="mp-q" class="amp-in" placeholder="ค้นหา ชื่อ / รหัส" value="'+esc(A.mpQ)+'"><button class="btn pri" id="mp-rl">รีเฟรช</button></div>'+rpTabs('map')+
+   '<input type="search" id="mp-q" class="amp-in" placeholder="ค้นหา ชื่อ / รหัส" value="'+esc(A.mpQ)+'">'+(A.d.me.role==='admin'?'<button class="btn" id="mp-acc" data-tip="เลือกคนที่เห็นแผนที่ได้ (นอกจากผู้ดูแลระบบและผู้บริหาร)">⚙ สิทธิ์ดูแผนที่</button>':'')+'<button class="btn pri" id="mp-rl">รีเฟรช</button></div>'+rpTabs('map')+
    '<div class="amp-g"><section class="card amp-side"><div class="amp-h"><b id="mp-ti">เข้างาน</b><span class="faint" id="mp-gs"></span></div><div class="amp-st" id="mp-st"></div><div class="amp-ls" id="mp-ls"><div class="loading"><span class="spin"></span></div></div></section>'+
    '<section class="card amp-mapc"><div id="mp-map"></div><div class="amp-lg"><span><i style="background:#141414"></i>ในพื้นที่</span><span><i style="background:#D97706"></i>นอกพื้นที่</span><span><i class="ring"></i>พื้นที่ลงเวลา</span></div></section></div>'+
    '<div class="faint" style="font-size:12.5px;margin-top:10px">สีหมุด = แผนก · จุดมุมขวาล่าง = ในพื้นที่ (ดำ) / นอกพื้นที่ (ส้ม) · วงเขียว = พื้นที่ลงเวลา (รัศมีที่ตั้งในระบบ) · คลิกชื่อด้านซ้าย = เลื่อนแผนที่ไปที่หมุด · วงตัวเลข = หมุดที่รวมกัน (กดหรือซูมเข้าเพื่อกระจาย · ซูมสุดแล้วกระจายแบบขาแมงมุม)</div>'}
-function bMap(){var load=function(){$('#mp-ls').innerHTML='<div class="loading"><span class="spin"></span></div>';
+/* สิทธิ์ดูแผนที่รายคน (29 ต.ค. 2569 ผู้ใช้ขอ) · เฉพาะผู้ดูแลระบบ · ผู้ดูแลระบบ/ผู้บริหารเห็นเสมอ (ติ๊กไม่ได้) */
+function mapAcc(){drawer('สิทธิ์ดูแผนที่','<div class="loading"><span class="spin"></span>กำลังโหลด…</div>');aCall('mapAccess').then(function(d){var sel={};d.ids.forEach(function(i){sel[i]=1});
+  var row=function(p){return '<label class="ma-r" data-maq="'+esc((p.code+' '+p.name+' '+p.nickname+' '+p.dept).toLowerCase())+'"><input type="checkbox" data-ma="'+p.id+'"'+(p.always||sel[p.id]?' checked':'')+(p.always?' disabled':'')+'>'+av(p,28)+'<span><b>'+esc(p.code)+' '+esc(p.name)+(p.nickname?' ('+esc(p.nickname)+')':'')+'</b><small>'+esc(p.dept||'—')+(p.always?' · '+(p.role==='admin'?'ผู้ดูแลระบบ':'ผู้บริหาร')+' (เห็นเสมอ)':'')+'</small></span></label>'};
+  var ppl=d.people.slice().sort(function(a,b){return (b.always-a.always)||((sel[b.id]?1:0)-(sel[a.id]?1:0))||(a.code<b.code?-1:1)});
+  $('#ov .cb').innerHTML='<p class="muted" style="margin-top:0">คนที่ติ๊กเห็นแท็บ รายงาน › แผนที่ ของทั้งบริษัท · บันทึกใน Audit Log</p><input type="search" id="ma-q" class="amp-in" placeholder="ค้นหา ชื่อ / รหัส / แผนก" style="width:100%;margin-bottom:8px"><div id="ma-l">'+ppl.map(row).join('')+'</div>';
+  $('#ov .drw').insertAdjacentHTML('beforeend','<div class="ch" style="border-top:1px solid var(--line);border-bottom:0;justify-content:flex-end"><span class="faint" id="ma-n"></span><span class="sp"></span><button class="btn" id="ma-x">ยกเลิก</button><button class="btn pri" id="ma-ok">บันทึก</button></div>');
+  var cnt=function(){$('#ma-n').textContent='ให้สิทธิ์เพิ่ม '+$$('[data-ma]:checked:not(:disabled)').length+' คน'};cnt();loadPhotos();
+  $$('[data-ma]').forEach(function(c){c.onchange=cnt});$('#ma-q').oninput=function(){var q=this.value.trim().toLowerCase();$$('[data-maq]').forEach(function(r){r.hidden=!!q&&r.dataset.maq.indexOf(q)<0})};
+  $('#ma-x').onclick=closeD;$('#ma-ok').onclick=function(){var b=this;busy(b,1);aCall('saveMapAccess',$$('[data-ma]:checked:not(:disabled)').map(function(c){return c.dataset.ma})).then(function(r){busy(b,0);closeD();toast(r.changed?'บันทึกสิทธิ์ดูแผนที่แล้ว':'ไม่มีการเปลี่ยนแปลง')}).catch(function(e){busy(b,0);toast(e.message,1)})}
+}).catch(function(e){$('#ov .cb').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})}
+function bMap(){if($('#mp-acc'))$('#mp-acc').onclick=mapAcc;var load=function(){$('#mp-ls').innerHTML='<div class="loading"><span class="spin"></span></div>';
     aCall('attMap',A.mpDate).then(function(d){A.mp=d;$('#mp-up').textContent='อัปเดต '+new Date().toTimeString().slice(0,5);drawMap()}).catch(function(e){if($('#mp-ls'))$('#mp-ls').innerHTML='<div class="alert" style="margin:12px">'+esc(e.message)+'</div>'})};
   $('#mp-date').onchange=function(){if(!this.value)return;A.mpDate=this.value;load()};
   $('#mp-dep').onchange=function(){A.mpDep=this.value;drawMap()};
@@ -2742,8 +2754,8 @@ function orgForm(r){var t=A.otab,def=OT[t];r=r||{};
 boot();
 })();
 </script>
-<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610291148 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
-(function(){var B='202610291148';if(!/^\d{12}$/.test(B))return;var shown=0;
+<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610291202 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
+(function(){var B='202610291202';if(!/^\d{12}$/.test(B))return;var shown=0;
   function chk(){if(shown||document.hidden)return;fetch('build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=String(t||'').trim();if(!/^\d{12}$/.test(t)||t<=B)return;shown=1;
     var d=document.createElement('div');d.setAttribute('role','status');d.style.cssText='position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:99999;background:#141414;color:#fff;border-radius:999px;padding:8px 8px 8px 18px;display:flex;gap:12px;align-items:center;font:14px "IBM Plex Sans Thai",sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25)';
     d.innerHTML='<span>มีเวอร์ชันใหม่ของระบบ</span><button type="button" style="border:0;border-radius:999px;background:#fff;color:#141414;padding:6px 14px;font:inherit;font-weight:600;cursor:pointer">โหลดใหม่</button>';
