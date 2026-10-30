@@ -18,7 +18,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js" charset="utf-8"></script>
 <script src="config.js"></script>
-<script src="i18n.js?v=202610301553"></script>
+<script src="i18n.js?v=202610301606"></script>
 <style>
 /* สี Push Media ขาว–ดำ ตามโลโก้ (22 ต.ค. 2569) · สีสถานะ ok/warn/bad คงไว้ */
 :root{--nav:#0B0B0B;--nav2:#1F1F1F;--nav-ink:#C8C8C8;--acc:#111111;--acc-soft:#EDEDED;--bg:#F4F4F4;--sf:#FFFFFF;--sf2:#F8F8F8;--line:#E3E3E3;
@@ -127,7 +127,7 @@ td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:middle}tr
 .lg-pin.co>b{display:grid;place-items:center;width:100%;height:100%;border-radius:15px;background:#141414;color:#fff;box-shadow:0 10px 22px rgba(0,0,0,.18);animation:lgBob 3s ease-in-out var(--d) infinite}
 .lg-pin.co svg{width:62%;height:62%;animation:none;filter:none}.lg-pin.co img{display:block;width:82%;height:auto}.lg-orb.pins-in .lg-pin{will-change:transform,opacity}
 .lg-pin.co.pl>b{background:#132B4F}.lg-pin.co.pl svg{width:74%}.lg-pin.co.pc>b{background:#fff;box-shadow:0 10px 22px rgba(0,0,0,.14),0 0 0 1px #E6E6E6}
-.lg-pin.sm{opacity:.75}.lg-orb.pins-in .lg-pin{z-index:3}
+.lg-pin.sm{opacity:.75}.lg-orb.pins-in .lg-pin{z-index:3}.lg-orb .lg-pin.co,.lg-orb.pins-in .lg-pin.co{z-index:5}.lg-orb .lg-pin.co.pm,.lg-orb.pins-in .lg-pin.co.pm{z-index:6}
 .lg-burst{position:absolute;left:50%;top:50%;width:300px;height:300px;margin:-150px 0 0 -150px;border-radius:50%;border:2px solid rgba(20,20,20,.25);z-index:2;pointer-events:none;opacity:0}
 @media(prefers-reduced-motion:reduce){.lg-pin.co>b{animation:none}}
 .lg-pin{position:absolute;left:50%;top:50%;width:24px;height:30px;margin:-30px 0 0 -12px;transform:rotate(var(--a)) translateY(calc(var(--r)*-1)) rotate(calc(var(--a)*-1))}
@@ -2078,7 +2078,7 @@ function lmCard(m){var hook=CFG.backend==='cf'&&/^https:/.test(API)?API.replace(
   return '<section class="card" style="margin-top:14px"><div class="ch"><h3 style="display:flex;align-items:center;gap:10px"><span class="ln-logo" aria-hidden="true">'+LINE_LOGO+'</span>เชื่อม LINE OA สำหรับแจ้งเตือน (Messaging API)</h3><span class="sp"></span>'+(m.token?'<span class="badge b-ok">เชื่อมแล้ว'+(bot.name?' · '+esc(bot.name):'')+'</span>':'<span class="badge b-warn">ยังไม่เชื่อม</span>')+'</div><div class="cb">'+
    '<div class="note-b" style="margin-bottom:14px"><div>ใช้ LINE OA ที่<b>ยังไม่มี Webhook ของระบบอื่น</b> · ถ้า OA บริษัทมี Webhook ของระบบเดิมอยู่ (เช่น LINE Check-in หรือระบบเก็บรูปจากกลุ่ม) ห้ามเปลี่ยน Webhook URL — สร้าง LINE OA ใหม่สำหรับแจ้งเตือนแทน · ส่งหาพนักงานรายคนได้เมื่อ OA อยู่ใต้ Provider เดียวกับแอป (2004436385)</div></div>'+
    row(1,'ใส่ค่าจาก LINE Developers','Messaging API › Channel access token (long-lived) · Basic settings › Channel secret · ระบบเก็บไว้ที่เซิร์ฟเวอร์ ไม่แสดงกลับ',
-    (m.token?'<div class="lm-ok"><span class="lm-okc" aria-hidden="true">✓</span><div><b>เชื่อมต่อสำเร็จ</b><div class="muted" style="font-size:12.5px">'+(bot.name?'บอท '+esc(bot.name)+(bot.basicId?' ('+esc(bot.basicId)+')':'')+' · ':'')+'ตรวจกับ LINE แล้ว'+(bot.at?' '+esc(fdt(bot.at)):'')+'</div></div></div>':'')+
+    (m.token?'<div class="lm-ok"><span class="lm-okc" aria-hidden="true">✓</span><div><b>เชื่อมต่อสำเร็จ</b><div class="muted" style="font-size:12.5px">'+(bot.name?'บอท '+esc(bot.name)+(bot.basicId?' ('+esc(bot.basicId)+')':'')+' · ':'')+'ตรวจกับ LINE'+(bot.at?' · '+esc(fdt(bot.at)):'')+'</div></div></div>':'')+
     '<div class="lm-f"><input id="lm-tok" type="password" autocomplete="off" placeholder="'+(m.token?'••••••••••••••••••••••••'+esc(m.tail):'Channel access token')+'" title="'+(m.token?'ตั้งแล้ว · วาง token ใหม่เพื่อเปลี่ยน':'')+'"><input id="lm-sec" type="password" autocomplete="off" placeholder="'+(m.secret?'••••••••••••••••••••••••':'Channel secret (ไม่บังคับ · ใช้กับ Webhook)')+'" title="'+(m.secret?'ตั้งแล้ว · วางใหม่เพื่อเปลี่ยน':'')+'"><button class="btn'+(m.token?'':' pri')+'" id="lm-save">'+(m.token?'เปลี่ยนค่า':'บันทึกและตรวจสอบ')+'</button>'+(m.token||m.secret?'<button class="btn" id="lm-clear">ยกเลิกการเชื่อม</button>':'')+'</div>')+
    row(2,'ตั้ง Webhook (ไม่บังคับ)','ใช้เฉพาะเมื่อยังไม่มี Group ID · แจ้งเตือนรายคนไม่ต้องใช้ · ถ้า OA มี Webhook ของระบบอื่นอยู่ ข้ามขั้นนี้ · Messaging API › Webhook settings › วาง URL นี้ › Verify › เปิด Use webhook · และเปิด Allow bot to join group chats (LINE Official Account Manager › ตั้งค่า › การตอบกลับ)',
     hook?'<div class="lm-f"><input id="lm-hook" readonly value="'+esc(hook)+'"><button class="btn" id="lm-cp">คัดลอก</button></div>':'<div class="faint" style="margin-top:6px">ใช้ได้เฉพาะระบบบน Cloudflare</div>')+
@@ -3209,8 +3209,8 @@ function orgForm(r){var t=A.otab,def=OT[t];r=r||{};
 boot();
 })();
 </script>
-<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610301553 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
-(function(){var B='202610301553';if(!/^\d{12}$/.test(B))return;var shown=0;
+<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610301606 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
+(function(){var B='202610301606';if(!/^\d{12}$/.test(B))return;var shown=0;
   function chk(){if(shown||document.hidden)return;fetch('build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=String(t||'').trim();if(!/^\d{12}$/.test(t)||t<=B)return;shown=1;
     var d=document.createElement('div');d.setAttribute('role','status');d.style.cssText='position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:99999;background:#141414;color:#fff;border-radius:999px;padding:8px 8px 8px 18px;display:flex;gap:12px;align-items:center;font:14px "IBM Plex Sans Thai",sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25)';
     d.innerHTML='<span>มีเวอร์ชันใหม่ของระบบ</span><button type="button" style="border:0;border-radius:999px;background:#fff;color:#141414;padding:6px 14px;font:inherit;font-weight:600;cursor:pointer">โหลดใหม่</button>';
