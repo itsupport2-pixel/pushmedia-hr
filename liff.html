@@ -722,8 +722,12 @@ function refreshLine(){try{if(LS.get("lpic")===ISO(new Date())||!liff.isLoggedIn
 function startLine(){getIdToken().then(t=>{S.idt=t;return call("loginLine",t)}).then(r=>{S.relog=0;if(r.linked){setTok(r.token);if(r.me&&!LS.get("seen_"+r.me.id))linkedView(r.me);else boot()}
   else{S.setup=!!r.setup;if(r.pending)waitingView(r.pending.at);else if(S.invite||LS.get("welcomed"))linkView(r.lineName);else welcomeView(r.lineName)}}).catch(fatal)}
 /* เปิดหน้าตรงจากปุ่มในการ์ด LINE (Workflow แจ้งเตือน 30 ต.ค. 2569): ?go=approve|myreqs|leave · LIFF อาจส่งมาใน liff.state */
-const DEEP=(()=>{const st=decodeURIComponent(Q.get("liff.state")||""),g=Q.get("go")||(/[?&]go=(\w+)/.exec(st)||[])[1];return {approve:1,myreqs:1,leave:1}[g]?g:""})();let deepDone=0;
-function boot(){S.tab="home";S.stack=[];const c=LS.get("today");S.today=c&&c.d===ISO(new Date())?c.t:null;if(S.today)S.me=S.today.me;if(!L.info)L.info=LS.get("leave");show("fade");if(DEEP&&!deepDone){deepDone=1;go(DEEP)}refreshToday();loadLeave(true).then(()=>{if(cur()==="home")repaint()}).catch(()=>{});
+const DEEP=(()=>{const st=decodeURIComponent(Q.get("liff.state")||""),gp=k=>Q.get(k)||(new RegExp("[?&]"+k+"=([\\w-]+)").exec(st)||[])[1]||"",g=gp("go");return {approve:1,myreqs:1,leave:1,apd:1}[g]?{g:g,id:gp("id"),act:gp("act")}:null})();let deepDone=0;
+/* ปุ่มในการ์ดคำขอลา (?go=apd&id=…&act=ok|no): เปิดรายการอนุมัติ → คำขอนั้น → ยืนยันอนุมัติ / ใส่เหตุผลไม่อนุมัติ (ปุ่มส่งกดได้เมื่อมีเหตุผล) */
+function deepGo(d){if(d.g!=="apd")return go(d.g);go("approve");let n=0;const t=setInterval(()=>{n++;const a=(L.aps||[]).find(x=>x.id===d.id);
+  if(a){clearInterval(t);go("apdetail:"+a.id);if(d.act)setTimeout(()=>{if(!a.step){toast("คำขอนี้ดำเนินการไปแล้ว");return}if(d.act==="no")apNoSheet(a.id,"no");else if(d.act==="ok")sheet(`<h3>อนุมัติคำขอลานี้?</h3><span class="cap" style="text-align:center">${esc(a.employee)} · ${esc(a.type)} ${nd(a.days_total)} · ${esc(a.req_no)}</span><button class="btn pri" data-apokc="${a.id}">ยืนยันอนุมัติ</button><button class="btn out" data-dclose>ยกเลิก</button>`)},400);return}
+  if((L.aps&&n>12)||n>40){clearInterval(t);if(L.aps)toast("ไม่พบคำขอนี้ในรายการรออนุมัติของคุณ · อาจมีคนอนุมัติไปแล้ว")}},250)}
+function boot(){S.tab="home";S.stack=[];const c=LS.get("today");S.today=c&&c.d===ISO(new Date())?c.t:null;if(S.today)S.me=S.today.me;if(!L.info)L.info=LS.get("leave");show("fade");if(DEEP&&!deepDone){deepDone=1;deepGo(DEEP)}refreshToday();loadLeave(true).then(()=>{if(cur()==="home")repaint()}).catch(()=>{});
   const now=new Date();api("myAttendance",`${now.getFullYear()}-${p2(now.getMonth()+1)}`).then(m=>{S.month=m;if(cur()==="home")repaint()}).catch(()=>{})}
 function refreshToday(){return api("todayInfo").then(t=>{S.today=t;S.me=t.me;LS.set("today",{d:ISO(new Date()),t});if(["home","clock","sched"].includes(cur()))repaint();return t}).catch(e=>{toast(e.message)})}
 
@@ -949,6 +953,7 @@ V.apdetail=id=>{const a=(L.aps||[]).find(x=>x.id===id);if(!a)return band("พิ
   ${a.flags.map(x=>nt("c-orange","alert",esc(x))).join("")}
   <h3 class="lvh">ขั้นตอนอนุมัติ</h3><div class="fcard" style="gap:0;padding-bottom:4px">${tl(stepsOf(Object.assign({mine_lead:1},a)))}</div></div>
   ${a.step?`<div class="foot"><button class="btn pri" data-apok="${a.id}">${a.status==="chg"?"อนุมัติการยกเลิก":"อนุมัติ"}</button><div class="g2"><button class="btn out sm" data-apno="${a.id}|${a.status==="chg"?"no":"back"}">${a.status==="chg"?"ไม่อนุมัติการยกเลิก":"ส่งกลับแก้ไข"}</button>${a.status==="chg"?"":`<button class="btn out sm" style="color:var(--red);border-color:var(--red)" data-apno="${a.id}|no">ไม่อนุมัติ</button>`}</div>${a.days.length>1&&a.status!=="chg"?`<button class="sim" style="align-self:center;margin:0" data-appart="${a.id}">อนุมัติบางวัน</button>`:""}</div>`:""}`};
+function apNoSheet(id,a){sheet(`<h3>${a==="back"?"ส่งกลับแก้ไข":"ไม่อนุมัติ"}</h3>${fl("apn","เหตุผล * (ผู้ขอจะเห็นข้อความนี้)",`<textarea class="ta" id="apn" placeholder="${a==="back"?"เช่น ขอให้เลื่อนเป็นสัปดาห์หน้า":"ระบุเหตุผล"}"></textarea>`)}<button class="btn pri" data-apnok="${id}|${a}">ยืนยัน</button><button class="btn out" data-dclose>ยกเลิก</button>`);const ta=$("#apn"),b=$("[data-apnok]");if(ta&&b){b.disabled=true;ta.oninput=()=>{b.disabled=!ta.value.trim()};setTimeout(()=>ta.focus(),60)}}   // ไม่อนุมัติ/ส่งกลับ: ต้องพิมพ์เหตุผลก่อน ปุ่มยืนยันจึงกดได้
 function sheet(h){$("#ov").innerHTML=`<div class="scrim" data-dclose style="inset:0"></div><div class="sheetm" role="dialog" aria-modal="true"><div class="grab"></div>${h}</div>`}
 function decide(id,action,note,days){return api("decideLeave",id,action,note||"",days||[]).then(r=>{$("#ov").innerHTML="";toast({ok:"อนุมัติแล้ว",partial:"อนุมัติบางวันแล้ว",no:"ไม่อนุมัติแล้ว",back:"ส่งกลับแก้ไขแล้ว"}[action]+(r.status==="hr"?" · ส่งต่อ HR":"")+" · แจ้งผู้ขอทาง LINE");S.stack.pop();show("back");loadAps()}).catch(e=>toast(e.message))}
 
@@ -975,7 +980,8 @@ document.addEventListener("click",e=>{const t=e.target.closest("button");if(!t)r
   if(d.acok||d.acno){const [k,id]=(d.acok||d.acno).split("|"),ok=!!d.acok;t.disabled=true;api(k==="line"?"decideLink":"decideDevice",id,ok).then(()=>{toast(k==="line"?(ok?"ยืนยันการเชื่อม LINE แล้ว":"ปฏิเสธคำขอแล้ว"):(ok?"อนุญาตอุปกรณ์แล้ว":"ไม่อนุญาตอุปกรณ์"));loadAps()}).catch(e2=>{t.disabled=false;toast(e2.message)});return}
   if(d.apopen){go("apdetail:"+d.apopen);return}
   if(d.apok){decide(d.apok,"ok");return}
-  if(d.apno){const [id,a]=d.apno.split("|");sheet(`<h3>${a==="back"?"ส่งกลับแก้ไข":"ไม่อนุมัติ"}</h3>${fl("apn","เหตุผล * (ผู้ขอจะเห็นข้อความนี้)",`<textarea class="ta" id="apn" placeholder="${a==="back"?"เช่น ขอให้เลื่อนเป็นสัปดาห์หน้า":"ระบุเหตุผล"}"></textarea>`)}<button class="btn pri" data-apnok="${id}|${a}">ยืนยัน</button><button class="btn out" data-dclose>ยกเลิก</button>`);return}
+  if(d.apno){const [id,a]=d.apno.split("|");apNoSheet(id,a);return}
+  if(d.apokc){t.disabled=true;decide(d.apokc,"ok");return}
   if(d.apnok){const [id,a]=d.apnok.split("|"),n=$("#apn").value.trim();if(!n){$("#apn").classList.add("err");toast("กรุณาระบุเหตุผล");return}t.disabled=true;decide(id,a,n);return}
   if(d.appart){const a=L.aps.find(x=>x.id===d.appart);sheet(`<h3>อนุมัติบางวัน</h3><span class="cap" style="text-align:center">ติ๊กวันที่อนุมัติ · วันที่เหลือแจ้งว่าไม่อนุมัติ</span><div class="fcard" style="box-shadow:none;border:1px solid var(--line)">${a.days.map(x=>`<label style="display:flex;gap:10px;align-items:center"><input type="checkbox" class="apck" value="${x.date}" checked style="width:20px;height:20px">${fD(x.date)} · ${PART[x.part]}</label>`).join("")}</div>${fl("apn","หมายเหตุ",`<textarea class="ta" id="apn"></textarea>`)}<button class="btn pri" data-appok="${a.id}">อนุมัติวันที่เลือก</button><button class="btn out" data-dclose>ยกเลิก</button>`);return}
   if(d.appok){const ks=[...document.querySelectorAll(".apck:checked")].map(x=>x.value);t.disabled=true;decide(d.appok,"partial",$("#apn").value.trim(),ks).catch(()=>{t.disabled=false});return}
@@ -987,8 +993,8 @@ document.addEventListener("input",e=>{if(e.target.id==="lr"&&L.f)L.f.reason=e.ta
 start();
 
 </script>
-<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610301905 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
-(function(){var B='202610301905';if(!/^\d{12}$/.test(B))return;var shown=0;
+<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610302010 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
+(function(){var B='202610302010';if(!/^\d{12}$/.test(B))return;var shown=0;
   function chk(){if(shown||document.hidden)return;fetch('build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=String(t||'').trim();if(!/^\d{12}$/.test(t)||t<=B)return;shown=1;
     var d=document.createElement('div');d.setAttribute('role','status');d.style.cssText='position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:99999;background:#141414;color:#fff;border-radius:999px;padding:8px 8px 8px 18px;display:flex;gap:12px;align-items:center;font:14px "IBM Plex Sans Thai",sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25)';
     d.innerHTML='<span>มีเวอร์ชันใหม่ของระบบ</span><button type="button" style="border:0;border-radius:999px;background:#fff;color:#141414;padding:6px 14px;font:inherit;font-weight:600;cursor:pointer">โหลดใหม่</button>';
