@@ -18,7 +18,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js" charset="utf-8"></script>
 <script src="config.js"></script>
-<script src="i18n.js?v=202610301021"></script>
+<script src="i18n.js?v=202610301033"></script>
 <style>
 /* สี Push Media ขาว–ดำ ตามโลโก้ (22 ต.ค. 2569) · สีสถานะ ok/warn/bad คงไว้ */
 :root{--nav:#0B0B0B;--nav2:#1F1F1F;--nav-ink:#C8C8C8;--acc:#111111;--acc-soft:#EDEDED;--bg:#F4F4F4;--sf:#FFFFFF;--sf2:#F8F8F8;--line:#E3E3E3;
@@ -406,6 +406,7 @@ button.kpi:hover{border-color:var(--fnt)}.kpi .l{color:var(--mut);font-size:13px
 .shell.peek .tb .tb-logo,.shell.peek .tb .dv.l{display:block}
 @keyframes pkIn{from{transform:translateX(-156px)}}@keyframes pkFade{from{opacity:0}}
 @media(prefers-reduced-motion:reduce){.shell.peek .side,.shell.peek::after{animation:none}}
+.au-dv{font-size:12px;min-width:170px}.au-dv b{font-weight:600}.au-dv small{display:block;color:#8C8C8C;margin-top:2px;overflow-wrap:anywhere}
 .shell:not(.wide) .nsub .chv{display:none}
 .shell:not(.wide) .subl{position:absolute;left:calc(100% + 10px);top:0;z-index:60;display:none}.shell:not(.wide) .nsub.open .subl{display:block}
 .shell:not(.wide) .subi{margin:0;padding:10px 8px;border:1px solid #E8E8E8;border-radius:14px;background:#fff;box-shadow:0 10px 30px rgba(0,0,0,.16);width:220px}
@@ -752,11 +753,13 @@ function foStart(){if(!CFG.failover)return;document.body.classList.add('fo');var
   post('backupInfo',[],0).then(function(r){return r.json()}).then(function(j){if(!j.ok)return;var m=j.r.mirror_at?String(j.r.mirror_at).slice(11,16):'';var n=j.r.backup_pending;b.textContent='Safe Mode · Running on Secure Snapshot'+(m?' (as of '+m+')':'')+' · Read-only'+(n?' · '+n+' items pending sync':'')}).catch(function(){});
   setInterval(function(){foPing().then(function(ok){if(!ok)return;b.textContent='System restored · Switching back…';b.style.background='#15803D';setTimeout(foExit,1500)})},60000)}
 document.addEventListener('DOMContentLoaded',foStart);
-function post(fn,args,n){return fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({fn:fn,args:args,_c:{w:(A.d&&A.d.me&&(A.d.me.code||A.d.me.id))||store('hr_who')||'',a:'admin',co:coCur()}})})
+function post(fn,args,n){return fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({fn:fn,args:args,_c:{w:(A.d&&A.d.me&&(A.d.me.code||A.d.me.id))||store('hr_who')||'',a:'admin',co:coCur(),d:devId()}})})
   .catch(function(e){if(!n&&READ_FN.test(fn))return new Promise(function(r){setTimeout(r,900)}).then(function(){return post(fn,args,1)});if(fn!=='backupInfo')foCheck();throw new Error('เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ (อินเทอร์เน็ตหรือเซิร์ฟเวอร์สะดุดชั่วคราว) กรุณากดรีเฟรชอีกครั้ง')})}
 function call(fn){var args=Array.prototype.slice.call(arguments,1);
   return post(fn,args,0).then(function(r){return r.text()})
    .then(function(t){var j;try{j=JSON.parse(t)}catch(e){foCheck();throw new Error('เชื่อมต่อเซิร์ฟเวอร์ไม่สำเร็จ')}if(!j.ok){if(FO_RE.test(j.error||''))foCheck();if(j.error==='SESSION_EXPIRED'&&ss('hr_va')){vaExit('หมดเวลาดูในมุมมอง (30 นาที) · กลับเป็นบัญชีของคุณแล้ว');throw new Error(j.error)}if(j.error==='SESSION_EXPIRED'){store('hr_tok',null);A.tok=null;toast('หมดเวลาการใช้งาน กรุณาเข้าสู่ระบบใหม่',1);renderLogin()}throw new Error(j.error)}return j.r})}
+/* รหัสเครื่อง (30 ต.ค. 2569): สุ่มครั้งแรกแล้วจำในเบราว์เซอร์นี้ · Audit Log ใช้บอกว่าเข้าจากอุปกรณ์ใหม่ · ไม่ใช่ข้อมูลส่วนตัว */
+var DEVID=null;function devId(){if(DEVID)return DEVID;try{DEVID=localStorage.getItem('hr_did')}catch(e){}if(!DEVID||!/^[\w-]{8,40}$/.test(DEVID)){DEVID=(window.crypto&&crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,12));try{localStorage.setItem('hr_did',DEVID)}catch(e){}}return DEVID}
 function aCall(fn){return call.apply(null,[fn,A.tok].concat(Array.prototype.slice.call(arguments,1)))}
 /* หน้าต่างยืนยันของระบบ (แทน confirm() ของเบราว์เซอร์ · Figma 310:5751) → Promise คืนค่า k ของปุ่มที่กด · Esc / คลิกนอกกล่อง = ปุ่มที่ไม่มี cls (ยกเลิก/อยู่หน้านี้) */
 function ask(o){return new Promise(function(res){var prev=document.activeElement,w=document.createElement('div');w.className='ask-w';
@@ -2173,11 +2176,14 @@ function ltForm(l){l=l||{name:'',quota_days:'',advance_on:'FALSE',advance_days:'
 
 /* ───────── Audit Log ───────── */
 var AACT={create:'สร้าง',update:'แก้ไข',self_update:'แก้ไขเอง',self_photo:'เปลี่ยนรูป',self_photo_remove:'ลบรูป',line_link:'เชื่อม LINE',view_bank:'เปิดดูเลขบัญชี',reject:'ปฏิเสธ',unlink:'ยกเลิกเชื่อม LINE'};
-function vAudit(){return '<div class="ph"><div><h1>Audit Log</h1><div class="sub">ประวัติการเปลี่ยนแปลงข้อมูลทั้งหมด (500 รายการล่าสุด) · แก้ไขหรือลบไม่ได้</div></div></div><div class="tools"><input id="au-q" placeholder="ค้นหา ชื่อ / เรื่อง / เหตุผล" value="'+esc(A.auq||'')+'"><button class="btn" id="au-go">ค้นหา</button></div><div id="au-body"><div class="loading"><span class="spin"></span>กำลังโหลด…</div></div>'}
+function vAudit(){return '<div class="ph"><div><h1>Audit Log</h1><div class="sub">ประวัติการเปลี่ยนแปลงข้อมูลทั้งหมด (500 รายการล่าสุด) · แก้ไขหรือลบไม่ได้</div></div></div><div class="tools"><input id="au-q" placeholder="ค้นหา ชื่อ / เรื่อง / เหตุผล / IP / อุปกรณ์" value="'+esc(A.auq||'')+'"><button class="btn" id="au-go">ค้นหา</button></div><div id="au-body"><div class="loading"><span class="spin"></span>กำลังโหลด…</div></div>'}
+/* อุปกรณ์ในบรรทัด Audit Log (30 ต.ค. 2569): เบราว์เซอร์ · ระบบ · รุ่น / แอป · IP · ที่ตั้ง · ป้ายอุปกรณ์ใหม่ (ตอนเข้าระบบ) */
+function auDev(s){if(!s)return '<span class="faint">—</span>';var d;try{d=JSON.parse(s)}catch(e){return ''}
+  return '<b>'+esc([d.b,d.os,d.m].filter(Boolean).join(' · ')||'ไม่ทราบ')+'</b>'+(d.n?' <span class="badge b-bad">อุปกรณ์ใหม่</span>':'')+'<small>'+esc([d.app,d.ip?'IP '+d.ip:'',d.loc].filter(Boolean).join(' · '))+'</small>'}
 function bAudit(){var load=function(){aCall('auditList',A.auq||'',500).then(function(rows){if(!$('#au-body'))return;
-    $('#au-body').innerHTML='<section class="card"><div class="tw"><table style="min-width:900px"><thead><tr><th>เวลา</th><th>ผู้ทำ</th><th>การกระทำ</th><th>เรื่อง</th><th>รายการ</th><th>รายละเอียด</th></tr></thead><tbody>'+
+    $('#au-body').innerHTML='<section class="card"><div class="tw"><table style="min-width:1080px"><thead><tr><th>เวลา</th><th>ผู้ทำ</th><th>การกระทำ</th><th>เรื่อง</th><th>รายการ</th><th>รายละเอียด</th><th>อุปกรณ์</th></tr></thead><tbody>'+
      (rows.length?rows.map(function(a){var det='';try{var b=a.before?JSON.parse(a.before):null,f=a.after?JSON.parse(a.after):null;if(f&&typeof f==='object')det=Object.keys(f).slice(0,4).map(function(k){return k+': '+(b&&b[k]!==undefined?String(b[k]).slice(0,20)+' → ':'')+String(f[k]).slice(0,30)}).join(' · ')}catch(e){det=''}
-       return '<tr><td class="num" style="white-space:nowrap">'+esc(fdt(a.at))+'</td><td>'+esc(a.actor)+'</td><td>'+esc(AACT[a.action]||a.action)+'</td><td>'+esc(a.entity)+'</td><td>'+esc(a.target)+'</td><td style="font-size:12.5px;max-width:380px;overflow-wrap:anywhere">'+esc(det)+(a.reason?'<div class="faint">'+esc(a.reason)+'</div>':'')+'</td></tr>'}).join(''):'<tr><td colspan="6" class="muted" style="text-align:center;padding:24px">ไม่พบรายการ</td></tr>')+'</tbody></table></div></section>'}).catch(function(e){if($('#au-body'))$('#au-body').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})};
+       return '<tr><td class="num" style="white-space:nowrap">'+esc(fdt(a.at))+'</td><td>'+esc(a.actor)+'</td><td>'+esc(AACT[a.action]||a.action)+'</td><td>'+esc(a.entity)+'</td><td>'+esc(a.target)+'</td><td style="font-size:12.5px;max-width:380px;overflow-wrap:anywhere">'+esc(det)+(a.reason?'<div class="faint">'+esc(a.reason)+'</div>':'')+'</td><td class="au-dv">'+auDev(a.device)+'</td></tr>'}).join(''):'<tr><td colspan="7" class="muted" style="text-align:center;padding:24px">ไม่พบรายการ</td></tr>')+'</tbody></table></div></section>'}).catch(function(e){if($('#au-body'))$('#au-body').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})};
   $('#au-go').onclick=function(){A.auq=$('#au-q').value.trim();load()};$('#au-q').onkeydown=function(e){if(e.key==='Enter')$('#au-go').click()};load()}
 
 /* ───────── ลงเวลาวันนี้ (Phase 2b) ───────── */
@@ -3112,8 +3118,8 @@ function orgForm(r){var t=A.otab,def=OT[t];r=r||{};
 boot();
 })();
 </script>
-<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610301021 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
-(function(){var B='202610301021';if(!/^\d{12}$/.test(B))return;var shown=0;
+<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610301033 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
+(function(){var B='202610301033';if(!/^\d{12}$/.test(B))return;var shown=0;
   function chk(){if(shown||document.hidden)return;fetch('build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=String(t||'').trim();if(!/^\d{12}$/.test(t)||t<=B)return;shown=1;
     var d=document.createElement('div');d.setAttribute('role','status');d.style.cssText='position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:99999;background:#141414;color:#fff;border-radius:999px;padding:8px 8px 8px 18px;display:flex;gap:12px;align-items:center;font:14px "IBM Plex Sans Thai",sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25)';
     d.innerHTML='<span>มีเวอร์ชันใหม่ของระบบ</span><button type="button" style="border:0;border-radius:999px;background:#fff;color:#141414;padding:6px 14px;font:inherit;font-weight:600;cursor:pointer">โหลดใหม่</button>';
