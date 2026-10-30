@@ -18,7 +18,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js" charset="utf-8"></script>
 <script src="config.js"></script>
-<script src="i18n.js?v=202610300931"></script>
+<script src="i18n.js?v=202610300946"></script>
 <style>
 /* สี Push Media ขาว–ดำ ตามโลโก้ (22 ต.ค. 2569) · สีสถานะ ok/warn/bad คงไว้ */
 :root{--nav:#0B0B0B;--nav2:#1F1F1F;--nav-ink:#C8C8C8;--acc:#111111;--acc-soft:#EDEDED;--bg:#F4F4F4;--sf:#FFFFFF;--sf2:#F8F8F8;--line:#E3E3E3;
@@ -1047,15 +1047,49 @@ function boot(){var va=ss('hr_va');if(va){if(va.exp>Date.now()&&store('hr_tok'))
 function updNav(){var a=$('.side a[data-nav="appr"]');if(!a)return;var dot=$('#tb-bell .dot'),pn=(A.d.pendingCount||0)+A.d.linkRequests.length;if(pn&&!dot&&$('#tb-bell'))$('#tb-bell').insertAdjacentHTML('beforeend','<span class="dot"></span>');else if(!pn&&dot)dot.remove();var n=(A.d.pendingCount||0)+A.d.linkRequests.length,c=a.querySelector('.cnt');if(n){if(!c){c=document.createElement('span');c.className='cnt';a.appendChild(c)}c.textContent=n}else if(c)c.remove()}
 /* ── นำเข้าพนักงานจาก Excel (29 ต.ค. 2569 ผู้ใช้ขอ) · อ่านไฟล์ในเบราว์เซอร์ (ไม่อัปโหลดไฟล์) → ดูตัวอย่าง → ยืนยันจึงบันทึก
  * รองรับไฟล์ "Employee Master … กรองแล้ว.xlsx": แผ่น "ทำงานอยู่ (นำเข้า)" + "ลาออกแล้ว" (หัวตารางแถวที่มีคำว่า รหัสพนักงาน) */
+/* วันที่ในไฟล์นำเข้า → YYYY-MM-DD · รับ 2026-11-01 · 1/11/2026 · 1/11/2569 (วัน/เดือน/ปี · ปี > 2400 = พ.ศ.) · อื่น ๆ คืนค่าเดิม (เซิร์ฟเวอร์ข้าม) */
+function impD(v){v=String(v||'').trim();var m=v.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/),y,mo,d;if(m){y=+m[1];mo=+m[2];d=+m[3]}else{m=v.match(/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2}|\d{4})$/);if(!m)return v;d=+m[1];mo=+m[2];y=+m[3];if(y<100)y+=y>60?2500:2000}
+  if(y>2400)y-=543;if(mo<1||mo>12||d<1||d>31)return v;return y+'-'+('0'+mo).slice(-2)+'-'+('0'+d).slice(-2)}
+/* ไฟล์ตัวอย่างนำเข้าพนักงาน (30 ต.ค. 2569 ผู้ใช้ขอ): แผ่น 'พนักงาน' = หัวคอลัมน์ที่ตัวอ่านรู้จัก (ไม่มีแถวตัวอย่าง กันนำเข้าข้อมูลสมมติ) · 'วิธีกรอก' · 'รายการอ้างอิง' (บริษัท/แผนก/ทีม/ตำแหน่งปัจจุบัน)
+ * หัวคอลัมน์ต้องตรงกับ empImport · ช่องตัวเลขที่ขึ้นต้นด้วย 0 / วันที่ ตั้งเป็นข้อความ (Excel ไม่ตัด 0 / ไม่แปลงวันที่) */
+var IMP_COLS=[['รหัสพนักงาน',1,12,1,'ตัวเลข 4 หลัก · ตรงกับรหัสในระบบ = อัปเดตคนเดิม · ไม่ตรง = เพิ่มคนใหม่','0125'],['คำนำหน้า',0,10,0,'นาย / นาง / นางสาว','นางสาว'],['ชื่อ',1,16,0,'ชื่อจริง (ภาษาไทย)','สมใจ'],['นามสกุล',0,18,0,'นามสกุล','ใจดี'],['ชื่อเล่น',0,10,0,'','ใจ'],
+  ['มือถือ',0,13,1,'10 หลัก ขึ้นต้นด้วย 0 (ไม่ต้องใส่ขีด)','0812345678'],['อีเมล',0,24,0,'','somjai@example.com'],['บริษัท',0,14,0,'ชื่อย่อ หรือชื่อเต็ม ตามแผ่นรายการอ้างอิง · ว่าง = บริษัทแรก','Push Logix'],
+  ['แผนก (ฝ่าย)',0,18,0,'ชื่อตามแผ่นรายการอ้างอิง · ยังไม่มี = ระบบสร้างให้','ฝ่ายติดตั้ง'],['ทีม (แผนก)',0,16,0,'ต้องใส่แผนกด้วย · ยังไม่มี = ระบบสร้างให้ในแผนกนั้น','ทีม A'],
+  ['ตำแหน่ง',0,20,0,'ยังไม่มี = ระบบสร้างให้ · คนใหม่: ตำแหน่งภาษาอังกฤษกำหนดบทบาทเอง (Managing Director / Chief Executive / Chief Operating = ผู้บริหาร · Department Manager = ผู้จัดการ · Sub Team Lead / Lead Technician = หัวหน้าทีม · อื่น ๆ = พนักงาน)','Technician'],
+  ['วันเริ่มงาน',0,13,1,'ปี-เดือน-วัน ค.ศ. เช่น 2026-11-01 (หรือ 1/11/2569)','2026-11-01'],['สถานะ (ระบบ)',0,12,0,'ทำงาน / ทดลองงาน / ลาออก · ว่าง = คนใหม่เป็นทำงาน · คนเดิมคงสถานะเดิม','ทดลองงาน'],
+  ['วันทำงานวันสุดท้าย',0,15,1,'เฉพาะคนลาออก (ใช้ตัดเงินเดือนงวดสุดท้าย) · รูปแบบเดียวกับวันเริ่มงาน',''],['เลขบัตรประชาชน',0,16,1,'13 หลัก · ใช้ในเอกสารภาษี / ประกันสังคม','1234567890123'],
+  ['ธนาคาร',0,12,0,'เช่น กสิกรไทย','กสิกรไทย'],['เลขที่บัญชี',0,14,1,'ตัวเลข · ใช้ในไฟล์โอนเงินเดือน','1234567890'],['ที่อยู่ทะเบียนบ้าน',0,36,0,'ใช้ในเอกสารภาษี','99 ถ.ตัวอย่าง แขวงตัวอย่าง เขตตัวอย่าง กรุงเทพฯ 10100']];
+function empImportTpl(){var b=$('#imp-tpl');busy(b,1);pyXlsxS().then(function(X){busy(b,0);
+  var C=function(i){var s='';i++;while(i){var m=(i-1)%26;s=String.fromCharCode(65+m)+s;i=(i-m-1)/26}return s},bd={top:{style:'thin',color:{rgb:'BFBFBF'}},bottom:{style:'thin',color:{rgb:'BFBFBF'}},left:{style:'thin',color:{rgb:'BFBFBF'}},right:{style:'thin',color:{rgb:'BFBFBF'}}};
+  var ST={note:{font:{italic:true,color:{rgb:'595959'},sz:10}},req:{font:{bold:true,color:{rgb:'FFFFFF'}},fill:{fgColor:{rgb:'111111'}},alignment:{vertical:'center',wrapText:true},border:bd},opt:{font:{bold:true,color:{rgb:'111111'}},fill:{fgColor:{rgb:'E7E6E6'}},alignment:{vertical:'center',wrapText:true},border:bd},
+    cell:{border:bd},txt:{border:bd,numFmt:'@'},h:{font:{bold:true,sz:13}},th:{font:{bold:true},fill:{fgColor:{rgb:'E7E6E6'}},border:bd,alignment:{vertical:'top'}},td:{border:bd,alignment:{vertical:'top',wrapText:true}}};
+  var N=300,ws={};
+  ws.A1={t:'s',v:'นำเข้าพนักงาน · หัวสีดำ = ต้องกรอก · 1 แถว = 1 คน · อย่าแก้ชื่อหัวคอลัมน์ · ดูวิธีกรอกที่แผ่น "วิธีกรอก"',s:ST.note};
+  IMP_COLS.forEach(function(c,i){ws[C(i)+'2']={t:'s',v:c[0],s:c[1]?ST.req:ST.opt};for(var r=3;r<3+N;r++)ws[C(i)+r]={t:'s',v:'',s:c[3]?ST.txt:ST.cell,z:c[3]?'@':undefined}});
+  ws['!ref']='A1:'+C(IMP_COLS.length-1)+(2+N);ws['!cols']=IMP_COLS.map(function(c){return {wch:c[2]}});ws['!rows']=[{hpt:18},{hpt:30}];ws['!merges']=[{s:{r:0,c:0},e:{r:0,c:9}}];
+  var g=[['วิธีกรอกไฟล์นำเข้าพนักงาน'],[''],['คอลัมน์','ต้องกรอก','วิธีกรอก','ตัวอย่าง']].concat(IMP_COLS.map(function(c){return [c[0],c[1]?'ต้องกรอก':'',c[4],c[5]]})).concat([[''],['กติกาการนำเข้า'],
+    ['1. จับคู่ด้วยรหัสพนักงาน · คนเดิมอัปเดตเฉพาะช่องที่มีค่า (ช่องว่างไม่ลบข้อมูลเดิม) · ไม่แตะบทบาท เวลาทำงาน LINE สายอนุมัติ'],['2. เลขบัตรประชาชน / ธนาคาร / เลขที่บัญชี / ที่อยู่ / วันสุดท้าย: เติมเฉพาะคนที่ระบบยังว่าง (ไม่ทับของเดิม) · แก้ของเดิมให้แก้ในหน้าพนักงาน / ข้อมูลเงินเดือน'],
+    ['3. คนใหม่: เวลาทำงาน 08:30–17:30 จ.–ศ. · ลงเวลาที่สำนักงาน · ตั้งค่าเพิ่มในหน้าพนักงานภายหลัง'],['4. กดนำเข้าแล้วระบบแสดงตัวอย่างก่อน (เพิ่ม / แก้ / ข้าม และเหตุผล) · ยังไม่บันทึกจนกดยืนยัน · ทุกครั้งบันทึกใน Audit Log'],
+    ['5. ไฟล์มีหลายแผ่นได้ · ระบบอ่านทุกแผ่นที่มีหัว "รหัสพนักงาน" (ยกเว้นแผ่นวิธีกรอก / รายการอ้างอิง) · แผ่นที่ชื่อมีคำว่า ลาออก = สถานะลาออกถ้าไม่ได้ใส่'],
+    ['6. ไฟล์ที่กรอกแล้วมีข้อมูลส่วนตัว (เลขบัตร / บัญชี) · เก็บในที่ปลอดภัย และลบเมื่อนำเข้าเสร็จ']]);
+  var w2=X.utils.aoa_to_sheet(g);Object.keys(w2).forEach(function(k){if(k[0]==='!')return;var r=+k.replace(/^[A-Z]+/,'');w2[k].s=r===1?ST.h:r===3?ST.th:r>3&&r<=3+IMP_COLS.length?ST.td:(r===5+IMP_COLS.length?ST.h:{alignment:{wrapText:false}})});
+  w2['!cols']=[{wch:20},{wch:10},{wch:70},{wch:28}];
+  var cos=pyCos(),org=A.d.org||{},dep=(org.departments||[]).filter(function(d){return d.active!=='FALSE'}),dn={};dep.forEach(function(d){dn[d.id]=d.name});
+  var tm=(org.teams||[]).filter(function(t){return t.active!=='FALSE'&&dn[t.department_id]}),po=(org.positions||[]).filter(function(p){return p.active!=='FALSE'});
+  var L=[['บริษัท (ชื่อย่อ)','บริษัท (ชื่อเต็ม)','','แผนก (ฝ่าย)','ทีม (แผนก) · อยู่ในแผนก','','ตำแหน่ง']],n=Math.max(cos.length,dep.length,tm.length,po.length);
+  for(var i=0;i<n;i++){var c=cos[i],t=tm[i];L.push([c?c.short||'':'',c?c.name_th||'':'','',dep[i]?dep[i].name:'',t?t.name+' · '+dn[t.department_id]:'','',po[i]?po[i].name:''])}
+  var w3=X.utils.aoa_to_sheet(L);Object.keys(w3).forEach(function(k){if(k[0]==='!')return;if(/^[A-Z]+1$/.test(k)&&w3[k].v)w3[k].s=ST.th});w3['!cols']=[{wch:16},{wch:30},{wch:3},{wch:24},{wch:34},{wch:3},{wch:28}];
+  var wb=X.utils.book_new();X.utils.book_append_sheet(wb,ws,'พนักงาน');X.utils.book_append_sheet(wb,w2,'วิธีกรอก');X.utils.book_append_sheet(wb,w3,'รายการอ้างอิง');
+  X.writeFile(wb,'ไฟล์ตัวอย่าง-นำเข้าพนักงาน.xlsx');toast('ดาวน์โหลดไฟล์ตัวอย่างแล้ว')}).catch(function(e){busy(b,0);toast(e.message,1)})}
 function empImport(){var fi=document.createElement('input');fi.type='file';fi.accept='.xlsx,.xls';fi.hidden=true;document.body.appendChild(fi);fi.onchange=function(){var f=fi.files[0];fi.remove();if(!f)return;toast('กำลังอ่านไฟล์…');
   f.arrayBuffer().then(function(buf){return pyXlsx().then(function(X){var wb=X.read(buf,{type:'array'}),rows=[];
-    wb.SheetNames.forEach(function(sn){if(/สรุป|ต้องตรวจ/.test(sn))return;var a=X.utils.sheet_to_json(wb.Sheets[sn],{header:1,raw:false,defval:''}),hi=-1;
+    wb.SheetNames.forEach(function(sn){if(/สรุป|ต้องตรวจ|วิธีกรอก|อ้างอิง/.test(sn))return;var a=X.utils.sheet_to_json(wb.Sheets[sn],{header:1,raw:false,defval:''}),hi=-1;
       for(var i=0;i<Math.min(6,a.length);i++){if(a[i].map(function(x){return String(x).trim()}).indexOf('รหัสพนักงาน')>=0){hi=i;break}}if(hi<0)return;
       var H=a[hi].map(function(x){return String(x).trim()}),g=function(r,k){var j=H.indexOf(k);return j<0?'':String(r[j]==null?'':r[j]).trim()},res=/ลาออก/.test(sn);
       a.slice(hi+1).forEach(function(r){var code=g(r,'รหัสพนักงาน');if(!code)return;rows.push({code:code,status:g(r,'สถานะ (ระบบ)')||(res?'ลาออก':''),company:g(r,'บริษัท'),title:g(r,'คำนำหน้า'),first:g(r,'ชื่อ'),last:g(r,'นามสกุล'),nickname:g(r,'ชื่อเล่น'),
-        phone:g(r,'มือถือ'),email:g(r,'อีเมล'),position:g(r,'ตำแหน่ง'),dept:g(r,'แผนก (ฝ่าย)'),team:g(r,'ทีม (แผนก)'),start:g(r,'วันเริ่มงาน'),last_day:g(r,'วันทำงานวันสุดท้าย')||g(r,'วันลาออก (มีผล)'),
+        phone:g(r,'มือถือ'),email:g(r,'อีเมล'),position:g(r,'ตำแหน่ง'),dept:g(r,'แผนก (ฝ่าย)'),team:g(r,'ทีม (แผนก)'),start:impD(g(r,'วันเริ่มงาน')),last_day:impD(g(r,'วันทำงานวันสุดท้าย')||g(r,'วันลาออก (มีผล)')),
         id_card:g(r,'เลขบัตรประชาชน'),bank_name:g(r,'ธนาคาร'),bank_account:g(r,'เลขที่บัญชี'),address:g(r,'ที่อยู่ทะเบียนบ้าน')||g(r,'ที่อยู่ปัจจุบัน')})})});
-    if(!rows.length)throw new Error('ไม่พบแผ่นงานที่มีคอลัมน์ "รหัสพนักงาน" · ใช้ไฟล์ Employee Master ที่กรองแล้ว');
+    if(!rows.length)throw new Error('ไม่พบแผ่นงานที่มีคอลัมน์ "รหัสพนักงาน" · ใช้ไฟล์ตัวอย่าง (ปุ่มไฟล์ตัวอย่าง) หรือไฟล์ Employee Master ที่กรองแล้ว');
     return aCall('importEmployeesXlsx',rows,false).then(function(r){empImportView(rows,r,f.name)})})}).catch(function(e){toast(e.message,1)})};fi.click()}
 function empImportView(rows,r,fname){var FL={title:'คำนำหน้า',first_name:'ชื่อ',last_name:'นามสกุล',nickname:'ชื่อเล่น',phone:'มือถือ',email:'อีเมล',company_id:'บริษัท',department_id:'แผนก',team_id:'ทีม',position_id:'ตำแหน่ง',start_date:'วันเริ่มงาน',status:'สถานะ',bank_account:'เลขบัญชี (เติมที่ว่าง)',id_card:'เลขบัตร (เติมที่ว่าง)',tax_address:'ที่อยู่ (เติมที่ว่าง)',last_day:'วันทำงานวันสุดท้าย (เติมที่ว่าง)'};
   var li=function(t,a){return a.length?'<h4 style="margin:14px 0 6px">'+t+' ('+a.length+')</h4><div class="imp-l">'+a.map(function(x){return '<div>'+esc(x)+'</div>'}).join('')+'</div>':''};
@@ -2580,7 +2614,7 @@ function vList(){
   var sc=acc('emp'),tms=sc==='dept'?A.d.org.teams.filter(function(t){return t.active!=='FALSE'&&cur.some(function(e){return e.team_id===t.id})}):[];
   var bar=isHR()?'':'<div class="scb"><span class="i">i</span><div><b>แสดงเฉพาะ'+esc(scopeTxt('emp'))+' ('+cur.length+' คน)</b><small>ดูข้อมูลได้ตามขอบเขตที่ HR กำหนด'+(acc('edit')==='none'?' · แก้ข้อมูลพนักงานได้เฉพาะ HR':'')+' · เลขบัญชีเห็นเฉพาะ HR</small></div></div>'+
     (tms.length>1?'<div class="tchips" role="group" aria-label="กรองตามทีม"><button data-team="all" aria-pressed="'+(A.team==='all')+'">ทุกทีม · '+cur.length+'</button>'+tms.map(function(t){return '<button data-team="'+t.id+'" aria-pressed="'+(A.team===t.id)+'">'+esc(t.name)+' · '+cur.filter(function(e){return e.team_id===t.id}).length+'</button>'}).join('')+'</div>':'');
-  return '<div class="ph"><div><h1>พนักงาน</h1><div class="sub">'+cur.length+' คน'+(nres?' · ลาออก '+nres+' คน (ดูได้ที่ตัวกรองสถานะ)':'')+(isHR()?'':' · '+esc(scopeTxt('emp')))+'</div></div><span class="sp"></span><div class="evs" role="group" aria-label="มุมมอง"><button data-ev="table" aria-pressed="'+(A.ev!=='card')+'">ตาราง</button><button data-ev="card" aria-pressed="'+(A.ev==='card')+'">การ์ด</button></div>'+(isHR()?'<button class="btn" id="imp" data-tip="นำเข้าจากไฟล์ Employee Master ที่กรองแล้ว · ดูตัวอย่างก่อนบันทึก">นำเข้า Excel</button><button class="btn pri" id="add">+ เพิ่มพนักงาน</button>':'')+'</div>'+bar+
+  return '<div class="ph"><div><h1>พนักงาน</h1><div class="sub">'+cur.length+' คน'+(nres?' · ลาออก '+nres+' คน (ดูได้ที่ตัวกรองสถานะ)':'')+(isHR()?'':' · '+esc(scopeTxt('emp')))+'</div></div><span class="sp"></span><div class="evs" role="group" aria-label="มุมมอง"><button data-ev="table" aria-pressed="'+(A.ev!=='card')+'">ตาราง</button><button data-ev="card" aria-pressed="'+(A.ev==='card')+'">การ์ด</button></div>'+(isHR()?'<button class="btn" id="imp" data-tip="นำเข้าจากไฟล์ Employee Master ที่กรองแล้ว · ดูตัวอย่างก่อนบันทึก">นำเข้า Excel</button><button class="btn" id="imp-tpl" data-tip="ไฟล์ Excel เปล่าพร้อมหัวคอลัมน์ + วิธีกรอก + รายชื่อแผนก/ทีม/ตำแหน่งปัจจุบัน">ไฟล์ตัวอย่าง</button><button class="btn pri" id="add">+ เพิ่มพนักงาน</button>':'')+'</div>'+bar+
    '<div class="sum">'+sb('all','all','ทั้งหมด',c.all)+sb('line','none','ยังไม่เชื่อม LINE',c.no,1)+sb('line','wait','รอยืนยัน LINE',c.wait,1)+sb('chk','none-set','ยังไม่ระบุการลงเวลา',c.chk,1)+sb('st','probation','ทดลองงาน',c.prob)+'</div>'+
    '<div class="tools"><input id="q" placeholder="ค้นหา ชื่อ ชื่อเล่น รหัส ทีม ตำแหน่ง เบอร์ อีเมล" value="'+esc(A.q)+'" aria-label="ค้นหา">'+
    (sc==='all'?'<select id="fd" aria-label="แผนก"><option value="all">ทุกแผนก</option>'+A.d.org.departments.filter(function(d){return d.active!=='FALSE'}).map(function(d){return '<option value="'+d.id+'"'+(A.dept===d.id?' selected':'')+'>'+esc(d.name)+'</option>'}).join('')+'</select>':'')+
@@ -2625,7 +2659,7 @@ function bList(){
   $$('tr.ck,.ec.ck').forEach(function(tr){tr.onclick=function(ev){if(ev.target.closest('[data-no]'))return;go('profile',tr.dataset.id)}});
   $$('[data-sel]').forEach(function(c){c.onchange=function(){var id=c.dataset.sel;A.sel=c.checked?A.sel.concat(id):A.sel.filter(function(x){return x!==id});render()}});
   var sa=$('#sa');if(sa)sa.onchange=function(){var ids=$$('[data-sel]').map(function(c){return c.dataset.sel});A.sel=sa.checked?A.sel.concat(ids.filter(function(i){return A.sel.indexOf(i)<0})):A.sel.filter(function(x){return ids.indexOf(x)<0});render()};
-  if($('#add'))$('#add').onclick=function(){go('form')};if($('#imp'))$('#imp').onclick=empImport;if($('#inv'))$('#inv').onclick=function(){invite(A.sel)};if($('#clr'))$('#clr').onclick=function(){A.sel=[];render()};
+  if($('#add'))$('#add').onclick=function(){go('form')};if($('#imp'))$('#imp').onclick=empImport;if($('#imp-tpl'))$('#imp-tpl').onclick=empImportTpl;if($('#inv'))$('#inv').onclick=function(){invite(A.sel)};if($('#clr'))$('#clr').onclick=function(){A.sel=[];render()};
   if($('#pp'))$('#pp').onclick=function(){A.page--;render()};if($('#pn'))$('#pn').onclick=function(){A.page++;render()};if($('#rs'))$('#rs').onclick=function(){A.q='';A.dept=A.chk=A.line='all';A.st='cur';render()};
 }
 
@@ -3070,8 +3104,8 @@ function orgForm(r){var t=A.otab,def=OT[t];r=r||{};
 boot();
 })();
 </script>
-<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610300931 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
-(function(){var B='202610300931';if(!/^\d{12}$/.test(B))return;var shown=0;
+<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610300946 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
+(function(){var B='202610300946';if(!/^\d{12}$/.test(B))return;var shown=0;
   function chk(){if(shown||document.hidden)return;fetch('build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=String(t||'').trim();if(!/^\d{12}$/.test(t)||t<=B)return;shown=1;
     var d=document.createElement('div');d.setAttribute('role','status');d.style.cssText='position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:99999;background:#141414;color:#fff;border-radius:999px;padding:8px 8px 8px 18px;display:flex;gap:12px;align-items:center;font:14px "IBM Plex Sans Thai",sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25)';
     d.innerHTML='<span>มีเวอร์ชันใหม่ของระบบ</span><button type="button" style="border:0;border-radius:999px;background:#fff;color:#141414;padding:6px 14px;font:inherit;font-weight:600;cursor:pointer">โหลดใหม่</button>';
