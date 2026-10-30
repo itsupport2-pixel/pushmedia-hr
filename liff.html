@@ -721,7 +721,9 @@ function refreshLine(){try{if(LS.get("lpic")===ISO(new Date())||!liff.isLoggedIn
   api("refreshLine",t).then(r=>{if(r&&r.ok)LS.set("lpic",ISO(new Date()))}).catch(()=>{})}catch(x){}}
 function startLine(){getIdToken().then(t=>{S.idt=t;return call("loginLine",t)}).then(r=>{S.relog=0;if(r.linked){setTok(r.token);if(r.me&&!LS.get("seen_"+r.me.id))linkedView(r.me);else boot()}
   else{S.setup=!!r.setup;if(r.pending)waitingView(r.pending.at);else if(S.invite||LS.get("welcomed"))linkView(r.lineName);else welcomeView(r.lineName)}}).catch(fatal)}
-function boot(){S.tab="home";S.stack=[];const c=LS.get("today");S.today=c&&c.d===ISO(new Date())?c.t:null;if(S.today)S.me=S.today.me;if(!L.info)L.info=LS.get("leave");show("fade");refreshToday();loadLeave(true).then(()=>{if(cur()==="home")repaint()}).catch(()=>{});
+/* เปิดหน้าตรงจากปุ่มในการ์ด LINE (Workflow แจ้งเตือน 30 ต.ค. 2569): ?go=approve|myreqs|leave · LIFF อาจส่งมาใน liff.state */
+const DEEP=(()=>{const st=decodeURIComponent(Q.get("liff.state")||""),g=Q.get("go")||(/[?&]go=(\w+)/.exec(st)||[])[1];return {approve:1,myreqs:1,leave:1}[g]?g:""})();let deepDone=0;
+function boot(){S.tab="home";S.stack=[];const c=LS.get("today");S.today=c&&c.d===ISO(new Date())?c.t:null;if(S.today)S.me=S.today.me;if(!L.info)L.info=LS.get("leave");show("fade");if(DEEP&&!deepDone){deepDone=1;go(DEEP)}refreshToday();loadLeave(true).then(()=>{if(cur()==="home")repaint()}).catch(()=>{});
   const now=new Date();api("myAttendance",`${now.getFullYear()}-${p2(now.getMonth()+1)}`).then(m=>{S.month=m;if(cur()==="home")repaint()}).catch(()=>{})}
 function refreshToday(){return api("todayInfo").then(t=>{S.today=t;S.me=t.me;LS.set("today",{d:ISO(new Date()),t});if(["home","clock","sched"].includes(cur()))repaint();return t}).catch(e=>{toast(e.message)})}
 
@@ -985,8 +987,8 @@ document.addEventListener("input",e=>{if(e.target.id==="lr"&&L.f)L.f.reason=e.ta
 start();
 
 </script>
-<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610301627 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
-(function(){var B='202610301627';if(!/^\d{12}$/.test(B))return;var shown=0;
+<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610301707 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
+(function(){var B='202610301707';if(!/^\d{12}$/.test(B))return;var shown=0;
   function chk(){if(shown||document.hidden)return;fetch('build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=String(t||'').trim();if(!/^\d{12}$/.test(t)||t<=B)return;shown=1;
     var d=document.createElement('div');d.setAttribute('role','status');d.style.cssText='position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:99999;background:#141414;color:#fff;border-radius:999px;padding:8px 8px 8px 18px;display:flex;gap:12px;align-items:center;font:14px "IBM Plex Sans Thai",sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25)';
     d.innerHTML='<span>มีเวอร์ชันใหม่ของระบบ</span><button type="button" style="border:0;border-radius:999px;background:#fff;color:#141414;padding:6px 14px;font:inherit;font-weight:600;cursor:pointer">โหลดใหม่</button>';
