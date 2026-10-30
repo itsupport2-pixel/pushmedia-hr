@@ -18,7 +18,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js" charset="utf-8"></script>
 <script src="config.js"></script>
-<script src="i18n.js?v=202610301850"></script>
+<script src="i18n.js?v=202610301905"></script>
 <style>
 /* สี Push Media ขาว–ดำ ตามโลโก้ (22 ต.ค. 2569) · สีสถานะ ok/warn/bad คงไว้ */
 :root{--nav:#0B0B0B;--nav2:#1F1F1F;--nav-ink:#C8C8C8;--acc:#111111;--acc-soft:#EDEDED;--bg:#F4F4F4;--sf:#FFFFFF;--sf2:#F8F8F8;--line:#E3E3E3;
@@ -2025,7 +2025,20 @@ drawAtt=(function(f){return function(){var r=f.apply(this,arguments);pgFx();retu
 drawErr=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(drawErr);
 drawSet=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(drawSet);
 bOrg=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(bOrg);
-bNone=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(bNone);   // ตารางงาน / Confirmed (iframe) → กรอบเลื่อนขึ้น
+bNone=(function(f){return function(){var arm=A.fx===A.view||A.fx==='*',r=f.apply(this,arguments);pgFx();var fr=$('iframe.plf');if(fr&&arm)fr.addEventListener('load',function(){fxFrame(fr)},{once:true});return r}})(bNone);   // ตารางงาน / Confirmed (iframe) → กรอบเลื่อนขึ้น + ข้อมูลข้างในเล่นเมื่อวาดเสร็จ
+/* ภาพเปิดข้อมูลใน iframe ตารางงาน / Confirmed (planner.html · 30 ต.ค. 2569 ผู้ใช้ขอ): รอให้หน้าในกรอบวาดข้อมูลเสร็จ (ไม่มีการเปลี่ยนแปลง 300ms)
+ * แล้วเล่นชุดเดียวกับหน้าอื่น: ป้ายสรุปเลื่อนขึ้น + ตัวเลขนับขึ้น · แถวตาราง/การ์ดค่อยขึ้น · เล่นครั้งเดียวต่อการเข้าเมนู (สลับมุมมองในตารางงานไม่เล่น) */
+function fxFrame(fr){var d;try{d=fr.contentDocument}catch(e){return}var H=d&&d.documentElement,show=function(){if(H)H.classList.remove('fx-wait')};   // ข้อมูลถูกซ่อนไว้ตั้งแต่แรก (planner.html ?fx=1) → เผยตอนเริ่มเล่น ไม่กะพริบ
+  if(!d||!d.body||!Element.prototype.animate||matchMedia('(prefers-reduced-motion: reduce)').matches){show();return}
+  var done=0,tm=null,first=null,again=0,stop=setTimeout(function(){mo.disconnect();show()},8000);
+  var run=function(){if(done)return;var rows=[].slice.call(d.querySelectorAll('table tbody tr')).filter(function(t){return t.offsetParent}),chips=[].slice.call(d.querySelectorAll('.hr-sum > *'));if(!rows.length&&!chips.length)return;
+    done=1;first=chips[0]||rows[0];var E='cubic-bezier(.2,.8,.2,1)';requestAnimationFrame(show);   // ดูต่ออีก 2 วิ: ถ้าหน้าในกรอบวาดข้อมูลจริงทับ (ของเดิมหลุดจากหน้า) = เล่นใหม่ 1 ครั้ง
+    setTimeout(function(){mo.disconnect();clearTimeout(stop)},2000);
+    chips.forEach(function(e,i){e.animate([{opacity:0,transform:'translateY(18px)'},{opacity:1,transform:'none'}],{duration:800,delay:90*i,easing:E,fill:'backwards'})});
+    rows.slice(0,16).forEach(function(e,i){e.animate([{opacity:0,transform:'translateY(12px)'},{opacity:1,transform:'none'}],{duration:650,delay:Math.min(250+45*i,1000),easing:E,fill:'backwards'})});
+    var tx=[];chips.forEach(function(c){[].slice.call(c.querySelectorAll('b')).forEach(function(b){if(/^\s*\d+\s*$/.test(b.textContent))tx.push([b,b.textContent])})});
+    if(!tx.length)return;var t0=performance.now(),D=2000;(function step(now){var p=Math.min(1,(now-t0)/D),k=1-Math.pow(1-p,3);tx.forEach(function(x){x[0].textContent=p<1?String(Math.round(+x[1]*k)):x[1]});if(p<1)requestAnimationFrame(step)})(t0)};
+  var mo=new MutationObserver(function(){if(done&&first&&!first.isConnected&&!again){again=1;done=0;H.classList.add('fx-wait')}clearTimeout(tm);if(!done)tm=setTimeout(run,150)});mo.observe(d.body,{childList:true,subtree:true});tm=setTimeout(run,150)}
 /* การ์ด "ของฉัน": โควตาการลาปีนี้ของผู้ใช้ (จำไว้ในหน้า · โหลดใหม่ทุก 5 นาที) */
 function loadMine(){var draw=function(li){var q=$('#db-quota');if(!q)return;var ts=(li.types||[]).filter(function(t){return t.quota!==null});q.className='';q.innerHTML=ts.length?ts.map(function(t){var u=(t.used||0)+(t.reserved||0);return '<div class="q"><div><b style="font-weight:500">'+esc(t.name)+'</b><span class="num">ใช้ '+(+u.toFixed(1))+' / '+t.quota+' วัน</span></div><div class="tr"><i style="width:'+Math.min(100,t.quota?u/t.quota*100:0)+'%"></i></div></div>'}).join('')+'<div class="faint" style="font-size:12px">ปี '+(li.year+543)+' · รวมที่รออนุมัติ</div>':'<span class="faint">ไม่มีโควตาการลา</span>'};
   if(A.mine&&Date.now()-A.mine.at<300000)return draw(A.mine.d);aCall('leaveInfo').then(function(li){A.mine={at:Date.now(),d:li};draw(li)}).catch(function(){var q=$('#db-quota');if(q)q.textContent='โหลดโควตาไม่สำเร็จ'})}
@@ -3139,8 +3152,8 @@ function vMine(){A.id=A.d.me.id;return '<div class="scb"><span class="i">i</span
 function bMine(){A.id=A.d.me.id;bProfile()}
 /* ───────── ตารางงาน = หน้าเว็บ Workforce Task Manager เดิมทั้งชุด (planner.html · สร้างด้วย app/tools/build-planner.mjs · หลังบ้าน app/gas/Wtm.js) ───────── */
 var PLANNER_V='mvqpxwm4';   // เลขรุ่นหน้า planner.html (build-planner.mjs ตั้งให้ทุกครั้ง · กันเบราว์เซอร์จำหน้าเก่า)
-function vConf(){return '<iframe class="plf" src="planner.html?desktop=1&page=confirmed&v='+PLANNER_V+'" title="Confirmed"></iframe>'}
-function vPlanner(){return '<iframe class="plf" src="planner.html?desktop=1&v='+PLANNER_V+'" title="ตารางงาน" allow="geolocation"></iframe>'}
+function vConf(){return '<iframe class="plf" src="planner.html?desktop=1&page=confirmed'+(A.fx==='conf'||A.fx==='*'?'&fx=1':'')+'&v='+PLANNER_V+'" title="Confirmed"></iframe>'}
+function vPlanner(){return '<iframe class="plf" src="planner.html?desktop=1'+(A.fx==='sched'||A.fx==='*'?'&fx=1':'')+'&v='+PLANNER_V+'" title="ตารางงาน" allow="geolocation"></iframe>'}
 /* (เดิม) ตารางงานช่วง 1 ที่เขียนใหม่ — ไม่ได้ใช้แล้ว เก็บไว้อ้างอิง */
 var THD=['อา.','จ.','อ.','พ.','พฤ.','ศ.','ส.'];
 function isoAdd(d,n){var x=new Date(d+'T12:00:00');x.setDate(x.getDate()+n);return x.getFullYear()+'-'+('0'+(x.getMonth()+1)).slice(-2)+'-'+('0'+x.getDate()).slice(-2)}
@@ -3508,8 +3521,8 @@ function orgForm(r){var t=A.otab,def=OT[t];r=r||{};
 boot();
 })();
 </script>
-<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610301850 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
-(function(){var B='202610301850';if(!/^\d{12}$/.test(B))return;var shown=0;
+<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610301905 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
+(function(){var B='202610301905';if(!/^\d{12}$/.test(B))return;var shown=0;
   function chk(){if(shown||document.hidden)return;fetch('build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=String(t||'').trim();if(!/^\d{12}$/.test(t)||t<=B)return;shown=1;
     var d=document.createElement('div');d.setAttribute('role','status');d.style.cssText='position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:99999;background:#141414;color:#fff;border-radius:999px;padding:8px 8px 8px 18px;display:flex;gap:12px;align-items:center;font:14px "IBM Plex Sans Thai",sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25)';
     d.innerHTML='<span>มีเวอร์ชันใหม่ของระบบ</span><button type="button" style="border:0;border-radius:999px;background:#fff;color:#141414;padding:6px 14px;font:inherit;font-weight:600;cursor:pointer">โหลดใหม่</button>';
