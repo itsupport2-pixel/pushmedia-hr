@@ -89,7 +89,7 @@
     'คุณเห็นเฉพาะข้อมูลของตัวเอง': 'You only see your own data', 'สิทธิ์แก้ข้อมูลขึ้นกับที่': 'Edit rights depend on', 'แก้ข้อมูลพนักงานได้เฉพาะ': 'Only these can edit employees:',
     'ดูข้อมูลได้ตามขอบเขตที่': 'You see data within the scope set by', 'ตั้งที่หน้าพนักงาน': 'Set on the employee page',
     // ── LINE ──
-    'เชื่อมบัญชี': 'Link account', 'เชื่อมแล้ว': 'Linked', 'ยังไม่เชื่อม': 'Not linked', 'ยังไม่ผูก': 'Not linked', 'เชื่อมเมื่อ': 'Linked on', 'ยกเลิกเชื่อม': 'Unlink', 'ยกเลิกการเชื่อม': 'Unlink',
+    'เชื่อมบัญชี': 'Link account', 'เชื่อมแล้ว': 'Linked', 'ยังไม่เชื่อม': 'Not linked', 'ยังไม่ผูก': 'Not linked', 'เชื่อมเมื่อ': 'Linked on', 'ยกเลิกเชื่อม': 'Unlink', 'ยกเลิกการเชื่อม': 'Unlink', 'เชื่อมต่อสำเร็จ': 'Connected', 'เปลี่ยนค่า': 'Change', 'ตรวจกับ LINE แล้ว': 'Verified with LINE',
     'คำขอเชื่อม': 'Link requests', 'มีคำขอเชื่อม': 'Link requests pending', 'ยืนยันการเชื่อม': 'Confirm link', 'ส่งลิงก์เชื่อม': 'Send link', 'ลิงก์เชิญ': 'Invite link', 'ลิงก์เชิญเชื่อม': 'Invite link',
     'ไม่มีลิงก์เชิญ': 'No invite link', 'ลิงก์ใช้ได้ถึง': 'Link valid until', 'กำลังสร้างลิงก์': 'Creating link', 'คัดลอกลิงก์แล้ว': 'Link copied', 'ไม่มีคำขอรอยืนยัน': 'No pending confirmations',
     'รอยืนยัน': 'Awaiting confirmation', 'ไม่ใช่คนนี้': 'Not this person', 'ยืนยันว่าเป็นพนักงานคนนี้': 'Confirm this is the employee', 'ตรวจว่าเป็นคนเดียวกันก่อนยืนยัน': 'Make sure it is the same person',
