@@ -18,7 +18,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js" charset="utf-8"></script>
 <script src="config.js"></script>
-<script src="i18n.js?v=202610302010"></script>
+<script src="i18n.js?v=202610302021"></script>
 <style>
 /* สี Push Media ขาว–ดำ ตามโลโก้ (22 ต.ค. 2569) · สีสถานะ ok/warn/bad คงไว้ */
 :root{--nav:#0B0B0B;--nav2:#1F1F1F;--nav-ink:#C8C8C8;--acc:#111111;--acc-soft:#EDEDED;--bg:#F4F4F4;--sf:#FFFFFF;--sf2:#F8F8F8;--line:#E3E3E3;
@@ -2154,8 +2154,13 @@ function lmCard(m){var hook=CFG.backend==='cf'&&/^https:/.test(API)?API.replace(
    row(1,'ใส่ค่าจาก LINE Developers','Messaging API › Channel access token (long-lived) · Basic settings › Channel secret · ระบบเก็บไว้ที่เซิร์ฟเวอร์ ไม่แสดงกลับ',
     (m.token?'<div class="lm-ok"><span class="lm-okc" aria-hidden="true">✓</span><div><b>เชื่อมต่อสำเร็จ</b><div class="muted" style="font-size:12.5px">'+(bot.name?'บอท '+esc(bot.name)+(bot.basicId?' ('+esc(bot.basicId)+')':'')+' · ':'')+'ตรวจกับ LINE'+(bot.at?' · '+esc(fdt(bot.at)):'')+'</div></div></div>':'')+
     '<div class="lm-f"><input id="lm-tok" type="password" autocomplete="off" placeholder="'+(m.token?'••••••••••••••••••••••••'+esc(m.tail):'Channel access token')+'" title="'+(m.token?'ตั้งแล้ว · วาง token ใหม่เพื่อเปลี่ยน':'')+'"><input id="lm-sec" type="password" autocomplete="off" placeholder="'+(m.secret?'••••••••••••••••••••••••':'Channel secret (ไม่บังคับ · ใช้กับ Webhook)')+'" title="'+(m.secret?'ตั้งแล้ว · วางใหม่เพื่อเปลี่ยน':'')+'"><button class="btn'+(m.token?'':' pri')+'" id="lm-save">'+(m.token?'เปลี่ยนค่า':'บันทึกและตรวจสอบ')+'</button>'+(m.token||m.secret?'<button class="btn" id="lm-clear">ยกเลิกการเชื่อม</button>':'')+'</div>')+
-   row(2,'ตั้ง Webhook (ไม่บังคับ)','ใช้เฉพาะเมื่อยังไม่มี Group ID · แจ้งเตือนรายคนไม่ต้องใช้ · ถ้า OA มี Webhook ของระบบอื่นอยู่ ข้ามขั้นนี้ · Messaging API › Webhook settings › วาง URL นี้ › Verify › เปิด Use webhook · และเปิด Allow bot to join group chats (LINE Official Account Manager › ตั้งค่า › การตอบกลับ)',
-    hook?'<div class="lm-f"><input id="lm-hook" readonly value="'+esc(hook)+'"><button class="btn" id="lm-cp">คัดลอก</button></div>':'<div class="faint" style="margin-top:6px">ใช้ได้เฉพาะระบบบน Cloudflare</div>')+
+   row(2,'ตั้ง Webhook · กดอนุมัติ / ไม่อนุมัติในแชต LINE ได้เลย','ต้องใส่ Channel secret ในขั้น 1 · Messaging API › Webhook settings › วาง URL นี้ › Verify › เปิด Use webhook · ปิด “ข้อความตอบกลับอัตโนมัติ” ใน LINE Official Account Manager · ถ้า OA มี Webhook ของระบบอื่นอยู่ ห้ามเปลี่ยน (ปุ่มในการ์ดจะเปิดแอปแทน)',
+    (function(h){if(!m.token||!h)return '';var ok='<div class="lm-ok"><span class="lm-okc" aria-hidden="true">✓</span><div><b>',w='<div class="note-b" style="margin-top:8px"><div>';
+      if(h.ours&&h.active&&!m.secret)return w+'<b>Webhook ตั้งแล้ว แต่ยังไม่ได้ใส่ Channel secret</b> · ใส่ในขั้น 1 ระบบจึงรับการกดปุ่มได้</div></div>';
+      if(h.ours&&h.active)return ok+(m.inchat?'กดอนุมัติในแชตได้แล้ว':'Webhook ตั้งแล้ว · กด Verify ใน LINE Developers 1 ครั้ง')+'</b><div class="muted" style="font-size:12.5px">'+(m.inchat?'การ์ดคำขอลา: กด อนุมัติ = อนุมัติทันที · ไม่อนุมัติ = บอทถามเหตุผลในแชต':'หลัง Verify สำเร็จ การ์ดจะเปลี่ยนเป็นปุ่มกดในแชต')+'</div></div></div>';
+      if(h.url&&!h.ours)return w+'<b>OA นี้มี Webhook ของระบบอื่นอยู่</b> ('+esc(h.url.replace(/^https?:\/\//,'').slice(0,60))+') · ห้ามเปลี่ยน · ปุ่มในการ์ดจะเปิดแอปเพื่ออนุมัติแทน</div></div>';
+      return w+'<b>ยังไม่ได้เปิด Webhook</b> · ตอนนี้ปุ่มในการ์ดจะเปิดแอปเพื่ออนุมัติ</div></div>'})(m.hook)+
+    (hook?'<div class="lm-f"><input id="lm-hook" readonly value="'+esc(hook)+'"><button class="btn" id="lm-cp">คัดลอก</button></div>':'<div class="faint" style="margin-top:6px">ใช้ได้เฉพาะระบบบน Cloudflare</div>'))+
    row(3,'กลุ่ม LINE ที่รับแจ้งเตือน','มี Group ID อยู่แล้ว = ใส่ด้านล่างได้เลย (บอทต้องอยู่ในกลุ่มนั้น) · หรือเชิญบอทเข้ากลุ่มเมื่อตั้ง Webhook แล้ว กลุ่มจะขึ้นเอง',
     '<div class="lm-f"><input id="lm-gid" placeholder="Group ID เช่น C1234…(33 ตัว)" autocomplete="off" spellcheck="false"><input id="lm-gnm" placeholder="ชื่อกลุ่ม (ไม่บังคับ)"><button class="btn" id="lm-gadd">เพิ่มกลุ่ม</button></div><div class="lm-gs">'+(gs.length?gs.map(function(g){var hr=m.hrGroup===g.id;return '<div class="lm-g"><div style="flex:1;min-width:0"><b>'+esc(g.name||'(ไม่ทราบชื่อกลุ่ม)')+'</b>'+(hr?' <span class="badge b-ok">กลุ่ม HR</span>':'')+(g.left_at?' <span class="badge b-mute">บอทออกแล้ว</span>':'')+'<div class="faint" style="font-size:12px">เข้ากลุ่ม '+esc(fdt(g.joined_at))+' · '+esc(g.id.slice(0,9))+'…</div></div>'+(g.left_at?'':'<button class="btn sm" data-lmt="'+g.id+'">ทดสอบส่ง</button>'+(hr?'':'<button class="btn sm" data-lmh="'+g.id+'">ใช้เป็นกลุ่ม HR</button>'))+'<button class="btn sm" data-lmf="'+g.id+'" title="เลิกจำกลุ่มนี้">ลบ</button></div>'}).join(''):'<div class="faint" style="padding:8px 0">ยังไม่มีกลุ่ม · ทำขั้น 1–2 ให้เสร็จ แล้วเชิญบอทเข้ากลุ่ม</div>')+'</div><button class="btn sm" id="lm-re" style="margin-top:8px">รีเฟรช</button>')+
    '</div></section>'}
@@ -3525,8 +3530,8 @@ function orgForm(r){var t=A.otab,def=OT[t];r=r||{};
 boot();
 })();
 </script>
-<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610302010 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
-(function(){var B='202610302010';if(!/^\d{12}$/.test(B))return;var shown=0;
+<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610302021 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
+(function(){var B='202610302021';if(!/^\d{12}$/.test(B))return;var shown=0;
   function chk(){if(shown||document.hidden)return;fetch('build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=String(t||'').trim();if(!/^\d{12}$/.test(t)||t<=B)return;shown=1;
     var d=document.createElement('div');d.setAttribute('role','status');d.style.cssText='position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:99999;background:#141414;color:#fff;border-radius:999px;padding:8px 8px 8px 18px;display:flex;gap:12px;align-items:center;font:14px "IBM Plex Sans Thai",sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25)';
     d.innerHTML='<span>มีเวอร์ชันใหม่ของระบบ</span><button type="button" style="border:0;border-radius:999px;background:#fff;color:#141414;padding:6px 14px;font:inherit;font-weight:600;cursor:pointer">โหลดใหม่</button>';
