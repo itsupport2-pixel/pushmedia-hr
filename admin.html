@@ -18,7 +18,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js" charset="utf-8"></script>
 <script src="config.js"></script>
-<script src="i18n.js?v=202610301754"></script>
+<script src="i18n.js?v=202610301850"></script>
 <style>
 /* สี Push Media ขาว–ดำ ตามโลโก้ (22 ต.ค. 2569) · สีสถานะ ok/warn/bad คงไว้ */
 :root{--nav:#0B0B0B;--nav2:#1F1F1F;--nav-ink:#C8C8C8;--acc:#111111;--acc-soft:#EDEDED;--bg:#F4F4F4;--sf:#FFFFFF;--sf2:#F8F8F8;--line:#E3E3E3;
@@ -1992,11 +1992,12 @@ function drawDash(){if(!$('#db-body'))return;var d=A.db,k=d.kpi,dt=new Date(d.da
  * เล่นเมื่อเข้าเมนู Dashboard / อนุมัติ / พนักงาน / การลา / รายงาน / ลงเวลา / ตารางงาน / Confirmed / โครงสร้างองค์กร / ตั้งค่า (ทุกแท็บ) / บันทึก error / Audit Log (go · หลังเข้าระบบ · สลับแท็บรายงาน) หรือกดรีเฟรช · A.fx = เมนูที่รอเล่น ('*' = หลังเข้าระบบ)
  * เล่นครั้งเดียวต่อการเข้า (พิมพ์ค้นหา/กรองไม่เล่น) · ข้อมูล Dashboard ใหม่มาระหว่างเล่น = รอเล่นจบค่อยวาด · ปิดเมื่อผู้ใช้ตั้งลดการเคลื่อนไหว */
 var FXV={dash:1,appr:1,list:1,lv:1,rep:1,set:1,att:1,sched:1,conf:1,org:1,errlog:1,audit:1};   // 30 ต.ค. 2569: + ลงเวลาวันนี้ · ตารางงาน · Confirmed · โครงสร้างองค์กร · ตั้งค่าทุกแท็บ · บันทึก error · Audit Log
-function fxArm(v){A.fx=FXV[v]?v:null}
-function pgFx(){var v=A.view,c=$('.content');if(!c||!A.fx||(A.fx!==v&&A.fx!=='*')||!FXV[v])return;A.fx=null;
+function fxArm(v){A.fx=FXV[v]?v:null}   // แถบแท็บ/เมนูย่อย (เมนูซ้ายหน้าตั้งค่า · แท็บรายงาน/องค์กร/อนุมัติ) นิ่งเสมอ · กดเปลี่ยนแท็บ = ข้อมูลข้างในเล่นเต็ม (30 ต.ค. 2569 ผู้ใช้)
+function pgFx(){var v=A.view,c=$('.content');if(c&&!A.fx&&A.fxLast&&A.fxLast.v===v&&Date.now()-A.fxLast.t<700)A.fx=v;   // วาดซ้ำทันทีหลังเล่น (เช่น โหลดข้อมูลเสร็จแล้ววาดใหม่) = เล่นต่อ ไม่ให้หายกลางทาง
+  if(!c||!A.fx||(A.fx!==v&&A.fx!=='*')||!FXV[v])return;A.fx=null;A.fxLast={v:v,t:Date.now()};
   if(!Element.prototype.animate||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
   var E='cubic-bezier(.2,.8,.2,1)',n=0,q=function(x){return [].slice.call(c.querySelectorAll(x))},db=v==='dash';
-  q(db?'#db-body .kpi, #db-body > .grid > section, #db-body > section':'.sum > *, .rp-lg > *, .content > .tools, .content > section, #lv-body > section, #xd-body section, #ap-body .kpi, #ap-body > .toolbar, #ap-body > section, #us-body .an-c, #us-body .py-k, .otab > *, .snav > *, #st-body > *, #att-body > section, #au-body > section, #er-body > *, iframe.plf').forEach(function(e){if(n>24)return;e.animate([{opacity:0,transform:'translateY(22px)'},{opacity:1,transform:'none'}],{duration:850,delay:Math.min(120*n++,960),easing:E,fill:'backwards'})});
+  q(db?'#db-body .kpi, #db-body > .grid > section, #db-body > section':'.sum > *, .rp-lg > *, .content > .tools, .content > section, #lv-body > section, #xd-body section, #ap-body .kpi, #ap-body > section, #us-body .an-c, #us-body .py-k, #st-body > *, #att-body > section, #au-body > section, #er-body > *, iframe.plf').forEach(function(e){if(n>24)return;e.animate([{opacity:0,transform:'translateY(22px)'},{opacity:1,transform:'none'}],{duration:850,delay:Math.min(120*n++,960),easing:E,fill:'backwards'})});
   q('.bars2 i').forEach(function(e,i){e.style.transformOrigin='bottom';e.animate([{transform:'scaleY(0)'},{transform:'none'}],{duration:1200,delay:600+70*i,easing:E,fill:'backwards'})});
   // Dashboard ผู้บริหาร (SVG): เส้นกราฟลากจากซ้ายไปขวา · แท่งโตจากล่าง · จุดปลายเส้นค่อยขึ้น
   q('#xd-body svg polyline, #xd-body svg path').forEach(function(e,i){var L=e.getTotalLength?e.getTotalLength():0;if(!L)return;e.animate([{strokeDasharray:L,strokeDashoffset:L},{strokeDasharray:L,strokeDashoffset:0}],{duration:1600,delay:500+40*i,easing:E,fill:'backwards'})});
@@ -2006,7 +2007,7 @@ function pgFx(){var v=A.view,c=$('.content');if(!c||!A.fx||(A.fx!==v&&A.fx!=='*'
   q('#xd-body svg circle').forEach(function(e){e.animate([{opacity:0},{opacity:1}],{duration:400,delay:2000,fill:'backwards'})});
   q('#xd-body i[style*="width"]').forEach(function(e,i){e.style.transformOrigin='left';e.animate([{transform:'scaleX(0)'},{transform:'none'}],{duration:1200,delay:900+30*i,easing:E,fill:'backwards'})});
   q('.meter i').forEach(function(e,i){e.style.transformOrigin='left';e.animate([{transform:'scaleX(0)'},{transform:'none'}],{duration:1200,delay:900+50*i,easing:E,fill:'backwards'})});
-  var tx=[];q(db?'#db-body .kpi:not([data-go="set"]) .v, #db-body .bars2 span':'.sum b, .rp-lg > *, .xd-kv, #rp-body tbody td:not(:first-child), #xd-body .xd-t td.num, #xd-body svg.xd-bar text, #xd-body svg.xd-ln text:last-of-type, .content .kpi .v, #us-body .an-v, #us-body .py-k b, .otab .faint').forEach(function(el){
+  var tx=[];q(db?'#db-body .kpi:not([data-go="set"]) .v, #db-body .bars2 span':'.sum b, .rp-lg > *, .xd-kv, #rp-body tbody td:not(:first-child), #xd-body .xd-t td.num, #xd-body svg.xd-bar text, #xd-body svg.xd-ln text:last-of-type, .content .kpi .v, #us-body .an-v, #us-body .py-k b').forEach(function(el){
     var w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT),t,td=el.tagName==='TD'||el.tagName==='text';while((t=w.nextNode())&&tx.length<600)if(t.parentNode.tagName!=='SMALL'&&(td?/^\s*[\d.,]+%?\s*$/:/\d/).test(t.nodeValue))tx.push([t,t.nodeValue])});
   if(!tx.length)return;var t0=performance.now(),D=2000;A.fxAt=Date.now();
   (function step(now){var p=Math.min(1,(now-t0)/D),k=1-Math.pow(1-p,3);
@@ -2061,7 +2062,7 @@ function drawAppr(){if(!$('#ap-body'))return;var d=A.ap,k=d.kpi,T=A.apType;
      '<td><span class="badge '+(x.kind==='line'?'b-ok':x.kind==='device'?'b-warn':x.kind==='help'?'b-bad':'b-mute')+'">'+esc(x.type)+'</span></td><td>'+esc(x.title)+(x.self?' <span class="badge b-info">คำขอของคุณ</span>':'')+(x.edited?' <span class="badge b-info">แก้ไขแล้ว</span>':'')+'<div style="font-size:12.5px;color:'+(x.flags.length?'var(--bad)':'var(--fnt)')+'">'+esc(x.detail)+(x.flags.length?' · '+esc(x.flags[0]):'')+'</div></td>'+
      '<td style="font-size:12.5px">'+(x.history.length?x.history.map(function(h){return '<div>'+(h.step==='hr'?'HR':h.step==='mgr'?'ขั้นที่ 2':'ขั้นที่ 1')+' · '+esc(h.by||'—')+'</div>'}).join(''):'')+(x.stepText?'<div class="faint">รอ '+esc(x.stepText)+'</div>':x.history.length?'':'—')+'</td><td class="num">'+esc(fdt(x.created_at))+'</td><td><span class="badge '+(SB[x.status]||'b-mute')+'">'+esc(x.statusText)+'</span></td></tr>'}).join(''):'<tr><td colspan="7" class="muted" style="text-align:center;padding:28px">'+(A.apTab==='pending'?'ไม่มีคำขอรอคุณอนุมัติ':'ยังไม่มีรายการ')+'</td></tr>')+'</tbody></table></div></section>';
   loadPhotos();
-  $$('[data-atab]').forEach(function(b){b.onclick=function(){A.apTab=b.dataset.atab;$('#ap-body').innerHTML='<div class="loading"><span class="spin"></span>กำลังโหลด…</div>';loadAppr()}});
+  $$('[data-atab]').forEach(function(b){b.onclick=function(){A.apTab=b.dataset.atab;fxArm('appr');$('#ap-body').innerHTML='<div class="loading"><span class="spin"></span>กำลังโหลด…</div>';loadAppr()}});
   $$('[data-aty]').forEach(function(b){b.onclick=function(){A.apType=b.dataset.aty;drawAppr()}});
   $$('[data-api]').forEach(function(tr){tr.onclick=function(){apDetail(items[+tr.dataset.api])}});
 }
@@ -2203,7 +2204,7 @@ function flowsView(d){var W=A.wfd;if(!W||W.loading)return '<section class="card"
    '<div class="faint" style="font-size:12px;padding:10px 16px">เหตุการณ์ที่มี Workflow เปิดอยู่ จะใช้ Workflow แทนข้อความ LINE ในแท็บ “ตารางแจ้งเตือน” · ปิดทุก flow ของเหตุการณ์นั้น = กลับไปใช้ตารางแจ้งเตือน'+(W.pending?' · งานรอเวลาอยู่ '+W.pending+' งาน (ระบบตรวจทุกชั่วโมง)':'')+'</div></section>'}
 function wfChain(w){var g=w.graph,by={},out=[];g.nodes.forEach(function(n){by[n.id]=n});var t=g.nodes.filter(function(n){return n.type==='trigger'})[0],seen={},q=t?[t.id]:[];
   while(q.length&&out.length<7){var n=by[q.shift()];if(!n||seen[n.id])continue;seen[n.id]=1;out.push(wfTitle(n,w.trigger)[0]);g.edges.forEach(function(e){if(e.from===n.id)q.push(e.to)})}return out}
-function flBind(){$$('[data-ntab]').forEach(function(b){b.onclick=function(){A.ntab=b.dataset.ntab;drawSet()}});
+function flBind(){$$('[data-ntab]').forEach(function(b){b.onclick=function(){A.ntab=b.dataset.ntab;fxArm('set');drawSet()}});
   if(!A.wfd){A.wfd={loading:1};aCall('wfList').then(function(d){A.wfd=d;drawSet()}).catch(function(e){A.wfd={list:[],trig:{}};toast(e.message,1)})}
   $$('[data-wfon]').forEach(function(b){b.onclick=function(){var on=b.getAttribute('aria-checked')!=='true';b.disabled=true;aCall('wfToggle',b.dataset.wfon,on).then(function(){toast(on?'เปิด Workflow แล้ว':'ปิด Workflow แล้ว');return wfReload()}).catch(function(e){b.disabled=false;toast(e.message,1)})}});
   $$('[data-wfed]').forEach(function(b){b.onclick=function(){var w=A.wfd.list.filter(function(x){return x.id===b.dataset.wfed})[0];if(w)wfOpen(JSON.parse(JSON.stringify(w)))}});
@@ -3493,7 +3494,7 @@ function orgTv(r){if(!A.otv){if(!A.otvL){A.otvL=1;aCall('schedTeamsGet').then(fu
 function bOrg(){
   $$('[data-otv]').forEach(function(x){x.onchange=function(){var r=A.d.org.teams.filter(function(y){return y.id===x.dataset.otv})[0],dn=org('departments',r.department_id),g=A.otv.filter(function(y){return y.dept===dn})[0];
     var l=g.teams.filter(function(t){return t.visible&&t.name!==r.name}).map(function(t){return t.name});if(x.checked)l.push(r.name);x.disabled=true;var m={};m[dn]=l;
-    aCall('saveSchedTeamVis',m).then(function(res){if(!res.ok)throw new Error(res.error);A.otv=null;render();toast((x.checked?'แสดง ':'ซ่อน ')+r.name+' ในตารางงานแล้ว')}).catch(function(e){x.disabled=false;x.checked=!x.checked;toast(e.message,1)})}});$$('[data-ot]').forEach(function(b){b.onclick=function(){A.otab=b.dataset.ot;render()}});$('#oa').onclick=function(){orgForm(null)};
+    aCall('saveSchedTeamVis',m).then(function(res){if(!res.ok)throw new Error(res.error);A.otv=null;render();toast((x.checked?'แสดง ':'ซ่อน ')+r.name+' ในตารางงานแล้ว')}).catch(function(e){x.disabled=false;x.checked=!x.checked;toast(e.message,1)})}});$$('[data-ot]').forEach(function(b){b.onclick=function(){A.otab=b.dataset.ot;fxArm('org');render()}});$('#oa').onclick=function(){orgForm(null)};
   $$('[data-oe]').forEach(function(b){b.onclick=function(){orgForm(A.d.org[A.otab].filter(function(r){return r.id===b.dataset.oe})[0])}});
   $$('[data-oo]').forEach(function(b){b.onclick=function(){var r=A.d.org[A.otab].filter(function(x){return x.id===b.dataset.oo})[0];busy(b,1);aCall('setOrgActive',A.otab,r.id,r.active==='FALSE').then(function(){A.otv=null;return reload()}).catch(function(e){busy(b,0);toast(e.message,1)})}})}
 function orgForm(r){var t=A.otab,def=OT[t];r=r||{};
@@ -3507,8 +3508,8 @@ function orgForm(r){var t=A.otab,def=OT[t];r=r||{};
 boot();
 })();
 </script>
-<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610301754 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
-(function(){var B='202610301754';if(!/^\d{12}$/.test(B))return;var shown=0;
+<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610301850 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
+(function(){var B='202610301850';if(!/^\d{12}$/.test(B))return;var shown=0;
   function chk(){if(shown||document.hidden)return;fetch('build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=String(t||'').trim();if(!/^\d{12}$/.test(t)||t<=B)return;shown=1;
     var d=document.createElement('div');d.setAttribute('role','status');d.style.cssText='position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:99999;background:#141414;color:#fff;border-radius:999px;padding:8px 8px 8px 18px;display:flex;gap:12px;align-items:center;font:14px "IBM Plex Sans Thai",sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25)';
     d.innerHTML='<span>มีเวอร์ชันใหม่ของระบบ</span><button type="button" style="border:0;border-radius:999px;background:#fff;color:#141414;padding:6px 14px;font:inherit;font-weight:600;cursor:pointer">โหลดใหม่</button>';
