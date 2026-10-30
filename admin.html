@@ -18,7 +18,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js" charset="utf-8"></script>
 <script src="config.js"></script>
-<script src="i18n.js?v=202610300902"></script>
+<script src="i18n.js?v=202610300931"></script>
 <style>
 /* สี Push Media ขาว–ดำ ตามโลโก้ (22 ต.ค. 2569) · สีสถานะ ok/warn/bad คงไว้ */
 :root{--nav:#0B0B0B;--nav2:#1F1F1F;--nav-ink:#C8C8C8;--acc:#111111;--acc-soft:#EDEDED;--bg:#F4F4F4;--sf:#FFFFFF;--sf2:#F8F8F8;--line:#E3E3E3;
@@ -544,6 +544,14 @@ button.kpi:hover{border-color:var(--fnt)}.kpi .l{color:var(--mut);font-size:13px
 .rp-t .si::before,.rp-t .si::after{content:'';position:absolute;left:5px;border-left:4px solid transparent;border-right:4px solid transparent}
 .rp-t .si.none::before{top:3px;border-bottom:5px solid #A3A3A3}.rp-t .si.none::after{top:10px;border-top:5px solid #A3A3A3}
 .rp-t .si.desc,.rp-t .si.asc{background:#111}.rp-t .si.desc::before{top:6.5px;border-top:5px solid #fff}.rp-t .si.asc::before{top:6.5px;border-bottom:5px solid #fff}
+.pb-s{margin-top:14px;max-width:980px}.pb-s h3{display:flex;align-items:center;gap:10px}.pb-n{width:26px;height:26px;border-radius:8px;background:var(--acc);color:#fff;display:inline-grid;place-items:center;font-size:13px;flex:none}
+.pb-s p{margin:0 0 10px;line-height:1.65}.pb-s h4{margin:16px 0 6px;font-size:14px}.pb-v{background:var(--acc-soft,#F1F1F1);padding:1px 7px;border-radius:6px;font-variant-numeric:tabular-nums}
+.pb-f{background:#F7F7F5;border:1px solid var(--line,#E5E5E5);border-radius:10px;padding:10px 14px;margin:8px 0 12px;line-height:1.8;font-variant-numeric:tabular-nums}
+.pb-l{margin:6px 0 0;padding-left:20px;line-height:1.75}.pb-t{margin:6px 0 10px}.pb-t td,.pb-t th{vertical-align:top}.pb-y{color:#1A8A4A;font-weight:700}
+.pb-toc{max-width:980px;margin-top:12px;padding:14px 18px}.pb-toc ol{margin:6px 0 0;padding-left:20px;columns:2;column-gap:28px;line-height:1.9}.pb-toc a{color:inherit}
+.pb-flow{list-style:none;margin:0 0 12px;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;counter-reset:f}.pb-flow li{border:1px solid var(--line,#E5E5E5);border-radius:10px;padding:10px 12px;counter-increment:f}.pb-flow li b{display:block}.pb-flow li b::before{content:counter(f) '. '}.pb-flow li span{font-size:12.5px;color:#6B6B6B}
+@media(max-width:640px){.pb-toc ol{columns:1}}
+@media print{#pb-print,.pb-toc{display:none!important}.pb-s{break-inside:avoid;box-shadow:none}.pb-f{background:none}}
 @media print{.rp-t .si{display:none}}
 .btn-ex{display:inline-flex;align-items:center;gap:8px;background:#fff}.btn-ex:disabled{opacity:.5}.btn-ex:disabled .fic{filter:grayscale(1)}.btn-ex .fic{flex:none}
 .rp-empty{padding:40px;text-align:center;color:var(--fnt)}
@@ -1272,11 +1280,11 @@ function m2z(n){return n?m2(n):'—'}
 var PYST={draft:['ร่าง','b-mute'],review:['รอตรวจ/อนุมัติ','b-warn'],approved:['อนุมัติแล้ว · รอปิดงวด','b-info'],closed:['ปิดงวดแล้ว · รอโอน','b-ok'],paid:['จ่ายแล้ว','b-ok']};
 var PYSRC={auto:'อัตโนมัติ',fixed:'ประจำรายคน',input:'กรอกในงวด'};
 function pyBadge(s){var x=PYST[s]||[s,'b-mute'];return '<span class="badge '+x[1]+'">'+x[0]+'</span>'}
-function vPay(){var T=[['runs','งวดเงินเดือน'],['sal','ข้อมูลเงินเดือน'],['people','ข้อมูลรายคน'],['loans','หนี้สินพนักงาน'],['items','รายการรายรับ–รายจ่าย'],['cfg','ตั้งค่า']];
+function vPay(){var T=[['runs','งวดเงินเดือน'],['sal','ข้อมูลเงินเดือน'],['people','ข้อมูลรายคน'],['loans','หนี้สินพนักงาน'],['items','รายการรายรับ–รายจ่าย'],['book','คู่มือเงื่อนไข'],['cfg','ตั้งค่า']];
   return '<div class="ph"><div><h1>เงินเดือน</h1><div class="sub">ตัดยอดทุกวันที่ '+esc(PY.bs?PY.bs.cfg.pay_cutoff_day:'25')+pyCos().filter(function(c){return c.cutoff_day}).map(function(c){return ' · '+esc(c.short)+' '+esc(pyCut(c))}).join('')+' · เห็นเฉพาะผู้ดูแลระบบ / HR / ฝ่ายบัญชีที่ได้รับสิทธิ์ · ทุกการแก้บันทึกใน Audit Log</div></div></div>'+
    '<div class="rp-tabs" role="tablist">'+T.map(function(t){return '<button data-pyt="'+t[0]+'" aria-pressed="'+(PY.tab===t[0])+'">'+t[1]+'</button>'}).join('')+'</div><div id="py-body"><div class="loading"><span class="spin"></span>กำลังโหลด…</div></div>'}
 function bPay(){$$('[data-pyt]').forEach(function(b){b.onclick=function(){PY.tab=b.dataset.pyt;PY.runId=null;render()}});
-  var go2=function(){({runs:PY.runId?pyRun:pyRuns,sal:pySal,people:pyPeople,loans:pyLoans,items:pyItems,cfg:pyCfg})[PY.tab]()};
+  var go2=function(){({runs:PY.runId?pyRun:pyRuns,sal:pySal,people:pyPeople,loans:pyLoans,items:pyItems,book:pyBook,cfg:pyCfg})[PY.tab]()};
   if(PY.bs&&Date.now()-PY.bsAt<60000)return go2();
   aCall('payBootstrap').then(function(r){PY.bs=r;PY.bsAt=Date.now();go2()}).catch(function(e){pyErr(e)})}
 function pyErr(e){var b=$('#py-body');if(b)b.innerHTML='<div class="alert">'+esc(e.message||e)+'</div>'}
@@ -1524,6 +1532,57 @@ function pyItems(){var it=PY.bs.items,ed=PY.bs.canEdit,AUTO={salary:'ฐาน �
   if(ed){$$('[data-it]').forEach(function(tr){tr.onclick=function(){form(it.filter(function(i){return i.id===tr.dataset.it})[0])}});$$('[data-iadd]').forEach(function(b){b.onclick=function(){form(null,b.dataset.iadd)}})}}
 
 /* ── ตั้งค่าเงินเดือน ── */
+/* ── คู่มือเงื่อนไข (30 ต.ค. 2569 ผู้ใช้ขอ): อธิบายเงื่อนไขที่ระบบใช้คำนวณอยู่ตอนนี้ แบบสมุดไว้ตรวจสอบ · ตัวเลขทุกค่าดึงจากตั้งค่าปัจจุบัน (เปลี่ยนในแท็บตั้งค่า → หน้านี้เปลี่ยนตาม)
+ * ข้อความต้องตรงกับ payCompute_ / payPeriod_ / payCoPeriod_ ใน Payroll.js · แก้สูตรที่นั่นแล้วแก้ข้อความที่นี่ด้วย */
+function pbPer(ym,cut,c){var y=+ym.slice(0,4),m=+ym.slice(5,7),p=function(n){return (n<10?'0':'')+n},py=m===1?y-1:y,pm=m===1?12:m-1,last=new Date(y,m,0).getDate();
+  var pd=c.pay_day?Math.min(+c.pay_day,last):last,ny=m===12?y+1:y,nm=m===12?1:m+1,td=Math.min(+(c.pay_tax_day||15),new Date(ny,nm,0).getDate()),o={pay:y+'-'+p(m)+'-'+p(pd),tax:ny+'-'+p(nm)+'-'+p(td)};
+  if(cut==='end'){o.from=ym+'-01';o.to=ym+'-'+p(Math.min(30,last));return o}
+  cut=+cut;o.from=py+'-'+p(pm)+'-'+p(cut+1);o.to=y+'-'+p(m)+'-'+p(cut);return o}
+function pbDays(a,b){return Math.round((new Date(b+'T12:00:00')-new Date(a+'T12:00:00'))/86400000)+1}
+function pyBook(){var bs=PY.bs,c=bs.cfg,N=function(x){return (Number(x)||0).toLocaleString('en-US')},R=function(x){return Math.round(x+1e-9)},now=new Date();
+  var D=+c.pay_divisor||30,rate=+c.pay_sso_rate,mn=+c.pay_sso_min_base,mx=+c.pay_sso_max_base,wr=+c.pay_wht_rate,td=isoAdd(now.getFullYear()+'-'+('0'+(now.getMonth()+1)).slice(-2)+'-'+('0'+now.getDate()).slice(-2),0);
+  var open=bs.runs.filter(function(r){return r.status!=='closed'&&r.status!=='paid'})[0],ym=open?open.ym:(function(){var d=new Date();if(d.getDate()>+c.pay_cutoff_day)d.setMonth(d.getMonth()+1);return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)})();
+  var ex=open?{from:open.from,to:open.to,pay:open.pay_date,tax:open.tax_date}:pbPer(ym,c.pay_cutoff_day,c);
+  var who=function(ids){var L=String(ids||'').split(',').filter(String);if(!L.length)return '<span class="faint">ไม่มี</span>';return L.map(function(i){var e=(A.d.employees||[]).filter(function(x){return x.id===i})[0];return esc(e?e.emp_code+' '+(e.nickname||e.first_name||''):i)}).join(', ')};
+  var V=function(x){return '<b class="pb-v">'+x+'</b>'},F=function(x){return '<div class="pb-f">'+x+'</div>'},S=function(n,t,body){return '<section class="card pb-s" id="pb-'+n+'"><div class="ch"><h3><span class="pb-n">'+n+'</span>'+t+'</h3></div><div class="cb">'+body+'</div></section>'};
+  var SRC={auto:'ระบบคำนวณ',fixed:'รายการประจำ (ใส่ครั้งเดียว ใช้ทุกงวด)',input:'กรอกในงวด'};
+  var AUTO={salary:'ข้อ 4',absent:'ข้อ 5',sso:'ข้อ 7',welfare:'ข้อ 8',wht:'ข้อ 9',loan:'ข้อ 10',damage:'ข้อ 10',deposit:'ข้อ 10',late:'ยังไม่คำนวณ',leave:'ยังไม่คำนวณ'};
+  var act=bs.items.filter(function(i){return i.active}),hid=bs.items.length-act.length,yes='<span class="pb-y">✓</span>',no='<span class="faint">–</span>';
+  var it=function(k){return '<table class="py-t sm pb-t"><thead><tr><th>รายการ</th><th>ที่มา</th>'+(k==='inc'?'<th>คิดประกันสังคม</th><th>คิดภาษี</th>':'')+'</tr></thead><tbody>'+act.filter(function(i){return i.kind===k}).map(function(i){return '<tr><td>'+esc(i.name)+(i.code===bs.fuelItem?'<small class="faint"> · รับยอดจากคอลัมน์ค่าน้ำมันฯ ในข้อมูลเงินเดือน</small>':'')+'</td><td>'+esc(SRC[i.source]||i.source)+(i.source==='auto'&&AUTO[i.auto]?'<small class="faint"> · '+esc(AUTO[i.auto])+'</small>':'')+'</td>'+(k==='inc'?'<td>'+(i.sso?yes:no)+'</td><td>'+(i.tax?yes:no)+'</td>':'')+'</tr>'}).join('')+'</tbody></table>'};
+  var coRows=pyCos().map(function(co,i){var cut=co.cutoff_day||'',pp=cut?pbPer(ym,cut,c):ex;return '<tr><td>'+esc(co.short||co.name_th)+(i===0?' <span class="badge b-mute">บริษัทแรก</span>':'')+'</td><td>'+esc(cut?pyCut(co):'ตามตั้งค่า (ตัดยอดวันที่ '+c.pay_cutoff_day+')')+'</td><td>'+dTh(pp.from)+' – '+dTh(pp.to)+' <small class="faint">('+pbDays(pp.from,pp.to)+' วัน)</small></td><td class="mono">'+esc(co.sso_account||(i===0&&c.pay_sso_account?c.pay_sso_account+' (จากตั้งค่าเงินเดือน)':'—'))+'</td></tr>'}).join('');
+  var welOn=ym>=c.pay_welfare_from,ssoEx=[mn-650,10000,mx,30000].filter(function(w){return w>0}).map(function(w){var b=Math.min(Math.max(w,mn),mx);return '<tr><td>'+N(w)+'</td><td>'+N(b)+'</td><td><b>'+N(R(b*rate/100))+'</b></td></tr>'}).join('');
+  var nd=isoAdd(ex.from,10),nn=Math.min(D,pbDays(nd,ex.to)),fuel=(act.filter(function(i){return i.code===bs.fuelItem})[0]||{}).name||'ค่าสวัสดิการประจำเดือน';
+  var h='<div class="ph" style="margin-bottom:4px"><div><h2 style="margin:0">คู่มือเงื่อนไขเงินเดือน</h2><div class="sub">เงื่อนไขที่ระบบใช้คำนวณอยู่ตอนนี้ · ตัวเลขดึงจากแท็บตั้งค่า / รายการรายรับ–รายจ่าย / ข้อมูลบริษัท โดยตรง (แก้ที่นั่นแล้วหน้านี้เปลี่ยนตาม) · ข้อมูล ณ '+dTh(td)+' · สูตรรุ่น '+esc(bs.calcVer||'—')+'</div></div><span class="sp"></span><button class="btn" id="pb-print">พิมพ์ / บันทึก PDF</button></div>'+
+  '<nav class="pb-toc card"><b>สารบัญ</b><ol>'+['ขั้นตอนของงวด','รอบตัดยอดและวันที่','ใครอยู่ในงวด','เงินเดือนและค่าจ้างต่อวัน','ขาดงาน','รายการรายรับ–รายจ่าย','ประกันสังคม','กองทุนเงินสงเคราะห์ลูกจ้าง','ภาษีและหัก ณ ที่จ่าย','หนี้สินพนักงาน','การปัดเศษ','คำเตือนในงวด','เอกสารหลังปิดงวด','สิทธิ์และการบันทึก'].map(function(t,i){return '<li><a href="#pb-'+(i+1)+'">'+t+'</a></li>'}).join('')+'</ol></nav>';
+  h+=S(1,'ขั้นตอนของงวด','<ol class="pb-flow">'+[['ร่าง','HR เปิดงวด · ระบบคำนวณให้ทันที · แก้ข้อมูลรายคน / รายการประจำ / หนี้สิน แล้วงวดร่างคำนวณใหม่เอง'],['รอตรวจ/อนุมัติ','HR กดส่งตรวจ · ส่งกลับเป็นร่างได้ (ต้องระบุเหตุผล)'],['อนุมัติแล้ว','ผู้อนุมัติงวด (ข้อ 14) กดอนุมัติ'],['ปิดงวดแล้ว · รอโอน','HR ปิดงวด · ตัวเลขล็อก · ออกไฟล์โอน / เอกสาร / สลิปได้ · หนี้สินนับว่าหักแล้ว'],['จ่ายแล้ว','HR ยืนยันว่าโอนแล้ว']].map(function(x){return '<li><b>'+x[0]+'</b><span>'+x[1]+'</span></li>'}).join('')+'</ol>'+
+    '<ul class="pb-l"><li>เปิดได้ทีละงวด: ต้องปิดงวดเดิมก่อนเปิดงวดใหม่ · หนึ่งเดือนมีได้งวดเดียว</li><li>แก้ตัวเลขได้เฉพาะงวด <b>ร่าง</b> · งวดที่ส่งตรวจแล้วหรือปิดแล้วไม่ถูกคำนวณใหม่ (แม้เปลี่ยนตั้งค่า)</li><li>ย้อนงวด (กลับเป็นร่าง · ต้องระบุเหตุผล): ปิดแล้วยังไม่จ่าย = HR / ผู้ดูแลระบบ · จ่ายแล้ว = ผู้ดูแลระบบ หรือผู้ได้สิทธิ์ย้อนงวด · ต้องย้อนงวดล่าสุดก่อน</li><li>เมื่อปรับสูตรคำนวณ งวดร่างที่คำนวณด้วยสูตรเก่าจะคำนวณใหม่เองตอนเปิดดู</li></ul>');
+  h+=S(2,'รอบตัดยอดและวันที่','<p>ตัดยอดทุกวันที่ '+V(c.pay_cutoff_day)+' → งวดเดือน X = วันที่ '+(+c.pay_cutoff_day+1)+' ของเดือนก่อน ถึงวันที่ '+c.pay_cutoff_day+' ของเดือน X</p>'+
+    F('งวด '+esc(ymTh(ym))+(open?' (งวดที่เปิดอยู่)':' (งวดถัดไป)')+': '+dTh(ex.from)+' – '+dTh(ex.to)+' · '+pbDays(ex.from,ex.to)+' วัน<br>วันจ่ายเงินเดือน '+dTh(ex.pay)+' · วันจ่ายภาษี / ประกันสังคม '+dTh(ex.tax))+
+    '<ul class="pb-l"><li>วันจ่ายเงินเดือน: '+(c.pay_day?'วันที่ '+V(c.pay_day)+' (เดือนที่มีไม่ถึง = วันสุดท้ายของเดือน)':V('สิ้นเดือน'))+'</li><li>วันจ่ายภาษี (ภ.ง.ด.1 / 3 · ประกันสังคม): วันที่ '+V(c.pay_tax_day)+' ของเดือนถัดไป · แก้รายงวดได้จนกว่าจะจ่ายแล้ว (ไม่กระทบตัวเลข)</li></ul>'+
+    '<h4>ตัดรอบรายบริษัท</h4><p class="faint">งวดเดียวกัน แต่ช่วงวันที่ (ใช้นับวันทำงาน / วันขาด) ตามบริษัทของพนักงาน · ตั้งที่ ตั้งค่าระบบ › ข้อมูลบริษัท › บริษัทในเครือ</p><table class="py-t sm pb-t"><thead><tr><th>บริษัท</th><th>ตัดรอบ</th><th>งวด '+esc(ymTh(ym,1))+'</th><th>บัญชีนายจ้าง ปกส.</th></tr></thead><tbody>'+coRows+'</tbody></table>'+
+    '<p class="faint">"1–30 ของเดือน" = วันที่ 1–30 · เดือนที่มี 31 วันไม่นับวันที่ 31 · ก.พ. ถึงสิ้นเดือน</p>');
+  h+=S(3,'ใครอยู่ในงวด','<ul class="pb-l"><li>มี <b>ฐานเงินเดือนมากกว่า 0</b> ในแท็บข้อมูลเงินเดือน (ตอนนี้มี '+V(bs.profiles)+' จาก '+bs.active+' คนที่ยังทำงาน) · ไม่มีฐาน = ไม่อยู่ในงวด</li><li>วันเริ่มงานต้องไม่เกินวันสุดท้ายของงวด</li><li>ลาออก: อยู่ในงวดเมื่อใส่ "วันทำงานวันสุดท้าย" และวันนั้นไม่ก่อนวันแรกของงวด · สถานะลาออกแต่ไม่ใส่วันสุดท้าย = ไม่อยู่ในงวด</li></ul>');
+  h+=S(4,'เงินเดือนและค่าจ้างต่อวัน',F('ค่าจ้างต่อวัน = ฐานเงินเดือน ÷ '+V(D))+'<ul class="pb-l"><li>ทำงานเต็มงวด = ได้ฐานเงินเดือนเต็ม (ไม่ขึ้นกับจำนวนวันจริงในงวด)</li><li>เข้าใหม่ / ลาออกกลางงวด = ค่าจ้างต่อวัน × วันที่ทำงานในงวด (นับวันปฏิทิน รวมเสาร์–อาทิตย์ · ไม่เกิน '+D+' วัน)</li></ul>'+
+    F('ตัวอย่าง: ฐาน 30,000 · เข้างาน '+dTh(nd)+' · ทำงาน '+nn+' วัน → 30,000 ÷ '+D+' × '+nn+' = <b>'+N(R(30000/D*nn))+'</b> บาท')+
+    '<p><b>'+esc(fuel)+'</b> (ยอดจากคอลัมน์ค่าน้ำมันฯ) เข้าใหม่ / ลาออกกลางงวด = ยอดเต็มเดือน ÷ <b>จำนวนวันในงวดนั้น</b> × วันที่ทำงาน (ไม่ใช้ตัวหาร '+D+') · รายการประจำอื่นได้เต็มจำนวน</p>');
+  h+=S(5,'ขาดงาน',F('หักขาดงาน = วันขาด × ฐานเงินเดือน ÷ '+D)+'<ul class="pb-l"><li>ดึงวันขาดจากระบบลงเวลาอัตโนมัติ: '+V(c.pay_absent_auto==='TRUE'?'เปิด':'ปิด')+(c.pay_absent_auto==='TRUE'?' (นับวันสถานะขาดงานในช่วงงวดของบริษัท ถึงเมื่อวาน · คนที่ไม่ต้องลงเวลา = 0)':' · ตอนนี้ HR ใส่วันขาดเองในงวด')+'</li><li>HR ใส่จำนวนวันขาดเองได้ (ทีละครึ่งวัน) · ค่าที่ HR ใส่ใช้แทนค่าจากระบบ</li><li>ยอดขาดงานถูกหักออกจากฐานคำนวณประกันสังคม กองทุนสงเคราะห์ และภาษี</li><li>สาย / ลางาน: ยังไม่คำนวณหักอัตโนมัติ</li></ul>');
+  h+=S(6,'รายการรายรับ–รายจ่าย','<p class="faint">ใช้อยู่ '+act.length+' รายการ'+(hid?' · ซ่อน '+hid+' รายการ (ไม่คำนวณ)':'')+' · ตั้งที่แท็บรายการรายรับ–รายจ่าย · ยอดที่กรอกในงวดใช้แทนรายการประจำหัวข้อเดียวกันเฉพาะงวดนั้น · ✓ คิดประกันสังคม / คิดภาษี = นับเป็นฐานในข้อ 7–9</p><h4>รายรับ</h4>'+it('inc')+'<h4>รายจ่าย</h4>'+it('ded'));
+  h+=S(7,'ประกันสังคม',F('ค่าจ้าง = รายรับที่ ✓ คิดประกันสังคม − ขาดงาน<br>ฐาน = ค่าจ้าง แต่ไม่ต่ำกว่า '+V(N(mn))+' และไม่เกิน '+V(N(mx))+' บาท<br>หัก = ฐาน × '+V(rate+'%')+' แล้วปัดเป็นบาท')+
+    '<table class="py-t sm pb-t" style="max-width:420px"><thead><tr><th>ค่าจ้าง</th><th>ฐาน</th><th>หัก</th></tr></thead><tbody>'+ssoEx+'</tbody></table>'+
+    '<ul class="pb-l"><li>หักเฉพาะประเภท <b>'+esc(bs.types.employee)+'</b> · ไม่หัก: '+esc(bs.types.no_sso)+' · '+esc(bs.types.contractor)+'</li><li>คนที่ตั้งภาษีเป็น ภ.ง.ด.3 ไม่หักประกันสังคม แม้ประเภทเป็นพนักงาน</li><li>ค่าจ้าง 0 (เช่น ขาดทั้งเดือน) = ไม่หัก</li><li>รายงานประกันสังคมใช้ค่าจ้างเต็ม (ไม่ตัดเพดาน) · เงินสมทบตัดเพดานตามข้างบน</li></ul>');
+  h+=S(8,'กองทุนเงินสงเคราะห์ลูกจ้าง',F('หัก = ค่าจ้าง (แบบข้อ 7)'+(c.pay_welfare_max_base?' ไม่เกิน '+V(N(c.pay_welfare_max_base)):'')+' × '+V(c.pay_welfare_rate+'%'))+
+    '<ul class="pb-l"><li>เริ่มหักตั้งแต่งวด '+V(ymTh(c.pay_welfare_from))+' · งวด '+esc(ymTh(ym))+': '+(welOn?'<b>หัก</b>':'<b>ยังไม่หัก</b>')+'</li><li>ฐานสูงสุด: '+(c.pay_welfare_max_base?V(N(c.pay_welfare_max_base)+' บาท'):V('ไม่มีเพดาน')+' <span class="badge b-warn">รอยืนยัน</span>')+'</li><li>ไม่หัก: สัญญาบริการ · คนที่ปิด "กองทุนสงเคราะห์" ในข้อมูลรายคน</li></ul>');
+  h+=S(9,'ภาษีและหัก ณ ที่จ่าย','<p>ตั้งวิธีคิดภาษีรายคนที่แท็บข้อมูลเงินเดือน · ยังไม่ตั้ง = สัญญาบริการใช้ "'+esc(bs.taxModes.p3_all)+'" · อื่น ๆ ใช้ "'+esc(bs.taxModes.p1_skip)+'"</p>'+
+    '<table class="py-t sm pb-t"><thead><tr><th>วิธีคิด</th><th>ยอดหัก ณ ที่จ่ายต่องวด (อัตโนมัติ)</th></tr></thead><tbody>'+[['none','ไม่หัก'],['p1_skip','ไม่หักอัตโนมัติ (HR กรอกในรายการภาษีเองได้)'],['p1_fixed','ยอดคงที่ที่ตั้งไว้ต่อคน'],['p1_pct','(รายรับที่ ✓ คิดภาษี − ขาดงาน) × % ที่ตั้งไว้ต่อคน'],['p3_all','(รายรับที่ ✓ คิดภาษี − ขาดงาน) × '+wr+'% · ไม่หักประกันสังคม'],['p3_ex','(รายรับที่ ✓ คิดภาษี − ขาดงาน − เงินเดือน) × '+wr+'% · ไม่หักประกันสังคม']].map(function(x){return '<tr><td>'+esc(bs.taxModes[x[0]]||x[0])+'</td><td>'+x[1]+'</td></tr>'}).join('')+'</tbody></table>'+
+    '<ul class="pb-l"><li>อัตรา ภ.ง.ด.3: '+V(wr+'%')+' (แท็บตั้งค่า)</li><li>ภาษีเงินได้แบบคำนวณทั้งปี (ขั้นบันได): ยังไม่ทำ · ใช้แบบคงที่ / % / กรอกเอง</li></ul>');
+  h+=S(10,'หนี้สินพนักงาน','<ul class="pb-l"><li>ประเภท: '+Object.keys(bs.loanKinds).map(function(k){return esc(bs.loanKinds[k])}).join(' · ')+'</li><li>ใส่ยอดทั้งหมด + ผ่อนงวดละ + งวดเริ่ม → ระบบหักทุกงวดจนครบ · งวดสุดท้ายหักเท่ายอดที่เหลือ</li><li>นับว่าหักแล้วเมื่อปิดงวด · งวดร่างแสดงยอดที่จะหัก</li><li>พักหนี้ = ข้ามงวดปัจจุบันงวดเดียว (ยอด 0 · ต่อท้าย 1 งวด) · เดือนอื่นหักปกติ</li><li>ไม่ปัดเศษ เพื่อให้ตรงกับยอดคงเหลือ</li></ul>');
+  h+=S(11,'การปัดเศษ','<ul class="pb-l"><li>ทุกบรรทัดของแต่ละคนปัดเป็นบาท: เศษ ≥ 0.50 ปัดขึ้น · น้อยกว่า 0.50 ปัดลง (เช่น 1,234.50 → 1,235 · 1,234.49 → 1,234)</li><li>ยกเว้นหนี้สิน (ข้อ 10)</li><li>ระบบเก็บยอดก่อนปัดไว้เทียบ · หน้างวดแสดงผลของการปัดต่อรับสุทธิรวม</li></ul>');
+  h+=S(12,'คำเตือนในงวด','<p>ระบบติดป้ายเตือนรายคน (ไม่บล็อกการปิดงวด) เมื่อ:</p><ul class="pb-l"><li>เข้าใหม่กลางงวด · ลาออกกลางงวด</li><li>มีวันขาดงาน</li><li>รับสุทธิติดลบ</li><li>ไม่มีเลขบัญชีธนาคาร</li></ul>');
+  h+=S(13,'เอกสารหลังปิดงวด','<ul class="pb-l"><li>ไฟล์โอนกสิกร (K BIZ): เฉพาะงวดที่ปิดแล้ว · แยกบัญชีกสิกร กับ ธนาคารอื่น / ไม่มีบัญชี / รับสุทธิ ≤ 0 · ใช้วันจ่ายของงวด</li><li>รายงานประกันสังคม · ภ.ง.ด.1 (พนักงาน) · ภ.ง.ด.3 (สัญญาบริการ / หัก ณ ที่จ่าย)</li><li>สลิปเงินเดือน: หัวตามบริษัทของพนักงาน · พิมพ์ได้หลังปิดงวด</li><li>เอกสารแยกตามบริษัท (ปิดงวดเดียวกัน) · ใช้ชื่อ / เลขผู้เสียภาษี / บัญชีนายจ้างของบริษัทนั้น (ตารางข้อ 2)</li></ul>');
+  h+=S(14,'สิทธิ์และการบันทึก','<table class="py-t sm pb-t"><tbody><tr><td>ระบบเงินเดือน</td><td>'+V(c.pay_enabled==='TRUE'?'เปิดใช้':'ปิด')+'</td></tr><tr><td>ดูและแก้ไข</td><td>ผู้ดูแลระบบ · HR</td></tr><tr><td>ฝ่ายบัญชี (ดูอย่างเดียว)</td><td>'+who(c.pay_access)+'</td></tr><tr><td>ผู้อนุมัติงวด</td><td>ผู้ดูแลระบบ · '+who(c.pay_approvers)+'</td></tr><tr><td>ผู้ย้อนงวดได้ (ช่วงทดสอบ)</td><td>'+who(c.pay_reopen)+(c.pay_reopen?' <span class="badge b-warn">เอาออกเมื่อเลิกทดสอบ</span>':'')+'</td></tr></tbody></table>'+
+    '<ul class="pb-l"><li>ทุกการแก้ (ตั้งค่า · ฐานเงินเดือน · รายการในงวด · หนี้สิน · ขั้นตอนงวด · ไฟล์โอน / สลิป) บันทึกใน Audit Log พร้อมค่าเดิม → ค่าใหม่</li><li>ข้อมูลเงินเดือนไม่ส่งไปสำเนา Google Sheets</li><li>เลขบัญชี / เลขบัตรประชาชน แสดงแบบปิดบังบนหน้าจอ · เลขเต็มใช้เฉพาะในไฟล์โอนและเอกสารยื่น</li></ul>');
+  pyBody(h);var pr=$('#pb-print');if(pr)pr.onclick=function(){window.print()};
+  $$('.pb-toc a').forEach(function(a){a.onclick=function(e){e.preventDefault();var t=$(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'})}})}
 function pyCfg(){var c=PY.bs.cfg,ed=PY.bs.canEdit,adm=A.d.me.role==='admin',dis=ed?'':' disabled';
   var F=[['pay_cutoff_day','ตัดยอดทุกวันที่','เช่น 25 → งวด ต.ค. = 26 ก.ย. – 25 ต.ค.'],['pay_day','วันจ่ายเงินเดือน','ว่าง = สิ้นเดือน'],['pay_tax_day','วันจ่ายภาษี (เดือนถัดไป)','ค่าเริ่มต้นของงวดใหม่ เช่น 15 → งวด ต.ค. จ่ายภาษี 15 พ.ย. (แก้รายงวดได้)'],['pay_divisor','ตัวหารวันทำงาน','เงินเดือน ÷ ตัวหาร = ค่าจ้างต่อวัน (ขาดงาน/เข้าใหม่)'],
     ['pay_sso_rate','ประกันสังคม (%)','พนักงานจ่าย'],['pay_sso_min_base','ฐานต่ำสุด (บาท)','1,650 → หักต่ำสุด 83'],['pay_sso_max_base','ฐานสูงสุด (บาท)','17,500 → หักสูงสุด 875 (ปี 2569–2571)'],
@@ -3011,8 +3070,8 @@ function orgForm(r){var t=A.otab,def=OT[t];r=r||{};
 boot();
 })();
 </script>
-<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610300902 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
-(function(){var B='202610300902';if(!/^\d{12}$/.test(B))return;var shown=0;
+<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610300931 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
+(function(){var B='202610300931';if(!/^\d{12}$/.test(B))return;var shown=0;
   function chk(){if(shown||document.hidden)return;fetch('build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=String(t||'').trim();if(!/^\d{12}$/.test(t)||t<=B)return;shown=1;
     var d=document.createElement('div');d.setAttribute('role','status');d.style.cssText='position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:99999;background:#141414;color:#fff;border-radius:999px;padding:8px 8px 8px 18px;display:flex;gap:12px;align-items:center;font:14px "IBM Plex Sans Thai",sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25)';
     d.innerHTML='<span>มีเวอร์ชันใหม่ของระบบ</span><button type="button" style="border:0;border-radius:999px;background:#fff;color:#141414;padding:6px 14px;font:inherit;font-weight:600;cursor:pointer">โหลดใหม่</button>';
