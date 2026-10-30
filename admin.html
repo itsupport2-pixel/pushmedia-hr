@@ -18,7 +18,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js" charset="utf-8"></script>
 <script src="config.js"></script>
-<script src="i18n.js?v=202610301216"></script>
+<script src="i18n.js?v=202610301522"></script>
 <style>
 /* สี Push Media ขาว–ดำ ตามโลโก้ (22 ต.ค. 2569) · สีสถานะ ok/warn/bad คงไว้ */
 :root{--nav:#0B0B0B;--nav2:#1F1F1F;--nav-ink:#C8C8C8;--acc:#111111;--acc-soft:#EDEDED;--bg:#F4F4F4;--sf:#FFFFFF;--sf2:#F8F8F8;--line:#E3E3E3;
@@ -1079,7 +1079,7 @@ function vaBar(){var va=ss('hr_va'),b=document.getElementById('va-bar');try{var 
 function vaApp(r){var o=document.createElement('div');o.className='va-app';o.innerHTML='<div class="va-ph"><div class="va-hd"><span>'+VA_IC+'แอป LINE ในมุมมองของ <b>'+esc(r.me.code+' '+r.me.name)+'</b> · ดูได้อย่างเดียว</span><button type="button" aria-label="ปิด">✕</button></div><iframe src="liff.html?viewas='+encodeURIComponent(r.token)+'" title="แอป LINE"></iframe></div>';
   document.body.appendChild(o);var cl=function(){o.remove();document.removeEventListener('keydown',kd)},kd=function(e){if(e.key==='Escape')cl()};o.querySelector('.va-hd button').onclick=cl;o.onclick=function(e){if(e.target===o)cl()};document.addEventListener('keydown',kd)}
 function ss(k,v){try{if(v===undefined)return JSON.parse(sessionStorage.getItem(k)||'null');if(v===null)sessionStorage.removeItem(k);else sessionStorage.setItem(k,JSON.stringify(v))}catch(e){return null}}
-function boot(){var va=ss('hr_va');if(va){if(va.exp>Date.now()&&store('hr_tok'))A.tok=va.token;else{ss('hr_va',null);ss('hr_boot',null);A.tok=store('hr_tok')}}vaBar();
+function boot(){A.fx='*';var va=ss('hr_va');if(va){if(va.exp>Date.now()&&store('hr_tok'))A.tok=va.token;else{ss('hr_va',null);ss('hr_boot',null);A.tok=store('hr_tok')}}vaBar();
   if(!A.tok)return renderLogin();var c=ss('hr_boot');
   if(c&&c.me){A.d=c;A.db=c.dash;A.dbAt=0;render()}else $('#app').innerHTML='<div class="loading"><span class="spin"></span>กำลังโหลดข้อมูล…</div>';
   aCall('adminBootstrap',A.view==='dash').then(function(d){if(!d||!d.me)throw new Error('โหลดข้อมูลไม่สำเร็จ ลองใหม่อีกครั้ง');A.d=d;try{store('hr_who',d.me.code||d.me.id||'')}catch(e){}if(d.dash){A.db=d.dash;A.dbAt=Date.now()}ss('hr_boot',d);
@@ -1200,7 +1200,7 @@ function bSearch(allowed){var q=$('#tb-q'),r=$('#tb-r');if(!q)return;var canEmp=
     r.hidden=false;$$('[data-sv]',r).forEach(function(b){b.onmousedown=function(e){e.preventDefault();go(b.dataset.sv)}});$$('[data-se]',r).forEach(function(b){b.onmousedown=function(e){e.preventDefault();go('profile',b.dataset.se)}})};
   q.oninput=draw;q.onfocus=draw;q.onblur=function(){setTimeout(function(){r.hidden=true},120)};
   q.onkeydown=function(e){if(e.key==='Escape'){q.value='';r.hidden=true;q.blur()}if(e.key==='Enter'){var f=r.querySelector('button');if(f)f.onmousedown({preventDefault:function(){}})}}}
-function go(v,id){A.view=v;A.id=id||null;if(v!=='form'){A.f=null;A.err={}}closeD();render();scrollTo(0,0)}
+function go(v,id){A.view=v;fxArm(v);A.id=id||null;if(v!=='form'){A.f=null;A.err={}}closeD();render();scrollTo(0,0)}
 /* ให้หน้าตารางงาน (iframe เดียวกัน origin) สั่งเปิดเมนูได้ เช่น ตั้งค่าระบบ › ตารางงาน */
 window.hrNav=function(v,stab){if(!A.d)return;if(stab)A.stab=stab;go(v)};
 
@@ -1901,8 +1901,8 @@ function pyBank(R,co){aCall('payBankFile',R.run.id,co||pyDco()).then(function(f)
 
 /* ───────── Dashboard ───────── */
 function vDash(){var nm=String(A.d.me.nickname||A.d.me.name||'').split(' ')[0];return '<div class="ph"><div><h1>'+(A.d.me.id==='admin'?'Dashboard':'สวัสดี คุณ'+esc(nm))+'</h1><div class="sub" id="db-sub">กำลังโหลด…</div></div><span class="sp"></span><button class="btn" id="db-re">รีเฟรช</button></div><div id="db-body"><div class="loading"><span class="spin"></span>กำลังโหลด…</div></div>'}
-function bDash(){var load=function(force){aCall('hrDashboard',!!force).then(function(d){A.db=d;A.dbAt=Date.now();drawDash()}).catch(function(e){if($('#db-body')&&!A.db)$('#db-body').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})};
-  $('#db-re').onclick=function(){$('#db-sub').textContent='กำลังรีเฟรช…';load(true)};if(A.db)drawDash();if(!A.db||Date.now()-(A.dbAt||0)>60000)load()}
+function bDash(){var load=function(force){aCall('hrDashboard',!!force).then(function(d){A.db=d;A.dbAt=Date.now();var w=(A.fxAt||0)+2600-Date.now();if(w>0)setTimeout(drawDash,w);else drawDash()}).catch(function(e){if($('#db-body')&&!A.db)$('#db-body').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})};
+  $('#db-re').onclick=function(){$('#db-sub').textContent='กำลังรีเฟรช…';fxArm('dash');load(true)};if(A.db)drawDash();if(!A.db||Date.now()-(A.dbAt||0)>60000)load()}
 function drawDash(){if(!$('#db-body'))return;var d=A.db,k=d.kpi,dt=new Date(d.date+'T12:00:00'),TD=['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'],TM=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
   if(d.lead){drawLead(d);return}
   $('#db-sub').textContent='ขอบเขตข้อมูล: '+d.scope+(coCur()?' · '+(((A.d.companies||[]).filter(function(c){return c.id===coCur()})[0]||{}).short||''):'')+' · '+TD[dt.getDay()]+' '+dt.getDate()+' '+TM[dt.getMonth()]+' '+(dt.getFullYear()+543)+' · อัปเดต '+new Date().toTimeString().slice(0,5)+' น.';
@@ -1931,7 +1931,39 @@ function drawDash(){if(!$('#db-body'))return;var d=A.db,k=d.kpi,dt=new Date(d.da
   if(mine)loadMine();
   loadPhotos();
   $$('#db-body [data-go]').forEach(function(b){b.onclick=function(){go(b.dataset.go,b.dataset.id)}});
+  pgFx();
 }
+/* ภาพเปิดหน้า (30 ต.ค. 2569 ผู้ใช้ขอ): ตัวเลขนับขึ้น (count-up) + กล่องเลื่อนขึ้นทีละใบ (staggered slide-up) + แท่งกราฟ/แถบโตขึ้น
+ * เล่นเมื่อเข้าเมนู Dashboard / อนุมัติ / พนักงาน / การลา / รายงาน / ตั้งค่า › Cloudflare (go · หลังเข้าระบบ · สลับแท็บรายงาน) หรือกดรีเฟรช · A.fx = เมนูที่รอเล่น ('*' = หลังเข้าระบบ)
+ * เล่นครั้งเดียวต่อการเข้า (พิมพ์ค้นหา/กรองไม่เล่น) · ข้อมูล Dashboard ใหม่มาระหว่างเล่น = รอเล่นจบค่อยวาด · ปิดเมื่อผู้ใช้ตั้งลดการเคลื่อนไหว */
+var FXV={dash:1,appr:1,list:1,lv:1,rep:1,set:1};   // set = เฉพาะหน้า ตั้งค่า › Cloudflare (usDraw)
+function fxArm(v){A.fx=FXV[v]?v:null}
+function pgFx(){var v=A.view,c=$('.content');if(!c||!A.fx||(A.fx!==v&&A.fx!=='*')||!FXV[v]||(v==='set'&&!$('#us-body .an-c')))return;A.fx=null;
+  if(!Element.prototype.animate||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  var E='cubic-bezier(.2,.8,.2,1)',n=0,q=function(x){return [].slice.call(c.querySelectorAll(x))},db=v==='dash';
+  q(db?'#db-body .kpi, #db-body > .grid > section, #db-body > section':'.sum > *, .rp-lg > *, .content > .tools, .content > section, #lv-body > section, #xd-body section, #ap-body .kpi, #ap-body > .toolbar, #ap-body > section, #us-body .an-c, #us-body .py-k').forEach(function(e){if(n>24)return;e.animate([{opacity:0,transform:'translateY(22px)'},{opacity:1,transform:'none'}],{duration:850,delay:Math.min(120*n++,960),easing:E,fill:'backwards'})});
+  q('.bars2 i').forEach(function(e,i){e.style.transformOrigin='bottom';e.animate([{transform:'scaleY(0)'},{transform:'none'}],{duration:1200,delay:600+70*i,easing:E,fill:'backwards'})});
+  // Dashboard ผู้บริหาร (SVG): เส้นกราฟลากจากซ้ายไปขวา · แท่งโตจากล่าง · จุดปลายเส้นค่อยขึ้น
+  q('#xd-body svg polyline, #xd-body svg path').forEach(function(e,i){var L=e.getTotalLength?e.getTotalLength():0;if(!L)return;e.animate([{strokeDasharray:L,strokeDashoffset:L},{strokeDasharray:L,strokeDashoffset:0}],{duration:1600,delay:500+40*i,easing:E,fill:'backwards'})});
+  q('#us-body .an-ch svg').forEach(function(e,i){e.animate([{clipPath:'inset(0 100% 0 0)'},{clipPath:'inset(0 0 0 0)'}],{duration:1600,delay:500+100*i,easing:E,fill:'backwards'})});   // Cloudflare: กราฟเส้นลากจากซ้ายไปขวา
+  q('#xd-body svg rect').forEach(function(e,i){e.style.transformBox='fill-box';e.style.transformOrigin='bottom';e.animate([{transform:'scaleY(0)'},{transform:'none'}],{duration:1200,delay:600+70*i,easing:E,fill:'backwards'})});
+  q('#xd-body svg circle').forEach(function(e){e.animate([{opacity:0},{opacity:1}],{duration:400,delay:2000,fill:'backwards'})});
+  q('#xd-body i[style*="width"]').forEach(function(e,i){e.style.transformOrigin='left';e.animate([{transform:'scaleX(0)'},{transform:'none'}],{duration:1200,delay:900+30*i,easing:E,fill:'backwards'})});
+  q('.meter i').forEach(function(e,i){e.style.transformOrigin='left';e.animate([{transform:'scaleX(0)'},{transform:'none'}],{duration:1200,delay:900+50*i,easing:E,fill:'backwards'})});
+  var tx=[];q(db?'#db-body .kpi:not([data-go="set"]) .v, #db-body .bars2 span':'.sum b, .rp-lg > *, .xd-kv, #rp-body tbody td:not(:first-child), #xd-body .xd-t td.num, #xd-body svg.xd-bar text, #xd-body svg.xd-ln text:last-of-type, #ap-body .kpi .v, #us-body .an-v, #us-body .py-k b').forEach(function(el){
+    var w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT),t,td=el.tagName==='TD'||el.tagName==='text';while((t=w.nextNode())&&tx.length<600)if(t.parentNode.tagName!=='SMALL'&&(td?/^\s*[\d.,]+%?\s*$/:/\d/).test(t.nodeValue))tx.push([t,t.nodeValue])});
+  if(!tx.length)return;var t0=performance.now(),D=2000;A.fxAt=Date.now();
+  (function step(now){var p=Math.min(1,(now-t0)/D),k=1-Math.pow(1-p,3);
+    tx.forEach(function(x){x[0].nodeValue=p<1?x[1].replace(/\d[\d,]*(\.\d+)?/g,function(m,f){var d=f?f.length-1:0,r=(+m.replace(/,/g,'')*k).toFixed(d);return m.indexOf(',')>0?(+r).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}):r}):x[1]});
+    if(p<1)requestAnimationFrame(step)})(t0);
+}
+// หน้าที่วาดหลังโหลดข้อมูล → เล่นภาพเปิดหลังวาดเสร็จ
+bList=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(bList);
+drawLv=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(drawLv);
+drawRep=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(drawRep);
+drawXd=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(drawXd);
+drawAppr=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(drawAppr);
+usDraw=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(usDraw);
 /* การ์ด "ของฉัน": โควตาการลาปีนี้ของผู้ใช้ (จำไว้ในหน้า · โหลดใหม่ทุก 5 นาที) */
 function loadMine(){var draw=function(li){var q=$('#db-quota');if(!q)return;var ts=(li.types||[]).filter(function(t){return t.quota!==null});q.className='';q.innerHTML=ts.length?ts.map(function(t){var u=(t.used||0)+(t.reserved||0);return '<div class="q"><div><b style="font-weight:500">'+esc(t.name)+'</b><span class="num">ใช้ '+(+u.toFixed(1))+' / '+t.quota+' วัน</span></div><div class="tr"><i style="width:'+Math.min(100,t.quota?u/t.quota*100:0)+'%"></i></div></div>'}).join('')+'<div class="faint" style="font-size:12px">ปี '+(li.year+543)+' · รวมที่รออนุมัติ</div>':'<span class="faint">ไม่มีโควตาการลา</span>'};
   if(A.mine&&Date.now()-A.mine.at<300000)return draw(A.mine.d);aCall('leaveInfo').then(function(li){A.mine={at:Date.now(),d:li};draw(li)}).catch(function(){var q=$('#db-quota');if(q)q.textContent='โหลดโควตาไม่สำเร็จ'})}
@@ -2102,8 +2134,8 @@ function drawSet(){if(!$('#st-body'))return;var t=A.stab||'company',d=A.cfg,h=''
   if(t==='notify')ntBind();
   if(t==='sched')scLoad();
   var un=$('#st-undo');if(un)un.onclick=function(){drawSet();toast('คืนค่าเดิมแล้ว')};
-  var ur=$('#us-re');if(ur){if(US&&Date.now()-US.at<60000)usDraw();else setTimeout(function(){if($('#us-re'))$('#us-re').click()},0)}// เปิดหน้า Integration = โหลดเอง (จำไว้ 1 นาที)
-  if(ur)ur.onclick=function(){busy(ur,1);$('#us-body').innerHTML='<div class="loading"><span class="spin"></span>กำลังโหลดสถิติ…</div>';aCall('usageStats').then(function(d){busy(ur,0);US=d;US.at=Date.now();US.sel=null;usDraw()}).catch(function(e){busy(ur,0);$('#us-body').innerHTML='<div class="alert">'+esc(/ไม่รู้จักคำสั่ง/.test(e.message)?'ใช้ได้เฉพาะระบบบน Cloudflare':e.message)+'</div>'})};
+  var ur=$('#us-re');if(ur){if(US&&Date.now()-US.at<60000){fxArm('set');usDraw()}else setTimeout(function(){if($('#us-re'))$('#us-re').click()},0)}// เปิดหน้า Integration = โหลดเอง (จำไว้ 1 นาที)
+  if(ur)ur.onclick=function(){fxArm('set');busy(ur,1);$('#us-body').innerHTML='<div class="loading"><span class="spin"></span>กำลังโหลดสถิติ…</div>';aCall('usageStats').then(function(d){busy(ur,0);US=d;US.at=Date.now();US.sel=null;usDraw()}).catch(function(e){busy(ur,0);$('#us-body').innerHTML='<div class="alert">'+esc(/ไม่รู้จักคำสั่ง/.test(e.message)?'ใช้ได้เฉพาะระบบบน Cloudflare':e.message)+'</div>'})};
   var pr=$('#pf-re');if(pr)pr.onclick=function(){busy(pr,1);aCall('perfStats').then(function(d){busy(pr,0);$('#pf-body').innerHTML=(d.photos?'<div class="muted" style="font-size:13px;margin-bottom:8px">รูปพนักงานในระบบ '+d.photos.rows+' รายการ · '+(d.photos.trigger?'กำลังแปลงรูปจาก Drive เบื้องหลัง (ทุก 10 นาที)':'แปลงรูปจาก Drive เสร็จแล้ว')+'</div>':'')+
     '<div class="tw"><table style="min-width:520px"><thead><tr><th>คำสั่ง</th><th>ครั้ง</th><th>เฉลี่ย (วินาที)</th><th>ช้าสุด</th><th>ผิดพลาด</th></tr></thead><tbody>'+(d.rows.length?d.rows.map(function(r){return '<tr><td class="mono">'+esc(r.fn)+'</td><td class="num">'+r.n+'</td><td class="num'+(r.avg>4000?'" style="color:var(--bad)':'')+'">'+(r.avg/1000).toFixed(1)+'</td><td class="num">'+(r.max/1000).toFixed(1)+'</td><td class="num">'+r.err+'</td></tr>'}).join(''):'<tr><td colspan="5" class="muted">ยังไม่มีข้อมูล</td></tr>')+'</tbody></table></div>'}).catch(function(e){busy(pr,0);toast(e.message,1)})};
   bShift();bHol();
@@ -2392,7 +2424,7 @@ function repCsv(){var d=A.rpm;if(!d)return;var rows=repRows(),q=function(v){v=St
 /* ───────── รายงาน › แท็บ (28 ต.ค. 2569): Matrix · Dashboard ผู้บริหาร (Figma 426:7739) · แผนที่ (Figma 426:9080 · admin + ผู้บริหาร) ───────── */
 function canMap(){var m=A.d&&A.d.me;return !!m&&(m.map||m.role==='admin'||m.role==='exec')}   // 29 ต.ค. 2569: + คนที่ผู้ดูแลระบบให้สิทธิ์ (me.map)
 function vRep(){var t=A.rpTab||'mx';if(t==='map'&&!canMap())t=A.rpTab='mx';return t==='xd'?vXd():t==='map'?vMap():vRepMx()}
-function bRep(){$$('[data-rpt]').forEach(function(b){b.onclick=function(){if(A.rpTab===b.dataset.rpt)return;A.rpTab=b.dataset.rpt;render()}});var t=A.rpTab||'mx';if(t==='xd')bXd();else if(t==='map')bMap();else bRepMx()}
+function bRep(){$$('[data-rpt]').forEach(function(b){b.onclick=function(){if(A.rpTab===b.dataset.rpt)return;A.rpTab=b.dataset.rpt;fxArm('rep');render()}});var t=A.rpTab||'mx';if(t==='xd')bXd();else if(t==='map')bMap();else bRepMx()}
 function rpTabs(on){var tab=function(k,l,soon){return '<button type="button" data-rpt="'+(soon?'':k)+'"'+(on===k?' aria-pressed="true"':'')+(soon?' disabled title="อยู่ระหว่างพัฒนา"':'')+'>'+l+(soon?' <span class="sn">เร็ว ๆ นี้</span>':'')+'</button>'};
   return '<div class="rp-tabs" role="group" aria-label="รายงาน">'+tab('mx','Matrix')+tab('xd','Dashboard ผู้บริหาร')+(canMap()?tab('map','แผนที่'):'')+tab('pay','สรุปทำเงินเดือน',1)+tab('ot','รายงาน OT',1)+'</div>'}
 var XD_C=['#2563EB','#0891B2','#16A34A','#7C3AED','#D97706','#DC2626','#DB2777','#4B5563','#0D9488','#9333EA','#65A30D','#EA580C'];
@@ -2408,7 +2440,7 @@ function bXd(){var load=function(){$('#xd-body').innerHTML='<div class="loading"
     aCall('execDashboard',A.xdYm).then(function(d){A.xd=d;drawXd()}).catch(function(e){if($('#xd-body'))$('#xd-body').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})};
   $('#xd-ym').onchange=function(){A.xdYm=this.value;load()};
   $$('[data-xdc]').forEach(function(b){b.onclick=function(){A.xdCmp=b.dataset.xdc;$$('[data-xdc]').forEach(function(x){x.setAttribute('aria-pressed',x===b)});drawXd()}});
-  $('#xd-rl').onclick=load;if(A.xd&&A.xd.ym===A.xdYm)drawXd();else load()}
+  $('#xd-rl').onclick=function(){fxArm('rep');load()};if(A.xd&&A.xd.ym===A.xdYm)drawXd();else load()}
 /* รวมสถิติของคนกลุ่มหนึ่งในเดือน ym */
 function xdAgg(ps,ym){var t={exp:0,pres:0,abs:0,lv:0,late:0,off:0,adj:0,n:0};ps.forEach(function(p){var m=p.mo[ym];if(!m)return;if(m.exp||m.lv)t.n++;['exp','pres','abs','lv','late','off','adj'].forEach(function(k){t[k]+=m[k]})});
   t.rate=t.exp?t.pres/t.exp*100:null;t.lateP=t.pres?t.late/t.pres*100:null;t.offP=t.pres?t.off/t.pres*100:null;t.absPP=t.n?t.abs/t.n:0;t.lvPP=t.n?t.lv/t.n:0;return t}
@@ -2625,7 +2657,7 @@ function vLv(){if(A.lva===undefined){var tm=dpPresets(dIso(new Date())).filter(f
 function bLv(){var load=function(){var t=dIso(new Date());
     // ลาล่วงหน้า = ใบลาที่เริ่มหลังวันนี้ · ดึงแยก ไม่ขึ้นกับช่วงวันที่เลือก (ช่วงวันเลือกได้ถึงวันนี้เท่านั้น)
     Promise.all([aCall('leaveAdminList','all',A.lva?A.lva+'..'+A.lvb:''),aCall('leaveAdminList','all',dAdd(t,1)+'..9999-12-31')]).then(function(x){A.lvd=x[0];A.lvfut=x[1];A.lvadv=x[1].filter(function(r){return r.date_from>t&&r.status!=='no'&&r.status!=='cancel'});drawLv()}).catch(function(e){if($('#lv-body'))$('#lv-body').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})};
-  ofBind('lv',drawLv);$('#lv-re').onclick=load;$('#lv-rg').onclick=function(){var b=this;dpRange(b,{a:A.lva,b:A.lvb,max:dIso(new Date())},function(a,z){A.lva=a;A.lvb=z;b.querySelector('span').textContent=rngTxt(a,z);load()})};load()}
+  ofBind('lv',drawLv);$('#lv-re').onclick=function(){fxArm('lv');load()};$('#lv-rg').onclick=function(){var b=this;dpRange(b,{a:A.lva,b:A.lvb,max:dIso(new Date())},function(a,z){A.lva=a;A.lvb=z;b.querySelector('span').textContent=rngTxt(a,z);load()})};load()}
 function drawLv(){if(!$('#lv-body'))return;var of=function(r){return ofOk('lv',r.department,r.team)},d=A.lvd.filter(of),adv=(A.lvadv||[]).filter(of),f=A.lvf||'all',c={all:d.length,mine:0,wait:0,hr:0,ok:0,ack:0,adv:adv.length};
   // ไม่อนุมัติ = ในช่วงวันที่เลือก + ใบลาล่วงหน้าที่ไม่อนุมัติ (วันลาเลยวันนี้ เลือกช่วงไม่ถึง)
   var ids={},rej=d.concat((A.lvfut||[]).filter(of)).filter(function(r){if(r.status!=='no'||ids[r.id])return false;ids[r.id]=1;return true});c.no=rej.length;
@@ -3150,8 +3182,8 @@ function orgForm(r){var t=A.otab,def=OT[t];r=r||{};
 boot();
 })();
 </script>
-<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610301216 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
-(function(){var B='202610301216';if(!/^\d{12}$/.test(B))return;var shown=0;
+<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610301522 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
+(function(){var B='202610301522';if(!/^\d{12}$/.test(B))return;var shown=0;
   function chk(){if(shown||document.hidden)return;fetch('build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=String(t||'').trim();if(!/^\d{12}$/.test(t)||t<=B)return;shown=1;
     var d=document.createElement('div');d.setAttribute('role','status');d.style.cssText='position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:99999;background:#141414;color:#fff;border-radius:999px;padding:8px 8px 8px 18px;display:flex;gap:12px;align-items:center;font:14px "IBM Plex Sans Thai",sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25)';
     d.innerHTML='<span>มีเวอร์ชันใหม่ของระบบ</span><button type="button" style="border:0;border-radius:999px;background:#fff;color:#141414;padding:6px 14px;font:inherit;font-weight:600;cursor:pointer">โหลดใหม่</button>';
