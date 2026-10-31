@@ -630,7 +630,6 @@ V.sched=()=>{if(S.today&&S.today.me&&S.today.me.msg)return msgSched();const t=S.
   ${jobs.length?jobs.map(j=>`<div class="job"><div style="display:flex;align-items:center"><span class="chip c-blue" style="font-size:12px">งานวันนี้</span><span class="tn cap" style="margin-left:auto">${esc(j.job_no)}</span></div><b style="font-size:17px;font-weight:600">${esc(j.title||j.name)}</b><span class="m">${ic("pin")}${esc(j.name)}</span>${S.me&&S.me.lead?`<span class="m">${ic("user")}หัวหน้างาน: ${esc(S.me.lead)}</span>`:""}</div>`).join(""):`<div class="empty">${t&&t.holiday?"วันหยุด":"ไม่มีงานนอกสถานที่ · ทำงานที่สำนักงาน"}</div>`}
   <div class="note c-blue">${ic("info")}<span>ตารางงานรายสัปดาห์จะเปิดใช้เมื่อย้ายตารางงานเข้าระบบใหม่</span></div></div>`;};
 
-V.req=()=>band("เอกสาร")+`<div class="pad" style="gap:12px">${[["ขอลางาน","doc","blue"],["ขอเพิ่ม/แก้ไขเวลา","clock","orange"],["ขอโอที","hour","blue"],["ขอเปลี่ยนกะการทำงาน","calClock","orange"]].map(r=>`<button class="mrow" data-act="soon"><span style="color:var(--${r[2]});display:flex">${ic(r[1])}</span><span>${r[0]}</span><span class="chip c-grey" style="margin-left:auto;font-size:12px">เร็ว ๆ นี้</span></button>`).join("")}</div>`;
 
 /* ---------- งานเมสเซนเจอร์ (31 ต.ค. 2569 · แทนระบบ Messenger เดิม · Figma หน้า 15 ส่วน D) ----------
  * ตำแหน่ง Messenger: หน้าหลักการ์ด "งานเมสเซนเจอร์วันนี้" · แท็บตารางงาน = รายการ/แผนที่ตามวัน · กดงาน = รายละเอียด + รับงาน / ส่งเสร็จ (รูป + พิกัด) / ส่งไม่สำเร็จ
@@ -1095,8 +1094,8 @@ document.addEventListener("input",e=>{if(e.target.id==="lr"&&L.f)L.f.reason=e.ta
 start();
 
 </script>
-<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610312022 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
-(function(){var B='202610312022';if(!/^\d{12}$/.test(B))return;var shown=0;
+<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610312124 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
+(function(){var B='202610312124';if(!/^\d{12}$/.test(B))return;var shown=0;
   function chk(){if(shown||document.hidden)return;fetch('build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=String(t||'').trim();if(!/^\d{12}$/.test(t)||t<=B)return;shown=1;
     var d=document.createElement('div');d.setAttribute('role','status');d.style.cssText='position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:99999;background:#141414;color:#fff;border-radius:999px;padding:8px 8px 8px 18px;display:flex;gap:12px;align-items:center;font:14px "IBM Plex Sans Thai",sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25)';
     d.innerHTML='<span>มีเวอร์ชันใหม่ของระบบ</span><button type="button" style="border:0;border-radius:999px;background:#fff;color:#141414;padding:6px 14px;font:inherit;font-weight:600;cursor:pointer">โหลดใหม่</button>';
