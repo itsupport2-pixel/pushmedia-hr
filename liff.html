@@ -636,17 +636,18 @@ V.req=()=>band("เอกสาร")+`<div class="pad" style="gap:12px">${[["ข
  * ตำแหน่ง Messenger: หน้าหลักการ์ด "งานเมสเซนเจอร์วันนี้" · แท็บตารางงาน = รายการ/แผนที่ตามวัน · กดงาน = รายละเอียด + รับงาน / ส่งเสร็จ (รูป + พิกัด) / ส่งไม่สำเร็จ
  * พนักงานทุกคน: เอกสาร › ขอใช้เมสเซนเจอร์ + งานที่ฉันขอ (ยกเลิกได้ ต้องมีเหตุผล) · ลิงก์ Update ในการ์ด LINE → ?go=mjob&no=<เลขงาน> */
 S.mj={};S.mjl={};S.mm="list";S.mdet={};
+const MSTW=st=>st==="wait"&&!S.macc?["รอส่ง","c-orange"]:MST[st]||MST.wait;   // ยังไม่เปิดขั้นรับงาน = รอส่ง
 const MST={wait:["รอรับงาน","c-orange"],go:["กำลังไปส่ง","c-blue"],done:["ส่งเสร็จ","c-green"],cancel:["ยกเลิก","c-red"],fail:["ส่งไม่สำเร็จ","c-red"]};
 const MV=["home","sched","mjob","mmine"];
-function loadMsg(ym,force){if(S.mjl[ym]||(S.mj[ym]&&!force))return;S.mjl[ym]=1;api("msgJobs",ym).then(r=>{S.mj[ym]=r;S.mjl[ym]=0;if(MV.includes(cur().split(":")[0]))repaint()}).catch(e=>{S.mjl[ym]=0;S.mj[ym]={ym,jobs:[],err:e.message};if(MV.includes(cur().split(":")[0]))repaint()})}
+function loadMsg(ym,force){if(S.mjl[ym]||(S.mj[ym]&&!force))return;S.mjl[ym]=1;api("msgJobs",ym).then(r=>{S.mj[ym]=r;S.macc=!!r.acc;S.mjl[ym]=0;if(MV.includes(cur().split(":")[0]))repaint()}).catch(e=>{S.mjl[ym]=0;S.mj[ym]={ym,jobs:[],err:e.message};if(MV.includes(cur().split(":")[0]))repaint()})}
 const msgDay=d=>{const ym=d.slice(0,7),r=S.mj[ym];if(!r){setTimeout(()=>loadMsg(ym),0);return null}return (r.jobs||[]).filter(j=>j.d===d).sort((a,b)=>String(a.time).localeCompare(String(b.time)))};
 const msgReload=()=>{S.mj={};S.mdet={};};
 function msgHome(){const d=ISO(new Date()),L=msgDay(d),r=S.mj[d.slice(0,7)]||{};
   const w=L?L.filter(j=>j.st==="wait"||j.st==="go"):[],nx=w[0];
   return `<button class="card mhome" data-act="tab:sched" style="padding:14px 16px;display:flex;flex-direction:column;gap:10px;text-align:left;width:100%;border:1.5px solid #141414"><span style="display:flex;align-items:center;gap:8px;width:100%"><span style="color:var(--blue);display:flex">${ic("cal","width:22px;height:22px")}</span><b style="flex:1;font-size:16px">งานเมสเซนเจอร์วันนี้</b><span class="cap" style="color:var(--blue);font-weight:600">ดูทั้งหมด ›</span></span>
-  ${!L?`<span class="skel" style="height:62px;width:100%;display:block"></span>`:r.err?`<span class="cap" style="color:var(--red)">${esc(r.err)}</span>`:`<span style="display:flex;gap:8px;width:100%">${[[L.length,"ทั้งหมด",""],[L.filter(j=>j.st==="wait").length,"รอรับ","var(--orange)"],[L.filter(j=>j.st==="go").length,"กำลังไป","var(--blue)"],[L.filter(j=>j.st==="done").length,"เสร็จ","var(--green)"]].map(x=>`<span class="mstat"><b style="${x[2]?`color:${x[2]}`:""}">${x[0]}</b><span>${x[1]}</span></span>`).join("")}</span>
+  ${!L?`<span class="skel" style="height:62px;width:100%;display:block"></span>`:r.err?`<span class="cap" style="color:var(--red)">${esc(r.err)}</span>`:`<span style="display:flex;gap:8px;width:100%">${(S.macc?[[L.length,"ทั้งหมด",""],[L.filter(j=>j.st==="wait").length,"รอรับ","var(--orange)"],[L.filter(j=>j.st==="go").length,"กำลังไป","var(--blue)"],[L.filter(j=>j.st==="done").length,"เสร็จ","var(--green)"]]:[[L.length,"ทั้งหมด",""],[L.filter(j=>j.st==="wait"||j.st==="go").length,"รอส่ง","var(--orange)"],[L.filter(j=>j.st==="done").length,"เสร็จ","var(--green)"]]).map(x=>`<span class="mstat"><b style="${x[2]?`color:${x[2]}`:""}">${x[0]}</b><span>${x[1]}</span></span>`).join("")}</span>
   ${nx?`<span class="mnext">ถัดไป ${esc(String(nx.time).split("-")[0])} · ${esc(nx.company)}${nx.urgent?" · ด่วน":""}</span>`:`<span class="cap">${L.length?"ส่งครบทุกงานแล้ว":"วันนี้ไม่มีงานเมสเซนเจอร์"}</span>`}`}</button>`}
-function msgCard(j,sel){const st=MST[j.st]||MST.wait;return `<button class="job mjob${sel?" sel":""}" data-act="go:mjob:${esc(j.no)}" data-mno="${esc(j.no)}" style="text-align:left;width:100%"><span style="display:flex;align-items:center;gap:6px"><b class="tn" style="flex:1">${esc(j.time||"-")}</b>${j.urgent?`<span class="chip c-red" style="font-size:12px">ด่วน</span>`:""}<span class="chip ${st[1]}" style="font-size:12px">${st[0]}</span></span>
+function msgCard(j,sel){const st=MSTW(j.st);return `<button class="job mjob${sel?" sel":""}" data-act="go:mjob:${esc(j.no)}" data-mno="${esc(j.no)}" style="text-align:left;width:100%"><span style="display:flex;align-items:center;gap:6px"><b class="tn" style="flex:1">${esc(j.time||"-")}</b>${j.urgent?`<span class="chip c-red" style="font-size:12px">ด่วน</span>`:""}<span class="chip ${st[1]}" style="font-size:12px">${st[0]}</span></span>
   <b style="font-size:16px;font-weight:600">${esc(j.company||"-")}</b>${j.place?`<span class="m">${ic("pin")}${esc(j.place)}</span>`:""}<span class="cap">${esc((j.types||[]).join(", ")||"-")} · ผู้ขอ ${esc(j.by||"-")}${j.messenger?" · "+esc(j.messenger):""}</span></button>`}
 function msgSched(){const today=ISO(new Date());if(!S.md)S.md=today;const d=S.md,L=msgDay(d),r=S.mj[d.slice(0,7)]||{},D=DT(d);
   const strip=[-2,-1,0,1,2].map(k=>{const x=DT(d);x.setDate(x.getDate()+k);return x}),pts=L?L.filter(j=>j.lat!=null):[];
@@ -660,10 +661,10 @@ function msgSched(){const today=ISO(new Date());if(!S.md)S.md=today;const d=S.md
    L.length?L.map(j=>msgCard(j)).join(""):`<div class="empty">ไม่มีงานเมสเซนเจอร์วันนี้</div>`}
   <button class="btn out" data-act="go:mreq">${ic("doc")}ขอใช้เมสเซนเจอร์</button></div>`}
 /* รายละเอียดงาน (arg = เลขงาน) · โหลดจาก msgDetail (รูป · ไทม์ไลน์ · ปุ่มที่ทำได้) */
-function msgDet(no,force){if(S.mdet[no]&&!force)return S.mdet[no];if(!S.mdet["_l"+no]){S.mdet["_l"+no]=1;api("msgDetail",no).then(r=>{S.mdet[no]=r;S.mdet["_l"+no]=0;if(cur()==="mjob:"+no)repaint()}).catch(e=>{S.mdet["_l"+no]=0;S.mdet[no]={err:e.message};if(cur()==="mjob:"+no)repaint()})}return S.mdet[no]||null}
+function msgDet(no,force){if(S.mdet[no]&&!force)return S.mdet[no];if(!S.mdet["_l"+no]){S.mdet["_l"+no]=1;api("msgDetail",no).then(r=>{S.mdet[no]=r;S.macc=!!r.acc;S.mdet["_l"+no]=0;if(cur()==="mjob:"+no)repaint()}).catch(e=>{S.mdet["_l"+no]=0;S.mdet[no]={err:e.message};if(cur()==="mjob:"+no)repaint()})}return S.mdet[no]||null}
 const MACT={create:"สร้างงาน",edit:"แก้ไขงาน",accept:"รับงาน",assign:"มอบหมายให้",done:"ส่งเสร็จ",cancel:"ยกเลิก",fail:"ส่งไม่สำเร็จ"};
 V.mjob=no=>{const j=msgDet(no);if(!j)return band(esc(no))+`<div class="pad"><div class="skel" style="height:220px"></div></div>`;if(j.err)return band(esc(no))+`<div class="pad"><div class="note c-red">${ic("alert")}<span>${esc(j.err)}</span></div></div>`;
-  const st=MST[j.st]||MST.wait,D=DT(j.d),c=j.can||{};
+  const st=MSTW(j.st),D=DT(j.d),c=j.can||{};
   const gm=j.lat!=null?`https://www.google.com/maps/dir/?api=1&destination=${j.lat},${j.lng}`:j.map||(j.addr||j.place?`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(j.addr||j.place)}`:"");
   const kv=(a,b)=>b?`<div class="kv"><span>${a}</span><b>${b}</b></div>`:"";
   const ph=(j.photos||[]);
@@ -1094,8 +1095,8 @@ document.addEventListener("input",e=>{if(e.target.id==="lr"&&L.f)L.f.reason=e.ta
 start();
 
 </script>
-<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610311524 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
-(function(){var B='202610311524';if(!/^\d{12}$/.test(B))return;var shown=0;
+<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610312022 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
+(function(){var B='202610312022';if(!/^\d{12}$/.test(B))return;var shown=0;
   function chk(){if(shown||document.hidden)return;fetch('build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=String(t||'').trim();if(!/^\d{12}$/.test(t)||t<=B)return;shown=1;
     var d=document.createElement('div');d.setAttribute('role','status');d.style.cssText='position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:99999;background:#141414;color:#fff;border-radius:999px;padding:8px 8px 8px 18px;display:flex;gap:12px;align-items:center;font:14px "IBM Plex Sans Thai",sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25)';
     d.innerHTML='<span>มีเวอร์ชันใหม่ของระบบ</span><button type="button" style="border:0;border-radius:999px;background:#fff;color:#141414;padding:6px 14px;font:inherit;font-weight:600;cursor:pointer">โหลดใหม่</button>';
