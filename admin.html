@@ -18,7 +18,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js" charset="utf-8"></script>
 <script src="config.js"></script>
-<script src="i18n.js?v=202610311307"></script>
+<script src="i18n.js?v=202610311323"></script>
 <style>
 /* สี Push Media ขาว–ดำ ตามโลโก้ (22 ต.ค. 2569) · สีสถานะ ok/warn/bad คงไว้ */
 :root{--nav:#0B0B0B;--nav2:#1F1F1F;--nav-ink:#C8C8C8;--acc:#111111;--acc-soft:#EDEDED;--bg:#F4F4F4;--sf:#FFFFFF;--sf2:#F8F8F8;--line:#E3E3E3;
@@ -2435,6 +2435,7 @@ function fxHtml(o){if(!o)return '';var SZ={xxs:10,xs:11,sm:13,md:14,lg:17,xl:19}
     (o.paddingAll?'padding:'+px(o.paddingAll)+';':'')+(o.paddingStart?'padding-left:'+px(o.paddingStart)+';':'')+(o.paddingEnd?'padding-right:'+px(o.paddingEnd)+';':'')+(o.paddingTop?'padding-top:'+px(o.paddingTop)+';':'')+(o.paddingBottom?'padding-bottom:'+px(o.paddingBottom)+';':'')+(o.flex===0?'flex:none;':o.flex?'flex:'+o.flex+';min-width:0;':'')+(o.borderWidth?'border:'+px(o.borderWidth)+' solid '+(o.borderColor||'#ddd')+';':'')+(o.width?'width:'+o.width+';':'')+(o.height?'height:'+o.height+';':'')+(o.justifyContent==='center'?'justify-content:center;':'')+(o.action?'cursor:pointer;':'');
     return '<div style="'+st+'">'+(o.contents||[]).map(fxHtml).join('')+'</div>'}
   if(o.type==='text')return '<div style="font-size:'+(SZ[o.size]||14)+'px;'+(o.weight==='bold'?'font-weight:700;':'')+'color:'+(o.color||'#111').slice(0,7)+';'+(o.color&&o.color.length===9?'opacity:.75;':'')+(o.align?'text-align:'+o.align+';':'')+(o.flex===0?'flex:none;':o.flex?'flex:'+o.flex+';min-width:0;':'')+(o.wrap===false?'white-space:nowrap;':'')+'line-height:1.4">'+esc(o.text)+'</div>';
+  if(o.type==='image')return '<img alt="" src="'+esc(/line-logo-white\.png$/.test(o.url||'')?'line-logo-white.png':o.url)+'" style="display:block;width:100%;aspect-ratio:'+String(o.aspectRatio||'1:1').replace(':','/')+';object-fit:contain;object-position:left center">';   // โลโก้: ใช้ไฟล์ข้างหน้าเว็บนี้ (dev ก็เห็น)
   if(o.type==='separator')return '<div style="height:1px;background:'+(o.color||'#ECEDEF')+'"></div>';
   if(o.type==='button')return '<div style="flex:1;height:38px;border-radius:8px;display:grid;place-items:center;font-size:13.5px;font-weight:600;'+(o.style==='primary'?'background:'+(o.color||'#06C755')+';color:#fff':'background:#F1F2F4;color:#111')+'">'+esc((o.action||{}).label||'')+'</div>';
   return ''}
@@ -3564,8 +3565,8 @@ function orgForm(r){var t=A.otab,def=OT[t];r=r||{};
 boot();
 })();
 </script>
-<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610311307 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
-(function(){var B='202610311307';if(!/^\d{12}$/.test(B))return;var shown=0;
+<script>/* แจ้งเวอร์ชันใหม่ (29 ต.ค. 2569): สคริปต์ deploy ใส่เลข build แทน 202610311323 + เขียน build.txt · เปิดค้างไว้แล้วมีการอัปเดต → แถบให้กดโหลดใหม่ (ไม่ต้อง Cmd+Shift+R) */
+(function(){var B='202610311323';if(!/^\d{12}$/.test(B))return;var shown=0;
   function chk(){if(shown||document.hidden)return;fetch('build.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){t=String(t||'').trim();if(!/^\d{12}$/.test(t)||t<=B)return;shown=1;
     var d=document.createElement('div');d.setAttribute('role','status');d.style.cssText='position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:99999;background:#141414;color:#fff;border-radius:999px;padding:8px 8px 8px 18px;display:flex;gap:12px;align-items:center;font:14px "IBM Plex Sans Thai",sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25)';
     d.innerHTML='<span>มีเวอร์ชันใหม่ของระบบ</span><button type="button" style="border:0;border-radius:999px;background:#fff;color:#141414;padding:6px 14px;font:inherit;font-weight:600;cursor:pointer">โหลดใหม่</button>';
