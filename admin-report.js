@@ -286,7 +286,7 @@ function drawXd(){var d=A.xd;if(!d||!$('#xd-body'))return;var all=d.people,dep=A
 function f0(x){return x==null?'—':Math.round(x)}
 function bindXd(){$$('[data-xdd]').forEach(function(b){b.onclick=function(){A.xdDep=A.xdDep===b.dataset.xdd&&b.tagName==='TR'?'all':b.dataset.xdd;drawXd();scrollTo(0,0)}});
   if($('#xd-ga'))$('#xd-ga').onclick=function(){A.xdGoodAll=!A.xdGoodAll;drawXd()};if($('#xd-wa'))$('#xd-wa').onclick=function(){A.xdWatchAll=!A.xdWatchAll;drawXd()};
-  $$('#xd-body [data-go]').forEach(function(b){b.onclick=function(){go(b.dataset.go)}})}
+  $$('#xd-body [data-go]').forEach(function(b){b.onclick=function(){if(b.dataset.go==='lv')A.lvTab='adv';go(b.dataset.go)}})}   // ลาล่วงหน้า › ดูรายชื่อ → แท็บลาล่วงหน้า (31 ต.ค. 2569)
 
 /* ── แผนที่ลงเวลา (Leaflet + แผนที่ OpenStreetMap โทนเทา · โหลดเมื่อเปิดแท็บ) ── */
 function loadLeaflet(){if(window.L&&L.map&&L.markerClusterGroup)return Promise.resolve();if(window._llp)return window._llp;

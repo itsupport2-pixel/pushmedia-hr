@@ -5,9 +5,13 @@
 /* ───────── การลา (Phase 2c) ───────── */
 var FLOW={lead:'หัวหน้าทีม',lead_dept:'หัวหน้าทีม → หัวหน้าแผนก',dept:'หัวหน้าแผนก'};
 var LVS={wait:['รอหัวหน้า','b-warn'],mgr:['รอขั้นที่ 2','b-warn'],hr:['รอ HR','b-warn'],ok:['อนุมัติแล้ว','b-ok'],chg:['ขอยกเลิก','b-info'],back:['ส่งกลับแก้ไข','b-warn'],no:['ไม่อนุมัติ','b-bad'],cancel:['ยกเลิก','b-mute']};
-function vLv(){if(A.lva===undefined){var tm=dpPresets(dIso(new Date())).filter(function(x){return x[0]==='tm'})[0];A.lva=tm[2];A.lvb=tm[3]}// ค่าเริ่มต้น = เดือนปัจจุบัน
-  return '<div class="ph"><div><h1>การลา</h1><div class="sub" id="lv-sub">กำลังโหลด…</div></div><span class="sp"></span>'+ofSel('lv')+dpBtn('lv-rg',A.lva,A.lvb)+'<button class="btn" id="lv-re">รีเฟรช</button></div><div id="lv-body"><div class="loading"><span class="spin"></span></div></div>'}
-function bLv(){var load=function(){var t=dIso(new Date());
+/* แท็บในเมนูการลา (31 ต.ค. 2569 ผู้ใช้ขอ · Figma "รายงาน · 4 ลาล่วงหน้า"): คำขอลา | ลาล่วงหน้า */
+function lvTabs(on){var tab=function(k,l){return '<button type="button" data-lvt="'+k+'"'+(on===k?' aria-pressed="true"':'')+'>'+l+'</button>'};
+  return '<div class="rp-tabs" role="group" aria-label="การลา">'+tab('req','คำขอลา')+tab('adv','ลาล่วงหน้า')+'</div>'}
+function lvTabBind(){$$('[data-lvt]').forEach(function(b){b.onclick=function(){if((A.lvTab||'req')===b.dataset.lvt)return;A.lvTab=b.dataset.lvt;fxArm('lv');render()}})}
+function vLv(){if(A.lvTab==='adv')return vLva();if(A.lva===undefined){var tm=dpPresets(dIso(new Date())).filter(function(x){return x[0]==='tm'})[0];A.lva=tm[2];A.lvb=tm[3]}// ค่าเริ่มต้น = เดือนปัจจุบัน
+  return '<div class="ph"><div><h1>การลา</h1><div class="sub" id="lv-sub">กำลังโหลด…</div></div><span class="sp"></span>'+ofSel('lv')+dpBtn('lv-rg',A.lva,A.lvb)+'<button class="btn" id="lv-re">รีเฟรช</button></div>'+lvTabs('req')+'<div id="lv-body"><div class="loading"><span class="spin"></span></div></div>'}
+function bLv(){lvTabBind();if(A.lvTab==='adv')return bLva();var load=function(){var t=dIso(new Date());
     // ลาล่วงหน้า = ใบลาที่เริ่มหลังวันนี้ · ดึงแยก ไม่ขึ้นกับช่วงวันที่เลือก (ช่วงวันเลือกได้ถึงวันนี้เท่านั้น)
     Promise.all([aCall('leaveAdminList','all',A.lva?A.lva+'..'+A.lvb:''),aCall('leaveAdminList','all',dAdd(t,1)+'..9999-12-31')]).then(function(x){A.lvd=x[0];A.lvfut=x[1];A.lvadv=x[1].filter(function(r){return r.date_from>t&&r.status!=='no'&&r.status!=='cancel'});drawLv()}).catch(function(e){if($('#lv-body'))$('#lv-body').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})};
   ofBind('lv',drawLv);$('#lv-re').onclick=function(){fxArm('lv');load()};$('#lv-rg').onclick=function(){var b=this;dpRange(b,{a:A.lva,b:A.lvb,max:dIso(new Date())},function(a,z){A.lva=a;A.lvb=z;b.querySelector('span').textContent=rngTxt(a,z);load()})};load()}
@@ -32,6 +36,69 @@ function drawLv(){if(!$('#lv-body'))return;var of=function(r){return ofOk('lv',r
     b.disabled=true;aCall('decideLeave',p[0],'ok','',[]).then(function(x){toast('อนุมัติแล้ว'+(x.status==='hr'?' · รอ HR':''));bLv()}).catch(function(e){b.disabled=false;toast(e.message,1)})}});
   $$('[data-lack]').forEach(function(b){b.onclick=function(){b.disabled=true;aCall('ackLeave',b.dataset.lack).then(function(){toast('รับทราบแล้ว');bLv()}).catch(function(e){b.disabled=false;toast(e.message,1)})}});
 }
+
+/* ───────── การลา › ลาล่วงหน้า (31 ต.ค. 2569 · Figma "รายงาน · 4 ลาล่วงหน้า") ─────────
+   ใบลาที่ยังไม่จบ (วันสุดท้าย ≥ วันนี้) · ไม่นับไม่อนุมัติ/ยกเลิก · จัดกลุ่มตามวันลาวันแรกที่ยังมาไม่ถึง (ลาที่เริ่มแล้ว = กลุ่มวันนี้)
+   ปฏิทินขวา = จำนวนคนลาต่อวัน 30 วันข้างหน้า (นับจากวันลาจริงรายวัน r.dd · ไม่นับวันหยุด) · คลิกวัน = กรองรายการ */
+var LA_WD=['อา.','จ.','อ.','พ.','พฤ.','ศ.','ส.'],LA_PART={am:'ครึ่งเช้า',pm:'ครึ่งบ่าย'};
+function laD(ds,y){var d=dObj(ds);return LA_WD[d.getDay()]+' '+d.getDate()+' '+DPS[d.getMonth()]+(y?' '+String(d.getFullYear()+543).slice(-2):'')}
+function laRange(r,t){var a=r.date_from,b=r.date_to,dd=lvaDays(r),one=a===b,pt=one&&dd.length===1&&LA_PART[dd[0][1]];
+  var tx=one?laD(a,1):a.slice(0,7)===b.slice(0,7)?LA_WD[dObj(a).getDay()]+' '+dObj(a).getDate()+' – '+laD(b,1):laD(a,a.slice(0,4)!==b.slice(0,4))+' – '+laD(b,1);
+  return tx+(pt?' ('+pt+')':'')+(a<t?' (เริ่มแล้ว)':'')}
+/* วันลารายวัน: หลังบ้านใหม่ส่ง r.dd · ไม่มี (หลังบ้านเก่า) = ทุกวันในช่วง */
+function lvaDays(r){if(r.dd&&r.dd.length)return r.dd;var o=[];for(var d=r.date_from;d<=r.date_to;d=dAdd(d,1))o.push([d,'full']);return o}
+function laType(n){n=String(n||'');var c=/ป่วย/.test(n)?'lt-s':/พักร้อน|พักผ่อน/.test(n)?'lt-v':/กิจ/.test(n)?'lt-b':'lt-o';return '<span class="lt '+c+'">'+esc(n)+'</span>'}
+function vLva(){A.lvaR=A.lvaR||'all';var rg=[['all','ทั้งหมด'],['7','7 วันข้างหน้า'],['30','30 วันข้างหน้า']];
+  return '<div class="ph"><div><h1>การลา</h1><div class="sub">ใบลาที่ยังไม่ถึงวันลา · วางแผนกำลังคน</div></div><span class="sp"></span>'+
+   '<div class="segt" role="group" aria-label="ช่วงวัน">'+rg.map(function(x){return '<button data-lar="'+x[0]+'" aria-pressed="'+(A.lvaR===x[0])+'">'+x[1]+'</button>'}).join('')+'</div>'+
+   ofSel('lv')+'<input type="search" id="la-q" class="amp-in" placeholder="ค้นหา ชื่อ / ชื่อเล่น / รหัส" value="'+esc(A.lvaQ||'')+'" aria-label="ค้นหา">'+exBtn('xls','la-xls')+'<button class="btn" id="la-re">รีเฟรช</button></div>'+
+   lvTabs('adv')+'<div id="la-body"><div class="loading"><span class="spin"></span></div></div>'}
+function bLva(){var load=function(){var t=dIso(new Date());
+    aCall('leaveAdminList','all',t+'..9999-12-31').then(function(x){A.lvaT=t;A.lvaD=x.filter(function(r){return r.status!=='no'&&r.status!=='cancel'&&r.date_to>=t});drawLva()}).catch(function(e){if($('#la-body'))$('#la-body').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})};
+  A.lvaN=20;ofBind('lv',function(){A.lvaN=20;drawLva()});
+  $$('[data-lar]').forEach(function(b){b.onclick=function(){A.lvaR=b.dataset.lar;A.lvaDay=null;A.lvaN=20;$$('[data-lar]').forEach(function(x){x.setAttribute('aria-pressed',x===b)});drawLva()}});
+  var qt;$('#la-q').oninput=function(){var v=this.value;clearTimeout(qt);qt=setTimeout(function(){A.lvaQ=v;A.lvaN=20;drawLva()},200)};
+  $('#la-xls').onclick=function(){lvaCsv()};$('#la-re').onclick=function(){fxArm('lv');load()};
+  if(A.lvaD&&A.lvaT===dIso(new Date()))drawLva();load()}
+/* ใบลาตามตัวกรองแผนก/ทีม + ค้นหา (base) · + ช่วงวัน + วันที่คลิกในปฏิทิน (rows) · s = วันลาวันแรกที่ยังไม่ผ่าน */
+function lvaRows(){var t=A.lvaT,q=(A.lvaQ||'').trim().toLowerCase(),N=A.lvaR==='all'?0:+A.lvaR;
+  var base=(A.lvaD||[]).filter(function(r){var e=emp(r.employee_id)||{};return ofOk('lv',r.department,r.team)&&(!q||(r.code+' '+r.employee+' '+(e.nickname||'')).toLowerCase().indexOf(q)>=0)}).map(function(r){
+    var dd=lvaDays(r).filter(function(x){return x[0]>=t}),s=dd.length?dd[0][0]:(r.date_from>t?r.date_from:t);return {r:r,s:s,dd:dd}});
+  var rows=base.filter(function(x){return (!N||x.s<=dAdd(t,N-1))&&(!A.lvaDay||x.dd.some(function(d){return d[0]===A.lvaDay}))});
+  rows.sort(function(a,b){return a.s<b.s?-1:a.s>b.s?1:(a.r.code<b.r.code?-1:1)});return {base:base,rows:rows}}
+function drawLva(){if(!$('#la-body')||!A.lvaD)return;var t=A.lvaT,o=lvaRows(),rows=o.rows,base=o.base;
+  // การ์ดสรุป (ตามแผนก/ค้นหา · ไม่ขึ้นกับช่วงวัน)
+  var onDay=function(d){var p={},n=0;base.forEach(function(x){if(x.dd.some(function(y){return y[0]===d})){if(!p[x.r.employee_id])n++;p[x.r.employee_id]=1}});return n};
+  var td=base.filter(function(x){return x.dd.some(function(y){return y[0]===t})}),w7={},w7r=0;base.forEach(function(x){if(x.dd.some(function(y){return y[0]<=dAdd(t,6)})){w7[x.r.employee_id]=1;w7r++}});
+  var ppl={},dsum=0,far='';rows.forEach(function(x){ppl[x.r.employee_id]=1;dsum+=x.r.days_total;if(x.r.date_to>far)far=x.r.date_to});
+  var kp=function(h,v,sub,pp){return '<section class="kpi"><span class="kh">'+h+'</span><b class="v'+(pp?' p':'')+'">'+v+'</b><span class="s">'+sub+'</span></section>'};
+  var h='<div class="la-k">'+kp('ลาวันนี้',onDay(t)+' คน',td.length+' ใบ',1)+kp('ลาใน 7 วัน',Object.keys(w7).length+' คน',w7r+' ใบ',1)+
+    kp('ใบลาในรายการ',rows.length+' ใบ',(dsum%1?dsum.toFixed(1):dsum)+' วันลา · '+Object.keys(ppl).length+' คน')+kp('ลาไกลสุดถึง',far?laD(far,1).replace(/^\S+ /,''):'—',far?'อีก '+Math.round((dObj(far)-dObj(t))/864e5)+' วัน':'ไม่มีใบลา')+'</div>';
+  // รายการจัดกลุ่มตามวัน
+  var shown=rows.slice(0,A.lvaN||20),grp={},keys=[];shown.forEach(function(x){if(!grp[x.s]){grp[x.s]=[];keys.push(x.s)}grp[x.s].push(x)});
+  var rel=function(d){var n=Math.round((dObj(d)-dObj(t))/864e5);return n===0?'<span class="la-rel td">วันนี้</span>':n===1?'<span class="la-rel">พรุ่งนี้</span>':'<span class="la-rel">อีก '+n+' วัน</span>'};
+  var tb='<section class="card la-l"><div class="tw"><table class="la-t"><thead><tr><th>พนักงาน</th><th>แผนก / ทีม</th><th>ประเภท</th><th>ช่วงวันที่ลา</th><th class="num">วัน</th><th>สถานะ</th></tr></thead><tbody>'+
+    (keys.length?keys.map(function(k){var g=grp[k],pp={};g.forEach(function(x){pp[x.r.employee_id]=1});
+      return '<tr class="la-gh"><td colspan="6">'+laD(k,1)+rel(k)+'<span class="la-n">'+Object.keys(pp).length+' คน</span></td></tr>'+g.map(function(x){var r=x.r,e=emp(r.employee_id)||{id:r.employee_id,first_name:r.employee,last_name:''},s=LVS[r.status]||[r.status,'b-mute'];
+        return '<tr><td><div class="la-p">'+av(e,34)+'<div><b>'+esc(e.nickname||e.first_name||r.employee)+'</b><small>'+esc(r.employee)+' · '+esc(r.code)+'</small></div></div></td><td>'+esc(r.department)+'<small class="faint" style="display:block">'+esc(r.team||'')+'</small></td><td>'+laType(r.type)+'</td><td>'+esc(laRange(r,t))+'</td><td class="num">'+r.days_total+'</td><td><span class="badge '+s[1]+'">'+s[0]+'</span></td></tr>'}).join('')}).join('')
+     :'<tr><td colspan="6" class="muted" style="text-align:center;padding:28px">'+(A.lvaDay?'ไม่มีใบลาวันที่ '+esc(laD(A.lvaDay,1)):'ไม่มีใบลาล่วงหน้า')+'</td></tr>')+'</tbody></table></div>'+
+    (rows.length>shown.length?'<button class="la-more" id="la-more">แสดงเพิ่ม · อีก '+(rows.length-shown.length)+' ใบ</button>':'')+'</section>';
+  // ปฏิทินคนลาต่อวัน 30 วันข้างหน้า (เริ่มวันอาทิตย์ของสัปดาห์นี้ · จบวันเสาร์)
+  var end=dAdd(t,29),c0=dAdd(t,-dObj(t).getDay()),c1=dAdd(end,6-dObj(end).getDay()),cells=[],mx=0;
+  for(var d=c0;d<=c1;d=dAdd(d,1)){var n=d<t||d>end?0:onDay(d);if(n>mx)mx=n;cells.push([d,n])}
+  var cal='<section class="card la-cal"><h3>คนลาต่อวัน · 30 วันข้างหน้า</h3><div class="faint" style="font-size:12.5px">สีเข้ม = ลาหลายคน · คลิกวัน = กรองรายการ'+(A.lvaDay?' · <button class="lnk" id="la-dx">ล้างวันที่เลือก ('+esc(laD(A.lvaDay))+')</button>':'')+'</div><div class="la-cg">'+
+    LA_WD.map(function(w){return '<span class="h">'+w.replace('.','')+'</span>'}).join('')+cells.map(function(c){var out=c[0]<t||c[0]>end,l=c[1]?(c[1]>=Math.max(3,mx*.67)?'l3':c[1]>=Math.max(2,mx*.34)?'l2':'l1'):'';
+      return '<button type="button" class="'+(out?'out ':'')+l+(c[0]===t?' td':'')+(c[0]===A.lvaDay?' sel':'')+'"'+(out?' disabled':' data-lad="'+c[0]+'"')+' title="'+esc(laD(c[0],1))+(c[1]?' · ลา '+c[1]+' คน':'')+'">'+dObj(c[0]).getDate()+(c[1]?'<small>'+c[1]+' คน</small>':'')+'</button>'}).join('')+
+    '</div><div class="faint" style="font-size:12.5px;margin-top:10px">'+esc(rngTxt(c0,c1))+'</div></section>';
+  $('#la-body').innerHTML=h+'<div class="la-g">'+tb+cal+'</div>';loadPhotos();
+  if($('#la-more'))$('#la-more').onclick=function(){A.lvaN=(A.lvaN||20)+20;drawLva()};
+  if($('#la-dx'))$('#la-dx').onclick=function(){A.lvaDay=null;drawLva()};
+  $$('[data-lad]').forEach(function(b){b.onclick=function(){A.lvaDay=A.lvaDay===b.dataset.lad?null:b.dataset.lad;A.lvaN=20;drawLva()}})}
+function lvaCsv(){if(!A.lvaD)return;var t=A.lvaT,rows=lvaRows().rows,q=function(v){v=String(v==null?'':v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
+  var out=[['เลขที่','รหัส','ชื่อ','ชื่อเล่น','แผนก','ทีม','ประเภท','ตั้งแต่','ถึง','ช่วงวันที่ลา','วัน','สถานะ']];
+  rows.forEach(function(x){var r=x.r,e=emp(r.employee_id)||{};out.push([r.req_no,r.code,r.employee,e.nickname||'',r.department,r.team||'',r.type,r.date_from,r.date_to,laRange(r,t),r.days_total,(LVS[r.status]||[r.status])[0]])});
+  var blob=new Blob(['﻿'+out.map(function(r){return r.map(q).join(',')}).join('\r\n')],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download='ลาล่วงหน้า_'+t+'.csv';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500)}
 
 /* ───────── รายชื่อ ───────── */
 /* สถานะ + วันลาออก (30 ต.ค. 2569 ผู้ใช้ขอให้เห็นชัดว่าออกวันไหน) · คนเดิมกลับมาด้วยรหัสใหม่ = e.hist (หลังบ้าน rehireIndex_) */

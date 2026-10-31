@@ -757,3 +757,22 @@ html.th-sky .co-brand.lgc{box-shadow:0 0 0 1px #D2EEFA}
 .py-dg{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px}.py-dg h4{margin:0 0 6px;font-size:14px}.py-dl{display:flex;align-items:center;gap:10px;padding:6px 0}.py-dl>div{flex:1;min-width:0}.py-dl small{display:block;font-size:11.5px;color:var(--fnt)}.py-dl b{font-weight:500}
 .py-dl.tot{border-top:1px solid var(--line);margin-top:4px;padding-top:8px}.py-dl.tot b{font-weight:600;flex:1}.py-net{display:flex;align-items:center;justify-content:space-between;background:#F2F2F2;border-radius:12px;padding:14px 16px;margin-bottom:14px}.py-net b{font-size:22px}
 .py-h5{margin:12px 0 4px;font-size:12.5px;color:var(--mut)}.py-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:14px;align-items:start}
+/* การลา › ลาล่วงหน้า (31 ต.ค. 2569 · Figma "รายงาน · 4 ลาล่วงหน้า") */
+.la-k{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.la-k .kpi{padding:16px 18px;gap:4px}.la-k .kh{color:var(--mut);font-size:13px}.la-k .v{font-size:28px;font-weight:700;line-height:1.25}.la-k .v.p{color:#6D4ED6}.la-k .s{color:var(--fnt);font-size:12.5px}
+.la-g{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:14px;align-items:start}
+.la-l{padding:0;overflow:hidden}.la-t{width:100%;min-width:760px;border-collapse:collapse}
+.la-t th{text-align:left;font-weight:500;color:var(--mut);font-size:13px;padding:12px 16px;border-bottom:1px solid var(--line)}.la-t td{padding:10px 16px;border-bottom:1px solid var(--line);vertical-align:middle}
+.la-t tr.la-gh td{background:var(--sf2);font-weight:600;padding:10px 16px}.la-t td.num,.la-t th.num{text-align:center}
+.la-p{display:flex;align-items:center;gap:10px}.la-p b{display:block}.la-p small{display:block;color:var(--fnt);font-size:12px}
+.la-rel{display:inline-block;margin-left:10px;padding:1px 10px;border-radius:99px;font-size:12px;font-weight:500;background:#F1EDFB;color:#5B3FC4}.la-rel.td{background:var(--fg);color:#fff}
+.la-n{margin-left:10px;color:var(--fnt);font-weight:400;font-size:12.5px}
+.lt{display:inline-block;padding:2px 11px;border-radius:99px;font-size:12.5px;white-space:nowrap}.lt-s{background:var(--bad-s);color:var(--bad)}.lt-v{background:#F1EDFB;color:#5B3FC4}.lt-b{background:var(--warn-s);color:var(--warn)}.lt-o{background:var(--info-s);color:var(--info)}
+.la-more{display:block;width:100%;border:0;background:none;text-align:left;padding:14px 16px;font-weight:600}.la-more:hover{background:var(--sf2)}
+.la-cal{padding:18px 18px 16px}.la-cal h3{margin:0 0 4px;font-size:16px}
+.la-cg{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;margin-top:14px}.la-cg .h{text-align:center;font-size:12px;color:var(--fnt);padding-bottom:2px}
+.la-cg button{border:1px solid var(--line);background:var(--sf2);border-radius:8px;height:44px;padding:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:13px;line-height:1.2}
+.la-cg button small{font-size:10px}.la-cg button.out{opacity:.4;cursor:default;background:var(--sf)}
+.la-cg button.l1{background:#F1EDFB;border-color:#E2D9F8;color:#5B3FC4}.la-cg button.l2{background:#C9B8F2;border-color:#C9B8F2;color:#2E1C7A}.la-cg button.l3{background:#6D4ED6;border-color:#6D4ED6;color:#fff}
+.la-cg button.td{box-shadow:inset 0 0 0 1.5px var(--fg)}.la-cg button.sel{outline:2px solid var(--fg);outline-offset:1px}
+@media (max-width:1180px){.la-g{grid-template-columns:1fr}.la-k{grid-template-columns:repeat(2,minmax(0,1fr))}}
