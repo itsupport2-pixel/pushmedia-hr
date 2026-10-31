@@ -127,4 +127,10 @@ drawErr=(function(f){return function(){var r=f.apply(this,arguments);pgFx();retu
 drawSet=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(drawSet);
 bOrg=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(bOrg);
 bNone=(function(f){return function(){var arm=A.fx===A.view||A.fx==='*',r=f.apply(this,arguments);pgFx();var fr=$('iframe.plf');if(fr&&arm)fr.addEventListener('load',function(){fxFrame(fr)},{once:true});return r}})(bNone);   // ตารางงาน / Confirmed (iframe) → กรอบเลื่อนขึ้น + ข้อมูลข้างในเล่นเมื่อวาดเสร็จ
+/* Community (1 พ.ย. 2569 · admin-community.js): กดเมนู = กลับหน้ารายการ · ตัวเลขยังไม่อ่านบนเมนู · การ์ดบน Dashboard */
+go=(function(f){return function(v,id){if(v==='cb'){A.cbId=null;A.cbP=null}return f.apply(this,arguments)}})(go);
+render=(function(f){return function(){var r=f.apply(this,arguments);if(A.d&&A.d.me&&!A.cbBP&&!(CFG&&CFG.failover)&&!(A.cbFail&&Date.now()-A.cbFail<60000))cbBoot().then(function(b){cbBadge(b.unread);if(A.view==='dash'&&$('#db-body .grid'))cbDashIns()}).catch(function(){});else if(A.cbB)cbBadge(A.cbUn);return r}})(render);
+drawDash=(function(f){return function(){var r=f.apply(this,arguments);if(A.cbB)cbDashIns();return r}})(drawDash);
+function cbDashIns(){var body=$('#db-body');if(!body||$('#db-body .cb-dash'))return;var g=body.querySelector('.grid');if(!g)return;g.insertAdjacentHTML('afterend','<div style="margin-top:14px">'+cbDashCard()+'</div>');
+  $$('#db-body .cb-dash [data-go]').forEach(function(b){b.onclick=function(){go('cb')}});$$('#db-body [data-cbgo]').forEach(function(b){b.onclick=function(){go('cb');A.cbId=b.dataset.cbgo;render()}})}
 boot();
