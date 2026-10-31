@@ -4,10 +4,14 @@
 'use strict';
 /* ───────── ลงเวลาวันนี้ (Phase 2b) ───────── */
 var AST={ok:['ปกติ','b-ok'],late:['มาสาย','b-warn'],not_yet:['ยังไม่ลงเวลา','b-bad'],working:['กำลังทำงาน','b-info'],missing_out:['ไม่มีลงเวลาออก','b-warn'],missing_in:['ไม่มีลงเวลาเข้า','b-warn'],leave:['ลา','b-info'],leave_wait:['ลา (รออนุมัติ)','b-warn'],holiday:['วันหยุด','b-mute'],off:['วันหยุด','b-mute'],absent:['ขาดงาน','b-bad']};
-function vAtt(){var t=dIso(new Date()),d=A.attDate&&A.attDate<=t?A.attDate:t;A.attDate=d;return '<div class="ph"><div><h1 id="att-h">'+(d===t?'ลงเวลาวันนี้':'ลงเวลา '+esc(dTxt(d,1)))+'</h1><div class="sub" id="att-sub">กำลังโหลด…</div></div><span class="sp"></span>'+
+/* แท็บในเมนูลงเวลา (31 ต.ค. 2569 ผู้ใช้ขอ: ย้าย Matrix จากเมนูรายงานมาไว้ที่ลงเวลา เพราะเป็นข้อมูลประเภทเดียวกัน · สิทธิ์/ขอบเขตเดิม = acc('att')) */
+function attTabs(on){var tab=function(k,l){return '<button type="button" data-attt="'+k+'"'+(on===k?' aria-pressed="true"':'')+'>'+l+'</button>'};
+  return '<div class="rp-tabs" role="group" aria-label="ลงเวลา">'+tab('day','รายวัน')+tab('mx','Matrix')+'</div>'}
+function attTabBind(){$$('[data-attt]').forEach(function(b){b.onclick=function(){if((A.attTab||'day')===b.dataset.attt)return;A.attTab=b.dataset.attt;fxArm('att');render()}})}
+function vAtt(){if(A.attTab==='mx')return vRepMx();var t=dIso(new Date()),d=A.attDate&&A.attDate<=t?A.attDate:t;A.attDate=d;return '<div class="ph"><div><h1 id="att-h">'+(d===t?'ลงเวลาวันนี้':'ลงเวลา '+esc(dTxt(d,1)))+'</h1><div class="sub" id="att-sub">กำลังโหลด…</div></div><span class="sp"></span>'+
   '<div class="att-dt"><button class="btn" id="att-prev" aria-label="วันก่อนหน้า">‹</button><input type="date" id="att-date" class="amp-in" value="'+d+'" max="'+t+'" aria-label="เลือกวันที่"><button class="btn" id="att-next" aria-label="วันถัดไป"'+(d>=t?' disabled':'')+'>›</button>'+(d!==t?'<button class="btn" id="att-today">วันนี้</button>':'')+'</div>'+
-  ofSel('att')+(isHR()?'<button class="btn" id="att-fix" title="แก้เวลา ลงเวลาแทน หรือยกเลิกรายการที่ผิด · ย้อนหลังได้">แก้เวลา / ลงแทน</button>':'')+'<button class="btn" id="att-re">รีเฟรช</button></div><div id="att-body"><div class="loading"><span class="spin"></span></div></div>'}
-function bAtt(){
+  ofSel('att')+(isHR()?'<button class="btn" id="att-fix" title="แก้เวลา ลงเวลาแทน หรือยกเลิกรายการที่ผิด · ย้อนหลังได้">แก้เวลา / ลงแทน</button>':'')+'<button class="btn" id="att-re">รีเฟรช</button></div>'+attTabs('day')+'<div id="att-body"><div class="loading"><span class="spin"></span></div></div>'}
+function bAtt(){attTabBind();if(A.attTab==='mx')return bRepMx();
   var load=function(){aCall('attendanceToday',A.attDate).then(function(d){A.att=d;drawAtt()}).catch(function(e){if($('#att-body'))$('#att-body').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})};
   ofBind('att',drawAtt);$('#att-re').onclick=function(){fxArm('att');load()};A.attLoad=load;if($('#att-fix'))$('#att-fix').onclick=function(){openFix('',A.att?A.att.date:'')};
   /* เลือกวันที่ดูเวลา (28 ต.ค. 2569 ผู้ใช้ขอ) · ดูเป็นวันปกติ ไม่ขึ้นกับรอบสรุป 23:30 */
@@ -108,7 +112,7 @@ function dpRange(btn,cur,onApply){
   draw();setTimeout(function(){document.addEventListener('mousedown',om,true)},0);document.addEventListener('keydown',kd,true);window.addEventListener('resize',pos)}
 
 /* ───────── รายงาน (เมนู "รายงาน" · ข้อเสนอจัดเมนูใหม่ Figma 441:7719: Matrix · Dashboard ผู้บริหาร · สรุปทำเงินเดือน · รายงาน OT) ─────────
-   Matrix (Figma 426:8186): ตารางคน × วัน · ช่วงวันที่เลือกได้ถึงวันนี้ · ตามขอบเขต "ลงเวลา" ของผู้ใช้ · ส่งออก Excel (CSV) / PDF (พิมพ์) */
+   Matrix (Figma 426:8186 · 31 ต.ค. 2569 ย้ายไปเป็นแท็บในเมนู "ลงเวลา" · โค้ดยังอยู่ไฟล์นี้): ตารางคน × วัน · ช่วงวันที่เลือกได้ถึงวันนี้ · ตามขอบเขต "ลงเวลา" ของผู้ใช้ · ส่งออก Excel (CSV) / PDF (พิมพ์) */
 var RP_ST={ok:'มาทำงาน',late:'มาสาย',working:'กำลังทำงาน',missing_out:'ไม่มีออก',missing_in:'ไม่มีเข้า',leave:'ลา',leave_wait:'ลา (รออนุมัติ)',holiday:'วันหยุด',off:'วันหยุด',absent:'ขาดงาน',not_yet:'ยังไม่ลงเวลา'};
 /* ปุ่มส่งออกแบบเดียวกันทั้งระบบ: ไอคอนไฟล์ + "Export Excel / PDF / Text" (ผู้ใช้ขอ 27 ต.ค. 2569) · exBtn(kind, id, label?, attr?) */
 function exBtn(kind,id,label,attr){return '<button class="btn btn-ex" id="'+id+'"'+(attr?' '+attr:'')+'>'+fileIc(kind)+esc(label||('Export '+{xls:'Excel',pdf:'PDF',txt:'Text'}[kind]))+'</button>'}
@@ -117,8 +121,8 @@ function fileIc(kind){var c=kind==='pdf'?'#DC2626':kind==='txt'?'#2563EB':'#1580
 function vRepMx(){if(A.rpa===undefined){var tm=dpPresets(dIso(new Date())).filter(function(x){return x[0]==='tm'})[0];A.rpa=tm[2];A.rpb=tm[3];A.rpq='';A.rpd='all';A.rpt='all'}
   var sc=acc('att'),deps=A.d.org.departments.filter(function(d){return d.active!=='FALSE'}),tms=A.d.org.teams.filter(function(t){return t.active!=='FALSE'&&(A.rpd==='all'||t.department_id===A.rpd)});
   var tab=function(l,on,soon){return '<button type="button"'+(on?' aria-pressed="true"':'')+(soon?' disabled title="อยู่ระหว่างพัฒนา"':'')+'>'+l+(soon?' <span class="sn">เร็ว ๆ นี้</span>':'')+'</button>'};
-  return '<div class="ph"><div><h1>รายงาน</h1><div class="sub">ตารางสรุปรายวันต่อคน · ขอบเขต: '+esc(scopeTxt('att'))+'</div></div><span class="sp"></span><button class="btn btn-ex rp-noprint" id="rp-xls">'+fileIc('xls')+'Export Excel</button><button class="btn btn-ex rp-noprint" id="rp-pdf">'+fileIc('pdf')+'Export PDF</button></div>'+
-   rpTabs('mx')+
+  return '<div class="ph"><div><h1>ลงเวลา</h1><div class="sub">Matrix · ตารางสรุปรายวันต่อคน · ขอบเขต: '+esc(scopeTxt('att'))+'</div></div><span class="sp"></span><button class="btn btn-ex rp-noprint" id="rp-xls">'+fileIc('xls')+'Export Excel</button><button class="btn btn-ex rp-noprint" id="rp-pdf">'+fileIc('pdf')+'Export PDF</button></div>'+
+   attTabs('mx')+
    '<section class="card rp-tools" style="padding:14px 16px"><div class="rp-f"><label>ช่วงวันที่'+dpBtn('rp-rg',A.rpa,A.rpb)+'</label>'+
     (sc==='all'?'<label>แผนก<select id="rp-dep"><option value="all">ทุกแผนก</option>'+deps.map(function(d){return '<option value="'+d.id+'"'+(A.rpd===d.id?' selected':'')+'>'+esc(d.name)+'</option>'}).join('')+'</select></label>':'')+
     (sc==='all'||sc==='dept'?'<label>ทีม<select id="rp-team"><option value="all">ทุกทีม</option>'+tms.map(function(t){return '<option value="'+t.id+'"'+(A.rpt===t.id?' selected':'')+'>'+esc(t.name)+'</option>'}).join('')+'</select></label>':'')+
@@ -173,12 +177,12 @@ function repCsv(){var d=A.rpm;if(!d)return;var rows=repRows(),q=function(v){v=St
   var blob=new Blob(['﻿'+out.map(function(r){return r.map(q).join(',')}).join('\r\n')],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');
   a.href=URL.createObjectURL(blob);a.download='matrix_'+d.from+'_'+d.to+'.csv';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500)}
 
-/* ───────── รายงาน › แท็บ (28 ต.ค. 2569): Matrix · Dashboard ผู้บริหาร (Figma 426:7739) · แผนที่ (Figma 426:9080 · admin + ผู้บริหาร) ───────── */
+/* ───────── รายงาน › แท็บ (28 ต.ค. 2569 · 31 ต.ค. ย้าย Matrix ไปเมนูลงเวลา): Dashboard ผู้บริหาร (Figma 426:7739) · แผนที่ (Figma 426:9080 · admin + ผู้บริหาร) ───────── */
 function canMap(){var m=A.d&&A.d.me;return !!m&&(m.map||m.role==='admin'||m.role==='exec')}   // 29 ต.ค. 2569: + คนที่ผู้ดูแลระบบให้สิทธิ์ (me.map)
-function vRep(){var t=A.rpTab||'mx';if(t==='map'&&!canMap())t=A.rpTab='mx';return t==='xd'?vXd():t==='map'?vMap():vRepMx()}
-function bRep(){$$('[data-rpt]').forEach(function(b){b.onclick=function(){if(A.rpTab===b.dataset.rpt)return;A.rpTab=b.dataset.rpt;fxArm('rep');render()}});var t=A.rpTab||'mx';if(t==='xd')bXd();else if(t==='map')bMap();else bRepMx()}
+function vRep(){var t=A.rpTab==='map'&&canMap()?'map':'xd';return t==='map'?vMap():vXd()}
+function bRep(){$$('[data-rpt]').forEach(function(b){b.onclick=function(){if(A.rpTab===b.dataset.rpt)return;A.rpTab=b.dataset.rpt;fxArm('rep');render()}});if(A.rpTab==='map'&&canMap())bMap();else bXd()}
 function rpTabs(on){var tab=function(k,l,soon){return '<button type="button" data-rpt="'+(soon?'':k)+'"'+(on===k?' aria-pressed="true"':'')+(soon?' disabled title="อยู่ระหว่างพัฒนา"':'')+'>'+l+(soon?' <span class="sn">เร็ว ๆ นี้</span>':'')+'</button>'};
-  return '<div class="rp-tabs" role="group" aria-label="รายงาน">'+tab('mx','Matrix')+tab('xd','Dashboard ผู้บริหาร')+(canMap()?tab('map','แผนที่'):'')+tab('pay','สรุปทำเงินเดือน',1)+tab('ot','รายงาน OT',1)+'</div>'}
+  return '<div class="rp-tabs" role="group" aria-label="รายงาน">'+tab('xd','Dashboard ผู้บริหาร')+(canMap()?tab('map','แผนที่'):'')+tab('pay','สรุปทำเงินเดือน',1)+tab('ot','รายงาน OT',1)+'</div>'}
 var XD_C=['#2563EB','#0891B2','#16A34A','#7C3AED','#D97706','#DC2626','#DB2777','#4B5563','#0D9488','#9333EA','#65A30D','#EA580C'];
 function xdColor(id){return xdColor2(id)}
 function xdYmTxt(ym){return DPS[+ym.slice(5,7)-1]+' '+(+ym.slice(0,4)+543)}
