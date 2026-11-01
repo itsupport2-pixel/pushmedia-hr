@@ -179,10 +179,10 @@ function repCsv(){var d=A.rpm;if(!d)return;var rows=repRows(),q=function(v){v=St
 
 /* ───────── รายงาน › แท็บ (28 ต.ค. 2569 · 31 ต.ค. ย้าย Matrix ไปเมนูลงเวลา): Dashboard ผู้บริหาร (Figma 426:7739) · แผนที่ (Figma 426:9080 · admin + ผู้บริหาร) ───────── */
 function canMap(){var m=A.d&&A.d.me;return !!m&&(m.map||m.role==='admin'||m.role==='exec')}   // 29 ต.ค. 2569: + คนที่ผู้ดูแลระบบให้สิทธิ์ (me.map)
-function vRep(){var t=A.rpTab==='map'&&canMap()?'map':'xd';return t==='map'?vMap():vXd()}
-function bRep(){$$('[data-rpt]').forEach(function(b){b.onclick=function(){if(A.rpTab===b.dataset.rpt)return;A.rpTab=b.dataset.rpt;fxArm('rep');render()}});if(A.rpTab==='map'&&canMap())bMap();else bXd()}
+function vRep(){if(A.rpTab==='ms'&&isHR())return vMs();var t=A.rpTab==='map'&&canMap()?'map':'xd';return t==='map'?vMap():vXd()}
+function bRep(){$$('[data-rpt]').forEach(function(b){b.onclick=function(){if(A.rpTab===b.dataset.rpt)return;A.rpTab=b.dataset.rpt;fxArm('rep');render()}});if(A.rpTab==='ms'&&isHR())bMs();else if(A.rpTab==='map'&&canMap())bMap();else bXd()}
 function rpTabs(on){var tab=function(k,l,soon){return '<button type="button" data-rpt="'+(soon?'':k)+'"'+(on===k?' aria-pressed="true"':'')+(soon?' disabled title="อยู่ระหว่างพัฒนา"':'')+'>'+l+(soon?' <span class="sn">เร็ว ๆ นี้</span>':'')+'</button>'};
-  return '<div class="rp-tabs" role="group" aria-label="รายงาน">'+tab('xd','Dashboard ผู้บริหาร')+(canMap()?tab('map','แผนที่'):'')+tab('pay','สรุปทำเงินเดือน',1)+tab('ot','รายงาน OT',1)+'</div>'}
+  return '<div class="rp-tabs" role="group" aria-label="รายงาน">'+tab('xd','Dashboard ผู้บริหาร')+(canMap()?tab('map','แผนที่'):'')+(isHR()?tab('ms','สรุปรายเดือน'):'')+tab('pay','สรุปทำเงินเดือน',1)+tab('ot','รายงาน OT',1)+'</div>'}
 var XD_C=['#2563EB','#0891B2','#16A34A','#7C3AED','#D97706','#DC2626','#DB2777','#4B5563','#0D9488','#9333EA','#65A30D','#EA580C'];
 function xdColor(id){return xdColor2(id)}
 function xdYmTxt(ym){return DPS[+ym.slice(5,7)-1]+' '+(+ym.slice(0,4)+543)}
