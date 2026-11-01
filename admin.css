@@ -777,3 +777,12 @@ html.th-sky .co-brand.lgc{box-shadow:0 0 0 1px #D2EEFA}
 .la-cg button.td{box-shadow:inset 0 0 0 1.5px var(--fg)}.la-cg button.sel{outline:2px solid var(--fg);outline-offset:1px}
 @media (max-width:1180px){.la-g{grid-template-columns:1fr}.la-k{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .crumb a{color:inherit;text-decoration:none}.crumb a:hover{text-decoration:underline}
+/* รูปกลุ่ม LINE + ตัวเลือกกลุ่มใน Workflow (1 พ.ย. 2569) */
+.lg-av{flex:none;position:relative;display:inline-grid;place-items:center;border-radius:50%;overflow:hidden;background:#E9EAEC;color:#5A5A5A;font-weight:600;line-height:1}
+.lg-av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.lm-g{align-items:center;gap:12px}
+.lg-pick{display:flex;flex-direction:column;gap:2px;max-height:320px;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:4px;background:#fff}
+.lg-opt{display:flex;align-items:center;gap:10px;width:100%;height:auto;min-height:42px;padding:6px 8px;border:0;border-radius:8px;background:none;text-align:left;font:inherit;color:var(--tx,#141414);cursor:pointer}
+.lg-opt:hover{background:#F4F5F6}.lg-opt.on{background:#EEF2F7}
+.lg-t{flex:1;min-width:0;display:flex;flex-direction:column}.lg-t b{font-weight:500;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lg-t small{font-size:11.5px;color:var(--mut)}
+.lg-ck{flex:none;color:var(--tx,#141414)}
