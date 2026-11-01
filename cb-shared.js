@@ -32,6 +32,10 @@
     eyeoff: '<path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/>'
   };
   CB.ic = function (k, cls) { return '<svg class="cbi' + (cls ? ' ' + cls : '') + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (P[k] || '') + '</svg>'; };
+  /* View as (ผู้ดูแลดูในมุมมองพนักงาน): หน้าตาเหมือนพนักงานเห็นทุกอย่าง แต่กดบันทึกไม่ได้ → แสดงข้อความนี้ */
+  CB.RO = 'โหมดดูในมุมมองของพนักงาน: ดูได้อย่างเดียว';
+  CB.WRITE = /^(cbnew|cbstart|cblike|cbsend|cbrep|cbedc|cbsol|cbdelc|cbemo|cbtag)$/;
+  CB.roHit = function (t) { if (!t || !t.dataset) return false; for (var k in t.dataset) if (CB.WRITE.test(k)) return true; return false; };
   CB.esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
   var E = CB.esc;
   CB.text = function (s) { return E(s).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>').replace(/(^|\s)(@[^\s@<]{1,30})/g, '$1<b class="cbmen">$2</b>').replace(/\n/g, '<br>'); };
@@ -73,7 +77,7 @@
       '<div class="cbtxt' + (long ? ' clamp' : '') + '">' + CB.text(p.body) + '</div>' + (long ? '<button class="cbseemore" data-cbopen="' + E(p.id) + '">ดูเพิ่มเติม</button>' : '') +
       (o.full ? CB.imgs(base, p.imgs, 1) : (p.imgs && p.imgs.length ? '<div data-cbopen="' + E(p.id) + '" class="cbimgl">' + CB.imgs(base, p.imgs) + '</div>' : '')) +
       '<div class="cbstat">' + (p.likes ? '<span class="cblk">' + CB.ic('like') + '</span>' + p.likes : '') + '<span class="sp"></span>' + (p.replies ? '<button data-cbopen="' + E(p.id) + '">' + p.replies + ' ความคิดเห็น</button>' : '') + '</div>' +
-      '<div class="cbacts"><button data-cblike="' + E(p.id) + '" class="' + (p.liked ? 'on' : '') + '" aria-pressed="' + !!p.liked + '"' + (me.ro ? ' disabled' : '') + '>' + CB.ic('like') + 'ถูกใจ</button>' +
+      '<div class="cbacts"><button data-cblike="' + E(p.id) + '" class="' + (p.liked ? 'on' : '') + '" aria-pressed="' + !!p.liked + '">' + CB.ic('like') + 'ถูกใจ</button>' +
       '<button data-cbcomment="' + E(p.id) + '">' + CB.ic('comment') + 'แสดงความคิดเห็น</button></div></article>'; };
   /* ความคิดเห็น · d = ผลจาก cbGet · o = {base, me} */
   CB.comment = function (c, d, o) { if (c.deleted) return '<div class="cbcm del"><span class="cbdelx">' + CB.ic('eyeoff') + 'ความคิดเห็นนี้ถูก admin ลบ</span></div>';
@@ -92,14 +96,14 @@
       '<div class="cbups" id="cbups"></div><div class="cbcrow">' + CB.av(o.base, o.me, 34) + '<div class="cbpill"><textarea id="cbct" rows="1" maxlength="2000" placeholder="' + (o.reply ? 'ตอบกลับ ' + E(o.reply) + '…' : 'แสดงความคิดเห็นในชื่อ ' + E(CB.who(o.me))) + '"></textarea>' +
       '<span class="cbpi"><button data-cbemo="cbct" aria-label="อีโมจิ" title="อีโมจิ">' + CB.ic('smile') + '</button><label aria-label="แนบรูป" title="แนบรูป">' + CB.ic('camera') + '<input type="file" accept="image/*" multiple data-cbfile class="cbvh"></label></span></div>' +
       '<button class="cbsend" data-cbsend aria-label="ส่ง" disabled>' + CB.ic('send') + '</button></div></div>'; };
-  /* หน้าต่างสร้างโพสต์ (แบบ Facebook) · o = {base, me, cats(ที่โพสต์ได้), cat, mod, text, pinDef, pinMin} */
+  /* หน้าต่างสร้างโพสต์ (แบบ Facebook) · o = {base, me, cats(ที่โพสต์ได้), cat, text} */
   CB.composer = function (o) { var me = o.me || {};
     return '<div class="cbx-who">' + CB.av(o.base, me, 44) + '<div><b>' + E(me.name || 'ผู้ดูแลระบบ') + '</b><div class="cbx-pills"><span class="cbx-pill">' + CB.ic('users') + 'ทุกคนในบริษัท</span>' +
       '<label class="cbx-pill cbx-sel">' + CB.ic('folder') + '<select id="cbx-cat" aria-label="หมวด">' + o.cats.map(function (c) { return '<option value="' + E(c.id) + '"' + (c.id === o.cat ? ' selected' : '') + '>' + E(c.name) + '</option>'; }).join('') + '</select>' + CB.ic('down') + '</label></div></div></div>' +
       '<textarea id="cbx-txt" class="cbx-txt" maxlength="5000" placeholder="คุณคิดอะไรอยู่ ' + E(CB.who(me)) + '">' + E(o.text || '') + '</textarea><div class="cbups" id="cbups"></div><div id="cbx-pop"></div>' +
       '<div class="cbx-add"><b>เพิ่มลงในโพสต์ของคุณ</b><label class="cbx-ic cbg" title="รูปภาพ (สูงสุด 4)" aria-label="รูปภาพ">' + CB.ic('image') + '<input type="file" accept="image/*" multiple data-cbfile class="cbvh"></label>' +
       '<button class="cbx-ic cbbl" data-cbtag title="แท็กเพื่อนร่วมงาน" aria-label="แท็กเพื่อนร่วมงาน">' + CB.ic('tag') + '</button><button class="cbx-ic cbor" data-cbemo="cbx-txt" title="อีโมจิ" aria-label="อีโมจิ">' + CB.ic('smile') + '</button></div>' +
-      (o.mod ? '<label class="cbx-mod"><input type="checkbox" id="cbx-pin">' + CB.ic('pin') + '<span>ปักหมุดถึง</span><input type="date" id="cbx-pind" value="' + o.pinDef + '" min="' + o.pinMin + '"><small>เฉพาะผู้ดูแล</small></label>' : '') +
+      // ปักหมุด: ไม่อยู่ในหน้าต่างนี้ (ผู้ใช้ให้ตัดออก 1 พ.ย. 2569) · ผู้ดูแลปักหมุดจากเมนู ⋯ ของโพสต์
       '<button class="cbx-go" id="cbx-go"' + (o.text ? '' : ' disabled') + '>โพสต์</button>'; };
   /* แผงอีโมจิ (ใส่ลงในข้อความ) + แผงค้นชื่อสำหรับแท็ก */
   CB.EMO = ['😀', '😂', '😊', '😍', '🥰', '😅', '🤔', '😮', '😢', '😡', '👍', '👏', '🙏', '💪', '👌', '🎉', '❤️', '🔥', '✅', '⚠️', '📌', '📷', '☕', '🍚'];

@@ -9,14 +9,15 @@ function cbBadge(n){A.cbUn=n||0;var a=$('.side a[data-nav="cb"]');if(!a)return;v
 function cbOpts(){return {base:CB_BASE,cats:(A.cbB&&A.cbB.cats)||[],me:cbMe()}}
 
 /* ───────── ฟีด ───────── */
+/* หน้าเดียวกลางจอ (1 พ.ย. 2569 ผู้ใช้: ตัดกติกาการใช้งาน · จัดหน้าใหม่) · หัวข้อ + ค้นหา → ช่องสร้างโพสต์ → หมวด + มุมมอง → ฟีด */
 function vCb(){if(A.cbId)return vCbPost();var f=A.cbF||(A.cbF={cat:'',filter:'all',q:''}),cats=(A.cbB&&A.cbB.cats)||[],me=cbMe();
-  var chip=function(id,l){return '<button class="chip" data-cbcat="'+id+'" aria-pressed="'+(f.cat===id)+'">'+esc(l)+'</button>'};
-  return '<div class="ph"><div><h1>Community</h1><div class="sub">พูดคุย สอบถาม แจ้งปัญหา · ทุกคนในบริษัทเห็นและช่วยกันตอบได้</div></div><span class="sp"></span>'+
+  var chip=function(id,l){return '<button class="cba-chip" data-cbcat="'+id+'" aria-pressed="'+(f.cat===id)+'">'+esc(l)+'</button>'};
+  return '<div class="cba-wrap"><div class="cba-head"><div><h1>Community</h1><div class="sub">พูดคุย สอบถาม แจ้งปัญหา · ทุกคนในบริษัทเห็นและช่วยกันตอบได้</div></div>'+
    '<label class="cba-q">'+CB.ic('search')+'<input type="search" id="cb-q" placeholder="ค้นหาโพสต์และความคิดเห็น" value="'+esc(f.q)+'" aria-label="ค้นหา"></label></div>'+
-   '<div class="cba-g"><div class="cba-feed">'+(me.ro?'':'<button class="cbcard cba-start" data-cbnew>'+CB.av(CB_BASE,me,40)+'<span>คุณคิดอะไรอยู่ '+esc(CB.who(me))+'</span>'+CB.ic('image','cbg')+'</button>')+
-   '<div class="cba-bar"><div class="chips">'+chip('','ทั้งหมด')+cats.map(function(c){return chip(c.id,c.name)}).join('')+'</div><div class="segt">'+[['all','ล่าสุด'],['noreply','ยังไม่มีคนตอบ'],['mine','ของฉัน']].map(function(x){return '<button data-cbflt="'+x[0]+'" aria-pressed="'+(f.filter===x[0])+'">'+x[1]+'</button>'}).join('')+'</div></div>'+
-   '<div id="cb-feed"><div class="loading"><span class="spin"></span></div></div></div>'+
-   '<aside class="cba-side"><section class="cbcard cba-rule"><b>กติกาการใช้งาน</b><span>ใช้ชื่อจริง สุภาพ ไม่พาดพิงบุคคลภายนอก</span><span>ห้ามโพสต์ข้อมูลส่วนตัว เลขบัญชี หรือเงินเดือน</span><span>แก้ไขข้อความของตัวเองได้ · ลบได้เฉพาะ admin</span></section></aside></div>'}
+   '<button class="cbcard cba-start" data-cbnew>'+CB.av(CB_BASE,me,40)+'<span>คุณคิดอะไรอยู่ '+esc(CB.who(me))+'</span>'+CB.ic('image','cbg')+'</button>'+   // View as: แสดงเหมือนพนักงานเห็น (กดแล้วแจ้งว่าดูได้อย่างเดียว)
+   '<div class="cba-bar"><div class="cba-chips" role="group" aria-label="หมวด">'+chip('','ทั้งหมด')+cats.map(function(c){return chip(c.id,c.name)}).join('')+'</div>'+
+   '<div class="cba-tabs" role="group" aria-label="มุมมอง">'+[['all','ล่าสุด'],['noreply','ยังไม่มีคนตอบ'],['mine','ของฉัน']].map(function(x){return '<button data-cbflt="'+x[0]+'" aria-pressed="'+(f.filter===x[0])+'">'+x[1]+'</button>'}).join('')+'</div></div>'+
+   '<div id="cb-feed"><div class="loading"><span class="spin"></span></div></div></div>'}
 function bCb(){if(A.cbId)return bCbPost();var f=A.cbF;
   cbBoot().then(function(){if(A.view==='cb'&&!A.cbId&&!$('[data-cbcat="c_qa"]'))render()}).catch(function(){});
   var qt;$('#cb-q').oninput=function(){var v=this.value;clearTimeout(qt);qt=setTimeout(function(){f.q=v.trim();cbLoad()},300)};
@@ -28,17 +29,15 @@ function drawCbFeed(){var L=A.cbL,el=$('#cb-feed');if(!el||!L)return;var o=cbOpt
   el.innerHTML=L.items.map(function(p){return CB.card(p,{base:o.base,cats:o.cats,me:o.me,menuOpen:A.cbMenu===p.id})}).join('')+(L.next?'<button class="cba-more" data-cbmore>แสดงโพสต์เก่ากว่านี้</button>':'')}
 
 /* ───────── อ่านโพสต์ ───────── */
-function vCbPost(){return '<div class="ph"><div><div class="crumb"><a href="#" id="cb-back">Community</a> ›</div><h1 id="cb-h">โพสต์</h1></div></div><div class="cba-g"><div class="cba-feed" id="cb-post"><div class="loading"><span class="spin"></span></div></div><aside class="cba-side" id="cb-pside"></aside></div>'}
+function vCbPost(){return '<div class="cba-wrap"><div class="cba-head"><div><button class="cba-back" id="cb-back">'+CB.ic('down','cba-bk')+'Community</button><h1 id="cb-h">โพสต์</h1></div></div><div id="cb-post"><div class="loading"><span class="spin"></span></div></div></div>'}
 function bCbPost(){$('#cb-back').onclick=function(e){e.preventDefault();A.cbId=null;A.cbP=null;A.cbL=null;render();cbBoot(true)};
   cbBoot().catch(function(){});cbOpenPost(A.cbId)}
 function cbOpenPost(id){return aCall('cbGet',{id:id}).then(function(d){A.cbP=d;drawCbPost();cbBoot(true);if(A.cbFocus){A.cbFocus=0;var t=$('#cbct');if(t){t.focus();t.scrollIntoView({block:'center'})}}}).catch(function(e){if($('#cb-post'))$('#cb-post').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})}
 function drawCbPost(){var d=A.cbP,el=$('#cb-post');if(!el||!d)return;var p=d.post,o=cbOpts(),rep=A.cbReply&&d.comments.filter(function(c){return c.id===A.cbReply})[0];
   $('#cb-h').textContent=p.deleted?'โพสต์ที่ถูกลบ':'โพสต์ของ '+CB.who(p.author);
   var card=CB.card(Object.assign({},p,{solved:!!p.solved_id}),{base:o.base,cats:o.cats,me:o.me,full:1,menuOpen:A.cbMenu===p.id});
-  el.innerHTML=(p.deleted?'<div class="alert">โพสต์นี้ถูก admin ลบแล้ว (admin ยังเห็นหน้านี้)</div>':'')+card.replace(/<\/article>$/,'<div class="cbthread">'+CB.thread(d,o)+'</div>'+(d.can.comment?CB.commentBox({base:o.base,me:o.me,reply:rep?CB.who(rep.author):''}):(p.locked?'<div class="cbnone" style="padding:8px 16px 14px">ปิดการแสดงความคิดเห็นแล้ว</div>':''))+'</article>');
-  cbPaintUps();
-  $('#cb-pside').innerHTML='<section class="cbcard cba-rule"><b>'+(p.author.id===o.me.id?'เจ้าของโพสต์ทำได้':'ทุกคนทำได้')+'</b>'+(p.author.id===o.me.id?'<span>แก้ไขข้อความ (กด ⋯)</span><span>เลือกคำตอบที่ถูกต้อง</span><span>ลบไม่ได้ — แจ้ง admin ให้ลบ</span>':'<span>ถูกใจ · แสดงความคิดเห็น · ตอบกลับ</span><span>แนบรูปได้ 4 รูป · แท็กเพื่อนด้วย @ชื่อ</span><span>พบเนื้อหาไม่เหมาะสม แจ้ง HR / admin</span>')+'</section>'+
-    (o.me.mod?'<section class="cbcard cba-rule"><b>ผู้ดูแล</b><span>ปักหมุด · ปิดความคิดเห็น · ย้ายหมวด = HR + admin</span><span>ลบ = admin เท่านั้น (ข้อมูลยังเก็บไว้ + Audit Log)</span></section>':'')}
+  el.innerHTML=(p.deleted?'<div class="alert">โพสต์นี้ถูก admin ลบแล้ว (admin ยังเห็นหน้านี้)</div>':'')+card.replace(/<\/article>$/,'<div class="cbthread">'+CB.thread(d,o)+'</div>'+(d.can.comment||(o.me.ro&&!p.deleted&&!p.locked)?CB.commentBox({base:o.base,me:o.me,reply:rep?CB.who(rep.author):''}):(p.locked?'<div class="cbnone" style="padding:8px 16px 14px">ปิดการแสดงความคิดเห็นแล้ว</div>':''))+'</article>');
+  cbPaintUps();}
 function cbRedraw(){if(A.cbId)drawCbPost();else drawCbFeed()}
 function cbFind(id){if(A.cbP&&A.cbP.post.id===id)return A.cbP.post;return ((A.cbL&&A.cbL.items)||[]).filter(function(x){return x.id===id})[0]}
 function cbReloadPost(){return A.cbId?cbOpenPost(A.cbId):cbLoad()}
@@ -55,12 +54,12 @@ function cbAddFiles(inp){var ups=inp.closest('.cbx')?A.cbXUps:A.cbUps,files=Arra
 function cbCompose(){var b=A.cbB||{cats:[],me:{}},me=cbMe(),cats=b.cats.filter(function(c){return c.post_perm!=='mod'||me.mod}),cat=(A.cbF&&A.cbF.cat&&cats.some(function(c){return c.id===A.cbF.cat}))?A.cbF.cat:(cats.filter(function(c){return c.id==='c_talk'})[0]||cats[0]||{}).id;
   A.cbXUps=[];var w=document.createElement('div');w.className='cba-mw';
   w.innerHTML='<div class="cba-modal cbx" role="dialog" aria-modal="true" aria-labelledby="cbx-t"><div class="cba-mh"><span></span><h3 id="cbx-t">สร้างโพสต์</h3><button class="cba-x" data-cbxclose aria-label="ปิด">'+CB.ic('x')+'</button></div><div class="cba-mb">'+
-    CB.composer({base:CB_BASE,me:me,cats:cats,cat:cat,mod:me.mod,pinDef:dAdd(dIso(new Date()),7),pinMin:dAdd(dIso(new Date()),1)})+'</div></div>';
+    CB.composer({base:CB_BASE,me:me,cats:cats,cat:cat})+'</div></div>';
   document.body.appendChild(w);$('#cbx-txt').focus();
   w.addEventListener('mousedown',function(e){if(e.target===w&&!$('#cbx-txt').value.trim())cbComposeClose()})}
 function cbComposeClose(){var w=$('.cba-mw');if(w)w.remove();A.cbXUps=[]}
 function cbComposeGo(btn){var t=$('#cbx-txt');if(!t.value.trim())return;if(A.cbXUps.some(function(u){return !u.id}))return toast('รอรูปอัปโหลดเสร็จก่อน',1);
-  var a={cat:$('#cbx-cat').value,body:t.value,imgs:A.cbXUps.map(function(u){return u.id})};if($('#cbx-pin')&&$('#cbx-pin').checked)a.pin_until=dObj($('#cbx-pind').value).getTime()+86399000;busy(btn,1);
+  var a={cat:$('#cbx-cat').value,body:t.value,imgs:A.cbXUps.map(function(u){return u.id})};busy(btn,1);
   aCall('cbPost',a).then(function(r){cbComposeClose();toast('โพสต์แล้ว');A.cbId=r.id;A.cbP=null;A.cbL=null;A.view='cb';render();scrollTo(0,0)}).catch(function(e){busy(btn,0);toast(e.message,1)})}
 
 /* ───────── แผงอีโมจิ / แท็กคน ───────── */
@@ -86,6 +85,7 @@ function cbClick(e){if(A.view!=='cb'&&!$('.cba-mw')&&!$('.cba-pop'))return;var t
   if(!e.target.closest('.cba-pop')&&!(t&&(t.dataset.cbemo||t.dataset.cbtag!==undefined)))cbPopClose();
   if(A.cbMenu&&!(t&&(t.dataset.cbmenu||t.dataset.cbmi))&&!e.target.closest('.cbmenu')){A.cbMenu=null;cbRedraw()}
   if(!t)return;var d=t.dataset;
+  if(cbMe().ro&&CB.roHit(t))return toast(CB.RO,1);
   if(d.cbnew!==undefined)return cbCompose();
   if(d.cbxclose!==undefined)return cbComposeClose();
   if(t.id==='cbx-go')return cbComposeGo(t);
@@ -114,7 +114,7 @@ function cbClick(e){if(A.view!=='cb'&&!$('.cba-mw')&&!$('.cba-pop'))return;var t
   if(d.cbtagp){CB.insert($('#cbx-txt'),'@'+d.cbtagp+' ');cbPopClose();return}}
 document.addEventListener('click',cbClick);
 document.addEventListener('input',function(e){var t=e.target;if(t.id==='cbct'||t.id==='cbx-txt'){cbSendState();if(t.id==='cbct'){t.style.height='auto';t.style.height=Math.min(140,t.scrollHeight)+'px'}}if(t.id==='cbtag-q')cbTagSearch(t.value)});
-document.addEventListener('change',function(e){if(e.target.hasAttribute&&e.target.hasAttribute('data-cbfile'))cbAddFiles(e.target)});
+document.addEventListener('change',function(e){if(e.target.hasAttribute&&e.target.hasAttribute('data-cbfile')){if(cbMe().ro){e.target.value='';return toast(CB.RO,1)}cbAddFiles(e.target)}});
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){if($('.cba-pop'))return cbPopClose();if(A.cbMenu){A.cbMenu=null;return cbRedraw()}if($('.cba-mw')&&!$('#cbx-txt').value.trim())cbComposeClose()}
   if(e.key==='Enter'&&!e.shiftKey&&e.target.id==='cbct'&&!e.isComposing){e.preventDefault();var s=$('[data-cbsend]');if(s&&!s.disabled)s.click()}});
 

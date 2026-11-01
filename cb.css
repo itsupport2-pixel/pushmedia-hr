@@ -75,8 +75,6 @@
 .cbx-add b{flex:1;font-size:15px;font-weight:600}
 .cbx-ic{position:relative;width:38px;height:38px;border-radius:50%;border:0;background:none;display:grid;place-items:center;cursor:pointer;overflow:hidden}.cbx-ic:hover{background:#F2F2F2}.cbx-ic .cbi{width:24px;height:24px}
 .cbx-ic.cbg{color:#45BD62}.cbx-ic.cbbl{color:#1877F2}.cbx-ic.cbor{color:#F7B928}
-.cbx-mod{display:flex;align-items:center;gap:8px;font-size:13.5px;background:#F5F5F5;border-radius:10px;padding:9px 12px;flex-wrap:wrap}.cbx-mod .cbi{width:16px;height:16px;color:#5F5F5F}
-.cbx-mod small{margin-left:auto;color:#8A8A8A;font-size:12px}.cbx-mod input[type=date]{font:inherit;font-size:13px;border:1px solid #D4D4D4;border-radius:6px;padding:2px 6px}
 .cbx-go{display:flex;align-items:center;justify-content:center;height:auto;width:100%;border:0;border-radius:8px;padding:10px;font:inherit;font-size:15px;font-weight:600;background:#111;color:#fff;cursor:pointer}.cbx-go:disabled{background:#E4E6EB;color:#BCC0C4;cursor:default}
 
 /* แผงลอย: อีโมจิ / แท็กคน */
@@ -86,17 +84,23 @@
 .cbtagq .cbi{width:16px;height:16px;color:#6A6A6A}.cbtagq input{border:0;background:none;outline:none;font:inherit;font-size:14px;flex:1;min-width:0}
 .cbtag button{display:block;height:auto;width:100%;border:0;background:none;text-align:left;padding:7px 10px;border-radius:8px;font:inherit;cursor:pointer}.cbtag button:hover{background:#F2F2F2}.cbtag b{display:block;font-size:14px}.cbtag small{font-size:12px;color:#7A7A7A}
 
-/* หลังบ้าน (admin-community.js) */
-.cba-q{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #E3E3E3;border-radius:20px;padding:7px 14px;min-width:280px}.cba-q .cbi{width:17px;height:17px;color:#8A8A8A}
-.cba-q input{border:0;outline:none;background:none;font:inherit;font-size:14px;flex:1;min-width:0}
-.cba-g{display:grid;grid-template-columns:minmax(0,680px) 300px;gap:24px;justify-content:center;align-items:start}
-.cba-feed{display:flex;flex-direction:column;gap:14px;min-width:0}#cb-feed{display:flex;flex-direction:column;gap:14px}
+/* หลังบ้าน (admin-community.js) · คอลัมน์เดียวกลางจอ (1 พ.ย. 2569) */
+.cba-wrap{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:14px;padding-bottom:40px}
+.cba-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-top:4px}.cba-head h1{margin:0;font-size:26px;font-weight:700;color:#111}.cba-head .sub{font-size:13.5px;color:#6A6A6A;margin-top:2px}
+.cba-q{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #E3E3E3;border-radius:20px;padding:8px 14px;width:280px;max-width:100%}.cba-q .cbi{width:17px;height:17px;color:#8A8A8A}
+.cba-q input{all:unset;font:inherit;font-size:14px;flex:1;min-width:0}
+.cba-back{display:inline-flex;align-items:center;gap:4px;border:0;background:none;padding:0;font:inherit;font-size:13px;font-weight:600;color:#6A6A6A;cursor:pointer;margin-bottom:2px}.cba-back:hover{color:#111}.cba-bk{width:16px;height:16px;transform:rotate(90deg)}
 .cba-start{flex-direction:row;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;font:inherit;width:100%}
-.cba-start>span:not(.cbav){flex:1;background:#F0F2F5;border-radius:20px;padding:10px 16px;color:#65676B;font-size:15.5px;text-align:left}.cba-start:hover span{background:#E4E6E9}.cba-start .cbg{color:#45BD62;width:26px;height:26px}
-.cba-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:space-between}.cba-bar .chips{display:flex;gap:6px;flex-wrap:wrap}
+.cba-start>span:not(.cbav){flex:1;background:#F0F2F5;border-radius:20px;padding:10px 16px;color:#65676B;font-size:15.5px;text-align:left}.cba-start:hover>span:not(.cbav){background:#E4E6E9}.cba-start .cbg{color:#45BD62;width:26px;height:26px}
+.cba-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.cba-chips{display:flex;gap:6px;flex-wrap:wrap}
+.cba-chip{height:32px;padding:0 14px;border:1px solid #E3E3E3;border-radius:99px;background:#fff;font:inherit;font-size:13.5px;color:#111;cursor:pointer;white-space:nowrap}.cba-chip:hover{background:#F5F5F5}
+.cba-chip[aria-pressed="true"]{background:#111;border-color:#111;color:#fff;font-weight:600}
+.cba-tabs{display:flex;gap:18px}.cba-tabs button{border:0;background:none;padding:6px 0;font:inherit;font-size:14px;color:#7A7A7A;cursor:pointer;border-bottom:2px solid transparent}
+.cba-tabs button:hover{color:#111}.cba-tabs button[aria-pressed="true"]{color:#111;font-weight:600;border-bottom-color:#111}
+#cb-feed{display:flex;flex-direction:column;gap:14px}
 .cba-more{border:1px solid #E3E3E3;background:#fff;border-radius:10px;padding:11px;font:inherit;font-weight:600;cursor:pointer}.cba-more:hover{background:#F5F5F5}
-.cba-empty{padding:40px 20px;text-align:center;color:#7A7A7A}
-.cba-side{position:sticky;top:84px;display:flex;flex-direction:column;gap:14px}.cba-rule{padding:16px 18px;gap:6px;font-size:13px;color:#5F5F5F}.cba-rule b{color:#111;font-size:15px;margin-bottom:2px}
+.cba-empty{padding:44px 20px;text-align:center;color:#7A7A7A}
 .cba-mw{position:fixed;inset:0;z-index:90;background:rgba(244,244,244,.8);display:flex;align-items:center;justify-content:center;padding:16px}
 .cba-modal{width:min(500px,100%);max-height:calc(100vh - 32px);overflow:auto;background:#fff;border-radius:10px;box-shadow:0 12px 28px rgba(0,0,0,.2),0 2px 4px rgba(0,0,0,.1)}
 .cba-mh{display:grid;grid-template-columns:36px 1fr 36px;align-items:center;padding:12px 14px;border-bottom:1px solid #E4E6EB}.cba-mh h3{margin:0;text-align:center;font-size:20px;font-weight:700}
@@ -107,8 +111,7 @@
 .cba-dr{display:flex;align-items:center;gap:10px;width:100%;border:0;border-top:1px solid #EDEDED;background:none;padding:9px 18px;font:inherit;font-size:13.5px;text-align:left;cursor:pointer}.cba-dr:hover{background:#F7F7F7}
 .cba-dt{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cba-dt.un{font-weight:600}.cba-pin{width:15px;height:15px;color:#5F5F5F}
 .cba-dc{display:inline-flex;align-items:center;gap:4px;color:#8A8A8A;font-size:12.5px}.cba-dc .cbi{width:15px;height:15px}
-@media (max-width:1100px){.cba-g{grid-template-columns:minmax(0,680px)}.cba-side{display:none}}
-@media (max-width:640px){.cba-q{min-width:0;width:100%}}
+@media (max-width:640px){.cba-q{width:100%}.cba-head{align-items:stretch}}
 
 /* แอปพนักงาน (liff-community.js) */
 .cbl-feed{padding:12px 10px 110px;display:flex;flex-direction:column;gap:10px}.cbl-post{padding-bottom:16px}
