@@ -29,6 +29,7 @@
     plus: '<path d="M5 12h14"/><path d="M12 5v14"/>',
     search: '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
     reply: '<polyline points="15 10 20 15 15 20"/><path d="M4 4v7a4 4 0 0 0 4 4h12"/>',
+    bell: '<path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/>',
     eyeoff: '<path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/>'
   };
   CB.ic = function (k, cls) { return '<svg class="cbi' + (cls ? ' ' + cls : '') + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (P[k] || '') + '</svg>'; };
@@ -96,7 +97,7 @@
       '<div class="cbups" id="cbups"></div><div class="cbcrow">' + CB.av(o.base, o.me, 34) + '<div class="cbpill"><textarea id="cbct" rows="1" maxlength="2000" placeholder="' + (o.reply ? 'ตอบกลับ ' + E(o.reply) + '…' : 'แสดงความคิดเห็นในชื่อ ' + E(CB.who(o.me))) + '"></textarea>' +
       '<span class="cbpi"><button data-cbemo="cbct" aria-label="อีโมจิ" title="อีโมจิ">' + CB.ic('smile') + '</button><label aria-label="แนบรูป" title="แนบรูป">' + CB.ic('camera') + '<input type="file" accept="image/*" multiple data-cbfile class="cbvh"></label></span></div>' +
       '<button class="cbsend" data-cbsend aria-label="ส่ง" disabled>' + CB.ic('send') + '</button></div></div>'; };
-  /* หน้าต่างสร้างโพสต์ (แบบ Facebook) · o = {base, me, cats(ที่โพสต์ได้), cat, text} */
+  /* หน้าต่างสร้างโพสต์ (แบบ Facebook) · o = {base, me, cats(ที่โพสต์ได้), cat, text} · me.reach = จำนวนคนที่จะได้รับแจ้งเมื่อโพสต์ประกาศ */
   CB.composer = function (o) { var me = o.me || {};
     return '<div class="cbx-who">' + CB.av(o.base, me, 44) + '<div><b>' + E(me.name || 'ผู้ดูแลระบบ') + '</b><div class="cbx-pills"><span class="cbx-pill">' + CB.ic('users') + 'ทุกคนในบริษัท</span>' +
       '<label class="cbx-pill cbx-sel">' + CB.ic('folder') + '<select id="cbx-cat" aria-label="หมวด">' + o.cats.map(function (c) { return '<option value="' + E(c.id) + '"' + (c.id === o.cat ? ' selected' : '') + '>' + E(c.name) + '</option>'; }).join('') + '</select>' + CB.ic('down') + '</label></div></div></div>' +
@@ -104,7 +105,13 @@
       '<div class="cbx-add"><b>เพิ่มลงในโพสต์ของคุณ</b><label class="cbx-ic cbg" title="รูปภาพ (สูงสุด 4)" aria-label="รูปภาพ">' + CB.ic('image') + '<input type="file" accept="image/*" multiple data-cbfile class="cbvh"></label>' +
       '<button class="cbx-ic cbbl" data-cbtag title="แท็กเพื่อนร่วมงาน" aria-label="แท็กเพื่อนร่วมงาน">' + CB.ic('tag') + '</button><button class="cbx-ic cbor" data-cbemo="cbx-txt" title="อีโมจิ" aria-label="อีโมจิ">' + CB.ic('smile') + '</button></div>' +
       // ปักหมุด: ไม่อยู่ในหน้าต่างนี้ (ผู้ใช้ให้ตัดออก 1 พ.ย. 2569) · ผู้ดูแลปักหมุดจากเมนู ⋯ ของโพสต์
+      '<div class="cbx-ann" id="cbx-ann" hidden>' + CB.ic('bell') + '<span>หมวดประกาศ: โพสต์แล้วระบบจะแจ้งพนักงาน <b>' + (me.reach || 0) + ' คน</b> ทาง LINE</span></div>' +
       '<button class="cbx-go" id="cbx-go"' + (o.text ? '' : ' disabled') + '>โพสต์</button>'; };
+  /* หมวดประกาศ (post_perm mod) → แสดงแถบแจ้งเตือน + ปุ่ม "โพสต์และแจ้งทุกคน" */
+  CB.annSync = function (cats) { var s = document.getElementById('cbx-cat'), n = document.getElementById('cbx-ann'), g = document.getElementById('cbx-go'); if (!s || !n || !g) return false;
+    var ann = CB.cat(cats, s.value).post_perm === 'mod'; n.hidden = !ann; g.textContent = ann ? 'โพสต์และแจ้งทุกคน' : 'โพสต์'; return ann; };
+  /* ผลการแจ้งหลังโพสต์ประกาศ (notified จากหลังบ้าน) */
+  CB.annDone = function (x) { if (!x) return 'โพสต์แล้ว'; return { sent: 'โพสต์แล้ว · แจ้งทาง LINE ' + x.sent + ' คน', off: 'โพสต์แล้ว · การแจ้งประกาศทาง LINE ปิดอยู่ (ตั้งค่า › การแจ้งเตือน)', skipped: 'โพสต์แล้ว · ยังไม่ได้เชื่อม LINE (ตั้งค่า › LINE)', skipped_dev: 'โพสต์แล้ว · ระบบทดสอบไม่ส่ง LINE', error: 'โพสต์แล้ว แต่ส่ง LINE ไม่สำเร็จ ลองตรวจที่ ตั้งค่า › LINE' }[x.status] || 'โพสต์แล้ว'; };
   /* แผงอีโมจิ (ใส่ลงในข้อความ) + แผงค้นชื่อสำหรับแท็ก */
   CB.EMO = ['😀', '😂', '😊', '😍', '🥰', '😅', '🤔', '😮', '😢', '😡', '👍', '👏', '🙏', '💪', '👌', '🎉', '❤️', '🔥', '✅', '⚠️', '📌', '📷', '☕', '🍚'];
   CB.emojiPanel = function (target) { return '<div class="cbpop cbemo" role="dialog" aria-label="อีโมจิ">' + CB.EMO.map(function (e) { return '<button data-cbemi="' + target + '|' + e + '">' + e + '</button>'; }).join('') + '</div>'; };

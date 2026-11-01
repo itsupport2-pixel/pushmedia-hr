@@ -8,7 +8,7 @@ S.cb={b:null,f:{cat:"",filter:"all"},L:null,P:{},reply:null,ups:[],dirty:false};
 TITLE.cb="Community";TITLE.cbp="Community";TITLE.cbnew="สร้างโพสต์";NOTAB.push("cbp","cbnew");
 const CB_BASE=API.replace(/\/api$/,"");
 /* ตัวฉัน: รหัสพนักงานมาจาก cbBoot (todayInfo ไม่ส่ง id) */
-const cbMe=()=>{const b=S.cb.b&&S.cb.b.me||{},m=S.me||{};return {id:b.id||m.id,name:m.name,nick:m.nickname||"",ph:b.ph,pic:b.pic,mod:!!b.mod,ann:!!(b.ann||b.mod),admin:!!b.admin,ro:!!b.ro}};
+const cbMe=()=>{const b=S.cb.b&&S.cb.b.me||{},m=S.me||{};return {id:b.id||m.id,name:m.name,nick:m.nickname||"",ph:b.ph,pic:b.pic,mod:!!b.mod,ann:!!(b.ann||b.mod),reach:b.reach||0,admin:!!b.admin,ro:!!b.ro}};
 const cbO=()=>({base:CB_BASE,cats:(S.cb.b&&S.cb.b.cats)||[],me:cbMe()});
 function cbBootLoad(force){if(S.cb.bp&&!force)return S.cb.bp;S.cb.bp=api("cbBoot").then(b=>{S.cb.b=b;return b}).catch(e=>{S.cb.bp=null;throw e});return S.cb.bp}
 function cbLoad(more){const f=S.cb.f,q={cat:f.cat,filter:f.filter};if(more&&S.cb.L)q.cursor=S.cb.L.next;S.cb.loading=1;
@@ -36,6 +36,8 @@ V.cbp=id=>{const d=S.cb.P[id],o=cbO();if(!d)return band("Community")+`<div class
   ${d.can.comment||(o.me.ro&&!p.deleted&&!p.locked)?`<div class="cbl-bar">${CB.commentBox({base:CB_BASE,me:o.me,reply:rep?CB.who(rep.author):""})}</div>`:""}`};
 
 /* ── สร้างโพสต์ (เต็มจอ) ── */
+/* หน้าสร้างโพสต์วาดเสร็จ → ซิงก์แถบแจ้งเตือนประกาศ (หมวดที่เลือกค้างไว้อาจเป็นประกาศ) */
+onEnter=(f=>()=>{f();if(cur()==="cbnew")setTimeout(()=>{if(S.cb.b)CB.annSync(S.cb.b.cats)},0)})(onEnter);
 V.cbnew=()=>{const b=S.cb.b,o=cbO();if(!b){cbBootLoad().then(()=>{if(cur()==="cbnew")repaint()});return band("สร้างโพสต์")+loadingV()}
   const cats=b.cats.filter(c=>c.post_perm!=="mod"||o.me.ann),cat=S.cb.ncat||(cats.find(c=>c.id===S.cb.f.cat)||cats.find(c=>c.id==="c_talk")||cats[0]||{}).id;S.cb.ncat=cat;
   return `<header class="cbl-nh"><button data-back aria-label="ปิด">${CB.ic("x")}</button><h1>สร้างโพสต์</h1><span></span></header><div class="cbl-compose cbx">${CB.composer({base:CB_BASE,me:o.me,cats,cat,text:S.cb.ntext||""})}</div>`};
@@ -71,7 +73,7 @@ let cbTagT;function cbTagSearch(q){clearTimeout(cbTagT);cbTagT=setTimeout(()=>{i
 function cbTagPaint(list,q){const p=document.querySelector("#ov .cbtag");if(!p)return;const tmp=document.createElement("div");tmp.innerHTML=CB.tagPanel(list,q);p.replaceWith(tmp.firstChild);const i=$("#cbtag-q");if(i){i.focus();i.selectionStart=i.selectionEnd=i.value.length}}
 
 /* ── การกดทั้งหมด ── */
-document.addEventListener("click",e=>{const t=e.target.closest("[data-cbstart],[data-cbo],[data-cbopen],[data-cbcomment],[data-cbcat],[data-cbflt],[data-cbmore],[data-cbmenu],[data-cbmi],[data-cbdo],[data-cblike],[data-cbrep],[data-cbrepx],[data-cbedc],[data-cbsol],[data-cbdelc],[data-cbsend],[data-cbrm],[data-cbemo],[data-cbemi],[data-cbtag],[data-cbtagp],#cbx-go");if(!t)return;const d=t.dataset;
+document.addEventListener("click",e=>{const t=e.target.closest("[data-cbstart],[data-cbannok],[data-cbo],[data-cbopen],[data-cbcomment],[data-cbcat],[data-cbflt],[data-cbmore],[data-cbmenu],[data-cbmi],[data-cbdo],[data-cblike],[data-cbrep],[data-cbrepx],[data-cbedc],[data-cbsol],[data-cbdelc],[data-cbsend],[data-cbrm],[data-cbemo],[data-cbemi],[data-cbtag],[data-cbtagp],#cbx-go");if(!t)return;const d=t.dataset;
   if(cbMe().ro&&CB.roHit(t))return toast(CB.RO);   // View as: เห็นเหมือนพนักงาน แต่กดบันทึกไม่ได้
   if(d.cbstart!==undefined)return go("cbnew");
   const open=(id,focus)=>{if(cur()==="cbp:"+id){if(focus){const c=$("#cbct");if(c)c.focus()}return}S.cb.reply=null;S.cb.ups=[];go("cbp:"+id);cbOpen(id,focus)};
@@ -97,11 +99,13 @@ document.addEventListener("click",e=>{const t=e.target.closest("[data-cbstart],[
   if(d.cbemi){const [tid,em]=d.cbemi.split("|");cbSheetClose();CB.insert(document.getElementById(tid),em);return}
   if(d.cbtag!==undefined){sheet(`<h3>แท็กเพื่อนร่วมงาน</h3>${CB.tagPanel(null,"")}`);setTimeout(()=>{const i=$("#cbtag-q");if(i)i.focus()},50);return}
   if(d.cbtagp){cbSheetClose();CB.insert($("#cbx-txt"),"@"+d.cbtagp+" ");return}
-  if(t.id==="cbx-go"){const ta=$("#cbx-txt"),v=ta?ta.value:"";if(!v.trim())return;if(S.cb.ups.some(u=>!u.id))return toast("รอรูปอัปโหลดเสร็จก่อน");const a={cat:($("#cbx-cat")||{}).value||S.cb.ncat,body:v,imgs:S.cb.ups.map(u=>u.id)};
+  if(t.id==="cbx-go"||d.cbannok!==undefined){const ta=$("#cbx-txt"),v=ta?ta.value:"";if(!v.trim())return;if(S.cb.ups.some(u=>!u.id))return toast("รอรูปอัปโหลดเสร็จก่อน");const a={cat:($("#cbx-cat")||{}).value||S.cb.ncat,body:v,imgs:S.cb.ups.map(u=>u.id)};
+    if(t.id==="cbx-go"&&CB.annSync(S.cb.b.cats)){sheet(`<h3>โพสต์ประกาศและแจ้งทุกคน?</h3><span class="cap">ระบบจะส่งการ์ดประกาศถึงพนักงาน ${cbMe().reach||0} คนทาง LINE ทันที · แก้ไขภายหลังได้แต่จะไม่ส่งซ้ำ</span><button class="btn pri" data-cbannok>โพสต์และแจ้ง</button><button class="btn" data-dclose>ยกเลิก</button>`);return}
+    if(d.cbannok!==undefined)cbSheetClose();
     t.disabled=true;
-    api("cbPost",a).then(r=>{S.cb.ntext="";S.cb.ncat="";S.cb.ups=[];S.cb.dirty=true;toast("โพสต์แล้ว");S.stack.pop();go("cbp:"+r.id);cbOpen(r.id);cbBootLoad(true)}).catch(x=>{t.disabled=false;toast(x.message)});return}
+    const gb=$("#cbx-go");if(gb)gb.disabled=true;api("cbPost",a).then(r=>{S.cb.ntext="";S.cb.ncat="";S.cb.ups=[];S.cb.dirty=true;toast(CB.annDone(r.notified));S.stack.pop();go("cbp:"+r.id);cbOpen(r.id);cbBootLoad(true)}).catch(x=>{t.disabled=false;toast(x.message)});return}
 });
-document.addEventListener("change",e=>{const t=e.target;if(t.hasAttribute&&t.hasAttribute("data-cbfile")){if(cbMe().ro){t.value="";return toast(CB.RO)}cbAddFiles(t);return}if(t.id==="cbx-cat")S.cb.ncat=t.value});
+document.addEventListener("change",e=>{const t=e.target;if(t.hasAttribute&&t.hasAttribute("data-cbfile")){if(cbMe().ro){t.value="";return toast(CB.RO)}cbAddFiles(t);return}if(t.id==="cbx-cat"){S.cb.ncat=t.value;CB.annSync(S.cb.b.cats)}});
 document.addEventListener("input",e=>{const t=e.target;if(t.id==="cbx-txt"){S.cb.ntext=t.value;cbSendState()}if(t.id==="cbct"){cbSendState();t.style.height="auto";t.style.height=Math.min(120,t.scrollHeight)+"px"}if(t.id==="cbtag-q")cbTagSearch(t.value)});
 
 /* เมนูขวา: + Community · เข้าหน้า = โหลดข้อมูล · เปิดแอป = โหลดการ์ดหน้าหลัก */

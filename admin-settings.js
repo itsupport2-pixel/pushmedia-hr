@@ -45,7 +45,7 @@ function bkLoad(){var b=$('#bk-body');if(!b)return;var url=CFG.adminBackup||CFG.
       '</div><div class="faint" style="font-size:12px;margin-top:10px">ตรวจเมื่อ '+new Date().toTimeString().slice(0,5)+' น. · สถานะ "ปกติ" = สำเนาไม่เกิน 40 นาที ระบบสำรองตอบกลับ และไม่มีลงเวลาค้าง</div>'})}
 /* Notification (28 ต.ค. 2569): [รหัสเหตุการณ์, ชื่อ, ใครได้รับ, ค่าเริ่มต้น {app,line,mail}, ส่งจริงแล้วไหม] · รหัสตรงกับ notify_() ใน Leave.js */
 var NTE=[['leave_submitted','คำขอลาใหม่','ผู้อนุมัติ (หัวหน้า / HR)',{app:1,line:1,mail:0,group:1},1],['login_help','แจ้งเข้าระบบไม่ได้','HR / ผู้ดูแลระบบ',{app:1,line:0,mail:0,group:1},1],['leave_decided','ผลการอนุมัติลา','พนักงานที่ขอลา',{app:1,line:1,mail:0},1],
-  ['substitute_assigned','ถูกจัดให้ทำงานแทน','พนักงานที่ทำแทน',{app:1,line:1,mail:0},1],['shift_change','เปลี่ยนกะทำงาน','พนักงาน',{app:1,line:1,mail:0},1],
+  ['substitute_assigned','ถูกจัดให้ทำงานแทน','พนักงานที่ทำแทน',{app:1,line:1,mail:0},1],['cb_announce','ประกาศใหม่ใน Community','พนักงานทุกคนที่เชื่อม LINE',{app:1,line:1,mail:0},1],['shift_change','เปลี่ยนกะทำงาน','พนักงาน',{app:1,line:1,mail:0},1],
   ['link_request','คำขอเชื่อม LINE ใหม่','HR / ผู้ดูแลระบบ',{app:1,line:0,mail:0},0],['device_new','เครื่องใหม่รออนุมัติ','HR / ผู้ดูแลระบบ',{app:1,line:0,mail:0},0],
   ['missing_clock','ลืมลงเวลา','พนักงาน + หัวหน้า',{app:1,line:0,mail:0},0],['pay_review','งวดเงินเดือนรออนุมัติ','ผู้อนุมัติงวด',{app:1,line:0,mail:1},0],['backup_alert','ระบบสำรองมีปัญหา','ผู้ดูแลระบบ',{app:1,line:0,mail:1},0]];
 /* เชื่อม LINE OA (Messaging API) + กลุ่มแจ้งเตือน (30 ต.ค. 2569 ผู้ใช้ขอ) · token/secret ส่งไปเก็บที่เซิร์ฟเวอร์ ไม่แสดงกลับ (เห็นแค่ 4 ตัวท้าย) · หลังบ้าน app/gas/notify/LineMsg.js */
