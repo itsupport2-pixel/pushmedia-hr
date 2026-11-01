@@ -8,7 +8,7 @@ S.cb={b:null,f:{cat:"",filter:"all"},L:null,P:{},reply:null,ups:[],dirty:false};
 TITLE.cb="Community";TITLE.cbp="Community";TITLE.cbnew="สร้างโพสต์";NOTAB.push("cbp","cbnew");
 const CB_BASE=API.replace(/\/api$/,"");
 /* ตัวฉัน: รหัสพนักงานมาจาก cbBoot (todayInfo ไม่ส่ง id) */
-const cbMe=()=>{const b=S.cb.b&&S.cb.b.me||{},m=S.me||{};return {id:b.id||m.id,name:m.name,nick:m.nickname||"",ph:b.ph,pic:b.pic,mod:!!b.mod,admin:!!b.admin,ro:!!b.ro}};
+const cbMe=()=>{const b=S.cb.b&&S.cb.b.me||{},m=S.me||{};return {id:b.id||m.id,name:m.name,nick:m.nickname||"",ph:b.ph,pic:b.pic,mod:!!b.mod,ann:!!(b.ann||b.mod),admin:!!b.admin,ro:!!b.ro}};
 const cbO=()=>({base:CB_BASE,cats:(S.cb.b&&S.cb.b.cats)||[],me:cbMe()});
 function cbBootLoad(force){if(S.cb.bp&&!force)return S.cb.bp;S.cb.bp=api("cbBoot").then(b=>{S.cb.b=b;return b}).catch(e=>{S.cb.bp=null;throw e});return S.cb.bp}
 function cbLoad(more){const f=S.cb.f,q={cat:f.cat,filter:f.filter};if(more&&S.cb.L)q.cursor=S.cb.L.next;S.cb.loading=1;
@@ -37,7 +37,7 @@ V.cbp=id=>{const d=S.cb.P[id],o=cbO();if(!d)return band("Community")+`<div class
 
 /* ── สร้างโพสต์ (เต็มจอ) ── */
 V.cbnew=()=>{const b=S.cb.b,o=cbO();if(!b){cbBootLoad().then(()=>{if(cur()==="cbnew")repaint()});return band("สร้างโพสต์")+loadingV()}
-  const cats=b.cats.filter(c=>c.post_perm!=="mod"||o.me.mod),cat=S.cb.ncat||(cats.find(c=>c.id===S.cb.f.cat)||cats.find(c=>c.id==="c_talk")||cats[0]||{}).id;S.cb.ncat=cat;
+  const cats=b.cats.filter(c=>c.post_perm!=="mod"||o.me.ann),cat=S.cb.ncat||(cats.find(c=>c.id===S.cb.f.cat)||cats.find(c=>c.id==="c_talk")||cats[0]||{}).id;S.cb.ncat=cat;
   return `<header class="cbl-nh"><button data-back aria-label="ปิด">${CB.ic("x")}</button><h1>สร้างโพสต์</h1><span></span></header><div class="cbl-compose cbx">${CB.composer({base:CB_BASE,me:o.me,cats,cat,text:S.cb.ntext||""})}</div>`};
 
 /* ── รูปที่แนบ ── */

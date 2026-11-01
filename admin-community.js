@@ -3,7 +3,7 @@
  * การกดทั้งหมดรับที่ตัวรับคลิกตัวเดียว (cbClick) · วาดใหม่เฉพาะส่วน (#cb-feed / #cb-post) · ทุกไฟล์ admin-*.js ใช้ชื่อร่วมกัน (global) โหลดตามลำดับใน admin.html (ก่อน admin-org.js) */
 'use strict';
 var CB_BASE=API.replace(/\/api$/,'');
-function cbMe(){var b=A.cbB&&A.cbB.me||{},m=A.d&&A.d.me||{};return {id:m.id,name:m.name||'ผู้ดูแลระบบ',nick:m.nickname||'',ph:b.ph,pic:b.pic,mod:!!b.mod,admin:!!b.admin,ro:!!b.ro}}
+function cbMe(){var b=A.cbB&&A.cbB.me||{},m=A.d&&A.d.me||{};return {id:m.id,name:m.name||'ผู้ดูแลระบบ',nick:m.nickname||'',ph:b.ph,pic:b.pic,mod:!!b.mod,ann:!!(b.ann||b.mod),admin:!!b.admin,ro:!!b.ro}}
 function cbBoot(force){if(A.cbBP&&!force)return A.cbBP;A.cbFail=0;A.cbBP=aCall('cbBoot').then(function(b){A.cbB=b;cbBadge(b.unread);return b}).catch(function(e){A.cbBP=null;A.cbFail=Date.now();throw e});return A.cbBP}
 function cbBadge(n){A.cbUn=n||0;var a=$('.side a[data-nav="cb"]');if(!a)return;var c=a.querySelector('.cnt');if(!A.cbUn){if(c)c.remove();return}if(!c){c=document.createElement('span');c.className='cnt';a.appendChild(c)}c.textContent=A.cbUn}
 function cbOpts(){return {base:CB_BASE,cats:(A.cbB&&A.cbB.cats)||[],me:cbMe()}}
@@ -51,7 +51,7 @@ function cbAddFiles(inp){var ups=inp.closest('.cbx')?A.cbXUps:A.cbUps,files=Arra
   files.forEach(function(f){var u={src:'',id:''};ups.push(u);cbPaintUps();CB.shrink(f).then(function(d){u.src=d;cbPaintUps();return aCall('cbUpload',{data:d})}).then(function(r){u.id=r.id;cbPaintUps()}).catch(function(e){ups.splice(ups.indexOf(u),1);cbPaintUps();toast(e.message,1)})})}
 
 /* ───────── สร้างโพสต์ (หน้าต่างแบบ Facebook) ───────── */
-function cbCompose(){var b=A.cbB||{cats:[],me:{}},me=cbMe(),cats=b.cats.filter(function(c){return c.post_perm!=='mod'||me.mod}),cat=(A.cbF&&A.cbF.cat&&cats.some(function(c){return c.id===A.cbF.cat}))?A.cbF.cat:(cats.filter(function(c){return c.id==='c_talk'})[0]||cats[0]||{}).id;
+function cbCompose(){var b=A.cbB||{cats:[],me:{}},me=cbMe(),cats=b.cats.filter(function(c){return c.post_perm!=='mod'||me.ann}),cat=(A.cbF&&A.cbF.cat&&cats.some(function(c){return c.id===A.cbF.cat}))?A.cbF.cat:(cats.filter(function(c){return c.id==='c_talk'})[0]||cats[0]||{}).id;
   A.cbXUps=[];var w=document.createElement('div');w.className='cba-mw';
   w.innerHTML='<div class="cba-modal cbx" role="dialog" aria-modal="true" aria-labelledby="cbx-t"><div class="cba-mh"><span></span><h3 id="cbx-t">สร้างโพสต์</h3><button class="cba-x" data-cbxclose aria-label="ปิด">'+CB.ic('x')+'</button></div><div class="cba-mb">'+
     CB.composer({base:CB_BASE,me:me,cats:cats,cat:cat})+'</div></div>';
