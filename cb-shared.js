@@ -71,11 +71,11 @@
   CB.card = function (p, o) { var me = o.me || {}, base = o.base, hasMenu = CB.menuItems(p, me).length, long = !o.full && (p.body.length > 320 || p.body.split('\n').length > 5);
     return '<article class="cbcard' + (p.pinned ? ' pinned' : '') + '" data-cbid="' + E(p.id) + '">' +
       (p.pinned ? '<div class="cbpinbar">' + CB.ic('pin') + 'ปักหมุด' + (p.pin_until ? ' · ถึง ' + CB.date(p.pin_until) : '') + '</div>' : '') +
-      '<header class="cbhd">' + CB.av(base, p.author, 40) + '<div class="cbwho"><b>' + E(CB.full(p.author)) + '</b><span>' + (p.author && p.author.pos ? E(p.author.pos) + ' · ' : '') + CB.ago(p.created_at) + (p.edited ? ' · แก้ไขแล้ว' : '') + ' · ' + CB.chip(o.cats, p.cat) + '</span></div>' +
+      '<header class="cbhd">' + CB.av(base, p.author, 40) + '<div class="cbwho"><b data-noi18n>' + E(CB.full(p.author)) + '</b><span>' + (p.author && p.author.pos ? E(p.author.pos) + ' · ' : '') + CB.ago(p.created_at) + (p.edited ? ' · แก้ไขแล้ว' : '') + ' · ' + CB.chip(o.cats, p.cat) + '</span></div>' +
       (p.unread && !o.full ? '<i class="cbdot" title="มีความเคลื่อนไหวใหม่"></i>' : '') +
       (hasMenu ? '<div class="cbmw"><button class="cbmore" data-cbmenu="' + E(p.id) + '" aria-label="ตัวเลือกโพสต์" aria-expanded="' + !!o.menuOpen + '">' + CB.ic('more') + '</button>' + (o.menuOpen ? CB.menu(p, me) : '') + '</div>' : '') + '</header>' +
       (p.solved || p.locked ? '<div class="cbflags">' + (p.solved ? '<span class="ok">' + CB.ic('check') + 'มีคำตอบแล้ว</span>' : '') + (p.locked ? '<span>' + CB.ic('lock') + 'ปิดการแสดงความคิดเห็น</span>' : '') + '</div>' : '') +
-      '<div class="cbtxt' + (long ? ' clamp' : '') + '">' + CB.text(p.body) + '</div>' + (long ? '<button class="cbseemore" data-cbopen="' + E(p.id) + '">ดูเพิ่มเติม</button>' : '') +
+      '<div class="cbtxt' + (long ? ' clamp' : '') + '" data-noi18n>' + CB.text(p.body) + '</div>' + (long ? '<button class="cbseemore" data-cbopen="' + E(p.id) + '">ดูเพิ่มเติม</button>' : '') +
       (o.full ? CB.imgs(base, p.imgs, 1) : (p.imgs && p.imgs.length ? '<div data-cbopen="' + E(p.id) + '" class="cbimgl">' + CB.imgs(base, p.imgs) + '</div>' : '')) +
       '<div class="cbstat">' + (p.likes ? '<span class="cblk">' + CB.ic('like') + '</span>' + p.likes : '') + '<span class="sp"></span>' + (p.replies ? '<button data-cbopen="' + E(p.id) + '">' + p.replies + ' ความคิดเห็น</button>' : '') + '</div>' +
       '<div class="cbacts"><button data-cblike="' + E(p.id) + '" class="' + (p.liked ? 'on' : '') + '" aria-pressed="' + !!p.liked + '">' + CB.ic('like') + 'ถูกใจ</button>' +
@@ -84,7 +84,7 @@
   CB.comment = function (c, d, o) { if (c.deleted) return '<div class="cbcm del"><span class="cbdelx">' + CB.ic('eyeoff') + 'ความคิดเห็นนี้ถูก admin ลบ</span></div>';
     var best = d.post.solved_id === c.id;
     return '<div class="cbcm' + (best ? ' best' : '') + '" id="cbc-' + E(c.id) + '">' + CB.av(o.base, c.author, c.parent ? 28 : 34) + '<div class="cbcb">' + (best ? '<span class="cbbest">' + CB.ic('check') + 'คำตอบที่เจ้าของโพสต์เลือก</span>' : '') +
-      '<div class="cbbub"><b>' + E(CB.full(c.author)) + '</b>' + (c.author && c.author.pos ? '<small>' + E(c.author.pos) + '</small>' : '') + '<div>' + CB.text(c.body) + '</div></div>' + CB.imgs(o.base, c.imgs, 1) +
+      '<div class="cbbub"><b data-noi18n>' + E(CB.full(c.author)) + '</b>' + (c.author && c.author.pos ? '<small>' + E(c.author.pos) + '</small>' : '') + '<div data-noi18n>' + CB.text(c.body) + '</div></div>' + CB.imgs(o.base, c.imgs, 1) +
       '<div class="cbca"><span>' + CB.ago(c.created_at) + (c.edited ? ' · แก้ไขแล้ว' : '') + '</span>' + (d.can.comment ? '<button data-cbrep="' + E(c.id) + '">ตอบกลับ</button>' : '') +
       (c.mine ? '<button data-cbedc="' + E(c.id) + '">แก้ไข</button>' : '') + (d.can.solve && !c.parent ? '<button data-cbsol="' + (best ? '' : E(c.id)) + '">' + (best ? 'ยกเลิกคำตอบ' : 'เลือกเป็นคำตอบ') + '</button>' : '') +
       (d.can.del ? '<button class="bad" data-cbdelc="' + E(c.id) + '">ลบ</button>' : '') + '</div></div></div>'; };
