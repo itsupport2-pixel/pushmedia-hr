@@ -31,8 +31,9 @@ function luDraw(){var r=A.lu,b=$('#lu-body');if(!b||!r)return;var n=function(v){
     var card=function(id,t,v){return '<div class="an-c"><div class="an-t">'+t+'</div><div class="an-v"><b>'+n(v)+'</b></div><div class="an-ch" id="'+id+'"></div></div>'};
     h+='<div class="lu-sec"><h4>ข้อความที่ส่ง (จาก LINE) · '+esc(xdYmTxt(r.ym))+'</h4><div class="an-g3" style="margin-top:0">'+card('lu-c1','รวม (ข้อความทั้งหมด)',tp+tr)+card('lu-c2','Push',tp)+card('lu-c3','Reply',tr)+'</div>'+
      '<div class="faint" style="font-size:12px;margin-top:6px">นับเป็นจำนวนผู้รับ (ส่งเข้ากลุ่ม 1 ครั้ง = จำนวนสมาชิกในกลุ่ม) · Reply ไม่นับโควตา · LINE สรุปถึงเมื่อวาน'+(r.more?' · ยังโหลดไม่ครบ '+r.more+' วัน กด "รีเฟรช" เพื่อดึงต่อ':'')+'</div></div>'}
-  if(SR.length){var tP=0,tG=0,tF=0;SR.forEach(function(x){tP+=x.person;tG+=x.group;tF+=x.fail});
-    h+='<div class="lu-sec"><div class="xd-lh"><h4>ระบบ HR ส่งรายวัน · '+esc(xdYmTxt(r.ym))+'</h4><div class="xd-lg"><span><i style="background:#06C755"></i>LINE รายคน '+n(tP)+'</span><span><i style="background:#0B5ED7"></i>ส่งเข้ากลุ่ม '+n(tG)+'</span><span><i style="background:#DC2626"></i>ส่งไม่สำเร็จ '+n(tF)+'</span></div></div><div class="an-c lu-lc"><div id="lu-ch2"></div></div>'+
+  if(SR.length){var tP=0,tG=0,tF=0;SR.forEach(function(x){tP+=x.person;tG+=x.group;tF+=x.fail});   // 3 การ์ดแยก (2 พ.ย. 2569 ผู้ใช้) แบบเดียวกับกราฟ LINE
+    var card2=function(id,t,v){return '<div class="an-c"><div class="an-t">'+t+'</div><div class="an-v"><b>'+n(v)+'</b></div><div class="an-ch" id="'+id+'"></div></div>'};
+    h+='<div class="lu-sec"><h4>ระบบ HR ส่งรายวัน · '+esc(xdYmTxt(r.ym))+'</h4><div class="an-g3" style="margin-top:0">'+card2('lu-h1','LINE รายคน',tP)+card2('lu-h2','ส่งเข้ากลุ่ม',tG)+card2('lu-h3','ส่งไม่สำเร็จ',tF)+'</div>'+
      '<div class="faint" style="font-size:12px;margin-top:6px">จากบันทึกของระบบ HR · นับเป็นครั้งที่ส่ง</div></div>'}
   // ③ ใช้ไปกับอะไร (บันทึกของระบบ)
   var C=r.cats||[],tot=C.reduce(function(s,c){return s+c.person+c.group},0);
@@ -48,7 +49,8 @@ function luDraw(){var r=A.lu,b=$('#lu-body');if(!b||!r)return;var n=function(v){
     luLines($('#lu-c2'),D.map(function(x){return {k:x.d,v:[x.push]}}),[['Push','#4F46E5']],'Push');
     luLines($('#lu-c3'),D.map(function(x){return {k:x.d,v:[x.reply]}}),[['Reply','#EA8A2E']],'Reply')}
   A.fx='usage';pgFx();   // เอฟเฟกต์ชุดเดียวกับหน้า Cloudflare (admin-dash.js pgFx: การ์ดเลื่อนขึ้น · ตัวเลขนับขึ้น · เส้นลากซ้าย→ขวา) · 2 พ.ย. 2569 ผู้ใช้
-  if(SR.length){var tdy=dIso(new Date());luLines($('#lu-ch2'),SR.map(function(x){return {k:x.d,v:x.d>tdy?[null,null,null]:[x.person,x.group,x.fail]}}),[['LINE รายคน','#06C755'],['ส่งเข้ากลุ่ม','#0B5ED7'],['ส่งไม่สำเร็จ','#DC2626']],'ระบบ HR ส่งรายวัน')}}
+  if(SR.length){var tdy=dIso(new Date()),hs=function(id,k,nm,col){luLines($('#'+id),SR.map(function(x){return {k:x.d,v:[x.d>tdy?null:x[k]]}}),[[nm,col]],nm)};
+    hs('lu-h1','person','LINE รายคน','#06C755');hs('lu-h2','group','ส่งเข้ากลุ่ม','#0B5ED7');hs('lu-h3','fail','ส่งไม่สำเร็จ','#DC2626')}}
 /* กราฟเส้นหลายเส้น (หน้าตา + การชี้แบบกราฟ Cloudflare · anChart ใน admin-core.js) · pts=[{k:'YYYY-MM-DD',v:[..]}] · S=[[ชื่อ,สี]] · null = ยังไม่มีข้อมูล (เส้นขาด) */
 function luLines(el,pts,S,title){if(!el)return;var W=600,H=S.length===1?140:170,max=0;pts.forEach(function(p){p.v.forEach(function(v){if(v>max)max=v})});
   var nice=function(x){if(x<=0)return 4;var e=Math.pow(10,Math.floor(Math.log10(x))),f=x/e;return (f<=1?1:f<=2?2:f<=5?5:10)*e},top=nice(max);
