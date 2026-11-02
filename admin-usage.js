@@ -47,7 +47,7 @@ function luDraw(){var r=A.lu,b=$('#lu-body');if(!b||!r)return;var n=function(v){
   if(D.length){luLines($('#lu-c1'),D.map(function(x){return {k:x.d,v:[x.push==null?null:(x.push||0)+(x.reply||0)]}}),[['รวม','#0F9D8A']],'ข้อความทั้งหมด');
     luLines($('#lu-c2'),D.map(function(x){return {k:x.d,v:[x.push]}}),[['Push','#4F46E5']],'Push');
     luLines($('#lu-c3'),D.map(function(x){return {k:x.d,v:[x.reply]}}),[['Reply','#EA8A2E']],'Reply')}
-  var E2='cubic-bezier(.2,.8,.2,1)';if(!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches))$$('#lu-body .an-plot svg').forEach(function(e,i){try{e.animate([{clipPath:'inset(0 100% 0 0)'},{clipPath:'inset(0 0 0 0)'}],{duration:1400,delay:150+100*i,easing:E2,fill:'backwards'})}catch(x){}});   // ลากเส้นจากซ้ายไปขวาแบบ Cloudflare
+  var E2='cubic-bezier(.45,0,.25,1)';if(!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches))$$('#lu-body .an-plot svg').forEach(function(e,i){try{e.animate([{clipPath:'inset(0 100% 0 0)'},{clipPath:'inset(0 0 0 0)'}],{duration:2600,delay:500+250*i,easing:E2,fill:'backwards'})}catch(x){}});   // ลากเส้นจากซ้ายไปขวาแบบ Cloudflare
   if(SR.length){var tdy=dIso(new Date());luLines($('#lu-ch2'),SR.map(function(x){return {k:x.d,v:x.d>tdy?[null,null,null]:[x.person,x.group,x.fail]}}),[['LINE รายคน','#06C755'],['ส่งเข้ากลุ่ม','#0B5ED7'],['ส่งไม่สำเร็จ','#DC2626']],'ระบบ HR ส่งรายวัน')}}
 /* กราฟเส้นหลายเส้น (หน้าตา + การชี้แบบกราฟ Cloudflare · anChart ใน admin-core.js) · pts=[{k:'YYYY-MM-DD',v:[..]}] · S=[[ชื่อ,สี]] · null = ยังไม่มีข้อมูล (เส้นขาด) */
 function luLines(el,pts,S,title){if(!el)return;var W=600,H=S.length===1?140:170,max=0;pts.forEach(function(p){p.v.forEach(function(v){if(v>max)max=v})});
