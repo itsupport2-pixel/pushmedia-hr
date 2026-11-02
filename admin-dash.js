@@ -39,7 +39,7 @@ function drawDash(){if(!$('#db-body'))return;var d=A.db,k=d.kpi,dt=new Date(d.da
 /* ภาพเปิดหน้า (30 ต.ค. 2569 ผู้ใช้ขอ): ตัวเลขนับขึ้น (count-up) + กล่องเลื่อนขึ้นทีละใบ (staggered slide-up) + แท่งกราฟ/แถบโตขึ้น
  * เล่นเมื่อเข้าเมนู Dashboard / อนุมัติ / พนักงาน / การลา / รายงาน / ลงเวลา / ตารางงาน / Confirmed / โครงสร้างองค์กร / ตั้งค่า (ทุกแท็บ) / บันทึก error / Audit Log (go · หลังเข้าระบบ · สลับแท็บรายงาน) หรือกดรีเฟรช · A.fx = เมนูที่รอเล่น ('*' = หลังเข้าระบบ)
  * เล่นครั้งเดียวต่อการเข้า (พิมพ์ค้นหา/กรองไม่เล่น) · ข้อมูล Dashboard ใหม่มาระหว่างเล่น = รอเล่นจบค่อยวาด · ปิดเมื่อผู้ใช้ตั้งลดการเคลื่อนไหว */
-var FXV={msg:1,dash:1,appr:1,list:1,lv:1,rep:1,set:1,att:1,sched:1,conf:1,org:1,errlog:1,audit:1};   // 30 ต.ค. 2569: + ลงเวลาวันนี้ · ตารางงาน · Confirmed · โครงสร้างองค์กร · ตั้งค่าทุกแท็บ · บันทึก error · Audit Log
+var FXV={msg:1,dash:1,appr:1,list:1,lv:1,rep:1,set:1,att:1,sched:1,conf:1,org:1,errlog:1,usage:1,audit:1};   // 30 ต.ค. 2569: + ลงเวลาวันนี้ · ตารางงาน · Confirmed · โครงสร้างองค์กร · ตั้งค่าทุกแท็บ · บันทึก error · Audit Log
 function fxArm(v){A.fx=FXV[v]?v:null}   // แถบแท็บ/เมนูย่อย (เมนูซ้ายหน้าตั้งค่า · แท็บรายงาน/องค์กร/อนุมัติ) นิ่งเสมอ · กดเปลี่ยนแท็บ = ข้อมูลข้างในเล่นเต็ม (30 ต.ค. 2569 ผู้ใช้)
 function pgFx(){var v=A.view,c=$('.content');if(c&&!A.fx&&A.fxLast&&A.fxLast.v===v&&Date.now()-A.fxLast.t<700)A.fx=v;   // วาดซ้ำทันทีหลังเล่น (เช่น โหลดข้อมูลเสร็จแล้ววาดใหม่) = เล่นต่อ ไม่ให้หายกลางทาง
   if(!c||!A.fx||(A.fx!==v&&A.fx!=='*')||!FXV[v])return;A.fx=null;A.fxLast={v:v,t:Date.now()};

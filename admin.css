@@ -873,3 +873,11 @@ html.th-sky .co-brand.lgc{box-shadow:0 0 0 1px #D2EEFA}
 .lu-bar{display:block;height:8px;border-radius:4px;background:#F1F1F1;overflow:hidden;margin-top:6px}.lu-bar i{display:block;height:100%;background:#06C755}
 .lu-sec{margin-top:18px}.lu-sec h4{margin:0 0 8px;font-size:15px}.lu-ch{width:100%;height:auto;display:block;max-height:220px}
 @media(max-width:760px){.lu-k3{grid-template-columns:1fr}}
+/* แถบเมนูซ้ายเลื่อนได้ (2 พ.ย. 2569 · ซูมเข้าแล้วเมนูยาวเกินจอ) · ส่วนล่าง (บริษัท · ออกจากระบบ · สถานะ) ค้างไว้เสมอ */
+.rl-sc{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;gap:inherit;align-items:inherit;align-self:stretch;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.18) transparent}
+.rl-sc::-webkit-scrollbar{width:6px}.rl-sc::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:3px}
+.side>.rl-logo,.side>.rl-co-sw,.side>#out2,.side>.ver{flex:none}
+html.th-sky .rl-sc{scrollbar-color:rgba(0,0,0,.18) transparent}html.th-sky .rl-sc::-webkit-scrollbar-thumb{background:rgba(0,0,0,.18)}
+.lu-gl{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;overflow:hidden}.lu-g{display:flex;align-items:center;gap:12px;padding:12px 14px;border-top:1px solid var(--line)}.lu-g:first-child{border-top:0}
+.lu-gm{flex:1;min-width:0}.lu-gc{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.lu-gc span{font-size:12px;background:#F4F4F5;border-radius:99px;padding:2px 9px;color:var(--mut)}
+.lu-gn{display:flex;flex-direction:column;align-items:flex-end;gap:2px;min-width:70px}.lu-gn b{font-size:22px;line-height:1}.lu-gn small{font-size:12px;color:var(--fnt)}
