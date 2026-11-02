@@ -59,15 +59,17 @@ var ROLE={employee:'พนักงาน',lead:'หัวหน้าทีม'
 var ST={active:['ทำงาน','b-ok'],probation:['ทดลองงาน','b-info'],leave:['ลาระยะยาว','b-warn'],resigned:['ลาออก','b-mute']};
 var CHK={office:['Office','ลงเวลาเฉพาะจุดสำนักงาน (GPS)','b-info'],field:['Field','ลงเวลาที่หน้างานตามตารางงาน','b-ok'],both:['Office + Field','สำนักงาน หรือหน้างานตามตาราง','b-warn'],none:['ไม่ต้องลงเวลา','ผู้บริหาร / ยกเว้นการลงเวลา','b-mute']};
 var DOW=['อา','จ','อ','พ','พฤ','ศ','ส'];
-function isHR(){return A.d&&(A.d.me.role==='hr'||A.d.me.role==='admin')}
+function isAdm(){return !!(A.d&&(A.d.me.role==='admin'||A.d.me.role==='exec'))}   // ผู้ดูแลระบบ หรือ ผู้บริหาร (2 พ.ย. 2569: ผู้บริหาร = เท่า admin)
+function isHR(){return A.d&&(A.d.me.role==='hr'||A.d.me.role==='admin'||A.d.me.role==='exec')}   // + ผู้บริหาร = เท่า admin (2 พ.ย. 2569)
 /* ขอบเขตตามสิทธิ์ (เซิร์ฟเวอร์ส่งมาใน me.access และตรวจซ้ำทุกคำสั่ง) · emp att leave approve edit → none self team dept all */
 function acc(a){if(isHR())return 'all';var x=A.d&&A.d.me.access;return x&&x[a]||(a==='approve'||a==='edit'?'none':'self')}
 function inSc(e,sc){var me=A.d.me;if(!e)return false;if(sc==='all')return true;if(e.id===me.id)return sc!=='none';if(sc==='dept')return !!me.department_id&&e.department_id===me.department_id;if(sc==='team')return !!me.team_id&&e.team_id===me.team_id;return false}
 function canEdit(e){return isHR()||inSc(e,acc('edit'))}
 function selfOnly(){return !isHR()&&A.d.me.id!=='admin'&&acc('emp')==='self'}
 function scopeTxt(a){var me=A.d.me,sc=acc(a);return sc==='all'?'ทั้งบริษัท':sc==='dept'?'แผนก '+org('departments',me.department_id):sc==='team'?'ทีม '+org('teams',me.team_id):sc==='self'?'ตัวเอง':'—'}
-function navFor(me){var a=navFor0(me).slice();if(me.msg&&a.indexOf('msg')<0)a.push('msg');if(me.pay&&a.indexOf('pay')<0)a.push('pay');if(me.role==='admin'&&a.indexOf('errlog')<0)a.push('errlog');return a}   // บันทึก error: ผู้ดูแลระบบเท่านั้น// เงินเดือน: me.pay (เปิดใช้ + HR/ผู้ดูแลระบบ/ฝ่ายบัญชีที่ได้รับสิทธิ์)
-function navFor0(me){if(isHR()||me.role==='admin')return ROLE_NAV[me.role]||ROLE_NAV.hr;
+function navFor(me){var a=navFor0(me).slice();if(a.indexOf('msg')<0)a.push('msg');   // 2 พ.ย. 2569 ผู้ใช้: เมนูงานเมสเซนเจอร์เปิดให้พนักงานทุกคน (คนทั่วไปเห็นงานที่ตัวเองขอ · จัดการ/ตั้งค่า = HR/admin/ผู้จัดงาน)
+if(me.pay&&a.indexOf('pay')<0)a.push('pay');if((me.role==='admin'||me.role==='exec')&&a.indexOf('errlog')<0)a.push('errlog');return a}   // บันทึก error: ผู้ดูแลระบบเท่านั้น// เงินเดือน: me.pay (เปิดใช้ + HR/ผู้ดูแลระบบ/ฝ่ายบัญชีที่ได้รับสิทธิ์)
+function navFor0(me){if(me.role==='exec')return ROLE_NAV.admin;if(isHR()||me.role==='admin')return ROLE_NAV[me.role]||ROLE_NAV.hr;
   var b=(ROLE_NAV[me.role]||[]).filter(function(k){return SOON[k]}),add=function(k,on){if(on&&b.indexOf(k)<0)b.push(k)};
   add('dash',1);add('cb',1);add('list',['team','dept','all'].indexOf(acc('emp'))>=0);add('att',acc('att')!=='none');add('lv',acc('leave')!=='none');add('sched',acc('att')!=='none');add('conf',me.role==='manager'||me.role==='exec');add('appr',acc('approve')!=='none'&&acc('approve')!=='self');add('rep',(ROLE_NAV[me.role]||[]).indexOf('rep')>=0&&acc('att')!=='none');return b}
 function org(t,id){var r=(A.d.org[t]||[]).filter(function(x){return x.id===id})[0];return r?r.name:''}
@@ -423,7 +425,7 @@ function render(){
   var me=A.d.me,lr=A.d.linkRequests.length,allowed=navFor(me),cur=NAVOF[A.view]||A.view;
   if(selfOnly()&&(A.view==='profile'||A.view==='form'))A.view='dash';
   if(allowed.indexOf(cur)<0){A.view=allowed[0];cur=A.view}
-  var V={dash:selfOnly()?[vMine,bMine]:[vDash,bDash],cb:[vCb,bCb],list:[vList,bList],profile:[vProfile,bProfile],form:[vForm,bForm],req:[vReq,bReq],org:[vOrg,bOrg],att:[vAtt,bAtt],lv:[vLv,bLv],appr:[vAppr,bAppr],set:[vSet,bSet],audit:[vAudit,bAudit],msg:[vMsg,bMsg],errlog:A.d&&A.d.me.role==='admin'?[vErr,bErr]:[vDash,bDash],sched:[vPlanner,bNone],conf:[vConf,bNone],ot:[vSoon,bNone],rep:[vRep,bRep],pay:[vPay,bPay]}[A.view]||[vDash,bDash];
+  var V={dash:selfOnly()?[vMine,bMine]:[vDash,bDash],cb:[vCb,bCb],list:[vList,bList],profile:[vProfile,bProfile],form:[vForm,bForm],req:[vReq,bReq],org:[vOrg,bOrg],att:[vAtt,bAtt],lv:[vLv,bLv],appr:[vAppr,bAppr],set:[vSet,bSet],audit:[vAudit,bAudit],msg:[vMsg,bMsg],errlog:A.d&&isAdm()?[vErr,bErr]:[vDash,bDash],sched:[vPlanner,bNone],conf:[vConf,bNone],ot:[vSoon,bNone],rep:[vRep,bRep],pay:[vPay,bPay]}[A.view]||[vDash,bDash];
   var pend=(A.d.pendingCount||0)+lr,wide=navWide()||!!A.peek,app=A.d.app||'Push Media Center';
   var item=function(n){var c=n[0]==='appr'?pend:n[0]==='cb'?(A.cbUn||0):0;return '<a data-nav="'+n[0]+'" class="'+(cur===n[0]?'on':'')+(SOON[n[0]]?' soon-i':'')+'"'+(cur===n[0]?' aria-current="page"':'')+' title="'+n[1]+'">'+ic(n[2])+'<span>'+(wide?n[1]:(SHORT[n[0]]||n[1]))+'</span>'+(SOON[n[0]]?'<span class="soon">เร็ว ๆ นี้</span>':c?'<span class="cnt">'+c+'</span>':'')+'</a>'};
   var SUB={sched:['sched','conf'],set:['set','errlog']};   // เมนูย่อยสไลด์ลง · ตั้งค่าระบบ › บันทึก error (29 ต.ค. 2569 · admin เท่านั้น)
@@ -573,7 +575,7 @@ function usDraw(){var d=US,b=$('#us-body');if(!b)return;var M={},cur=dIso(new Da
      m.fns.slice().sort(function(a,c){return c.rr-a.rr}).slice(0,10).map(function(r){return '<tr><td class="num">'+esc(r.fn)+'</td><td class="faint">'+esc(usGroup(r.fn))+'</td><td class="r num">'+nfmt(r.n)+'</td><td class="r num">'+nfmt(r.rr)+'</td><td class="r num">'+nfmt(Math.round(r.rr/Math.max(1,r.n)))+'</td><td class="r num">'+nfmt(r.rw)+'</td></tr>'}).join('')+'</tbody></table></details></div>'+
    '</div>'+
    '<div class="note-b" style="margin-top:12px">ตัวเลขนับเองในระบบเพื่อดูแนวโน้ม ไม่ใช่ใบแจ้งหนี้ · ยอดจริงดูที่ Cloudflare Dashboard › Billing · แพ็กเกจปัจจุบัน Workers Paid ($5/เดือน): รวมคำขอ 10 ล้าน · D1 อ่าน 25,000 ล้านแถว · เขียน 50 ล้านแถว ต่อเดือน · ใช้เกินคิดเงินเพิ่ม (ระบบไม่หยุด)</div>';
-  b.insertAdjacentHTML('beforeend',usErrHtml()+(A.d.me.role==='admin'?'<button class="btn sm" data-go="errlog" style="margin-top:8px">เปิดบันทึก error แบบละเอียด →</button>':''));$$('#us-body [data-go]').forEach(function(x){x.onclick=function(){go(x.dataset.go)}});if($('#us-erall'))$('#us-erall').onclick=function(){US.erAll=!US.erAll;usDraw()};
+  b.insertAdjacentHTML('beforeend',usErrHtml()+(isAdm()?'<button class="btn sm" data-go="errlog" style="margin-top:8px">เปิดบันทึก error แบบละเอียด →</button>':''));$$('#us-body [data-go]').forEach(function(x){x.onclick=function(){go(x.dataset.go)}});if($('#us-erall'))$('#us-erall').onclick=function(){US.erAll=!US.erAll;usDraw()};
   $$('[data-usm]').forEach(function(x){x.onclick=function(){US.sel=x.dataset.usm;usDraw()}});
   $$('[data-anr]').forEach(function(x){x.onclick=function(){US.rng=x.dataset.anr;$$('[data-anr]').forEach(function(y){y.setAttribute('aria-pressed',y===x)});anDraw()}});anDraw()}
 /* ปุ่มเลือกเดือน (แทน <input type="month"> ของเบราว์เซอร์ ให้หน้าตาเหมือนปฏิทินของระบบ) · ค่าอยู่ใน <input type="hidden" id> = 'YYYY-MM' (ค.ศ.) หรือ ''
