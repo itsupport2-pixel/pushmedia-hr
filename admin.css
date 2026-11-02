@@ -882,3 +882,26 @@ html.th-sky .rl-sc{scrollbar-color:rgba(0,0,0,.18) transparent}html.th-sky .rl-s
 .lu-gm{flex:1;min-width:0}.lu-gc{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.lu-gc span{font-size:12px;background:#F4F4F5;border-radius:99px;padding:2px 9px;color:var(--mut)}
 .lu-gn{display:flex;flex-direction:column;align-items:flex-end;gap:2px;min-width:70px}.lu-gn b{font-size:22px;line-height:1}.lu-gn small{font-size:12px;color:var(--fnt)}
 .lu-lc{padding:22px 16px 10px}.lu-tip{gap:3px;min-width:150px}.lu-th{font-weight:600;color:var(--ink,#141414);margin-bottom:2px}.lu-tr{display:flex;align-items:center;gap:6px}.lu-tr i{width:8px;height:8px;border-radius:50%;flex:none}.lu-tr span{flex:1}.lu-tr b{color:var(--ink,#141414)}
+/* ฟอร์มสร้างงานเมสเซนเจอร์ (2 พ.ย. 2569 · ตามหน้าตาระบบเดิม) */
+.drw.drw-mf{width:min(720px,100vw)}.drw-mf>.cb{background:#F7F8FA}
+.mf{gap:12px}.mf-intro{margin:0 0 2px;font-size:13px;color:var(--mut)}
+.mf-sec{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px 16px;display:flex;flex-direction:column;gap:10px}
+.mf-h{margin:0;font-size:11.5px;font-weight:700;letter-spacing:.06em;color:#6B7280;text-transform:uppercase;border-left:3px solid #111;padding-left:8px;line-height:1.2}.mf-h small{font-weight:400;letter-spacing:0;text-transform:none;color:var(--fnt);margin-left:4px}
+.mf-g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mf-g3{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:10px}
+.mf-l{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:#4B5563}.mf-l svg{color:#6B7280;flex:none}.mf-req{color:#DC2626;font-style:normal}
+.mf-hint{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--fnt);margin-top:-2px}.mf-hint svg{color:#D97706}.mf-hint:empty{display:none}
+.mf-me{display:flex;align-items:center;gap:6px;font-size:13.5px;color:var(--mut)}
+.mf-types{display:grid;grid-template-columns:repeat(auto-fit,minmax(92px,1fr));gap:8px}
+.mf-type{position:relative;cursor:pointer}.mf-type input{position:absolute;opacity:0;pointer-events:none}
+.mf-tc{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:86px;padding:12px 8px;border:1.5px solid var(--line);border-radius:12px;background:#FAFAFA;color:#4B5563;text-align:center;transition:border-color .15s,background .15s}
+.mf-tc b{font-size:12.5px;font-weight:600}.mf-tc small{font-size:10.5px;color:var(--fnt)}.mf-tc::after{content:"";position:absolute;top:8px;right:8px;width:14px;height:14px;border-radius:50%;border:1.5px solid #C9CDD3;background:#fff}
+.mf-type:hover .mf-tc{border-color:#BDBDBD}.mf-type input:checked+.mf-tc{border-color:#111;background:#fff;color:#111;box-shadow:0 0 0 3px rgba(17,17,17,.06)}.mf-type input:checked+.mf-tc::after{border-color:#111;background:#111;box-shadow:inset 0 0 0 3px #fff}
+.mf-type input:focus-visible+.mf-tc{outline:2px solid #111;outline-offset:2px}
+.mf-urg{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;cursor:pointer;transition:background .15s,border-color .15s}.mf-ui{color:#6B7280;display:grid}.mf-ut{flex:1;display:flex;flex-direction:column}.mf-ut b{font-size:14px}.mf-ut small{font-size:12px;color:var(--fnt)}
+.mf-urg.on{background:#FEF2F2;border-color:#FCA5A5}.mf-urg.on .mf-ui{color:#DC2626}
+.mf-sw{appearance:none;-webkit-appearance:none;width:42px;height:24px;border-radius:99px;background:#D4D4D8;position:relative;cursor:pointer;flex:none;transition:background .15s;margin:0}.mf-sw::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2);transition:transform .15s}
+.mf-sw:checked{background:#DC2626}.mf-sw:checked::after{transform:translateX(18px)}.mf-sw:focus-visible{outline:2px solid #111;outline-offset:2px}
+.mf-note{display:flex;gap:8px;align-items:flex-start;font-size:12.5px;color:var(--mut);background:#fff;border:1px dashed var(--line);border-radius:12px;padding:10px 12px}.mf-note svg{margin-top:2px;flex:none}
+#ms-fs{display:inline-flex;align-items:center;gap:6px}
+@media(max-width:640px){.mf-g2,.mf-g3{grid-template-columns:1fr}.mf-types{grid-template-columns:repeat(3,1fr)}}
+.mf-un[hidden]{display:none}
