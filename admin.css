@@ -921,3 +921,7 @@ html.th-sky .rl-sc{scrollbar-color:rgba(0,0,0,.18) transparent}html.th-sky .rl-s
 .mf-si:hover,.mf-si.on{background:#F1F3F4}.mf-sm{color:#202124}.mf-sm b{font-weight:700}.mf-ss{color:#70757A;font-size:13px}.mf-sgf{text-align:right;font-size:10.5px;color:#9AA0A6;padding:4px 14px 2px}
 .mf-sgh{font-size:11px;font-weight:600;color:#80868B;padding:6px 16px 4px;letter-spacing:.02em}.mf-sx{display:block;font-size:11.5px;color:#9AA0A6;margin-top:1px}
 .mf-ac .mf-si{white-space:normal;align-items:flex-start}.mf-ac .mf-si svg{margin-top:2px}
+/* เมนูย่อยมีไอคอน + แท็บการใช้งานมีโลโก้ (2 พ.ย. 2569) */
+.subi a{gap:10px}.subi a svg{width:17px;height:17px;flex:none;opacity:.85}.subi a.on svg{opacity:1}.subi a>span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.shell:not(.wide) .side .subi a{gap:10px!important}
+.us-tabs{display:inline-flex;margin-bottom:14px}.us-tb{display:inline-flex;align-items:center;gap:8px}.us-ti{display:inline-grid;place-items:center;width:22px;height:22px}.us-ti svg{display:block}.us-ti svg[width="24"]{width:20px;height:20px}
