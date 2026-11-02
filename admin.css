@@ -914,3 +914,10 @@ html.th-sky .rl-sc{scrollbar-color:rgba(0,0,0,.18) transparent}html.th-sky .rl-s
 .mf-upe{display:inline-flex;align-items:center;gap:8px}.mf-pv{display:flex;align-items:center;gap:12px}.mf-pv[hidden]{display:none}.mf-pv img{width:120px;height:90px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}.mf-pv .btn{display:inline-flex;align-items:center;gap:5px}
 .mf-me{flex-wrap:wrap}.mf-me small{flex-basis:100%;margin-left:20px;font-size:11.5px}
 .mf-up{position:relative}
+/* ค้นหาสถานที่แบบ Google Maps (Places · 2 พ.ย. 2569) */
+.mf-ac{position:relative;flex:1;min-width:0;display:flex}.mf-ac input{flex:1;min-width:0}
+.mf-sg{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:20;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 12px 32px rgba(0,0,0,.14);overflow:hidden;padding:6px 0}.mf-sg[hidden]{display:none}
+.mf-si{display:flex;align-items:center;gap:14px;padding:11px 16px;cursor:pointer;font-size:14px;color:#3C4043;white-space:nowrap;overflow:hidden}.mf-si>span{overflow:hidden;text-overflow:ellipsis}.mf-si svg{color:#5F6368;flex:none}
+.mf-si:hover,.mf-si.on{background:#F1F3F4}.mf-sm{color:#202124}.mf-sm b{font-weight:700}.mf-ss{color:#70757A;font-size:13px}.mf-sgf{text-align:right;font-size:10.5px;color:#9AA0A6;padding:4px 14px 2px}
+.mf-sgh{font-size:11px;font-weight:600;color:#80868B;padding:6px 16px 4px;letter-spacing:.02em}.mf-sx{display:block;font-size:11.5px;color:#9AA0A6;margin-top:1px}
+.mf-ac .mf-si{white-space:normal;align-items:flex-start}.mf-ac .mf-si svg{margin-top:2px}
