@@ -863,3 +863,4 @@ html.th-sky .co-brand.lgc{box-shadow:0 0 0 1px #D2EEFA}
 @media(max-width:600px){.msr-to{grid-template-columns:1fr}}
 .ms-av{width:28px;height:28px;border-radius:50%;background:#141414;color:#fff;display:inline-grid;place-items:center;flex:none;vertical-align:middle}
 .msr-sk{border:1px solid #F3C7C2;background:#FDF3F2;border-radius:10px;padding:12px;margin-bottom:12px}
+.msr-tm{border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:14px;background:#FAFAFA}

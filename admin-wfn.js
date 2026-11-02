@@ -22,7 +22,7 @@ function wfnIssues(n,c,add){var ch=c.ch||{};if(!ch.line&&!ch.group&&!ch.mail){ad
   var needT=(ch.line&&c.card==='text')||(ch.group&&(c.gcard||'text')==='text');if(needT&&!String(c.text||'').trim())add(n.id,'ยังไม่ได้พิมพ์ข้อความ');
   (c.conds||[]).forEach(function(x,i){if(x.value===''||x.value==null)add(n.id,'เงื่อนไขที่ '+(i+1)+' ยังไม่ใส่ค่า')})}
 function wfnCards(trig,br,to){var b=wfnBase(trig);
-  if(b==='monthsum')return br==='ready'||br==='remind'?['ms_ready','text']:br==='done'||br==='info'?['ms_ack','text']:['text'];
+  if(b==='monthsum')return to.indexOf('top10')>=0?['ms_emp']:br==='ready'||br==='remind'?['ms_ready','text']:br==='done'||br==='info'?['ms_ack','text']:['text'];   // top10 = การ์ดรายคนเสมอ (2 พ.ย. 2569: เดิมกลายเป็น text แล้วเตือนให้พิมพ์ข้อความ)
   if(b==='messenger')return {'new':['msg_job','msg_status','text'],cancel:['msg_status','msg_cancel','text'],late:['msg_status','msg_overdue','text']}[br]||['msg_status','msg_job','text'];
   if(b==='help_new')return ['text'];
   var dec=['ok','no','back'].indexOf(br)>=0||trig==='leave_decided',onlyEmp=to.length===1&&to[0]==='employee';
