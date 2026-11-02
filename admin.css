@@ -867,3 +867,4 @@ html.th-sky .co-brand.lgc{box-shadow:0 0 0 1px #D2EEFA}
 .tp-kc{border-top:4px solid var(--c,#141414)}.tp-kc[aria-pressed=true]{border-color:var(--c,#141414);box-shadow:0 0 0 1px var(--c,#141414);background:var(--cs,#fff)}.tp-kc .tp-kv{color:var(--c,#141414)}
 .tp-kd{display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--c,#141414);margin-right:6px;vertical-align:middle}
 .msr-test{border:1px dashed #EA580C;background:#FFF7ED;color:#9A3412;border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.55;margin-bottom:10px}
+.lm-idr{display:flex;align-items:center;gap:8px;margin-top:2px;flex-wrap:wrap}.lm-id{font-family:ui-monospace,Menlo,monospace;font-size:12px;background:#F4F4F5;border-radius:6px;padding:2px 6px;user-select:all;word-break:break-all}
