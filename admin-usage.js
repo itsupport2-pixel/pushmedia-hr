@@ -27,8 +27,9 @@ function luDraw(){var r=A.lu,b=$('#lu-body');if(!b||!r)return;var n=function(v){
   else h+='<div class="faint" style="font-size:12.5px;margin-bottom:10px">LINE ให้ดูโควตาได้เฉพาะเดือนปัจจุบัน · เดือนก่อนแสดงจากบันทึกของระบบ</div>';
   // ② กราฟเส้นจาก LINE: รวม / Push / Reply ทั้งเดือน (2 พ.ย. 2569 ผู้ใช้: แบบ LINE OA Manager · 3 เส้นรวมกัน · ชี้แล้วมีเส้นตั้ง + ค่าแบบ Cloudflare)
   var D=r.days||[],SR=r.series||[];
-  if(D.length){var tp=0,tr=0;D.forEach(function(x){tp+=x.push||0;tr+=x.reply||0});
-    h+='<div class="lu-sec"><div class="xd-lh"><h4>ข้อความที่ส่ง (จาก LINE) · '+esc(xdYmTxt(r.ym))+'</h4><div class="xd-lg"><span><i style="background:#0F9D8A"></i>รวม '+n(tp+tr)+'</span><span><i style="background:#4F46E5"></i>Push '+n(tp)+'</span><span><i style="background:#EA8A2E"></i>Reply '+n(tr)+'</span></div></div><div class="an-c lu-lc"><div id="lu-ch1"></div></div>'+
+  if(D.length){var tp=0,tr=0;D.forEach(function(x){tp+=x.push||0;tr+=x.reply||0});   // 3 กราฟแยก รวม / Push / Reply (2 พ.ย. 2569 ผู้ใช้ส่งภาพ LINE OA Manager · การ์ด + การชี้แบบ Cloudflare)
+    var card=function(id,t,v){return '<div class="an-c"><div class="an-t">'+t+'</div><div class="an-v"><b>'+n(v)+'</b></div><div class="an-ch" id="'+id+'"></div></div>'};
+    h+='<div class="lu-sec"><h4>ข้อความที่ส่ง (จาก LINE) · '+esc(xdYmTxt(r.ym))+'</h4><div class="an-g3" style="margin-top:0">'+card('lu-c1','รวม (ข้อความทั้งหมด)',tp+tr)+card('lu-c2','Push',tp)+card('lu-c3','Reply',tr)+'</div>'+
      '<div class="faint" style="font-size:12px;margin-top:6px">นับเป็นจำนวนผู้รับ (ส่งเข้ากลุ่ม 1 ครั้ง = จำนวนสมาชิกในกลุ่ม) · Reply ไม่นับโควตา · LINE สรุปถึงเมื่อวาน'+(r.more?' · ยังโหลดไม่ครบ '+r.more+' วัน กด "รีเฟรช" เพื่อดึงต่อ':'')+'</div></div>'}
   if(SR.length){var tP=0,tG=0,tF=0;SR.forEach(function(x){tP+=x.person;tG+=x.group;tF+=x.fail});
     h+='<div class="lu-sec"><div class="xd-lh"><h4>ระบบ HR ส่งรายวัน · '+esc(xdYmTxt(r.ym))+'</h4><div class="xd-lg"><span><i style="background:#06C755"></i>LINE รายคน '+n(tP)+'</span><span><i style="background:#0B5ED7"></i>ส่งเข้ากลุ่ม '+n(tG)+'</span><span><i style="background:#DC2626"></i>ส่งไม่สำเร็จ '+n(tF)+'</span></div></div><div class="an-c lu-lc"><div id="lu-ch2"></div></div>'+
@@ -43,10 +44,13 @@ function luDraw(){var r=A.lu,b=$('#lu-body');if(!b||!r)return;var n=function(v){
      '<div class="faint" style="font-size:12px">'+(g.id?'<code class="lm-id">'+esc(g.id)+'</code> · ':'บันทึกก่อน 2 พ.ย. 2569 ยังไม่ได้เก็บว่าเป็นกลุ่มไหน · ')+'ล่าสุด '+esc(fdt(g.last))+'</div>'+(g.cats.length?'<div class="lu-gc">'+g.cats.map(function(c){return '<span>'+esc(c.name)+' '+n(c.n)+'</span>'}).join('')+'</div>':'')+'</div>'+
      '<div class="lu-gn"><b>'+n(g.sent)+'</b><small>ครั้ง</small>'+(g.fail?'<small style="color:var(--bad)">ไม่สำเร็จ '+n(g.fail)+'</small>':'')+'</div></div>'}).join('')+'</div>':'<div class="faint" style="padding:6px 0">ยังไม่มีการส่งเข้ากลุ่มในเดือนนี้</div>')+'</div>';
   b.innerHTML=h;
-  if(D.length)luLines($('#lu-ch1'),D.map(function(x){return {k:x.d,v:[x.push==null?null:(x.push||0)+(x.reply||0),x.push,x.reply]}}),[['รวม','#0F9D8A'],['Push','#4F46E5'],['Reply','#EA8A2E']],'ข้อความที่ส่งจาก LINE');
+  if(D.length){luLines($('#lu-c1'),D.map(function(x){return {k:x.d,v:[x.push==null?null:(x.push||0)+(x.reply||0)]}}),[['รวม','#0F9D8A']],'ข้อความทั้งหมด');
+    luLines($('#lu-c2'),D.map(function(x){return {k:x.d,v:[x.push]}}),[['Push','#4F46E5']],'Push');
+    luLines($('#lu-c3'),D.map(function(x){return {k:x.d,v:[x.reply]}}),[['Reply','#EA8A2E']],'Reply')}
+  var E2='cubic-bezier(.2,.8,.2,1)';if(!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches))$$('#lu-body .an-plot svg').forEach(function(e,i){try{e.animate([{clipPath:'inset(0 100% 0 0)'},{clipPath:'inset(0 0 0 0)'}],{duration:1400,delay:150+100*i,easing:E2,fill:'backwards'})}catch(x){}});   // ลากเส้นจากซ้ายไปขวาแบบ Cloudflare
   if(SR.length){var tdy=dIso(new Date());luLines($('#lu-ch2'),SR.map(function(x){return {k:x.d,v:x.d>tdy?[null,null,null]:[x.person,x.group,x.fail]}}),[['LINE รายคน','#06C755'],['ส่งเข้ากลุ่ม','#0B5ED7'],['ส่งไม่สำเร็จ','#DC2626']],'ระบบ HR ส่งรายวัน')}}
 /* กราฟเส้นหลายเส้น (หน้าตา + การชี้แบบกราฟ Cloudflare · anChart ใน admin-core.js) · pts=[{k:'YYYY-MM-DD',v:[..]}] · S=[[ชื่อ,สี]] · null = ยังไม่มีข้อมูล (เส้นขาด) */
-function luLines(el,pts,S,title){if(!el)return;var W=600,H=170,max=0;pts.forEach(function(p){p.v.forEach(function(v){if(v>max)max=v})});
+function luLines(el,pts,S,title){if(!el)return;var W=600,H=S.length===1?140:170,max=0;pts.forEach(function(p){p.v.forEach(function(v){if(v>max)max=v})});
   var nice=function(x){if(x<=0)return 4;var e=Math.pow(10,Math.floor(Math.log10(x))),f=x/e;return (f<=1?1:f<=2?2:f<=5?5:10)*e},top=nice(max);
   var FR=top%4===0?[0,.25,.5,.75,1]:top%2===0?[0,.5,1]:[0,1];   // เส้นแบ่งเฉพาะที่ได้เลขกลม
   var X=function(i){return pts.length<2?W/2:i/(pts.length-1)*W},Y=function(v){return H-(v||0)/top*(H-6)};
@@ -61,7 +65,7 @@ function luLines(el,pts,S,title){if(!el)return;var W=600,H=170,max=0;pts.forEach
   if(empty)return;var pl=el.querySelector('.an-plot'),xl=pl.querySelector('.an-x'),dots=pl.querySelectorAll('.an-dot'),tip=pl.querySelector('.an-tip');
   var show=function(cx){var r=pl.getBoundingClientRect(),w=r.width-56,i=Math.max(0,Math.min(pts.length-1,Math.round((cx-r.left)/w*(pts.length-1)))),p=pts[i],x=pts.length<2?w/2:i/(pts.length-1)*w;
     xl.hidden=tip.hidden=false;xl.style.left=x+'px';S.forEach(function(sr,si){var v=p.v[si],dt=dots[si];dt.hidden=v==null;if(v!=null){dt.style.left=x+'px';dt.style.top=(Y(v)/H*100)+'%'}});
-    tip.textContent='';var hd=document.createElement('span');hd.className='lu-th';hd.textContent=anLbl(p.k,'d');tip.appendChild(hd);
+    tip.textContent='';if(S.length===1){var v1=document.createElement('b');v1.textContent=p.v[0]==null?'—':nfmt(p.v[0]);var l1=document.createElement('span');l1.textContent=anLbl(p.k,'d');tip.appendChild(v1);tip.appendChild(l1);tip.classList.remove('lu-tip');tip.style.left=Math.min(Math.max(x,60),w-60)+'px';return}var hd=document.createElement('span');hd.className='lu-th';hd.textContent=anLbl(p.k,'d');tip.appendChild(hd);
     S.forEach(function(sr,si){var row=document.createElement('span');row.className='lu-tr';var c=document.createElement('i');c.style.background=sr[1];var nm=document.createElement('span');nm.textContent=sr[0];var v=document.createElement('b');v.textContent=p.v[si]==null?'—':nfmt(p.v[si]);row.appendChild(c);row.appendChild(nm);row.appendChild(v);tip.appendChild(row)});
     tip.style.left=Math.min(Math.max(x,80),w-80)+'px'};
   pl.onpointermove=function(e){show(e.clientX)};pl.onpointerdown=function(e){show(e.clientX)};pl.onpointerleave=function(){xl.hidden=tip.hidden=true;dots.forEach(function(d){d.hidden=true})};
