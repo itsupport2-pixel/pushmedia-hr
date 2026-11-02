@@ -75,7 +75,7 @@ function wfnMsTrig(){var c=A.wfMs;if(!c)return '<div class="loading"><span class
   var cats=String(c.cats).split(','),ck=function(k,l,s){return '<label class="fl-c"><input type="checkbox" data-msk="'+k+'"'+(c[k]==='on'?' checked':'')+'><span>'+l+(s?'<br><small class="faint">'+s+'</small>':'')+'</span></label>'};
   return '<div class="wfe-row3"><label class="f">วันที่<input type="number" min="1" max="28" data-msn="day" value="'+esc(c.day)+'"></label><label class="f">เวลา (ชม.)<input type="number" min="0" max="23" data-msn="hour" value="'+esc(c.hour)+'"></label><label class="f">ชี้แจงภายใน (วัน)<input type="number" min="1" max="30" data-msn="due" value="'+esc(c.due)+'"></label></div>'+
    '<div class="faint" style="font-size:12px">ทุกเดือน ระบบเตรียมรายชื่อของเดือนที่แล้ว ตามวันที่/เวลานี้</div>'+
-   ck('review','HR ตรวจก่อนส่ง','ส่งเมื่อ HR กดส่งในรายงาน › สรุปรายเดือน')+ck('remind','เตือน HR ถ้ายังไม่ส่ง','09:00 ทุกวัน สูงสุด 3 วัน (ทาง “ยังไม่ส่ง”)')+ck('auto','ส่งอัตโนมัติเมื่อไม่ต้องตรวจ','ใช้เมื่อปิด “HR ตรวจก่อนส่ง”')+
+   ck('review','HR ตรวจก่อนส่ง','ส่งเมื่อ HR กดอนุมัติที่ศูนย์อนุมัติ')+ck('remind','เตือน HR ถ้ายังไม่ส่ง','09:00 ทุกวัน สูงสุด 3 วัน (ทาง “ยังไม่ส่ง”)')+ck('auto','ส่งอัตโนมัติเมื่อไม่ต้องตรวจ','ใช้เมื่อปิด “HR ตรวจก่อนส่ง”')+
    '<div class="f">หมวด Top '+esc(c.topn)+'<label class="fl-c"><input type="checkbox" data-mscat="ab"'+(cats.indexOf('ab')>=0?' checked':'')+'><span>ขาดงาน</span></label><label class="fl-c"><input type="checkbox" data-mscat="lv"'+(cats.indexOf('lv')>=0?' checked':'')+'><span>ลา</span></label></div>'+
    '<label class="f">ข้อความท้ายการ์ด · ขาดงาน<textarea rows="2" data-mst="note_ab">'+esc(c.note_ab)+'</textarea></label><label class="f">ข้อความท้ายการ์ด · ลา<textarea rows="2" data-mst="note_lv">'+esc(c.note_lv)+'</textarea></label><div class="faint" style="font-size:12px">{due} = วันครบกำหนดชี้แจง</div>'+
    '<label class="f">คำชี้แจงให้ใครรับทราบ<select data-msr><option value="lead_hr"'+(c.route!=='hr'?' selected':'')+'>หัวหน้าทีม → HR</option><option value="hr"'+(c.route==='hr'?' selected':'')+'>HR อย่างเดียว</option></select></label>'+
@@ -101,8 +101,8 @@ function wfnMsHelp(){var st=function(n,t,s){return '<li><b>'+t+'</b><div class="
   return '<div class="wfn-help"><b>flow นี้ทำงานอย่างไร</b><ol>'+
    st(1,'เริ่มเมื่อ (กล่องสีส้ม)','ทุกเดือนตามวันที่/เวลาที่ตั้ง · กดกล่องนี้เพื่อตั้งวัน เวลา หมวด Top 10 ข้อความท้ายการ์ด')+
    st(2,'เตรียมรายชื่อ Top 10','ระบบคำนวณจากลงเวลาเดือนที่แล้วเอง')+
-   st(3,'ส่งแจ้งเตือน → HR','การ์ด “พร้อมตรวจ” · ยังไม่มีใครอื่นได้อะไร')+
-   st(4,'รอ HR ตรวจและกดส่ง','HR เปิด รายงาน › สรุปรายเดือน ตรวจรายชื่อ ตัดคนที่ไม่ต้องส่ง แล้วกด “ส่ง” · ยังไม่ส่ง = เตือน HR 09:00')+
+   st(3,'แจ้ง HR','รายการ “สรุปประจำเดือน · รอ HR อนุมัติส่ง” ขึ้นที่ ศูนย์อนุมัติ (ตัวเลขที่เมนูอนุมัติ) + การ์ด LINE ถึง HR (ลบกล่องนี้ได้ถ้าไม่ต้องการ)')+
+   st(4,'รอ HR อนุมัติ','HR เปิด ศูนย์อนุมัติ › รายการสรุปประจำเดือน ดูรายชื่อ + ผู้รับอีเมล ตัดคนที่ไม่ต้องส่ง แล้วกด “อนุมัติและส่ง” · ยังไม่อนุมัติ = เตือน HR 09:00')+
    st(5,'หลัง HR กดส่ง','กล่องอีเมล → ผู้บริหาร / หัวหน้าแผนก (สรุปทั้งบริษัท + PDF) · กล่อง LINE → พนักงานที่ติด Top 10 (การ์ดของใครของมัน + ปุ่มชี้แจง)')+
    st(6,'รอคำชี้แจง','พนักงานชี้แจง → แจ้งหัวหน้า · หัวหน้ารับทราบ → แจ้ง HR · HR รับทราบ / ขอข้อมูลเพิ่ม → การ์ดผลถึงพนักงาน')+'</ol>'+
    '<b>ต้องตั้งก่อนใช้จริง</b><ul><li>กล่อง <b>อีเมล</b> (ส่งถึง … อีเมล): ติ๊ก “ผู้บริหารทุกคน” / “หัวหน้าแผนกทุกแผนก” หรือเพิ่มอีเมลเอง · ตอนนี้ยังไม่มีใครได้อีเมล</li><li>กล่อง <b>เริ่มเมื่อ</b>: ตรวจวันที่/เวลา (ค่าเริ่มต้นวันที่ 1 เวลา 08:00)</li><li>กด “บันทึก” มุมขวาบน · ดูหน้าตาทุกข้อความได้ที่ปุ่ม “ดูตัวอย่างทุกรูปแบบ” ในกล่องเริ่มเมื่อ</li></ul></div>'}
