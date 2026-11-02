@@ -88,3 +88,21 @@ function wfnMsBind(){var c=A.wfMs;if(!c)return;var d=function(){WE.dirty=true;WE
   var r=$('#wfe-i [data-msr]');if(r)r.onchange=function(){c.route=r.value;d()};
   var g=$('#wfn-gal');if(g)g.onclick=msGal}
 function wfnMsLoad(){if(A.wfMs)return;aCall('msGet','').then(function(r){A.wfMs=JSON.parse(JSON.stringify(r.cfg));if(WE&&WE.sel&&$('#wfe-i'))wfInsp()}).catch(function(e){toast(e.message,1)})}
+
+/* ตัวอย่างอีเมลเต็มจอ (2 พ.ย. 2569 ผู้ใช้: "ตัวอย่างของ mail เล็กเกินไป กดเปิดขึ้นมาเลยได้ไหม มีปุ่มปิด") · ใช้หน้าต่างแบบเดียวกับ "ดูตัวอย่างทุกรูปแบบ" */
+function wfnMailFull(html){var ov=document.createElement('div');ov.className='msg-ov';ov.style.zIndex=400;
+  ov.innerHTML='<div class="msg-box" role="dialog" aria-modal="true" aria-label="ตัวอย่างอีเมล"><div class="msg-hd"><b>ตัวอย่างอีเมล</b><span class="faint" style="font-size:12.5px">หน้าตาเดียวกับที่ผู้รับเห็น · ข้อมูลจริงของรอบล่าสุด</span><span class="sp"></span><button class="btn sm" id="wfn-mx">ปิด</button></div><div class="msg-pv mail"><iframe title="ตัวอย่างอีเมล"></iframe></div></div>';
+  document.body.appendChild(ov);ov.querySelector('iframe').srcdoc=html;
+  var close=function(){ov.remove();document.removeEventListener('keydown',k)},k=function(e){if(e.key==='Escape'){e.stopPropagation();close()}};
+  ov.querySelector('#wfn-mx').onclick=close;ov.onclick=function(e){if(e.target===ov)close()};document.addEventListener('keydown',k,true)}
+
+/* คำอธิบาย flow สรุปประจำเดือน (แผงขวาตอนยังไม่เลือกกล่อง · 2 พ.ย. 2569 ผู้ใช้: "ยังงง flow สรุปรายเดือน") */
+function wfnMsHelp(){var st=function(n,t,s){return '<li><b>'+t+'</b><div class="faint">'+s+'</div></li>'};
+  return '<div class="wfn-help"><b>flow นี้ทำงานอย่างไร</b><ol>'+
+   st(1,'เริ่มเมื่อ (กล่องสีส้ม)','ทุกเดือนตามวันที่/เวลาที่ตั้ง · กดกล่องนี้เพื่อตั้งวัน เวลา หมวด Top 10 ข้อความท้ายการ์ด')+
+   st(2,'เตรียมรายชื่อ Top 10','ระบบคำนวณจากลงเวลาเดือนที่แล้วเอง')+
+   st(3,'ส่งแจ้งเตือน → HR','การ์ด “พร้อมตรวจ” · ยังไม่มีใครอื่นได้อะไร')+
+   st(4,'รอ HR ตรวจและกดส่ง','HR เปิด รายงาน › สรุปรายเดือน ตรวจรายชื่อ ตัดคนที่ไม่ต้องส่ง แล้วกด “ส่ง” · ยังไม่ส่ง = เตือน HR 09:00')+
+   st(5,'หลัง HR กดส่ง','กล่องอีเมล → ผู้บริหาร / หัวหน้าแผนก (สรุปทั้งบริษัท + PDF) · กล่อง LINE → พนักงานที่ติด Top 10 (การ์ดของใครของมัน + ปุ่มชี้แจง)')+
+   st(6,'รอคำชี้แจง','พนักงานชี้แจง → แจ้งหัวหน้า · หัวหน้ารับทราบ → แจ้ง HR · HR รับทราบ / ขอข้อมูลเพิ่ม → การ์ดผลถึงพนักงาน')+'</ol>'+
+   '<b>ต้องตั้งก่อนใช้จริง</b><ul><li>กล่อง <b>อีเมล</b> (ส่งถึง … อีเมล): ติ๊ก “ผู้บริหารทุกคน” / “หัวหน้าแผนกทุกแผนก” หรือเพิ่มอีเมลเอง · ตอนนี้ยังไม่มีใครได้อีเมล</li><li>กล่อง <b>เริ่มเมื่อ</b>: ตรวจวันที่/เวลา (ค่าเริ่มต้นวันที่ 1 เวลา 08:00)</li><li>กด “บันทึก” มุมขวาบน · ดูหน้าตาทุกข้อความได้ที่ปุ่ม “ดูตัวอย่างทุกรูปแบบ” ในกล่องเริ่มเมื่อ</li></ul></div>'}
