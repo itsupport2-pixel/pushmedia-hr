@@ -905,3 +905,12 @@ html.th-sky .rl-sc{scrollbar-color:rgba(0,0,0,.18) transparent}html.th-sky .rl-s
 #ms-fs{display:inline-flex;align-items:center;gap:6px}
 @media(max-width:640px){.mf-g2,.mf-g3{grid-template-columns:1fr}.mf-types{grid-template-columns:repeat(3,1fr)}}
 .mf-un[hidden]{display:none}
+/* ฟอร์มเมสเซนเจอร์ รอบ 2 (2 พ.ย. 2569): ค้นหา Google Maps · แนบรูป · การ์ดประเภทเท่ากัน */
+.mf-tc{height:104px;min-height:0}.mf-tp{display:inline-flex;align-items:center;gap:3px;font-size:10.5px;color:#B45309;line-height:1.2}.mf-tp.no{visibility:hidden}
+.mf-ms{display:flex;flex-direction:column;gap:6px}.mf-msr{display:flex;gap:8px}.mf-msr input{flex:1;min-width:0}.mf-msr .btn{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.mf-map{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}.mf-map[hidden]{display:none}.mf-map iframe{display:block;width:100%;height:240px;border:0}
+.mf-mb{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 12px;border-top:1px solid var(--line)}.mf-mb .btn{display:inline-flex;align-items:center;gap:5px;text-decoration:none}
+.mf-up{display:flex;align-items:center;justify-content:center;border:1.5px dashed #CFD3D8;border-radius:12px;padding:14px;cursor:pointer;color:var(--mut);background:#FAFAFA;font-size:13px}.mf-up:hover{border-color:#9CA3AF;background:#F4F4F5}.mf-up[hidden]{display:none}
+.mf-upe{display:inline-flex;align-items:center;gap:8px}.mf-pv{display:flex;align-items:center;gap:12px}.mf-pv[hidden]{display:none}.mf-pv img{width:120px;height:90px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}.mf-pv .btn{display:inline-flex;align-items:center;gap:5px}
+.mf-me{flex-wrap:wrap}.mf-me small{flex-basis:100%;margin-left:20px;font-size:11.5px}
+.mf-up{position:relative}
