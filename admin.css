@@ -788,7 +788,7 @@ html.th-sky .co-brand.lgc{box-shadow:0 0 0 1px #D2EEFA}
 .lg-ck{flex:none;color:var(--tx,#141414)}
 
 /* สรุปประจำเดือน (1 พ.ย. 2569 · admin-ms.js · ตามแบบ Figma หน้า 17) */
-.mx{--ln:#E6E6E6;--mut:#6B7280;--fnt:#9CA3AF;--ok:#16A34A;--bad:#DC2626;--warn:#D97706;--inf:#2563EB;font-size:14px;color:#111}
+.mx{--ln:#E6E6E6;--mut:#6B7280;--fnt:#9CA3AF;--ok:#16A34A;--bad:#DC2626;--warn:#D97706;--inf:#7C3AED;font-size:14px;color:#111}
 .mx .row{display:flex;gap:16px;align-items:flex-start}.mx .col{display:flex;flex-direction:column;gap:16px;min-width:0}
 .mx .stp{display:flex;gap:0;background:#fff;border:1px solid var(--ln);border-radius:14px;padding:14px 18px;align-items:center}
 .mx .stp .s{display:flex;gap:10px;align-items:center;flex:1}.mx .stp .s i{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:700;font-size:13px;background:#F1F1F1;color:#888;flex:0 0 auto}
@@ -864,3 +864,6 @@ html.th-sky .co-brand.lgc{box-shadow:0 0 0 1px #D2EEFA}
 .ms-av{width:28px;height:28px;border-radius:50%;background:#141414;color:#fff;display:inline-grid;place-items:center;flex:none;vertical-align:middle}
 .msr-sk{border:1px solid #F3C7C2;background:#FDF3F2;border-radius:10px;padding:12px;margin-bottom:12px}
 .msr-tm{border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:14px;background:#FAFAFA}
+.tp-kc{border-top:4px solid var(--c,#141414)}.tp-kc[aria-pressed=true]{border-color:var(--c,#141414);box-shadow:0 0 0 1px var(--c,#141414);background:var(--cs,#fff)}.tp-kc .tp-kv{color:var(--c,#141414)}
+.tp-kd{display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--c,#141414);margin-right:6px;vertical-align:middle}
+.msr-test{border:1px dashed #EA580C;background:#FFF7ED;color:#9A3412;border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.55;margin-bottom:10px}
