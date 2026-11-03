@@ -936,3 +936,4 @@ html.th-sky .rl-sc{scrollbar-color:rgba(0,0,0,.18) transparent}html.th-sky .rl-s
 .co-pop .co-i{display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:10px;color:var(--fg);opacity:.55}.co-pop .co-i.on{opacity:1;background:#F4F6FA}.co-pop .co-i .co-tx small{color:var(--fnt)}
 .co-me{font-size:11px;font-weight:600;color:#2563EB;background:#EAF1FE;border-radius:999px;padding:2px 8px;flex:none}.co-f.co-note{font-size:12px;color:var(--fnt);padding:8px 10px 2px}
 #att-body td .at-loc{flex-wrap:nowrap;white-space:nowrap}
+.lv-files{display:flex;flex-wrap:wrap;gap:8px}.lv-files img{width:84px;height:84px;object-fit:cover;border-radius:8px;border:1px solid var(--line)}

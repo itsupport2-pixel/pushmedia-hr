@@ -32,11 +32,11 @@ const lvRepaint=()=>{if(["leave","lvsum","lvdetail","approve","apdetail","quota"
 
 /* ---------- ฟอร์มขอลา ---------- */
 function newLeaveForm(edit){const i=L.info,t0=i.types[0];
-  L.f=edit?{edit_id:edit.id,type_id:edit.type_id,a:edit.days[0].date,b:edit.days[edit.days.length-1].date,parts:Object.fromEntries(edit.days.map(x=>[x.date,x.part])),reason:edit.reason,substitute_id:"",mon:edit.days[0].date.slice(0,7),pick:0}
-    :{type_id:t0?t0.id:"",a:null,b:null,parts:{},reason:"",substitute_id:"",mon:i.today.slice(0,7),pick:0};L.pv=null}
+  L.f=edit?{edit_id:edit.id,type_id:edit.type_id,a:edit.days[0].date,b:edit.days[edit.days.length-1].date,parts:Object.fromEntries(edit.days.map(x=>[x.date,x.part])),reason:edit.reason,substitute_id:"",mon:edit.days[0].date.slice(0,7),pick:0,doc_no:edit.doc_no||"",photos:[],ph:false,oldFiles:edit.files||0}
+    :{type_id:t0?t0.id:"",a:null,b:null,parts:{},reason:"",substitute_id:"",mon:i.today.slice(0,7),pick:0,doc_no:"",photos:[],ph:true,oldFiles:0};L.pv=null}
 const offDay=s=>{const i=L.info;return !!i.holidays.find(h=>h.date===s)||i.workDays.indexOf(DT(s).getDay())<0};
 function fDays(f){if(!f.a)return [];const o=[];for(let s=f.a;s<=(f.b||f.a);s=addD(s,1))if(!offDay(s))o.push({date:s,part:f.parts[s]||"full"});return o}
-function reqObj(){const f=L.f;return {type_id:f.type_id,date_from:f.a,date_to:f.b||f.a,parts:f.parts,reason:f.reason,substitute_id:f.substitute_id,edit_id:f.edit_id||""}}
+function reqObj(){const f=L.f;return {type_id:f.type_id,date_from:f.a,date_to:f.b||f.a,parts:f.parts,reason:f.reason,substitute_id:f.substitute_id,edit_id:f.edit_id||"",doc_no:f.doc_no||"",...(f.ph?{photos:f.photos||[]}:{})}}
 function runPreview(){clearTimeout(L.pvT);const f=L.f;if(!f||!f.a){L.pv=null;return}
   L.pvT=setTimeout(()=>{api("previewLeave",reqObj()).then(p=>{L.pv=p;if(curV()==="leave")paintLeaveChecks()}).catch(()=>{})},250)}
 function cal(f){const [y,m]=f.mon.split("-").map(Number),first=new Date(y,m-1,1),start=addD(ISO(first),-first.getDay()),dim=new Date(y,m,0).getDate(),cells=Math.ceil((first.getDay()+dim)/7)*7,i=L.info;
@@ -50,13 +50,14 @@ V.leave=()=>{const i=L.info;if(!i)return band("ขอลางาน")+loadingV(
   return band(f.edit_id?"แก้ไขคำขอลา":"ขอลางาน")+`<form class="pad" id="f" novalidate>
   ${f.edit_id?nt("c-blue","info","คำขอนี้ยังไม่ได้รับอนุมัติ แก้ไขได้ทันที หัวหน้าทีมจะเห็นป้าย “แก้ไขแล้ว”"):""}
   <div class="lv-step"><span class="n">1</span><b>ประเภทการลา</b></div>
-  <div class="lt-g">${i.types.map(x=>`<button type="button" class="ltc" data-lvtype="${x.id}" aria-pressed="${f.type_id===x.id}"><b>${esc(x.name)}</b><span class="q ${x.left!=null&&x.left<=0?"z":""}">${x.left==null?"ไม่จำกัด":"คงเหลือ "+nd(x.left)}${x.reserved?` · รอ ${nd(x.reserved)}`:""}</span><span class="cap" style="font-size:11.5px;line-height:1.35">${x.advance_days?"ยื่นล่วงหน้า "+x.advance_days+" วัน":x.backdate_days?"ยื่นย้อนหลังได้ "+x.backdate_days+" วัน":"ยื่นได้ทุกเมื่อ"}</span></button>`).join("")}</div>
+  <div class="lt-g">${i.types.map(x=>`<button type="button" class="ltc" data-lvtype="${x.id}" aria-pressed="${f.type_id===x.id}"><b>${esc(x.name)}</b><span class="q ${x.left!=null&&x.left<=0?"z":""}">${x.left==null?"ไม่จำกัด":"คงเหลือ "+nd(x.left)}${x.reserved?` · รอ ${nd(x.reserved)}`:""}</span><span class="cap" style="font-size:11.5px;line-height:1.35">${x.no_advance?"ห้ามยื่นล่วงหน้า"+(x.backdate_days?" · ย้อนหลังได้ "+x.backdate_days+" วัน":""):x.advance_days?"ยื่นล่วงหน้า "+x.advance_days+" วัน":x.backdate_days?"ยื่นย้อนหลังได้ "+x.backdate_days+" วัน":"ยื่นได้ทุกเมื่อ"}</span></button>`).join("")}</div>
   <div class="lv-step"><span class="n">2</span><b>เลือกวันลา</b><span class="cap" style="margin-left:auto">แตะวันแรก แล้วแตะวันสุดท้าย</span></div>
   ${cal(f)}
   ${ds.length?`<div class="dl">${ds.map(x=>{const j=i.jobDays.find(z=>z.date===x.date);return `<div class="dr"><div class="t"><b>${fD(x.date)}</b>${j?`<span class="chip c-blue mini">${ic("cal","width:13px;height:13px")}งาน ${esc(j.site||j.job)}</span>`:`<span class="chip c-grey mini">ทำงานปกติ</span>`}</div>${t.half_day?`<div class="seg" role="group" aria-label="ช่วงเวลา ${fD(x.date)}">${Object.keys(PART).map(p=>`<button type="button" data-lvpart="${x.date}|${p}" aria-pressed="${x.part===p}">${PART[p]}</button>`).join("")}</div>`:""}</div>`}).join("")}</div>`:""}
   <div id="lvchk"></div>
   <div class="lv-step"><span class="n">${ds.length?4:3}</span><b>รายละเอียด</b></div>
   <div class="fcard">${fl("lr","เหตุผลการลา *",`<textarea class="ta" id="lr" placeholder="ระบุเหตุผลการลา">${esc(f.reason)}</textarea>`)}
+  ${lvAttForm(f)}
   ${jobs.length?fl("lsub","เสนอผู้รับงานแทน (หัวหน้าทีมเป็นผู้ตัดสิน)",`<select class="sel" id="lsub"><option value="">ให้หัวหน้าทีมเลือก</option>${i.team.map(x=>`<option value="${x.id}" ${f.substitute_id===x.id?"selected":""}>${esc(x.name)}${x.nickname?" ("+esc(x.nickname)+")":""}</option>`).join("")}</select>`):""}</div>
   <div class="lv-step"><span class="n">${ds.length?5:4}</span><b>ผู้อนุมัติ</b></div>
   <div class="fcard" style="gap:0;padding-bottom:4px" id="lvappr">${tl([["var(--orange)","หัวหน้าทีม"+(i.lead?" · "+esc(i.lead):""),"อนุมัติ / ส่งกลับแก้ไข / ไม่อนุมัติ",false],["#C5CCD6","แจ้งผลทาง LINE + อัปเดตตารางงานและการลงเวลา","อัตโนมัติเมื่ออนุมัติ",false]])}</div>
@@ -73,7 +74,7 @@ function paintLeaveChecks(){const box=$("#lvchk"),p=L.pv,f=L.f,i=L.info;if(!box)
 V.lvsum=()=>{const p=L.pv,f=L.f;if(!p)return band("ตรวจสอบคำขอ")+`<div class="pad"><div class="empty">ไม่มีข้อมูล</div></div>`;
   const sub=f.substitute_id&&L.info.team.find(x=>x.id===f.substitute_id);
   return band("ตรวจสอบคำขอ")+`<div class="pad">
-  <div class="fcard" style="gap:0;padding:2px 16px">${[["ประเภท",esc(p.type)],["วันที่",p.days.map(x=>fD(x.date)+(x.part!=="full"?` (${PART[x.part]})`:"")).join("<br>")],["จำนวน",nd(p.total)],["คงเหลือหลังลา",p.left_after==null?"ไม่จำกัด":nd(p.left_after)],["เหตุผล",esc(f.reason)],...(p.jobs.length?[["ผู้รับงานแทนที่เสนอ",sub?esc(sub.name):"ให้หัวหน้าทีมเลือก"]]:[])].map(r=>`<div class="kv"><span>${r[0]}</span><b>${r[1]}</b></div>`).join("")}</div>
+  <div class="fcard" style="gap:0;padding:2px 16px">${[["ประเภท",esc(p.type)],["วันที่",p.days.map(x=>fD(x.date)+(x.part!=="full"?` (${PART[x.part]})`:"")).join("<br>")],["จำนวน",nd(p.total)],["คงเหลือหลังลา",p.left_after==null?"ไม่จำกัด":nd(p.left_after)],["เหตุผล",esc(f.reason)],...(f.doc_no?[["เลขที่เอกสาร",esc(f.doc_no)]]:[]),...((f.ph?f.photos.length:f.oldFiles)?[["รูปแนบ",(f.ph?f.photos.length:f.oldFiles)+" รูป"]]:[]),...(p.jobs.length?[["ผู้รับงานแทนที่เสนอ",sub?esc(sub.name):"ให้หัวหน้าทีมเลือก"]]:[])].map(r=>`<div class="kv"><span>${r[0]}</span><b>${r[1]}</b></div>`).join("")}</div>
   <h3 class="lvh">เมื่อได้รับอนุมัติ ระบบจะ</h3><div class="fcard" style="gap:10px">${[er("cal","ตารางงาน: ทำเครื่องหมาย “ลา” "+rangeTxt(p.days[0].date,p.days[p.days.length-1].date)),...p.jobs.map(j=>er("swap",`งาน${esc(j.job)} ${fD(j.date)} → ${sub?"ย้ายให้ "+esc(sub.name)+" (หัวหน้าทีมยืนยัน)":"หัวหน้าทีมจัดคนแทน"}`)),...p.effects.map(x=>er("finger",esc(x))),er("bell","แจ้งผลทาง LINE")].join("")}</div>
   ${(p.warns||[]).map(x=>nt("c-orange","alert",esc(x))).join("")}
   <h3 class="lvh">ผู้อนุมัติ</h3><div class="fcard" style="gap:0;padding-bottom:4px">${tl(p.approvers.map((a,k)=>[k?"#C5CCD6":"var(--orange)",esc(a),k?"หลังหัวหน้าอนุมัติ":"รอพิจารณา",false]))}</div></div>
@@ -87,6 +88,7 @@ V.lvdetail=id=>{const r=L.det[id];if(!r)return band("คำขอลา")+loadin
   const btns=[];if(r.can.edit)btns.push([r.status==="back"?"แก้ไขแล้วส่งใหม่":"แก้ไขคำขอ",`data-lvedit="${r.id}"`,"pri"]);if(r.can.cancel)btns.push(["ยกเลิกคำขอ",`data-lvcancel="${r.id}"`,"out"]);if(r.can.request_cancel)btns.push([r.date_from<L.info.today?"ขอยกเลิกวันที่เหลือ (กลับมาทำงาน)":"ขอยกเลิกวันลา",`data-lvcancel="${r.id}"`,"out"]);
   return band("คำขอลา")+`<div class="pad">
   <div class="fcard" style="gap:6px"><div style="display:flex;align-items:center;gap:8px"><b style="font-size:19px;flex:1">${esc(r.type)}</b>${lchip(r.status)}</div><span>${rangeTxt(r.date_from,r.date_to)} · <b>${nd(r.days_total)}</b></span><span class="cap">${esc(r.req_no)} · ยื่นเมื่อ ${fAt(r.created_at)}${r.edited?" · แก้ไขแล้ว":""}</span></div>
+  ${lvAttView(r)}
   ${r.change?nt("c-blue","info","ขอยกเลิกวันลา · รอหัวหน้าทีมอนุมัติ · เหตุผล: "+esc(r.change.reason)):""}
   ${r.status==="back"&&back?nt("c-orange","alert","หัวหน้าทีมส่งกลับ: "+esc(back.note)):""}${r.status==="no"&&no?nt("c-red","alert","เหตุผลที่ไม่อนุมัติ: "+esc(no.note)):""}
   <h3 class="lvh">วันลา</h3><div class="dl">${r.days.map(x=>`<div class="dr"><div class="t"><b>${fD(x.date)}</b><span class="chip c-grey mini">${PART[x.part]}</span>${x.status==="no"?'<span class="chip c-red mini">ไม่อนุมัติ</span>':x.status==="cancel"?'<span class="chip c-grey mini">ยกเลิก</span>':""}</div></div>`).join("")}</div>
@@ -128,13 +130,13 @@ V.apdetail=id=>{const a=(L.aps||[]).find(x=>x.id===id);if(!a)return band("พิ
   setTimeout(loadPav,0);return band(a.status==="chg"?"พิจารณาการยกเลิก":"พิจารณาคำขอลา")+`<div class="pad">
   <div class="fcard" style="gap:10px"><div style="display:flex;gap:12px;align-items:center"><div class="ava av-sm" data-pav="${a.employee_id}">${AVA}</div><div style="flex:1;min-width:0"><b>${esc(a.employee)}</b><div class="cap">${esc(a.team)} · ${esc(a.req_no)}</div></div>${lchip(a.status,1)}</div>
   <div class="ap" style="box-shadow:none;padding:0;gap:8px">${[["ประเภท",esc(a.type)],["วันที่",a.days.map(x=>fD(x.date)+(x.part!=="full"?` (${PART[x.part]})`:"")).join(", ")],["จำนวน",nd(a.days_total)],["เหตุผล",esc(a.reason)],["ผู้รับงานแทนที่เสนอ",a.substitute?esc(a.substitute):"—"]].map(r=>`<div class="r"><span>${r[0]}</span><span>${r[1]}</span></div>`).join("")}</div></div>
-  ${a.change?nt("c-blue","info","ขอยกเลิกวันลา: "+esc(a.change.reason)):""}${a.edited?nt("c-blue","info","พนักงานแก้ไขคำขอนี้แล้ว"):""}
+  ${lvAttView(a)}${a.change?nt("c-blue","info","ขอยกเลิกวันลา: "+esc(a.change.reason)):""}${a.edited?nt("c-blue","info","พนักงานแก้ไขคำขอนี้แล้ว"):""}
   ${a.flags.map(x=>nt("c-orange","alert",esc(x))).join("")}
   <h3 class="lvh">ขั้นตอนอนุมัติ</h3><div class="fcard" style="gap:0;padding-bottom:4px">${tl(stepsOf(Object.assign({mine_lead:1},a)))}</div></div>
   ${a.step?`<div class="foot"><button class="btn pri" data-apok="${a.id}">${a.status==="chg"?"อนุมัติการยกเลิก":"อนุมัติ"}</button><div class="g2"><button class="btn out sm" data-apno="${a.id}|${a.status==="chg"?"no":"back"}">${a.status==="chg"?"ไม่อนุมัติการยกเลิก":"ส่งกลับแก้ไข"}</button>${a.status==="chg"?"":`<button class="btn out sm" style="color:var(--red);border-color:var(--red)" data-apno="${a.id}|no">ไม่อนุมัติ</button>`}</div>${a.days.length>1&&a.status!=="chg"?`<button class="sim" style="align-self:center;margin:0" data-appart="${a.id}">อนุมัติบางวัน</button>`:""}</div>`:""}`};
 function apNoSheet(id,a){sheet(`<h3>${a==="back"?"ส่งกลับแก้ไข":"ไม่อนุมัติ"}</h3>${fl("apn","เหตุผล * (ผู้ขอจะเห็นข้อความนี้)",`<textarea class="ta" id="apn" placeholder="${a==="back"?"เช่น ขอให้เลื่อนเป็นสัปดาห์หน้า":"ระบุเหตุผล"}"></textarea>`)}<button class="btn pri" data-apnok="${id}|${a}">ยืนยัน</button><button class="btn out" data-dclose>ยกเลิก</button>`);const ta=$("#apn"),b=$("[data-apnok]");if(ta&&b){b.disabled=true;ta.oninput=()=>{b.disabled=!ta.value.trim()};setTimeout(()=>ta.focus(),60)}}   // ไม่อนุมัติ/ส่งกลับ: ต้องพิมพ์เหตุผลก่อน ปุ่มยืนยันจึงกดได้
 function sheet(h){$("#ov").innerHTML=`<div class="scrim" data-dclose style="inset:0"></div><div class="sheetm" role="dialog" aria-modal="true"><div class="grab"></div>${h}</div>`}
-function decide(id,action,note,days){return api("decideLeave",id,action,note||"",days||[]).then(r=>{$("#ov").innerHTML="";toast({ok:"อนุมัติแล้ว",partial:"อนุมัติบางวันแล้ว",no:"ไม่อนุมัติแล้ว",back:"ส่งกลับแก้ไขแล้ว"}[action]+(r.status==="hr"?" · ส่งต่อ HR":"")+" · แจ้งผู้ขอทาง LINE");S.stack.pop();show("back");loadAps()}).catch(e=>toast(e.message))}
+function decide(id,action,note,days){return api("decideLeave",id,action,note||"",days||[]).then(r=>{$("#ov").innerHTML="";loadLeave(true).catch(()=>{});loadLeave(true).catch(()=>{});toast({ok:"อนุมัติแล้ว",partial:"อนุมัติบางวันแล้ว",no:"ไม่อนุมัติแล้ว",back:"ส่งกลับแก้ไขแล้ว"}[action]+(r.status==="hr"?" · ส่งต่อ HR":"")+" · แจ้งผู้ขอทาง LINE");S.stack.pop();show("back");loadAps()}).catch(e=>toast(e.message))}
 
 /* ---------- actions ---------- */
 function openLeave(edit){L.f=null;if(L.info)newLeaveForm(edit);go("leave");loadLeave(true).then(()=>{if(!L.f)newLeaveForm(edit);if(curV()==="leave"){repaint();runPreview()}}).catch(e=>toast(e.message))}
@@ -167,6 +169,19 @@ document.addEventListener("click",e=>{const t=e.target.closest("button");if(!t)r
 },true);
 function openDetailReplace(id){api("leaveDetail",id).then(r=>{L.det[id]=r;if(cur()==="lvdetail:"+id)repaint()})}
 document.addEventListener("change",e=>{if(e.target.id==="lsub"&&L.f){L.f.substitute_id=e.target.value;runPreview()}});
-document.addEventListener("input",e=>{if(e.target.id==="lr"&&L.f)L.f.reason=e.target.value});
+document.addEventListener("input",e=>{if(e.target.id==="lr"&&L.f)L.f.reason=e.target.value;if(e.target.id==="ldoc"&&L.f)L.f.doc_no=e.target.value});
 
 start();
+
+/* ── เอกสารแนบใบลา (3 พ.ย. 2569 ผู้ใช้ขอ: ทุกประเภทแนบเลขเอกสาร / รูปได้ · ไม่บังคับ) ── */
+function lvAttForm(f){const P=f.photos||[];return `${fl("ldoc","เลขที่เอกสาร (ไม่บังคับ)",`<input class="inp" id="ldoc" maxlength="100" placeholder="เช่น เลขใบรับรองแพทย์" value="${esc(f.doc_no||"")}">`)}
+  <div class="fl"><span>แนบรูปเอกสาร (ไม่บังคับ · ไม่เกิน 3 รูป)</span><div class="lv-att">${P.map((d,k)=>`<div class="lv-th"><img src="${d}" alt="รูปแนบ ${k+1}"><button type="button" data-lvphx="${k}" aria-label="เอารูปออก">${ic("x","width:14px;height:14px")}</button></div>`).join("")}${P.length<3?`<label class="lv-add">${ic("clip","width:22px;height:22px")}<span>เพิ่มรูป</span><input type="file" id="lvfile" accept="image/*" hidden></label>`:""}</div>${!f.ph&&f.oldFiles?`<span class="cap">มีรูปเดิม ${f.oldFiles} รูป · เพิ่มรูปใหม่จะแทนที่รูปเดิม</span>`:""}</div>`}
+const LVF={};
+function lvAttView(r){if(!r.doc_no&&!r.files)return "";if(r.files&&!LVF[r.id]){LVF[r.id]="…";api("leaveFiles",r.id).then(a=>{LVF[r.id]=a;repaint()}).catch(()=>{LVF[r.id]=[]})}
+  const F=Array.isArray(LVF[r.id])?LVF[r.id]:[];return `<div class="fcard" style="gap:8px"><b>เอกสารแนบ</b>${r.doc_no?`<div class="r" style="display:flex;justify-content:space-between;gap:12px"><span class="cap">เลขที่เอกสาร</span><span>${esc(r.doc_no)}</span></div>`:""}${r.files?`<div class="lv-att">${F.length?F.map(x=>`<button type="button" class="lv-th" data-lvview="${x.id}"><img src="${x.data}" alt="รูปแนบ"></button>`).join(""):`<span class="cap">กำลังโหลดรูป ${r.files} รูป…</span>`}</div>`:""}</div>`}
+document.addEventListener("click",e=>{const t=e.target.closest("[data-lvphx],[data-lvview]");if(!t)return;
+  if(t.dataset.lvphx!==undefined){L.f.photos.splice(+t.dataset.lvphx,1);L.f.ph=true;repaint();return}
+  const id=t.dataset.lvview;let d="";Object.values(LVF).forEach(a=>{if(Array.isArray(a))a.forEach(x=>{if(x.id===id)d=x.data})});if(d)sheet(`<img src="${d}" alt="รูปแนบ" style="width:100%;border-radius:12px"><button class="btn out" data-dclose>ปิด</button>`)});
+document.addEventListener("change",e=>{const t=e.target;if(!t||t.id!=="lvfile"||!L.f)return;const fl0=t.files&&t.files[0];t.value="";if(!fl0)return;
+  const u=URL.createObjectURL(fl0),im=new Image();im.onload=()=>{let mx=1600,q=.82,d="";for(let k=0;k<7;k++){const sc=Math.min(1,mx/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*sc);c.height=Math.round(im.height*sc);c.getContext("2d").drawImage(im,0,0,c.width,c.height);d=c.toDataURL("image/jpeg",q);if(d.length<=380000)break;mx=Math.round(mx*.8);q=Math.max(.55,q-.05)}
+    URL.revokeObjectURL(u);if(d.length>380000)return toast("รูปใหญ่เกินไป");const f=L.f;f.reason=($("#lr")||{}).value||f.reason;f.doc_no=($("#ldoc")||{}).value||f.doc_no;if(!f.ph){f.photos=[];f.ph=true}if(f.photos.length>=3)return;f.photos.push(d);repaint()};im.onerror=()=>{URL.revokeObjectURL(u);toast("เปิดรูปนี้ไม่ได้")};im.src=u});
