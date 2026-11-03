@@ -932,3 +932,7 @@ html.th-sky .rl-sc{scrollbar-color:rgba(0,0,0,.18) transparent}html.th-sky .rl-s
 .ps-list{display:flex;flex-direction:column;max-height:52vh;overflow:auto;border:1px solid var(--line);border-radius:12px}.ps-i{display:flex;align-items:center;gap:8px;padding:9px 12px;border-top:1px solid var(--line);cursor:pointer;font-size:14px}.ps-i:first-child{border-top:0}.ps-i[hidden]{display:none}.ps-i small{margin-left:auto;color:var(--fnt);font-size:12px}
 .btn-bad{color:var(--bad);border-color:#F2C4C4}.btn-bad:hover{background:#FEF2F2}
 #pys-q{border:1px solid var(--line);border-radius:10px;padding:9px 12px;font:inherit;font-size:14px;background:#fff;min-width:0}
+
+/* 3 พ.ย. 2569: พนักงานดูบริษัทของตัวเอง (สลับไม่ได้) */
+.co-pop .co-i{display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:10px;color:var(--fg);opacity:.55}.co-pop .co-i.on{opacity:1;background:#F4F6FA}.co-pop .co-i .co-tx small{color:var(--fnt)}
+.co-me{font-size:11px;font-weight:600;color:#2563EB;background:#EAF1FE;border-radius:999px;padding:2px 8px;flex:none}.co-f.co-note{font-size:12px;color:var(--fnt);padding:8px 10px 2px}
