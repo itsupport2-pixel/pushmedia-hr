@@ -6249,7 +6249,7 @@ function renderPlannerTeamList() {
 
   var tasks = vTasks();
   var depts = vDepts();
-  var emps  = DB.employees || [];
+  var emps  = (DB.employees || []).filter(function(e){ return e.status==1||e.status==null||e.status===undefined; });   // 3 พ.ย. 2569 ผู้ใช้: คนลาออกไม่แสดงทุกส่วน
   var myDept = _myDept();
 
   
