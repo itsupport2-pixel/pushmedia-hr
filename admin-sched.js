@@ -257,3 +257,112 @@ function bShiftProfile(){if(!$('#shed'))return;$('#shed').onclick=function(){var
   $('#shok').onclick=function(){var b=this,ids=$$('[data-sha]').filter(function(c){return c.checked}).map(function(c){return c.dataset.sha});busy(b,1);
    aCall('saveEmployeeShifts',A.id,{shift_ids:ids,default_shift:$('#shdef').value}).then(function(r){if(!r.ok){busy(b,0);return toast(r.errors.shift_ids||'บันทึกไม่ได้',1)}PROF.shifts=r.shifts;closeD();render();toast('บันทึกกะแล้ว')}).catch(function(e){busy(b,0);toast(e.message,1)})}}}
 
+
+/* ───────── ตารางงาน › รายงานตารางงาน (3 พ.ย. 2569 ผู้ใช้ขอ: รายคน/รายทีม ไปงานกี่วันจากวันทำงานของเดือน · ไปโปรเจกต์ไหน · การจัดคนในทีม · กรองตามตำแหน่ง) ─────────
+ * schedReport(ym) คืนรายคน (วันไปงาน/วันทำงาน · วันหยุดที่ไปงาน · ลา · ว่าง · โปรเจกต์) + โปรเจกต์ + ยืมตัวข้ามทีม · รวมรายทีมในหน้าเว็บ (ตามตัวกรองตำแหน่ง) */
+function srYmTxt(ym){return TH_M[+ym.slice(5,7)-1]+' '+(+ym.slice(0,4)+543)}
+function srYms(){var t=locISO().slice(0,7),y=+t.slice(0,4),m=+t.slice(5,7),o=[];for(var i=1;i>=-12;i--){var x=new Date(y,m-1+i,1);o.push(x.getFullYear()+'-'+('0'+(x.getMonth()+1)).slice(-2))}return o}
+function srPct(a,b){return b?Math.round(a*100/b):0}
+function srBar(a,b){var p=Math.min(100,srPct(a,b)),c=p>=80?'hi':p>=50?'md':'lo';return '<span class="sr-bar '+c+'"><i style="width:'+p+'%"></i></span>'}
+function srFrac(a,b){return '<b class="num">'+f1s(a)+'</b><span class="faint">/'+b+'</span>'}
+function f1s(x){return x%1?(+x).toFixed(1):String(x)}
+function srTeam(id){return id?org('teams',id)||'—':'ไม่มีทีม'}
+function srPj(d,k){return (d.pjm||{})[k]||{k:k,title:k.replace(/^T:/,''),pm:''}}
+function srPjName(p){return p.pm&&p.title.indexOf(p.pm)<0?p.pm+' · '+p.title:p.title}
+function vSrep(){A.srYm=A.srYm||locISO().slice(0,7);A.srTab=A.srTab||'team';A.srD=A.srD||'all';A.srT=A.srT||'all';A.srP=A.srP||'all';A.srQ=A.srQ||'';
+  var tab=function(k,l){return '<button type="button" data-srt="'+k+'"'+(A.srTab===k?' aria-pressed="true"':'')+'>'+l+'</button>'},sc=acc('att');
+  return '<div class="ph"><div><h1>รายงานตารางงาน</h1><div class="sub">วันไปงานเทียบวันทำงานของเดือน · โปรเจกต์ · การจัดคนในทีม · ขอบเขต: '+esc(scopeTxt('att'))+'</div></div><span class="sp"></span><button class="btn btn-ex" id="sr-xls">'+fileIc('xls')+'Export Excel</button></div>'+
+   '<div class="rp-tabs" role="group" aria-label="มุมมอง">'+tab('team','รายทีม')+tab('emp','รายคน')+tab('proj','รายโปรเจกต์')+'</div>'+
+   '<section class="card rp-tools" style="padding:14px 16px"><div class="rp-f"><label>เดือน<select id="sr-ym">'+srYms().map(function(y){return '<option value="'+y+'"'+(A.srYm===y?' selected':'')+'>'+srYmTxt(y)+'</option>'}).join('')+'</select></label>'+
+    (sc==='all'?'<label>แผนก<select id="sr-dep"></select></label>':'')+(sc==='all'||sc==='dept'?'<label>ทีม<select id="sr-team"></select></label>':'')+
+    '<label>ตำแหน่ง<select id="sr-pos"></select></label><label>ค้นหา<input type="search" id="sr-q" placeholder="ชื่อ รหัส หรือโปรเจกต์" value="'+esc(A.srQ)+'"></label></div></section>'+
+   '<div id="sr-body"><div class="loading"><span class="spin"></span></div></div>'}
+function bSrep(){
+  var load=function(){$('#sr-body').innerHTML='<div class="loading"><span class="spin"></span>กำลังรวมข้อมูล '+esc(srYmTxt(A.srYm))+'…</div>';var y=A.srYm;
+    aCall('schedReport',y).then(function(d){if(A.srYm!==y)return;d.pjm={};d.projects.forEach(function(p){d.pjm[p.k]=p});A.sr=d;drawSrep()}).catch(function(e){if($('#sr-body'))$('#sr-body').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})};
+  $$('[data-srt]').forEach(function(b){b.onclick=function(){A.srTab=b.dataset.srt;$$('[data-srt]').forEach(function(x){x.setAttribute('aria-pressed',x===b)});drawSrep()}});
+  $('#sr-ym').onchange=function(){A.srYm=this.value;load()};
+  if($('#sr-dep'))$('#sr-dep').onchange=function(){A.srD=this.value;A.srT='all';drawSrep()};
+  if($('#sr-team'))$('#sr-team').onchange=function(){A.srT=this.value;drawSrep()};
+  $('#sr-pos').onchange=function(){A.srP=this.value;drawSrep()};
+  var qt;$('#sr-q').oninput=function(){var v=this.value;clearTimeout(qt);qt=setTimeout(function(){A.srQ=v;drawSrep()},200)};
+  $('#sr-xls').onclick=srCsv;
+  if(A.sr&&A.sr.ym===A.srYm)drawSrep();else load()}
+/* ตัวกรอง: แผนก → ทีม → ตำแหน่ง (แสดงเฉพาะที่มีคนในรายงาน + จำนวนคน) */
+function srOpts(){var d=A.sr,o=function(v,l,n,cur){return '<option value="'+esc(v)+'"'+(cur===v?' selected':'')+'>'+esc(l)+(n?' ('+n+')':'')+'</option>'},cd={},ct={},cp={},pn={};
+  d.people.forEach(function(p){cd[p.dept_id]=(cd[p.dept_id]||0)+1;if(A.srD!=='all'&&p.dept_id!==A.srD)return;ct[p.team_id]=(ct[p.team_id]||0)+1;if(A.srT!=='all'&&p.team_id!==A.srT)return;var k=p.pos||'(ไม่ระบุ)';cp[k]=(cp[k]||0)+1});
+  if(A.srD!=='all'&&!cd[A.srD])A.srD='all';if(A.srT!=='all'&&!ct[A.srT])A.srT='all';if(A.srP!=='all'&&!cp[A.srP])A.srP='all';
+  if($('#sr-dep'))$('#sr-dep').innerHTML=o('all','ทุกแผนก',d.people.length,A.srD)+Object.keys(cd).map(function(k){return [k,org('departments',k)||'ไม่มีแผนก']}).sort(function(a,b){return a[1].localeCompare(b[1],'th')}).map(function(x){return o(x[0],x[1],cd[x[0]],A.srD)}).join('');
+  if($('#sr-team'))$('#sr-team').innerHTML=o('all','ทุกทีม',0,A.srT)+Object.keys(ct).map(function(k){return [k,srTeam(k)]}).sort(function(a,b){return a[1].localeCompare(b[1],'th')}).map(function(x){return o(x[0],x[1],ct[x[0]],A.srT)}).join('');
+  $('#sr-pos').innerHTML=o('all','ทุกตำแหน่ง',0,A.srP)+Object.keys(cp).sort(function(a,b){return a.localeCompare(b,'th')}).map(function(k){return o(k,k,cp[k],A.srP)}).join('')}
+function srPeople(){var d=A.sr,q=(A.srQ||'').trim().toLowerCase();
+  return d.people.filter(function(p){if(A.srD!=='all'&&p.dept_id!==A.srD)return false;if(A.srT!=='all'&&p.team_id!==A.srT)return false;if(A.srP!=='all'&&(p.pos||'(ไม่ระบุ)')!==A.srP)return false;
+    if(!q)return true;if((p.code+' '+p.name+' '+p.nick).toLowerCase().indexOf(q)>=0)return true;return Object.keys(p.proj).some(function(k){return srPjName(srPj(d,k)).toLowerCase().indexOf(q)>=0})})}
+function srTeams(rows){var d=A.sr,m={},tin={};(d.teams||[]).forEach(function(t){tin[t.team_id]=t});
+  rows.forEach(function(p){var t=m[p.team_id]=m[p.team_id]||{id:p.team_id,dept_id:p.dept_id,n:0,work:0,wd:0,extra:0,leave:0,idle:0,out:0,low:[],full:0,proj:{}};
+    t.n++;t.work+=p.work;t.wd+=p.wd;t.extra+=p.extra;t.leave+=p.leave;t.idle+=p.idle;t.out+=p.cross;Object.keys(p.proj).forEach(function(k){t.proj[k]=1});
+    var r=srPct(p.work,p.wd);if(r<50)t.low.push(p);if(r>=100)t.full++});
+  return Object.keys(m).map(function(k){var t=m[k];t.in=(tin[k]||{}).in||0;t.np=Object.keys(t.proj).length;return t}).sort(function(a,b){return srPct(b.work,b.wd)-srPct(a.work,a.wd)})}
+function drawSrep(){var d=A.sr;if(!d||!$('#sr-body'))return;srOpts();var rows=srPeople(),T=srTeams(rows);
+  var tw=0,twd=0,tex=0,tlv=0,low=0,cr=0,pj={};rows.forEach(function(p){tw+=p.work;twd+=p.wd;tex+=p.extra;tlv+=p.leave;cr+=p.cross;if(srPct(p.work,p.wd)<50)low++;Object.keys(p.proj).forEach(function(k){pj[k]=1})});
+  var cur=d.ym===d.today.slice(0,7),kp=function(l,v,s){return '<div class="sr-k"><small>'+l+'</small><b>'+v+'</b>'+(s?'<span>'+s+'</span>':'')+'</div>'};
+  var h='<div class="sr-ks">'+kp('พนักงาน',rows.length+' คน',T.length+' ทีม')+kp('ไปงาน / วันทำงาน',f1s(tw)+'<small>/'+twd+' คน-วัน</small>',srPct(tw,twd)+'% ของวันทำงาน')+kp('ไปงานวันหยุด',f1s(tex)+'<small> คน-วัน</small>','อาทิตย์ · วันหยุดบริษัท · วันนอกตาราง')+
+    kp('โปรเจกต์',Object.keys(pj).length,'ที่คนในรายงานไปทำ')+kp('ช่วยทีมอื่น',cr+'<small> คน-วัน</small>','ไปงานของทีมอื่น')+kp('ไปงานไม่ถึงครึ่ง',low+' คน','ไปงานต่ำกว่า 50% ของวันทำงาน')+'</div>'+
+    (cur?'<div class="faint sr-note">เดือนนี้ยังไม่จบ · วันทำงานนับทั้งเดือน (รวมวันที่ยังไม่ถึง) · งานที่จัดล่วงหน้านับรวมแล้ว</div>':'');
+  if(!rows.length){$('#sr-body').innerHTML=h+'<section class="card"><div class="rp-empty">ไม่พบข้อมูลตามเงื่อนไขนี้</div></section>';return}
+  if(A.srTab==='team')h+=srTeamT(T);else if(A.srTab==='proj')h+=srProjT(rows);else h+=srEmpT(rows);
+  $('#sr-body').innerHTML=h;
+  $$('[data-srtm]').forEach(function(r){r.onclick=function(){A.srT=r.dataset.srtm;A.srD='all';A.srTab='emp';$$('[data-srt]').forEach(function(x){x.setAttribute('aria-pressed',x.dataset.srt==='emp')});drawSrep();scrollTo(0,0)}});
+  $$('[data-srp]').forEach(function(r){r.onclick=function(){srPerson(r.dataset.srp)}});
+  $$('[data-srj]').forEach(function(r){r.onclick=function(){srProj(r.dataset.srj)}})}
+function srTeamT(T){return '<section class="card" style="padding:0;overflow:auto"><table class="xd-t sr-t"><thead><tr><th>ทีม</th><th class="num">คน</th><th>ไปงาน / วันทำงาน (คน-วัน)</th><th class="num">เฉลี่ยต่อคน</th><th class="num">วันหยุดที่ไปงาน</th><th class="num">ลา</th><th class="num">ว่าง</th><th class="num">โปรเจกต์</th><th class="num" title="คนทีมอื่นมาช่วยงานของทีมนี้">ยืมคนทีมอื่น</th><th class="num" title="คนในทีมไปช่วยงานของทีมอื่น">ไปช่วยทีมอื่น</th><th>ไปงานไม่ถึงครึ่ง</th></tr></thead><tbody>'+
+  T.map(function(t){var avg=t.n?t.work/t.n:0,wa=t.n?Math.round(t.wd/t.n):0;
+    return '<tr class="ck" data-srtm="'+esc(t.id)+'" title="ดูรายคนของทีมนี้"><td><b>'+esc(srTeam(t.id))+'</b><small class="sr-sub">'+esc(org('departments',t.dept_id))+'</small></td><td class="num">'+t.n+'</td><td><div class="sr-uc">'+srBar(t.work,t.wd)+srFrac(t.work,t.wd)+'<span class="sr-pc">'+srPct(t.work,t.wd)+'%</span></div></td>'+
+     '<td class="num">'+avg.toFixed(1)+'<span class="faint">/'+wa+' วัน</span></td><td class="num">'+(t.extra?f1s(t.extra):'<span class="faint">0</span>')+'</td><td class="num">'+f1s(t.leave)+'</td><td class="num">'+f1s(t.idle)+'</td><td class="num">'+t.np+'</td><td class="num">'+(t.in||'<span class="faint">0</span>')+'</td><td class="num">'+(t.out||'<span class="faint">0</span>')+'</td>'+
+     '<td>'+(t.low.length?t.low.slice(0,4).map(function(p){return '<span class="sr-chip">'+esc(p.nick||p.name)+' '+srPct(p.work,p.wd)+'%</span>'}).join('')+(t.low.length>4?'<span class="faint"> +'+(t.low.length-4)+'</span>':''):'<span class="faint">—</span>')+'</td></tr>'}).join('')+
+  '</tbody></table></section><div class="faint sr-note">กดที่ทีมเพื่อดูรายคน · คน-วัน = จำนวนคน × จำนวนวัน · ว่าง = วันทำงานที่ไม่มีงานและไม่ได้ลา</div>'}
+function srEmpT(rows){var d=A.sr,s=A.srS||{k:'pct',dir:-1},val=function(p){return s.k==='pct'?srPct(p.work,p.wd):s.k==='name'?p.code:p[s.k]};
+  rows=rows.slice().sort(function(a,b){var x=val(a),y=val(b);return ((typeof x==='string'?x.localeCompare(y):x-y)*s.dir)||(a.code<b.code?-1:1)});
+  var th=function(k,l,c){var on=s.k===k;return '<th class="'+(c||'')+' sk'+(on?' on':'')+'" data-srs="'+k+'">'+l+(on?(s.dir<0?' ↓':' ↑'):'')+'</th>'};
+  setTimeout(function(){$$('[data-srs]').forEach(function(t){t.onclick=function(e){e.stopPropagation();var k=t.dataset.srs;A.srS=s.k===k?{k:k,dir:-s.dir}:{k:k,dir:k==='name'?1:-1};drawSrep()}})});
+  return '<section class="card" style="padding:0;overflow:auto"><table class="xd-t sr-t"><thead><tr>'+th('name','พนักงาน')+'<th>ตำแหน่ง · ทีม</th>'+th('pct','ไปงาน / วันทำงาน')+th('extra','วันหยุดที่ไปงาน','num')+th('leave','ลา','num')+th('idle','ว่าง','num')+th('cross','ช่วยทีมอื่น','num')+th('nproj','โปรเจกต์ที่ไป')+'</tr></thead><tbody>'+
+   rows.map(function(p){var pk=Object.keys(p.proj).sort(function(a,b){return p.proj[b]-p.proj[a]});
+    return '<tr class="ck" data-srp="'+esc(p.id)+'"><td><b>'+esc(p.name)+'</b><small class="sr-sub">('+esc(p.nick||'-')+') · '+esc(p.code)+'</small></td><td>'+esc(p.pos||'—')+'<small class="sr-sub">'+esc(srTeam(p.team_id))+'</small></td>'+
+     '<td><div class="sr-uc">'+srBar(p.work,p.wd)+srFrac(p.work,p.wd)+'<span class="sr-pc">'+srPct(p.work,p.wd)+'%</span></div></td><td class="num">'+(p.extra||'<span class="faint">0</span>')+'</td><td class="num">'+(p.leave?f1s(p.leave):'<span class="faint">0</span>')+'</td><td class="num">'+f1s(p.idle)+'</td><td class="num">'+(p.cross||'<span class="faint">0</span>')+'</td>'+
+     '<td class="sr-pjs">'+(pk.length?pk.slice(0,3).map(function(k){var j=srPj(d,k);return '<span class="sr-chip" title="'+esc(j.title)+'">'+esc(j.pm||j.title.slice(0,22))+' <em>'+p.proj[k]+'</em></span>'}).join('')+(pk.length>3?'<span class="faint"> +'+(pk.length-3)+'</span>':''):'<span class="faint">ไม่มีงาน</span>')+'</td></tr>'}).join('')+
+   '</tbody></table></section><div class="faint sr-note">กดที่ชื่อเพื่อดูปฏิทินรายวันและโปรเจกต์ทั้งหมด · ตัวเลขในป้ายโปรเจกต์ = จำนวนวัน</div>'}
+function srProjT(rows){var d=A.sr,ids={},q=(A.srQ||'').trim().toLowerCase();rows.forEach(function(p){ids[p.id]=1});
+  var L=d.projects.map(function(j){var ps=Object.keys(j.people).filter(function(i){return ids[i]});return {j:j,ps:ps,pd:ps.reduce(function(s,i){return s+j.people[i]},0)}}).filter(function(x){return x.ps.length||(!q&&A.srD==='all'&&A.srT==='all'&&A.srP==='all'&&x.j.other)})
+    .filter(function(x){return !q||srPjName(x.j).toLowerCase().indexOf(q)>=0||x.ps.length}).sort(function(a,b){return b.pd-a.pd});
+  var P={};d.people.forEach(function(p){P[p.id]=p});
+  return '<section class="card" style="padding:0;overflow:auto"><table class="xd-t sr-t"><thead><tr><th>โปรเจกต์</th><th>ทีมเจ้าของงาน</th><th>ช่วงที่มีคนไป</th><th class="num">วัน</th><th class="num">คน-วัน</th><th>คนที่ไป (วัน)</th></tr></thead><tbody>'+
+   L.map(function(x){var j=x.j,ps=x.ps.sort(function(a,b){return j.people[b]-j.people[a]});
+    return '<tr class="ck" data-srj="'+esc(j.k)+'"><td><b class="sr-wrap" style="display:block">'+esc(j.pm||j.title)+'</b>'+(j.pm?'<small class="sr-sub sr-wrap">'+esc(j.title)+'</small>':'<small class="sr-sub">ไม่มีเลข PM</small>')+'</td><td>'+esc(srTeam(j.team_id))+'</td><td>'+esc(j.from===j.to?sd(j.from):sd(j.from)+' – '+sd(j.to))+'</td><td class="num">'+j.ndays+'</td><td class="num">'+x.pd+(j.other?'<small class="sr-sub" title="คนนอกตัวกรอง/ขอบเขต">+'+j.other+' อื่น</small>':'')+'</td>'+
+     '<td class="sr-pjs">'+ps.slice(0,6).map(function(i){var p=P[i];return '<span class="sr-chip'+(p.team_id!==j.team_id&&j.team_id?' x':'')+'"'+(p.team_id!==j.team_id&&j.team_id?' title="ยืมจากทีม '+esc(srTeam(p.team_id))+'"':'')+'>'+esc(p.nick||p.name)+' <em>'+j.people[i]+'</em></span>'}).join('')+(ps.length>6?'<span class="faint"> +'+(ps.length-6)+'</span>':'')+'</td></tr>'}).join('')+
+   '</tbody></table></section><div class="faint sr-note">'+L.length+' โปรเจกต์ · ป้ายเส้นประ = ยืมคนจากทีมอื่น · โปรเจกต์รวมตามเลข PM (งานหลายใบเลขเดียวกันรวมเป็นโปรเจกต์เดียว)</div>'}
+/* รายละเอียดรายคน: ปฏิทินทั้งเดือน + โปรเจกต์ทั้งหมด */
+function srPerson(id){var d=A.sr,p=d.people.filter(function(x){return x.id===id})[0];if(!p)return;
+  var first=new Date(d.from+'T12:00:00').getDay(),cells='';for(var i=0;i<first;i++)cells+='<i></i>';
+  d.dates.forEach(function(ds){var js=p.days[ds]||[],lv=p.lvDays[ds],ho=d.holidays[ds],idle=p.idleDays.indexOf(ds)>=0,c=js.length?'j':lv?'l':ho?'h':idle?'i':'o';
+    var t=js.map(function(k){return srPjName(srPj(d,k))}).join(' · ')||(lv?'ลา'+(lv<1?'ครึ่งวัน':''):ho?ho:idle?'ว่าง (วันทำงาน ไม่มีงาน)':'วันหยุด');
+    cells+='<b class="sr-d '+c+'" title="'+esc(sd(ds)+' · '+t)+'">'+(+ds.slice(8))+(js.length>1?'<em>'+js.length+'</em>':'')+'</b>'});
+  var pk=Object.keys(p.proj).sort(function(a,b){return p.proj[b]-p.proj[a]});
+  drawer(p.name+' ('+(p.nick||'-')+')','<div class="sr-pp"><div class="faint">'+esc(p.code)+' · '+esc(p.pos||'—')+' · '+esc(srTeam(p.team_id))+' · '+esc(srYmTxt(d.ym))+'</div>'+
+    '<div class="sr-ks sm">'+[['ไปงาน',f1s(p.work)+'/'+p.wd+' วัน'],['วันหยุดที่ไปงาน',p.extra+' วัน'],['ลา',f1s(p.leave)+' วัน'],['ว่าง',f1s(p.idle)+' วัน']].map(function(x){return '<div class="sr-k"><small>'+x[0]+'</small><b>'+x[1]+'</b></div>'}).join('')+'</div>'+
+    '<div class="sr-cal">'+THD.map(function(x){return '<s>'+x+'</s>'}).join('')+cells+'</div><div class="sr-lg"><span class="j">ไปงาน</span><span class="i">ว่าง</span><span class="l">ลา</span><span class="h">วันหยุด</span></div>'+
+    '<h4 style="margin:18px 0 8px">โปรเจกต์ที่ไป ('+pk.length+')</h4>'+(pk.length?'<ul class="sr-pl">'+pk.map(function(k){var j=srPj(d,k),ds=Object.keys(p.days).filter(function(x){return p.days[x].indexOf(k)>=0}).sort();
+      return '<li><div><b>'+esc(j.pm||j.title)+'</b>'+(j.pm?'<small>'+esc(j.title)+'</small>':'')+'<small>'+esc(ds.map(function(x){return +x.slice(8)}).join(', '))+' '+esc(THM[+d.ym.slice(5,7)-1])+(j.team_id&&j.team_id!==p.team_id?' · งานของทีม '+esc(srTeam(j.team_id)):'')+'</small></div><span class="num">'+p.proj[k]+' วัน</span></li>'}).join('')+'</ul>':'<div class="faint">เดือนนี้ยังไม่มีชื่อในงาน</div>')+'</div>')}
+function srProj(k){var d=A.sr,j=d.pjm[k];if(!j)return;var P={};d.people.forEach(function(p){P[p.id]=p});var ps=Object.keys(j.people).sort(function(a,b){return j.people[b]-j.people[a]});
+  drawer(j.pm||j.title,'<div class="sr-pp"><div class="faint">'+esc(j.title)+'<br>ทีมเจ้าของงาน: '+esc(srTeam(j.team_id))+' · '+esc(j.from===j.to?sd(j.from):sd(j.from)+' – '+sd(j.to))+' · '+j.njobs+' ใบงาน</div>'+
+   '<div class="sr-ks sm">'+[['วันที่มีคนไป',j.ndays+' วัน'],['คน-วัน',j.pdays],['คน',ps.length+(j.other?' + อื่น':'')]].map(function(x){return '<div class="sr-k"><small>'+x[0]+'</small><b>'+x[1]+'</b></div>'}).join('')+'</div>'+
+   '<ul class="sr-pl">'+ps.map(function(i){var p=P[i];return '<li><div><b>'+esc(p.name)+' ('+esc(p.nick||'-')+')</b><small>'+esc(p.pos||'—')+' · '+esc(srTeam(p.team_id))+(j.team_id&&p.team_id!==j.team_id?' · ยืมตัว':'')+'</small></div><span class="num">'+j.people[i]+' วัน</span></li>'}).join('')+
+   (j.other?'<li><div><span class="faint">คนนอกขอบเขต/ตัวกรอง</span></div><span class="num">'+j.other+' คน-วัน</span></li>':'')+'</ul></div>')}
+function srCsv(){var d=A.sr;if(!d)return;var rows=srPeople(),q=function(v){v=String(v==null?'':v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v},out,nm;
+  if(A.srTab==='team'){nm='ทีม';out=[['ทีม','แผนก','คน','ไปงาน (คน-วัน)','วันทำงาน (คน-วัน)','%','เฉลี่ยต่อคน','วันหยุดที่ไปงาน','ลา','ว่าง','โปรเจกต์','ยืมคนทีมอื่น','ไปช่วยทีมอื่น','ไปงานไม่ถึงครึ่ง']];
+    srTeams(rows).forEach(function(t){out.push([srTeam(t.id),org('departments',t.dept_id),t.n,t.work,t.wd,srPct(t.work,t.wd),t.n?(t.work/t.n).toFixed(1):0,t.extra,t.leave,t.idle,t.np,t.in,t.out,t.low.map(function(p){return p.nick||p.name}).join(' ')])})}
+  else if(A.srTab==='proj'){nm='โปรเจกต์';var P={};d.people.forEach(function(p){P[p.id]=p});out=[['เลข PM','ชื่องาน','ทีมเจ้าของงาน','ตั้งแต่','ถึง','วัน','คน-วัน','คนที่ไป']];
+    d.projects.forEach(function(j){out.push([j.pm,j.title,srTeam(j.team_id),j.from,j.to,j.ndays,j.pdays,Object.keys(j.people).map(function(i){return (P[i].nick||P[i].name)+' '+j.people[i]}).join(', ')])})}
+  else{nm='รายคน';out=[['รหัส','ชื่อ','ชื่อเล่น','ตำแหน่ง','ทีม','ไปงาน (วัน)','วันทำงาน','%','วันหยุดที่ไปงาน','ลา','ว่าง','ช่วยทีมอื่น','โปรเจกต์ (วัน)']];
+    rows.forEach(function(p){out.push([p.code,p.name,p.nick,p.pos,srTeam(p.team_id),p.work,p.wd,srPct(p.work,p.wd),p.extra,p.leave,p.idle,p.cross,Object.keys(p.proj).map(function(k){var j=srPj(d,k);return (j.pm||j.title)+' '+p.proj[k]}).join(', ')])})}
+  var blob=new Blob(['\ufeff'+out.map(function(r){return r.map(q).join(',')}).join('\r\n')],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download='รายงานตารางงาน_'+nm+'_'+d.ym+'.csv';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500)}
