@@ -442,3 +442,14 @@ a.btn{text-decoration:none;display:flex;align-items:center;justify-content:cente
 .lv-th{position:relative;width:76px;height:76px;border-radius:10px;overflow:hidden;border:1px solid var(--line,#E5E7EB);padding:0;background:#fff}.lv-th img{width:100%;height:100%;object-fit:cover;display:block}
 .lv-th button{position:absolute;top:3px;right:3px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;display:grid;place-items:center;border:0}
 .lv-add{width:76px;height:76px;border-radius:10px;border:1.5px dashed #C5CCD6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:11.5px;color:var(--muted,#6B7280);cursor:pointer}
+
+/* สลิปเงินเดือนในแอป (3 พ.ย. 2569) */
+.sl-pin{letter-spacing:8px;font-size:22px;text-align:center}
+.sl-list{display:flex;flex-direction:column;gap:10px}
+.sl-row{display:flex;align-items:center;gap:10px;background:#fff;border-radius:16px;box-shadow:var(--sh);padding:14px 16px;text-align:left;width:100%}
+.sl-row>span:first-child{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}.sl-net{font-weight:700;font-variant-numeric:tabular-nums}
+.sl-card{gap:8px}.sl-co b{display:block;font-size:15px}.sl-hd{border-top:1px solid var(--line,#E5E7EB);border-bottom:1px solid var(--line,#E5E7EB);padding:10px 0;display:flex;flex-direction:column;gap:2px}
+.sl-kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:14px}.sl-kv span{color:var(--text-2)}.sl-kv b{font-weight:600;min-width:0;overflow-wrap:anywhere}
+.sl-t{margin:10px 0 2px;font-size:14px}.sl-l{display:flex;justify-content:space-between;gap:12px;font-size:14px;padding:3px 0}.sl-l span:last-child{font-variant-numeric:tabular-nums;white-space:nowrap}
+.sl-s{border-top:1px dashed var(--line,#E5E7EB);font-weight:700;padding-top:6px}
+.sl-netbox{display:flex;justify-content:space-between;align-items:center;background:#111;color:#fff;border-radius:12px;padding:12px 14px;margin-top:8px}.sl-netbox b{font-size:20px;font-variant-numeric:tabular-nums}

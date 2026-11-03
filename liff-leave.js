@@ -171,7 +171,6 @@ function openDetailReplace(id){api("leaveDetail",id).then(r=>{L.det[id]=r;if(cur
 document.addEventListener("change",e=>{if(e.target.id==="lsub"&&L.f){L.f.substitute_id=e.target.value;runPreview()}});
 document.addEventListener("input",e=>{if(e.target.id==="lr"&&L.f)L.f.reason=e.target.value;if(e.target.id==="ldoc"&&L.f)L.f.doc_no=e.target.value});
 
-start();
 
 /* ── เอกสารแนบใบลา (3 พ.ย. 2569 ผู้ใช้ขอ: ทุกประเภทแนบเลขเอกสาร / รูปได้ · ไม่บังคับ) ── */
 function lvAttForm(f){const P=f.photos||[];return `${fl("ldoc","เลขที่เอกสาร (ไม่บังคับ)",`<input class="inp" id="ldoc" maxlength="100" placeholder="เช่น เลขใบรับรองแพทย์" value="${esc(f.doc_no||"")}">`)}
@@ -185,3 +184,36 @@ document.addEventListener("click",e=>{const t=e.target.closest("[data-lvphx],[da
 document.addEventListener("change",e=>{const t=e.target;if(!t||t.id!=="lvfile"||!L.f)return;const fl0=t.files&&t.files[0];t.value="";if(!fl0)return;
   const u=URL.createObjectURL(fl0),im=new Image();im.onload=()=>{let mx=1600,q=.82,d="";for(let k=0;k<7;k++){const sc=Math.min(1,mx/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*sc);c.height=Math.round(im.height*sc);c.getContext("2d").drawImage(im,0,0,c.width,c.height);d=c.toDataURL("image/jpeg",q);if(d.length<=380000)break;mx=Math.round(mx*.8);q=Math.max(.55,q-.05)}
     URL.revokeObjectURL(u);if(d.length>380000)return toast("รูปใหญ่เกินไป");const f=L.f;f.reason=($("#lr")||{}).value||f.reason;f.doc_no=($("#ldoc")||{}).value||f.doc_no;if(!f.ph){f.photos=[];f.ph=true}if(f.photos.length>=3)return;f.photos.push(d);repaint()};im.onerror=()=>{URL.revokeObjectURL(u);toast("เปิดรูปนี้ไม่ได้")};im.src=u});
+
+/* ── สลิปเงินเดือน (3 พ.ย. 2569 ผู้ใช้ขอ: ดูในแอป LINE · มี PIN) · เฉพาะงวดที่จ่ายแล้ว · PIN จำไว้ในหน่วยความจำ 10 นาที (ไม่เก็บลงเครื่อง) ── */
+const SL={info:null,pin:"",at:0,list:null,det:{}};
+const slM=n=>(+n||0).toLocaleString("th-TH",{minimumFractionDigits:2,maximumFractionDigits:2});
+const slYm=ym=>TH_M[+ym.slice(5,7)-1]+" "+(+ym.slice(0,4)+543);
+const slPinOk=()=>SL.pin&&Date.now()-SL.at<600000;
+function slErr(e){const m=e.message||String(e);if(/PIN_NOT_SET/.test(m)){SL.info=null;SL.pin="";repaint();return}if(/PIN/.test(m)){SL.pin="";SL.list=null;SL.det={}}toast(m);repaint()}
+function slLoad(){if(!SL.info){api("mySlipInfo").then(i=>{SL.info=i;repaint()}).catch(slErr);return}if(slPinOk()&&!SL.list)api("mySlips",SL.pin).then(l=>{SL.list=l;SL.at=Date.now();repaint()}).catch(slErr)}
+const slPinIn=(id,lab)=>fl(id,lab,`<input class="inp sl-pin" id="${id}" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="off" placeholder="••••••">`);
+V.slip=()=>{setTimeout(slLoad,0);const i=SL.info;if(!i)return band("สลิปเงินเดือน")+loadingV();
+  if(!i.enabled)return band("สลิปเงินเดือน")+`<div class="pad">${nt("c-blue","info","ยังไม่เปิดใช้สลิปเงินเดือนในแอป")}</div>`;
+  if(!i.hasPin)return band("สลิปเงินเดือน")+`<div class="pad"><div class="fcard"><b>ตั้ง PIN สำหรับดูสลิป</b><span class="cap">ตัวเลข 6 หลัก · ห้ามเลขซ้ำหรือเรียงกัน (เช่น 111111, 123456) · ใช้ทุกครั้งที่เปิดดูสลิป</span>${slPinIn("sp1","PIN ใหม่")}${slPinIn("sp2","ยืนยัน PIN อีกครั้ง")}<button class="btn pri" data-slipset>ตั้ง PIN</button></div></div>`;
+  if(!slPinOk())return band("สลิปเงินเดือน")+`<div class="pad"><div class="fcard"><b>ใส่ PIN เพื่อดูสลิป</b>${i.lockMin?nt("c-red","alert","ใส่ PIN ผิดหลายครั้ง · ลองใหม่ใน "+i.lockMin+" นาที"):""}${slPinIn("spin","PIN 6 หลัก")}<button class="btn pri" data-slipgo>ดูสลิป</button><span class="cap">ลืม PIN? แจ้ง HR ให้รีเซ็ต แล้วตั้งใหม่ได้ทันที</span></div></div>`;
+  const L0=SL.list;if(!L0)return band("สลิปเงินเดือน")+loadingV();
+  return band("สลิปเงินเดือน")+`<div class="pad">${L0.length?`<div class="sl-list">${L0.map(x=>`<button class="sl-row" data-slipd="${esc(x.id)}"><span><b>${x.kind==="bonus"?"โบนัส":"งวด"} ${slYm(x.ym)}</b><span class="cap">จ่าย ${x.pay_date?fD(x.pay_date):"—"}</span></span><span class="sl-net">${slM(x.net)}</span>${ic("chevR","width:18px;height:18px")}</button>`).join("")}</div>`:nt("c-blue","info","ยังไม่มีสลิป · สลิปจะขึ้นเมื่อ HR ยืนยันการจ่ายเงินเดือนแล้ว")}<button class="btn out" data-slipout style="margin-top:12px">ล็อกสลิป</button></div>`};
+V.slipd=id=>{const x=SL.det[id];if(!slPinOk()){SL.pin="";return V.slip()}
+  if(!x){api("mySlip",SL.pin,id).then(d=>{SL.det[id]=d;SL.at=Date.now();repaint()}).catch(slErr);return band("สลิปเงินเดือน")+loadingV()}
+  const inc=x.lines.filter(l=>l.kind==="inc"),ded=x.lines.filter(l=>l.kind==="ded"),li=a=>a.map(l=>`<div class="sl-l"><span>${esc(l.name)}</span><span>${slM(l.amount)}</span></div>`).join("");
+  return band("สลิปเงินเดือน")+`<div class="pad"><div class="fcard sl-card">
+    <div class="sl-co"><b>${esc(x.co.name_th)}${x.co.branch?" ("+esc(x.co.branch)+")":""}</b>${x.co.tax_id?`<span class="cap">เลขประจำตัวผู้เสียภาษี ${esc(x.co.tax_id)}</span>`:""}</div>
+    <div class="sl-hd"><b>${x.run.kind==="bonus"?"ใบแจ้งโบนัส":"ใบแจ้งเงินเดือน · งวด"} ${slYm(x.run.ym)}</b><span class="cap">${fD(x.run.from)} – ${fD(x.run.to)} · จ่าย ${x.run.pay_date?fD(x.run.pay_date):"—"}</span></div>
+    <div class="sl-kv"><span>รหัส</span><b>${esc(x.code)}</b><span>ชื่อ</span><b>${esc(x.name)}</b><span>แผนก</span><b>${esc(x.dept||"—")}</b><span>วันทำงาน</span><b>${x.days} วัน${x.absent?" · ขาด "+x.absent+" วัน":""}</b><span>โอนเข้า</span><b>${esc(x.bank||"—")}</b></div>
+    <h4 class="sl-t">รายได้</h4>${li(inc)}<div class="sl-l sl-s"><span>รวมรายได้</span><span>${slM(x.inc)}</span></div>
+    <h4 class="sl-t">รายการหัก</h4>${ded.length?li(ded):'<span class="cap">ไม่มี</span>'}<div class="sl-l sl-s"><span>รวมรายการหัก</span><span>${slM(x.ded)}</span></div>
+    <div class="sl-netbox"><span>เงินได้สุทธิ</span><b>${slM(x.net)}</b></div><span class="cap" style="text-align:center">เอกสารนี้เป็นความลับเฉพาะผู้รับ</span></div></div>`};
+document.addEventListener("click",e=>{const t=e.target.closest("[data-slipset],[data-slipgo],[data-slipd],[data-slipout]");if(!t)return;
+  if(t.dataset.slipout!==undefined){SL.pin="";SL.list=null;SL.det={};repaint();return}
+  if(t.dataset.slipd){go("slipd:"+t.dataset.slipd);return}
+  if(t.dataset.slipgo!==undefined){const p=($("#spin")||{}).value||"";if(!/^\d{6}$/.test(p))return toast("ใส่ PIN 6 หลัก");t.disabled=true;api("mySlips",p).then(l=>{SL.pin=p;SL.at=Date.now();SL.list=l;repaint()}).catch(er=>{t.disabled=false;api("mySlipInfo").then(i=>{SL.info=i}).catch(()=>{}).finally(()=>slErr(er))});return}
+  const a=($("#sp1")||{}).value||"",b=($("#sp2")||{}).value||"";if(!/^\d{6}$/.test(a))return toast("PIN ต้องเป็นตัวเลข 6 หลัก");if(a!==b)return toast("PIN ทั้งสองช่องไม่ตรงกัน");
+  t.disabled=true;api("mySlipPin",a,"").then(()=>{SL.info.hasPin=true;SL.pin=a;SL.at=Date.now();toast("ตั้ง PIN แล้ว");repaint()}).catch(er=>{t.disabled=false;slErr(er)})});
+
+start();
