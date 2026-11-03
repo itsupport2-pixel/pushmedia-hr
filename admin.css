@@ -925,3 +925,5 @@ html.th-sky .rl-sc{scrollbar-color:rgba(0,0,0,.18) transparent}html.th-sky .rl-s
 .subi a{gap:10px}.subi a svg{width:17px;height:17px;flex:none;opacity:.85}.subi a.on svg{opacity:1}.subi a>span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .shell:not(.wide) .side .subi a{gap:10px!important}
 .us-tabs{display:inline-flex;margin-bottom:14px}.us-tb{display:inline-flex;align-items:center;gap:8px}.us-ti{display:inline-grid;place-items:center;width:22px;height:22px}.us-ti svg{display:block}.us-ti svg[width="24"]{width:20px;height:20px}
+.at-dev{margin-top:3px;font-size:12px;color:var(--mut);white-space:nowrap}
+.at-dev{margin-top:3px;font-size:12px;color:var(--mut);white-space:nowrap}
