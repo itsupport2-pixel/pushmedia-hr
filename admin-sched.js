@@ -3,7 +3,7 @@
  * ทุกไฟล์ admin-*.js ใช้ชื่อร่วมกัน (global) และต้องโหลดตามลำดับใน admin.html */
 'use strict';
 /* ───────── ตารางงาน = หน้าเว็บ Workforce Task Manager เดิมทั้งชุด (planner.html · สร้างด้วย app/tools/build-planner.mjs · หลังบ้าน app/gas/schedule/Wtm.js) ───────── */
-var PLANNER_V='mvqpxwm4';   // เลขรุ่นหน้า planner.html (build-planner.mjs ตั้งให้ทุกครั้ง · กันเบราว์เซอร์จำหน้าเก่า)
+var PLANNER_V='mw0d5ul3';   // เลขรุ่นหน้า planner.html (build-planner.mjs ตั้งให้ทุกครั้ง · กันเบราว์เซอร์จำหน้าเก่า)
 function vConf(){return '<iframe class="plf" src="planner.html?desktop=1&page=confirmed'+(A.fx==='conf'||A.fx==='*'?'&fx=1':'')+'&v='+PLANNER_V+'" title="Confirmed"></iframe>'}
 function vPlanner(){return '<iframe class="plf" src="planner.html?desktop=1'+(A.fx==='sched'||A.fx==='*'?'&fx=1':'')+'&v='+PLANNER_V+'" title="ตารางงาน" allow="geolocation"></iframe>'}
 /* (เดิม) ตารางงานช่วง 1 ที่เขียนใหม่ — ไม่ได้ใช้แล้ว เก็บไว้อ้างอิง */
