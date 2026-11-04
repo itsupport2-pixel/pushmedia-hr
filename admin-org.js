@@ -11,7 +11,8 @@ function vForm(){
   var isNew=!A.id,e=isNew?null:emp(A.id);
   if(!A.f){A.f=isNew?blank():Object.assign({},e,{bank_name:PROF&&PROF.id===A.id?PROF.bank_name:'',bank_account:'',reason:''});}
   var f=A.f,er=A.err;
-  var fld=function(k,label,inner,o){o=o||{};return '<label class="f'+(er[k]?' bad':'')+'"'+(o.full?' style="grid-column:1/-1"':'')+'><span>'+label+(o.req?' <b class="req">*</b>':'')+'</span>'+inner+(er[k]?'<span class="er">'+esc(er[k])+'</span>':o.h?'<span class="h">'+o.h+'</span>':'')+'</label>'};
+  var ODK={emp_code:1,first_name:1,last_name:1,nickname:1,phone:1,email:1,team_id:1,position_id:1,status:1};
+  var fld=function(k,label,inner,o){o=o||{};return '<label class="f'+(er[k]?' bad':'')+'"'+(o.full?' style="grid-column:1/-1"':'')+'><span>'+label+(o.req?' <b class="req">*</b>':'')+(ODK[k]?odM():'')+'</span>'+inner+(er[k]?'<span class="er">'+esc(er[k])+'</span>':o.h?'<span class="h">'+o.h+'</span>':'')+'</label>'};
   var inp=function(k,o){o=o||{};return '<input data-k="'+k+'" value="'+esc(f[k]||'')+'"'+(o.type?' type="'+o.type+'"':'')+(o.ph?' placeholder="'+o.ph+'"':'')+(o.ro?' readonly':'')+(o.im?' inputmode="'+o.im+'"':'')+'>'};
   var sel=function(k,opts){return '<select data-k="'+k+'">'+opts.map(function(o){return '<option value="'+esc(o[0])+'"'+(String(f[k])===String(o[0])?' selected':'')+'>'+esc(o[1])+'</option>'}).join('')+'</select>'};
   var act=function(t){return A.d.org[t].filter(function(x){return x.active!=='FALSE'})};
@@ -21,7 +22,7 @@ function vForm(){
   var RK={exec:0,manager:1,hr:2,lead:3},leads=A.d.employees.filter(function(x){return x.status!=='resigned'&&x.id!==A.id}).sort(function(a,b){var x=RK[a.role]===undefined?9:RK[a.role],y=RK[b.role]===undefined?9:RK[b.role];return x-y||String(a.emp_code).localeCompare(String(b.emp_code))}),pn=function(x){return x.emp_code+' '+x.first_name+' '+x.last_name+' · '+(ROLE[x.role]||'')};
   var errN=Object.keys(er).length;
   return '<button class="back" id="bk">← '+(isNew?'กลับไปรายชื่อพนักงาน':'กลับไปโปรไฟล์')+'</button><div class="ph"><div><h1>'+(isNew?'เพิ่มพนักงาน':'แก้ไขข้อมูล · '+esc(e.first_name+' '+e.last_name))+'</h1><div class="sub">'+(isNew?'ช่องที่มี * ต้องกรอก · บันทึกแล้วส่งลิงก์เชื่อม LINE ได้ทันที':'ทุกการแก้ไขบันทึกใน Audit Log พร้อมเหตุผล')+'</div></div></div>'+
-   (errN?'<div class="alert" role="alert">ยังบันทึกไม่ได้ · แก้ '+errN+' ช่องที่ขึ้นสีแดง</div>':'')+
+   (errN?'<div class="alert" role="alert">ยังบันทึกไม่ได้ · แก้ '+errN+' ช่องที่ขึ้นสีแดง</div>':'')+odLegend()+
    '<div class="fl"><nav class="toc">'+SECS.filter(function(x){return isHR()||(x[0]!=='s5'&&x[0]!=='s6')}).map(function(s){var bad=s[2].some(function(k){return er[k]});return '<a href="#'+s[0]+'" class="'+(bad?'err':'')+'">'+(bad?'! ':'')+s[1]+'</a>'}).join('')+'</nav><form id="ef" novalidate style="display:flex;flex-direction:column;gap:14px;min-width:0">'+
    '<section class="card" id="s1"><div class="ch"><h3>ข้อมูลส่วนตัว</h3></div><div class="cb g">'+fld('emp_code','รหัสพนักงาน',inp('emp_code',{im:'numeric',ro:!isNew}),{req:1,h:isNew?'ระบบเสนอเลขถัดไปให้ แก้ได้':'รหัสเปลี่ยนไม่ได้หลังสร้าง'})+fld('title','คำนำหน้า',sel('title',[['นาย','นาย'],['นาง','นาง'],['นางสาว','นางสาว']]))+
     fld('first_name','ชื่อ',inp('first_name'),{req:1})+fld('last_name','นามสกุล',inp('last_name'),{req:1})+fld('nickname','ชื่อเล่น',inp('nickname'))+fld('phone','มือถือ',inp('phone',{im:'tel',ph:'08xxxxxxxx'}),{h:'ใช้ยืนยันตัวตนตอนเชื่อม LINE (4 ตัวท้าย)'})+fld('email','อีเมลบริษัท',inp('email',{type:'email'}),{full:1})+'</div></section>'+
@@ -54,7 +55,7 @@ function bForm(){
   $$('[data-site]').forEach(function(c){c.onchange=function(){var id=c.dataset.site;f.checkin_sites=c.checked?f.checkin_sites.concat(id):f.checkin_sites.filter(function(x){return x!==id})}});
   $('#ef').onsubmit=function(ev){ev.preventDefault();var b=$('#sv');busy(b,1);var data=Object.assign({},f);if(!A.id)delete data.id;else data.id=A.id;if(A.id&&!data.bank_account)delete data.bank_account
     aCall('saveEmployee',data).then(function(r){if(!r.ok){A.err=r.errors;render();var el=$('.f.bad');if(el)el.scrollIntoView({block:'center'});return}
-      var isNew=!A.id;PROF=null;return reload(false).then(function(){toast(isNew?'เพิ่มพนักงานแล้ว':'บันทึกการแก้ไขแล้ว');go('profile',r.id);if(isNew)invite([r.id])})}).catch(function(e){busy(b,0);toast(e.message,1)})};
+      var isNew=!A.id,od=r.odoo;PROF=null;return reload(false).then(function(){toast((isNew?'เพิ่มพนักงานแล้ว':'บันทึกการแก้ไขแล้ว')+(od?(od.ok?(od.act==='create'?' · สร้างใน Odoo แล้ว':od.act==='update'?' · อัปเดต Odoo แล้ว':' · Odoo ตรงอยู่แล้ว'):' · ส่งเข้า Odoo ไม่สำเร็จ: '+od.error):''),od&&!od.ok);go('profile',r.id);if(isNew)invite([r.id])})}).catch(function(e){busy(b,0);toast(e.message,1)})};
 }
 
 /* ───────── ลิงก์เชิญ LINE ───────── */

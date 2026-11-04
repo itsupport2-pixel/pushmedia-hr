@@ -1017,3 +1017,16 @@ html.th-sky .rl-sc{scrollbar-color:rgba(0,0,0,.18) transparent}html.th-sky .rl-s
 .od-auto{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line);border-radius:12px;cursor:pointer}.od-auto input{width:18px;height:18px;margin:2px 0 0;flex:none}.od-auto b{display:block;font-size:14px}.od-auto small{display:block;color:var(--mut);font-size:12.5px;margin-top:2px}
 .od-sb{margin-top:8px}.od-r .od-sb{margin:0}.od-r{grid-template-columns:80px 1fr 1fr auto auto}
 .od-pv{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px;display:flex;flex-direction:column;gap:5px}.od-pv b{font-size:14px}.od-pv small{display:block;color:var(--fnt);font-size:12px}.od-pv .od-d{grid-template-columns:90px 1fr 18px 1fr;font-size:13px}
+/* 4 พ.ย. 2569 ผู้ใช้: ตัวเลขสรุปแบบทางการ (ไม่มีแถบสี) · โลโก้ Odoo · การใช้งาน › Odoo · เครื่องหมาย Odoo ที่ช่องข้อมูลพนักงาน */
+.od-sum{gap:0!important;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--sf)}
+.od-k,.od-k.ok,.od-k.wa,.od-k.in,.od-k.mu{border:0!important;border-radius:0!important;border-right:1px solid var(--line)!important;border-top:0!important;padding:14px 16px;background:var(--sf)}
+.od-k:last-child{border-right:0!important}.od-k small{font-size:12px;color:var(--mut);font-weight:500}.od-k b,.od-k.ok b,.od-k.wa b,.od-k.in b,.od-k.mu b{color:var(--fg)!important;font-size:22px;font-weight:600;margin:4px 0 2px}
+.od-k span{color:var(--fnt);font-size:11.5px;line-height:1.45}.od-k.bad b{color:var(--bad)!important}
+.od-k.ok small:before,.od-k.wa small:before,.od-k.in small:before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:6px;vertical-align:1px;background:#9CA3AF}
+.od-k.ok small:before{background:var(--ok)}.od-k.wa small:before{background:#C98A1A}.od-k.in small:before{background:#4B6BB5}
+.ig-ic.ig-lg{width:72px;background:#fff}.ig-ic.ig-lg img{width:54px;height:auto;display:block}
+.ou-st{display:flex;gap:14px;align-items:center;flex-wrap:wrap;color:var(--mut);font-size:13px;margin-bottom:14px}
+.ou-bars{display:flex;gap:4px;align-items:flex-end;height:110px;padding:8px 10px;border:1px solid var(--line);border-radius:12px;overflow-x:auto}.ou-bars div{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:16px}.ou-bars i{display:block;width:12px;border-radius:3px;background:#4B5563}.ou-bars small{font-size:10px;color:var(--fnt)}
+.od-m{display:inline-block;width:9px;height:9px;border:2.5px solid #9C5789;border-radius:50%;margin-left:6px;vertical-align:0;box-sizing:content-box;cursor:help}
+.od-lg{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--mut);padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--sf);margin:0 0 14px}.od-lg img{height:12px;width:auto}
+@media (max-width:760px){.od-k{border-right:0!important;border-bottom:1px solid var(--line)!important}}
