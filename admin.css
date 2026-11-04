@@ -954,3 +954,9 @@ html.th-sky .rl-sc{scrollbar-color:rgba(0,0,0,.18) transparent}html.th-sky .rl-s
 .sr-lg{display:flex;gap:12px;margin-top:8px;font-size:12px;color:var(--mut)}.sr-lg span:before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px;background:#F4F4F4}.sr-lg .j:before{background:#141414}.sr-lg .i:before{background:var(--warn-s);border:1px solid var(--warn)}.sr-lg .l:before{background:#DCE6F5}
 .sr-pl{list-style:none;margin:0;padding:0}.sr-pl li{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #F0F0F0}.sr-pl li small{display:block;color:var(--fnt);font-size:12px;margin-top:2px}.sr-pl .num{white-space:nowrap;font-weight:600}
 @media (max-width:640px){.sr-uc{min-width:160px}.sr-bar{flex-basis:60px}}
+/* โครงสร้างองค์กร: ตัวกรองแผนก + ตำแหน่งหลายแผนก/ทีม (4 พ.ย. 2569) */
+.og-f{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;margin:0 0 12px}.og-f label{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--mut)}.og-f select{min-width:240px;height:38px;padding:0 10px;border:1px solid var(--line);border-radius:10px;background:var(--sf);font:inherit;font-size:13.5px;color:var(--fg)}
+.og-pl{white-space:normal!important;max-width:520px}.og-c{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:2px 10px;font-size:12.5px;margin:2px 4px 2px 0;background:var(--sf)}.og-c em{font-style:normal;color:var(--fnt)}
+.pp{display:flex;flex-direction:column;gap:8px}.pp-g{border:1px solid var(--line);border-radius:10px;padding:10px 12px}.pp-g.on{border-color:var(--fg);background:var(--sf2)}
+.pp-d{display:flex;align-items:center;gap:8px;color:var(--fg)}.pp-d input,.pp-ts input{width:auto;margin:0}.pp-d span{margin-left:auto;font-size:12px}
+.pp-ts{display:flex;flex-wrap:wrap;gap:6px 14px;margin:8px 0 0 26px}.pp-ts label{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--fg)}
