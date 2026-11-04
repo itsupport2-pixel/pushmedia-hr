@@ -155,6 +155,7 @@ drawRep=(function(f){return function(){var r=f.apply(this,arguments);pgFx();retu
 drawXd=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(drawXd);
 drawAppr=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(drawAppr);
 usDraw=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(usDraw);
+ouDraw=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(ouDraw);   // การใช้งาน › Odoo เล่นภาพเปิดเหมือน Cloudflare (4 พ.ย. 2569)
 drawAtt=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(drawAtt);
 drawErr=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(drawErr);
 drawSet=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(drawSet);
