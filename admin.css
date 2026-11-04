@@ -979,3 +979,38 @@ html.th-sky .rl-sc{scrollbar-color:rgba(0,0,0,.18) transparent}html.th-sky .rl-s
 .ps-ta{width:170px;display:inline-block}   /* 4 พ.ย. 2569 ผู้ใช้ขอ: ช่องภาษีกว้างเท่ากันทุกแถว */
 /* Odoo (4 พ.ย. 2569) */
 .od-f{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}.od-f label{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--mut)}
+/* ตั้งค่า › Integration: การ์ดเชื่อมระบบ (4 พ.ย. 2569 ผู้ใช้ขอปรับให้สวยขึ้น) */
+.ig{margin-top:14px;overflow:hidden}.ig-h{display:flex;align-items:center;gap:14px;padding:18px 20px;border-bottom:1px solid var(--line)}
+.ig-ic{width:44px;height:44px;border-radius:12px;background:var(--sf2);border:1px solid var(--line);display:grid;place-items:center;color:var(--fg);flex:none}
+.ig-t h3{margin:0;font-size:16px}.ig-t small{display:block;color:var(--mut);font-size:12.5px;margin-top:2px}
+.ig-b{padding:18px 20px}.ig-d{margin:0 0 14px;color:var(--mut);font-size:13px;line-height:1.6}
+.ig-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}.ig-row{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap}
+.ig-f{display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:var(--mut);font-weight:500;min-width:0}
+.ig-f input{height:42px;border:1px solid var(--line);border-radius:10px;background:var(--sf);padding:0 12px;font:inherit;font-size:14px;color:var(--fg);width:100%}
+.ig-f input:focus{outline:none;border-color:var(--fg);box-shadow:0 0 0 3px #0000000f}.ig-f input::placeholder{color:var(--fnt)}
+.ig-act{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.ig-act .btn{height:42px}.ig-dz{color:var(--bad)}.ig-dz:hover{border-color:var(--bad)}
+.ig-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;font-size:12.5px;font-weight:600;background:#F1F1F1;color:var(--mut)}.ig-pill i{width:7px;height:7px;border-radius:50%;background:#B5B5B5}
+.ig-pill.on{background:var(--ok-s);color:var(--ok)}
+.ig-con .ig-kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:14px}
+.ig-kv div{background:var(--sf);padding:12px 14px;min-width:0}.ig-kv small{display:block;color:var(--fnt);font-size:12px;margin-bottom:3px}.ig-kv b{font-size:14px;font-weight:600;overflow-wrap:anywhere}
+.ig-ro{display:flex;gap:8px;align-items:center;margin-top:16px;padding:10px 12px;border-radius:10px;background:var(--sf2);color:var(--mut);font-size:12.5px}.ig-ro svg{flex:none}
+/* Odoo › ผลตรวจเทียบ (4 พ.ย. 2569) */
+.od-sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(122px,1fr));gap:10px;margin:18px 0 12px}
+.od-k{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--sf);border-top:3px solid #D6D6D6}.od-k small{display:block;color:var(--mut);font-size:12px}.od-k b{display:block;font-size:24px;font-weight:700;margin:2px 0;font-variant-numeric:tabular-nums}.od-k span{color:var(--fnt);font-size:11.5px}
+.od-k.ok{border-top-color:var(--ok)}.od-k.ok b{color:var(--ok)}.od-k.wa{border-top-color:#D98E04}.od-k.wa b{color:#B26A00}.od-k.in{border-top-color:#2563EB}.od-k.in b{color:#1D4ED8}.od-k.mu{border-top-color:#9A9A9A}
+.od-info{display:flex;gap:8px;align-items:flex-start;padding:10px 12px;border-radius:10px;background:var(--ok-s);color:#1F5E3A;font-size:13px;margin-bottom:8px}.od-info svg{flex:none;margin-top:3px}.od-info code{font-size:12px;background:#fff8;padding:1px 6px;border-radius:5px}
+.od-info.wa{background:var(--warn-s);color:#7A4A00}
+.od-fc{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:8px 0}.od-fc small{color:var(--mut);font-size:12px;margin-right:4px}.od-fc span{border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-size:12.5px;background:var(--sf)}.od-fc b{margin-left:3px}
+.od-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:16px 0 10px}.od-bar input{height:38px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font:inherit;font-size:13.5px;min-width:220px;margin-left:auto}
+.od-tabs{display:inline-flex;background:#F1F1F1;border-radius:10px;padding:3px;gap:2px}.od-tabs button{border:0;background:none;font:inherit;font-size:13px;padding:7px 14px;border-radius:8px;color:var(--mut);cursor:pointer}.od-tabs button[aria-pressed="true"]{background:#fff;color:var(--fg);font-weight:600;box-shadow:0 1px 2px #0001}.od-tabs em{font-style:normal;color:var(--fnt);margin-left:3px}
+#od-list{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--sf)}
+.od-lh{display:grid;grid-template-columns:240px 110px 1fr 24px 1fr;gap:10px;padding:9px 14px;background:var(--sf2);color:var(--mut);font-size:12px;font-weight:600;border-bottom:1px solid var(--line)}.od-lh span:first-child{grid-column:1}
+.od-p{display:grid;grid-template-columns:240px 1fr;gap:10px;padding:12px 14px;border-bottom:1px solid #F0F0F0}.od-p:last-child{border-bottom:0}
+.od-pn b{display:block;font-size:14px}.od-pn small{display:block;color:var(--fnt);font-size:12px;margin-top:2px}.od-pd{display:flex;flex-direction:column;gap:6px}
+.od-d{display:grid;grid-template-columns:110px 1fr 24px 1fr;gap:10px;align-items:center;font-size:13.5px}.od-f{color:var(--mut);font-size:12.5px}
+.od-o{color:var(--fnt);text-decoration:line-through;text-decoration-color:#C9C9C9;overflow-wrap:anywhere}.od-h{font-weight:600;overflow-wrap:anywhere}.od-ar{color:#B5B5B5;text-align:center}.od-d i{font-style:normal;color:var(--fnt);text-decoration:none}
+.od-d.wa .od-h{color:#B26A00;text-decoration:line-through}.od-d.wa .od-o{text-decoration:none;color:var(--fg)}.od-d small{grid-column:2/-1;color:#B26A00;font-size:11.5px;margin-top:-3px}
+.od-tag{display:inline-block;margin-top:6px;font-size:11.5px;padding:2px 8px;border-radius:999px;background:var(--warn-s);color:#7A4A00}.od-tag.in{background:#E8EFFD;color:#1D4ED8;margin:0}.od-tag.mu{background:#F1F1F1;color:var(--mut)}
+.od-r{display:grid;grid-template-columns:80px 1fr 1fr auto;gap:12px;align-items:center;padding:11px 14px;border-bottom:1px solid #F0F0F0;font-size:13.5px}.od-r:last-child{border-bottom:0}.od-r small{color:var(--mut);font-size:12.5px}.od-r .od-tag{margin:0}
+.od-empty{padding:24px;text-align:center;color:var(--fnt)}.od-more{display:block;margin:10px auto}
+@media (max-width:760px){.od-lh{display:none}.od-p{grid-template-columns:1fr}.od-d{grid-template-columns:90px 1fr 18px 1fr}.od-r{grid-template-columns:60px 1fr}.od-r small,.od-r .od-tag{grid-column:2}}
