@@ -963,3 +963,16 @@ html.th-sky .rl-sc{scrollbar-color:rgba(0,0,0,.18) transparent}html.th-sky .rl-s
 .ps-ta{border:1px solid var(--line);background:var(--sf2);border-radius:8px;padding:5px 10px;text-align:right;cursor:pointer;font:inherit;color:var(--fg);white-space:nowrap}.ps-ta b{font-variant-numeric:tabular-nums}.ps-ta small{display:block;color:var(--fnt);font-size:11.5px}.ps-ta:hover{border-color:var(--fg)}
 .tx-b{border:1px solid var(--line);border-radius:10px;overflow:hidden}.tx-r{display:flex;justify-content:space-between;gap:12px;padding:7px 12px;font-size:13px;border-top:1px solid #F0F0F0}.tx-r:first-child{border-top:0}.tx-r b{font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap}
 .tx-r.tot{background:var(--sf2)}.tx-r.tot span,.tx-r.tot b{font-weight:700}.tx-r.sub{color:var(--fnt);padding-left:24px}.tx-r.big{background:var(--fg);color:#fff}.tx-r.big b{font-weight:700;font-size:15px}
+/* ข้อมูลเงินเดือน: แบ่งสีกลุ่มคอลัมน์ รายรับ (เขียว) / รายจ่าย-หัก (แดง) (4 พ.ย. 2569 ผู้ใช้ขอ) */
+.ps-g{--in:#1A8A4A;--in-h:#E6F4EC;--in-c:#F5FBF7;--de:#C0392B;--de-h:#FBE9E7;--de-c:#FEF7F6}
+.ps-g thead tr th{top:34px}.ps-g thead tr.ps-gh th{top:0;height:34px;padding:0 12px;font-size:12.5px;font-weight:700;letter-spacing:.2px;border-bottom:0;color:var(--mut)}
+.ps-g .ps-gh th i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;vertical-align:1px}
+.ps-g th.g-in{background:var(--in-h);color:#17643A}.ps-g .ps-gh th.g-in{color:var(--in);border-top:3px solid var(--in)}.ps-g .ps-gh th.g-in i{background:var(--in)}
+.ps-g th.g-de{background:var(--de-h);color:#8E2A20}.ps-g .ps-gh th.g-de{color:var(--de);border-top:3px solid var(--de)}.ps-g .ps-gh th.g-de i{background:var(--de)}
+.ps-g .ps-gh th.g-em,.ps-g .ps-gh th.g-dc{border-top:3px solid #D6D6D6}
+.ps-g td.g-in{background:var(--in-c)}.ps-g td.g-de{background:var(--de-c)}
+.ps-g td.g-in:first-of-type,.ps-g th.g-in{box-shadow:inset 1px 0 0 #CFE7D9}.ps-g td.g-de,.ps-g th.g-de{box-shadow:inset 1px 0 0 #F2D3CE}
+.ps-g tbody tr:hover td.g-in{background:#EBF6EF}.ps-g tbody tr:hover td.g-de{background:#FCEEEC}
+.ps-g td.g-in .ps-in{border-color:#CFE7D9}.ps-g td.g-de .ps-in{border-color:#F0D2CD}
+.ps-dv{display:inline-block;text-align:right;white-space:nowrap}.ps-dv b{color:var(--de);font-variant-numeric:tabular-nums}.ps-dv small{display:block;color:var(--fnt);font-size:11.5px}
+.ps-g .ps-ta{background:#fff;border-color:#F0D2CD}.ps-g .ps-ta.on b{color:var(--de)}.ps-g .ps-ta:hover{border-color:var(--de)}
