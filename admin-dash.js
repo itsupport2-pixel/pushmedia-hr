@@ -13,7 +13,7 @@ function drawDash(){if(!$('#db-body'))return;var d=A.db,k=d.kpi,dt=new Date(d.da
   var SEV={bad:['clockx','#FCE8E6','#C0392B'],warn:['alarm','#FFF3DC','#B26A00']},mine=A.d.me.id!=='admin';
   var tr=d.trend.length?'<div class="bars2">'+d.trend.map(function(t,i){var last=i===d.trend.length-1,dd=new Date(t.date+'T12:00:00');return '<div class="bc'+(last?' hi':'')+'" title="'+t.date+' · '+t.pct+'%"><span>'+t.pct+'%</span><i style="height:calc((100% - 44px) * '+(Math.max(3,t.pct)/100)+')"></i><em>'+dd.getDate()+' '+TM[dd.getMonth()]+'</em></div>'}).join('')+'</div><div class="faint" style="font-size:12px;margin-top:10px">ล่าสุด '+d.trend[d.trend.length-1].pct+'%'+(d.trend[d.trend.length-1].live?' (วันนี้ · ยังลงเวลาไม่ครบ)':'')+' · เข้างานวันนี้ '+k.present+' จาก '+k.expected+' คน</div>':'<div class="muted">ยังไม่มีข้อมูลสรุปรายวัน (ระบบสรุปทุกคืน 23:30)</div>';
   /* แบบ C (Figma 03 · 6 ใบ): รวม "มาสาย" + "ยังไม่ลงเวลา" เป็น "ต้องติดตามวันนี้" · เพิ่มลาวันนี้ + วันหยุดถัดไป */
-  var two=function(a,al,b,bl,ca,cb){return '<span class="kv2"><b class="'+ca+'">'+a+'</b><small>'+al+'</small><i></i><b class="'+cb+'">'+b+'</b><small>'+bl+'</small></span>'};
+  var two=function(a,al,b,bl,ca,cb){return '<span class="kv2"><span class="kp"><b class="'+ca+'">'+a+'</b><small>'+al+'</small></span><i></i><span class="kp"><b class="'+cb+'">'+b+'</b><small>'+bl+'</small></span></span>'};   // 4 พ.ย. 2569: ตัวเลข+คำ อยู่ด้วยกันเสมอ (ไม่ล้นกรอบ)
   var lt=(k.leaveTypes||[]).map(function(x){return x.name.replace(/^ลา/,'')+' '+x.n}).join(' · '),nh=k.nextHoliday,pk=k.pendingKinds||{};
   var follow=(k.late||0)+(k.absent||0);
   $('#db-body').innerHTML='<div class="grid g6">'+
