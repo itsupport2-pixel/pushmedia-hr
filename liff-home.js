@@ -123,14 +123,18 @@ V.pedit=()=>{const p=S.prof;if(!p)return band("แก้ไขข้อมูล
 const ferr=(e,id)=>e[id]?`<span class="cap" style="color:var(--red);margin-top:-6px">${esc(e[id])}</span>`:"";
 V.paddr=()=>{const p=S.prof;if(!p)return band("แก้ไขที่อยู่")+loadingV();const e=S.perr||{},v=S.pform||p.ext||{};
   const t=(id,label,ph)=>fl(id,label,`<textarea class="ta${e[id]?" err":""}" id="${id}" maxlength="300" placeholder="${ph}">${esc(v[id]||"")}</textarea>`)+ferr(e,id);
-  return band("แก้ไขที่อยู่")+`<form class="pad" id="af" novalidate><div class="fcard">${t("addr_idcard","ที่อยู่ตามทะเบียนบ้าน","บ้านเลขที่ ถนน ตำบล อำเภอ จังหวัด รหัสไปรษณีย์")}${t("addr_current","ที่อยู่ปัจจุบัน","ถ้าเหมือนบัตรประชาชน กดปุ่มด้านล่าง")}
+  return band("แก้ไขที่อยู่")+`<form class="pad" id="af" novalidate><div class="fcard">${t("addr_idcard","ที่อยู่ตามทะเบียนบ้าน","บ้านเลขที่ ถนน ตำบล อำเภอ จังหวัด รหัสไปรษณีย์")}${t("addr_current","ที่อยู่ปัจจุบัน","ถ้าเหมือนทะเบียนบ้าน กดปุ่มด้านล่าง")}
   <button type="button" class="btn out sm" data-addrsame>ที่อยู่ปัจจุบันเหมือนทะเบียนบ้าน</button></div></form>
   <span class="spacer"></span><div class="foot"><button class="btn pri" id="pasv">บันทึก</button></div>`};
+/* รูปใบประกาศ (5 พ.ย. 2569 · ไม่บังคับ): ย่อยาวสุด 1280px ≤ 390,000 ตัวอักษร */
+function trShrink(file){return new Promise((ok,no)=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{URL.revokeObjectURL(u);const z=Math.min(1,1280/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*z);c.height=Math.round(im.height*z);const g=c.getContext("2d");g.fillStyle="#fff";g.fillRect(0,0,c.width,c.height);g.drawImage(im,0,0,c.width,c.height);let q=.85,d=c.toDataURL("image/jpeg",q);while(d.length>390000&&q>.3){q-=.1;d=c.toDataURL("image/jpeg",q)}d.length>390000?no(new Error("รูปใหญ่เกินไป")):ok(d)};im.onerror=()=>{URL.revokeObjectURL(u);no(new Error("อ่านรูปไม่ได้ ใช้ได้เฉพาะไฟล์รูปภาพ"))};im.src=u})}
+document.addEventListener("change",ev=>{const t=ev.target;if(!t||t.id!=="trfile")return;const f=t.files[0],p=$("#trprev");if(!f){S.trFile=null;if(p)p.style.display="none";return}trShrink(f).then(d=>{S.trFile=d;if(p){p.src=d;p.style.display="block"}}).catch(x=>{t.value="";S.trFile=null;if(p)p.style.display="none";toast(x.message)})});
 V.tredit=id=>{const p=S.prof;if(!p)return band("การฝึกอบรม")+loadingV();const isNew=id==="new",cur=isNew?{}:(p.training||[]).find(x=>x.id===id);
   if(!cur)return band("การฝึกอบรม")+`<div class="pad"><div class="empty">ไม่พบรายการนี้</div></div>`;const e=S.perr||{},v=S.pform||cur;
   const f=(k,label,o)=>fl(k,label,`<input class="inp${e[k]?" err":""}" id="${k}" value="${esc(v[k]||"")}" ${o||""}>`)+ferr(e,k);
   return band(isNew?"เพิ่มการฝึกอบรม":"แก้ไขการฝึกอบรม")+`<form class="pad" id="tf" novalidate><div class="fcard">${f("course","ชื่อหลักสูตร *",'maxlength="120" placeholder="เช่น ความปลอดภัยในการทำงาน"')}${f("provider","จัดโดย",'maxlength="120" placeholder="หน่วยงาน / สถาบัน"')}
   <div class="g2">${f("date_from","วันที่เริ่ม",'type="date"')}${f("date_to","วันที่จบ",'type="date"')}</div>${f("hours","จำนวนชั่วโมง",'inputmode="decimal" placeholder="เช่น 6"')}
+  ${fl("trfile","รูปใบประกาศ (ถ้ามี)",`<input class="inp" id="trfile" type="file" accept="image/jpeg,image/png,image/webp"><img id="trprev" alt="" style="display:${S.trFile?"block":"none"};max-width:100%;max-height:180px;margin-top:8px;border-radius:8px"${S.trFile?` src="${esc(S.trFile)}"`:""}>${cur.file_id?`<button type="button" class="btn out sm" style="margin-top:8px" data-empfile="${esc(cur.file_id)}">ดูรูปเดิม</button>`:""}`)+ferr(e,"file")}
   ${fl("note","หมายเหตุ",`<textarea class="ta" id="note" maxlength="300">${esc(v.note||"")}</textarea>`)}</div></form>
   <span class="spacer"></span><div class="foot"><button class="btn pri" id="trsv" data-id="${isNew?"":esc(id)}">บันทึก</button>${isNew?"":`<button class="btn out" data-trdel="${esc(id)}" style="color:var(--red);border-color:var(--red)">ลบรายการนี้</button>`}</div>`};
 /* ย่อรูปในเครื่อง: ตัดกลางเป็นสี่เหลี่ยม 320px → JPEG (≤ ~45KB) แล้วส่งขึ้นระบบ */
@@ -143,8 +147,8 @@ document.addEventListener("click",e=>{const t=e.target.closest("button");if(!t)r
   if(t.hasAttribute("data-photodel")){t.disabled=true;api("setMyPhoto","").then(r=>{applyPhoto(r.photo_url,r.photo_own);toast("ลบรูปแล้ว")}).catch(er=>{t.disabled=false;toast(er.message)});return}
   if(t.hasAttribute("data-addrsame")){$("#addr_current").value=$("#addr_idcard").value;return}
   if(t.id==="pasv"||t.id==="trsv"){const isA=t.id==="pasv",v={};(isA?["addr_idcard","addr_current"]:["course","provider","date_from","date_to","hours","note"]).forEach(k=>v[k]=$("#"+k).value.trim());
-    if(!isA&&t.dataset.id)v.id=t.dataset.id;t.disabled=true;t.innerHTML='<span class="spin"></span>กำลังบันทึก…';
-    (isA?api("updateMyProfile",v):api("saveEmpItem","training",v)).then(r=>{if(!r.ok){S.perr=r.errors;S.pform=v;repaint();return}S.perr=null;S.pform=null;
+    if(!isA&&t.dataset.id)v.id=t.dataset.id;if(!isA&&S.trFile)v.file=S.trFile;t.disabled=true;t.innerHTML='<span class="spin"></span>กำลังบันทึก…';
+    (isA?api("updateMyProfile",v):api("saveEmpItem","training",v)).then(r=>{if(!r.ok){S.perr=r.errors;S.pform=v;repaint();return}S.perr=null;S.pform=null;S.trFile=null;
       if(isA)S.prof=r.profile;else S.prof.training=r.items;toast(isA&&!r.changed?"ไม่มีอะไรเปลี่ยน":"บันทึกแล้ว");back()}).catch(er=>{t.disabled=false;t.textContent="บันทึก";toast(er.message)});return}
   if(t.dataset.empfile){api("getEmpFile",t.dataset.empfile).then(d=>sheet(`<h3>รูปแนบ</h3><img src="${esc(d)}" alt="รูปแนบ" style="display:block;width:100%;border-radius:10px">`)).catch(x=>toast(x.message));return}
   if(t.dataset.trdel){sheet(`<h3>ลบรายการฝึกอบรม?</h3><span class="cap" style="text-align:center">ลบแล้วกู้คืนไม่ได้</span><button class="btn pri" data-trdelok="${esc(t.dataset.trdel)}" style="background:var(--red)">ลบรายการ</button><button class="btn out" data-dclose>ไม่ลบ</button>`);return}

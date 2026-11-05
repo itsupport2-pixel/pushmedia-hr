@@ -29,7 +29,7 @@ function back(){if(!S.stack.length)return;const c=cur();S.stack.pop();if(c==="le
 function toTab(t){S.tab=t;S.stack=[];show("fade");onEnter();if(t==="home")loadLeave(true).then(()=>{if(cur()==="home")repaint()}).catch(()=>{})}
 function onEnter(){const n=cur();
   if(n==="worktime"){const now=new Date(),ym=S.wym||`${now.getFullYear()}-${p2(now.getMonth()+1)}`;S.wym=ym;api("myAttendance",ym).then(m=>{S.wdata=m;if(cur()==="worktime")repaint()}).catch(e=>toast(e.message))}
-  const n0=n.split(":")[0];if(["pedit","paddr","tredit"].includes(n0)){S.perr=null;S.pform=null}
+  const n0=n.split(":")[0];if(["pedit","paddr","tredit"].includes(n0)){S.perr=null;S.pform=null;S.trFile=null}
   if(["profile","pedit","paddr","tredit"].includes(n0)&&!S.prof)api("myProfile").then(p=>{S.prof=p;if(["profile","pedit","paddr","tredit"].includes(cur().split(":")[0]))repaint()}).catch(e=>toast(e.message));
   if(["quota","myreqs","lvdone"].includes(n))loadLeave(true).then(()=>{if(cur().split(":")[0]===n)repaint()}).catch(e=>toast(e.message));
   if(n==="approve")loadAps();
