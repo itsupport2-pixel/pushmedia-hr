@@ -630,7 +630,7 @@ function ltForm(l){l=l||{name:'',quota_days:'',advance_on:'FALSE',advance_days:'
 }
 
 /* ───────── Audit Log ───────── */
-var AACT={create:'สร้าง',update:'แก้ไข',self_update:'แก้ไขเอง',self_photo:'เปลี่ยนรูป',self_photo_remove:'ลบรูป',line_link:'เชื่อม LINE',view_bank:'เปิดดูเลขบัญชี',reject:'ปฏิเสธ',unlink:'ยกเลิกเชื่อม LINE'};
+var AACT={create:'สร้าง',update:'แก้ไข',self_update:'แก้ไขเอง',self_photo:'เปลี่ยนรูป',hr_photo:'HR นำเข้ารูป',self_photo_remove:'ลบรูป',line_link:'เชื่อม LINE',view_bank:'เปิดดูเลขบัญชี',reject:'ปฏิเสธ',unlink:'ยกเลิกเชื่อม LINE'};
 function vAudit(){return '<div class="ph"><div><h1>Audit Log</h1><div class="sub">ประวัติการเปลี่ยนแปลงข้อมูลทั้งหมด (500 รายการล่าสุด) · แก้ไขหรือลบไม่ได้</div></div></div><div class="tools"><input id="au-q" placeholder="ค้นหา ชื่อ / เรื่อง / เหตุผล / IP / อุปกรณ์" value="'+esc(A.auq||'')+'"><button class="btn" id="au-go">ค้นหา</button></div><div id="au-body"><div class="loading"><span class="spin"></span>กำลังโหลด…</div></div>'}
 /* อุปกรณ์ในบรรทัด Audit Log (30 ต.ค. 2569): เบราว์เซอร์ · ระบบ · รุ่น / แอป · IP · ที่ตั้ง · ป้ายอุปกรณ์ใหม่ (ตอนเข้าระบบ) */
 function auDev(s){if(!s)return '<span class="faint">—</span>';var d;try{d=JSON.parse(s)}catch(e){return ''}
