@@ -249,6 +249,9 @@
     'การลาที่อนุมัติเดือนนี้:': 'Approved leave this month:', 'ดู Matrix ลงเวลา': 'Open attendance Matrix', 'เดือนนี้ยังไม่จบ': 'This month is not over', 'นับถึง': 'counted to',
     'จำนวนวันจะน้อยกว่าเดือนก่อน ๆ ผลเทียบอาจดูดีกว่าความจริง': 'fewer days than past months, so comparisons may look better than reality', 'แนะนำเลือกเดือนที่จบแล้ว': 'choose a completed month',
     'การลารวม': 'Total leave', 'ขาดงานรวม': 'Total absence', 'แก้ไขเวลารวม': 'Total time corrections', 'จากเดือนก่อน': 'from last month', 'ของทั้งหมด': 'of total', 'Top 10 รวม': 'Top 10 total',
+    'ต่อเนื่อง': 'streak', 'กดแผนกเพื่อกรอง': 'click a department to filter',
+    'เท่ากันเรียงตามยอด 6 เดือน · กดแถวเพื่อดูรายละเอียด · ป้าย “2 หมวด” = ติด Top 10 หลายหมวด': 'Ties sorted by 6-month total · click a row for details · “2 categories” tag = in more than one Top 10',
+    'ลา = วันที่ระบบสรุปว่าลา (ครึ่งวันนับ 1 วัน) · ขาดงาน = วันทำงานที่ไม่มีบันทึกเวลาและไม่ได้ลา · แก้ไขเวลา = วันที่มี HR ลงเวลาแทน/แก้เวลา': 'Leave = days the system recorded as leave (half day counts as 1) · Absence = workdays with no time record and no leave · Time correction = days HR clocked in for or edited the time',
     'ข้อสังเกต': 'Observations', 'สรุปอัตโนมัติจากตัวเลข': 'Auto-summary from the numbers', 'เรียงจากมากไปน้อย': 'Sorted high to low', 'กดแถวเพื่อดูรายละเอียด': 'click a row for details',
     'ติด Top 10 ต่อเนื่อง': 'In Top 10 for', 'การลาแยกตามแผนก': 'Leave by department', 'ขาดงานแยกตามแผนก': 'Absence by department', 'แก้ไขเวลาแยกตามแผนก': 'Time corrections by department', 'วันรวม (เฉลี่ยต่อคน)': 'total days (avg per person)',
     'เพิ่มขึ้นมากสุด:': 'Largest increase:', 'ประเภทที่ลามากสุด:': 'Most common leave type:', 'ของวันลาที่อนุมัติ': 'of approved leave days',
@@ -326,6 +329,7 @@
   var FULLM = /(มกราคม|กุมภาพันธ์|มีนาคม|เมษายน|พฤษภาคม|มิถุนายน|กรกฎาคม|สิงหาคม|กันยายน|ตุลาคม|พฤศจิกายน|ธันวาคม)\s+(25\d\d)/g;
   var RUN = /[฀-๿](?:[฀-๿ ]*[฀-๿])?/g, TH = /[฀-๿]/;
   var word = function (w) { return D.hasOwnProperty(w) ? D[w] : null; };
+  var TPK = { 'การลา': 'leave', 'ขาดงาน': 'absence', 'แก้ไขเวลา': 'time corrections' };
   function tr(s) {
     if (!TH.test(s)) return s;
     var whole = s.trim(); if (D.hasOwnProperty(whole)) return s.replace(whole, D[whole]);   // ข้อความเต็มที่มีเครื่องหมาย (เช่น สร้าง/แก้ไข) ตรงพจนานุกรมทั้งก้อน
@@ -335,7 +339,7 @@
       .replace(/(พ\.ศ\.|ปี)\s*(25\d\d)/g, function (m, p, y) { return (p === 'ปี' ? 'Year ' : '') + (Number(y) - 543); })
       .replace(/([฀-๿])?ทาง LINE/g, function (m, a) { return a ? a + ' via LINE' : 'via LINE'; }).replace(/^ชื่อ LINE: /, 'LINE name: ').replace(/^1 ความคิดเห็น$/, '1 comment')
       .replace(/^คุณคิดอะไรอยู่ (.+)$/, "What's on your mind, $1?").replace(/^แสดงความคิดเห็นในชื่อ (.+)$/, 'Comment as $1').replace(/^โพสต์ของ (.+)$/, "$1's post").replace(/^ตอบกลับ (.+)…$/, 'Reply to $1…')
-      .replace(/^สวัสดี คุณ(.+)$/, 'Hello, $1').replace(/ชื่อ ก–ฮ/g, 'Name A–Z').replace(/Workflow อนุมัติ/g, 'Approval workflow').replace(/(\d)\s*กม\./g, '$1 km').replace(/(\d)\s*ม\.(?=$|[\s·)])/g, '$1 m')
+      .replace(/^(\d+) หมวด$/, '$1 categories').replace(/^(\d+) คนติด Top 10 มากกว่า 1 หมวด: /, '$1 people in Top 10 of more than 1 category: ').replace(/(การลา|ขาดงาน|แก้ไขเวลา)กระจายหลายคน: (\d+) คน · Top 10 เป็นเพียง (\d+)% ของทั้งหมด/, function (m, k, n, p) { return TPK[k] + ' is spread widely: ' + n + ' people · Top 10 is only ' + p + '% of total'; }).replace(/^(\d+) คนติด Top 10 (การลา|ขาดงาน|แก้ไขเวลา)ต่อเนื่อง 3 เดือนขึ้นไป: /, function (m, n, k) { return n + ' people in Top 10 ' + TPK[k] + ' for 3+ months in a row: '; }).replace(/^(การลา|ขาดงาน|แก้ไขเวลา)เพิ่มขึ้นมากสุด: /, function (m, k) { return 'Largest increase in ' + TPK[k] + ': '; }).replace(/วันรวม \(เฉลี่ยต่อคน\)/, 'total days (avg per person)').replace(/^สวัสดี คุณ(.+)$/, 'Hello, $1').replace(/ชื่อ ก–ฮ/g, 'Name A–Z').replace(/Workflow อนุมัติ/g, 'Approval workflow').replace(/(\d)\s*กม\./g, '$1 km').replace(/(\d)\s*ม\.(?=$|[\s·)])/g, '$1 m')
       .replace(/(^|[^฀-๿])อีก (\d+) วัน(?![฀-๿])/g, function (m, a, n) { return a + 'in ' + n + (n === '1' ? ' day' : ' days'); })   // วันหยุดถัดไป · อีก 40 วัน → in 40 days
       .replace(/(\d{1,2}[:.]\d{2})\s*น\./g, '$1').replace(/^(อา\.|จ\.|อ\.|พ\.|พฤ\.|ศ\.|ส\.)$/, function (d) { return TD[d]; })
       .replace(/^(อา|จ|อ|พฤ|พ|ศ|ส)$/, function (d) { return TD[d + '.']; })   // หัววันใน Matrix (ไม่มีจุด · ทั้งข้อความ)

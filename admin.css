@@ -816,23 +816,31 @@ html.th-sky .co-brand.lgc{box-shadow:0 0 0 1px #D2EEFA}
 
 .mx .ck2{width:16px;height:16px;border-radius:4px;border:1.5px solid #BBB;display:inline-block;vertical-align:middle;background:#fff;cursor:pointer}.mx .ck2.on{background:#111;border-color:#111;position:relative}.mx .ck2.on:after{content:"";position:absolute;left:4px;top:1px;width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}.mx .ck2:disabled{cursor:not-allowed;opacity:.5}
 /* รายงาน › Top 10 + วิเคราะห์พฤติกรรม (admin-top.js · 1 พ.ย. 2569 · ปรับให้ผู้บริหารอ่านง่าย 17:20) */
-.tp-k3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:14px}
-.tp-kc{display:flex;flex-direction:column;gap:4px;padding:16px 18px;text-align:left;font:inherit;color:inherit;cursor:pointer;border:1.5px solid var(--line)}
-.tp-kc[aria-pressed=true]{border-color:#141414;box-shadow:0 0 0 1px #141414}.tp-kc:hover{background:#FAFAFA}
 .tp-kl{font-size:14px;color:var(--mut)}.tp-kv{font-size:30px;font-weight:700;line-height:1.15}.tp-kv small{font-size:15px;font-weight:500;color:var(--mut)}.tp-ks{font-size:13px}
-.tp-main{display:grid;grid-template-columns:minmax(0,2fr) minmax(300px,1fr);gap:14px;margin-bottom:12px;align-items:start}.tp-main>.xd-c,.tp-side .xd-c{margin-bottom:0}.tp-side{display:flex;flex-direction:column;gap:14px}
 .tp-t{font-size:14px}.tp-t td{vertical-align:middle;white-space:normal}.tp-t td.num{white-space:nowrap}.tp-pn{min-width:190px}.tp-pn .faint{font-size:12.5px;display:flex;align-items:center}.tp-tg{display:flex;flex-wrap:wrap;gap:4px 8px;margin-top:4px;font-size:12px}
 .tp-t .xd-n{display:inline-grid}.xd-n.top{background:#141414;color:#fff}.tp-t b.bad{color:var(--bad)}.tp-t b.ok{color:var(--ok)}
-.tp-bv{display:flex;align-items:center;gap:10px}.tp-bv b{white-space:nowrap;min-width:52px}
 .tp-bar{flex:1;height:12px;background:#F1F1F1;border-radius:6px;overflow:hidden;display:block;min-width:60px}.tp-bar>i{display:block;height:100%;border-radius:6px}
-.tp-stk{display:flex;height:100%;border-radius:6px;overflow:hidden;gap:1px}.tp-stk i{display:block;height:100%}
 .tp-dr{display:grid;grid-template-columns:minmax(0,210px) 1fr auto 52px;gap:10px;align-items:center;padding:7px 0;font-size:13.5px}.tp-dr>span:first-child{display:flex;align-items:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tp-dr .faint{font-size:12px;text-align:right}
 .tp-is{font-size:13px;line-height:1.55;min-width:220px}
 .tp-hl{display:flex;align-items:center;gap:28px;padding:18px 22px;margin-bottom:14px;flex-wrap:wrap}.tp-hn{display:flex;align-items:center;gap:10px}.tp-hn b{font-size:34px;line-height:1}.tp-hn b.bad{color:var(--bad)}.tp-hn b.ok{color:var(--ok)}.tp-hn span{font-size:14px;line-height:1.3}.tp-hn small{color:var(--fnt);font-size:12px}
 .tp-hl p{flex:1;min-width:280px;margin:0;font-size:15px;line-height:1.6;border-left:1px solid var(--line);padding-left:22px}
 .tp-dt{font-size:12.5px}.tp-dt th,.tp-dt td{padding:7px 6px}
-@media(max-width:1200px){.tp-main{grid-template-columns:1fr}}@media(max-width:760px){.tp-k3{grid-template-columns:1fr}.tp-hl p{border-left:0;padding-left:0}}
-.tp-tt{table-layout:fixed;min-width:640px}.tp-tt .tp-pn{min-width:0}.tp-tt .tp-tg .badge{white-space:normal}
+@media(max-width:760px){.tp-hl p{border-left:0;padding-left:0}}
+/* Top 10 แบบ 3 คอลัมน์ (5 พ.ย. 2569) */
+.tp-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:14px;margin-bottom:14px;align-items:start}
+.tp-col{padding:0;overflow:hidden;min-width:0}.tp-ch{display:flex;flex-direction:column;gap:3px;padding:14px 16px 12px}.tp-col .tp-kl{color:var(--fg,#141414);font-weight:600}
+.tp-rh,.tp-r{display:grid;grid-template-columns:18px 34px minmax(0,1fr) 30px 40px;column-gap:10px;padding-left:16px;padding-right:16px}
+.tp-rh{font-size:12px;color:var(--mut);padding-top:7px;padding-bottom:7px;background:#F8F8F8;border-top:1px solid #F0F0F0}.tp-rh span:first-child{grid-column:1/4}.tp-rh span:not(:first-child){text-align:right}
+.tp-r{width:100%;align-items:center;text-align:left;font:inherit;color:inherit;line-height:1.35;background:none;border:0;border-top:1px solid #F0F0F0;padding-top:6px;padding-bottom:6px;cursor:pointer}
+.tp-r:hover,.tp-r.hl{background:#F4F4F5}.tp-r:focus-visible{outline:2px solid #141414;outline-offset:-2px}
+.tp-rk{font-size:13px;color:var(--mut);text-align:right;font-variant-numeric:tabular-nums}.tp-r .av{border-radius:50%}.tp-rn{min-width:0;display:block}.tp-rl{display:flex;align-items:center;gap:6px;font-size:14px;min-width:0}.tp-rt{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tp-rn small{display:block;font-size:12px;color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px}
+.tp-p{flex:none;font-size:11px;line-height:1.5;padding:0 6px;white-space:nowrap;color:var(--mut);border:1px solid var(--line);border-radius:4px}.tp-rv{font-size:16px;text-align:right}.tp-rd{font-size:12.5px;text-align:right;white-space:nowrap}
+.tp-all{display:block;width:100%;padding:10px 16px;border-top:1px solid #F0F0F0;text-align:center}
+.tp-low{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:12px;align-items:start}.tp-low .xd-c{margin-bottom:0}.tp-dep{grid-column:span 2}
+.tp-dt2{min-width:0!important;table-layout:fixed}.tp-dt2 th:first-child,.tp-dt2 td:first-child{width:30%;white-space:normal}.tp-dt2 th:nth-child(2),.tp-dt2 td:nth-child(2){width:52px}
+.tp-mono .xd-chip i{display:none}.tp-mono .xd-ii{background:#F1F1F1;color:#141414}
+@media(max-width:1280px){.tp-low{grid-template-columns:minmax(0,1fr)}.tp-dep{grid-column:auto}}
 .wfe-em{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:8px;padding:6px 8px;margin-top:6px;font-size:13px}.wfe-er input{flex:1;min-width:0}
 /* สรุปประจำเดือน: แถบสถานะการแจ้งเตือน + ตัวอย่างทุกรูปแบบ (admin-ms.js · 1 พ.ย. 2569) */
 .mx .ms-top{margin-bottom:16px}.mx .ms-top .bd{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.ms-ti{width:36px;height:36px;border-radius:10px;background:#F1F1F1;display:grid;place-items:center;flex:none}
@@ -864,8 +872,6 @@ html.th-sky .co-brand.lgc{box-shadow:0 0 0 1px #D2EEFA}
 .ms-av{width:28px;height:28px;border-radius:50%;background:#141414;color:#fff;display:inline-grid;place-items:center;flex:none;vertical-align:middle}
 .msr-sk{border:1px solid #F3C7C2;background:#FDF3F2;border-radius:10px;padding:12px;margin-bottom:12px}
 .msr-tm{border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:14px;background:#FAFAFA}
-.tp-kc{border-top:4px solid var(--c,#141414)}.tp-kc[aria-pressed=true]{border-color:var(--c,#141414);box-shadow:0 0 0 1px var(--c,#141414);background:var(--cs,#fff)}.tp-kc .tp-kv{color:var(--c,#141414)}
-.tp-kd{display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--c,#141414);margin-right:6px;vertical-align:middle}
 .msr-test{border:1px dashed #EA580C;background:#FFF7ED;color:#9A3412;border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.55;margin-bottom:10px}
 .lm-idr{display:flex;align-items:center;gap:8px;margin-top:2px;flex-wrap:wrap}.lm-id{font-family:ui-monospace,Menlo,monospace;font-size:12px;background:#F4F4F5;border-radius:6px;padding:2px 6px;user-select:all;word-break:break-all}
 /* ตั้งค่า › การใช้งาน › LINE (admin-usage.js · 2 พ.ย. 2569) */
