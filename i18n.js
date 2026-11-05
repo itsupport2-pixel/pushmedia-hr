@@ -250,6 +250,7 @@
     'จำนวนวันจะน้อยกว่าเดือนก่อน ๆ ผลเทียบอาจดูดีกว่าความจริง': 'fewer days than past months, so comparisons may look better than reality', 'แนะนำเลือกเดือนที่จบแล้ว': 'choose a completed month',
     'การลารวม': 'Total leave', 'ขาดงานรวม': 'Total absence', 'แก้ไขเวลารวม': 'Total time corrections', 'จากเดือนก่อน': 'from last month', 'ของทั้งหมด': 'of total', 'Top 10 รวม': 'Top 10 total',
     'ตามข้อมูลเงินเดือน · % ของรายได้': 'From payroll data · % of income',
+    'หักเดือนก่อน': 'Withheld last month', 'หักเดือนนี้ (ปัดเป็นบาท)': 'Withhold this month (rounded)', 'เดือนสุดท้าย หักส่วนที่เหลือทั้งหมด': 'Last month: withhold the remainder',
     'ต่อเนื่อง': 'streak', 'กดแผนกเพื่อกรอง': 'click a department to filter',
     'ยังไม่ส่ง': 'Not sent', 'ยังไม่ถึงรอบส่ง': 'Not due yet', 'เตรียมส่ง': 'Prepare to send', 'เตรียมส่งใหม่': 'Prepare again', 'ตรวจและส่ง': 'Review & send', 'ดูการติดตาม': 'View follow-up', 'กำลังโหลดสถานะการส่ง…': 'Loading send status…',
     'ยังไม่ได้เตรียมรายชื่อ · ส่งอีเมลผู้บริหาร + LINE พนักงาน หมวดลาและขาดงาน': 'List not prepared · sends executive email + employee LINE for leave and absence',
