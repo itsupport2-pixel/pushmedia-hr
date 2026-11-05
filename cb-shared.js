@@ -71,7 +71,7 @@
   CB.card = function (p, o) { var me = o.me || {}, base = o.base, hasMenu = CB.menuItems(p, me).length, long = !o.full && (p.body.length > 320 || p.body.split('\n').length > 5);
     return '<article class="cbcard' + (p.pinned ? ' pinned' : '') + '" data-cbid="' + E(p.id) + '">' +
       (p.pinned ? '<div class="cbpinbar">' + CB.ic('pin') + 'ปักหมุด' + (p.pin_until ? ' · ถึง ' + CB.date(p.pin_until) : '') + '</div>' : '') +
-      '<header class="cbhd">' + CB.av(base, p.author, 40) + '<div class="cbwho"><b data-noi18n>' + E(CB.full(p.author)) + '</b><span>' + (p.author && p.author.pos ? E(p.author.pos) + ' · ' : '') + CB.ago(p.created_at) + (p.edited ? ' · แก้ไขแล้ว' : '') + ' · ' + CB.chip(o.cats, p.cat) + '</span></div>' +
+      '<header class="cbhd">' + CB.av(base, p.author, 40) + '<div class="cbwho"><b data-noi18n>' + E(CB.full(p.author)) + '</b><span>' + (p.author && p.author.pos ? E(p.author.pos) + ' · ' : '') + CB.ago(p.created_at) + (p.edited ? ' · แก้ไขแล้ว' : '') + ' · ' + CB.chip(o.cats, p.cat) + (p.aud ? ' <span class="cbaud" title="เห็นเฉพาะคนใน' + E(p.aud.label) + '">' + CB.ic('users') + E(p.aud.label) + '</span>' : '') + '</span></div>' +
       (p.unread && !o.full ? '<i class="cbdot" title="มีความเคลื่อนไหวใหม่"></i>' : '') +
       (hasMenu ? '<div class="cbmw"><button class="cbmore" data-cbmenu="' + E(p.id) + '" aria-label="ตัวเลือกโพสต์" aria-expanded="' + !!o.menuOpen + '">' + CB.ic('more') + '</button>' + (o.menuOpen ? CB.menu(p, me) : '') + '</div>' : '') + '</header>' +
       (p.solved || p.locked ? '<div class="cbflags">' + (p.solved ? '<span class="ok">' + CB.ic('check') + 'มีคำตอบแล้ว</span>' : '') + (p.locked ? '<span>' + CB.ic('lock') + 'ปิดการแสดงความคิดเห็น</span>' : '') + '</div>' : '') +
@@ -99,17 +99,19 @@
       '<button class="cbsend" data-cbsend aria-label="ส่ง" disabled>' + CB.ic('send') + '</button></div></div>'; };
   /* หน้าต่างสร้างโพสต์ (แบบ Facebook) · o = {base, me, cats(ที่โพสต์ได้), cat, text} · me.reach = จำนวนคนที่จะได้รับแจ้งเมื่อโพสต์ประกาศ */
   CB.composer = function (o) { var me = o.me || {};
-    return '<div class="cbx-who">' + CB.av(o.base, me, 44) + '<div><b>' + E(me.name || 'ผู้ดูแลระบบ') + '</b><div class="cbx-pills"><span class="cbx-pill">' + CB.ic('users') + 'ทุกคนในบริษัท</span>' +
+    return '<div class="cbx-who">' + CB.av(o.base, me, 44) + '<div><b>' + E(me.name || 'ผู้ดูแลระบบ') + '</b><div class="cbx-pills"><label class="cbx-pill cbx-sel cbx-aud">' + CB.ic('users') + '<select id="cbx-aud" aria-label="ผู้เห็นโพสต์"><option value="all" data-n="' + (me.reach || 0) + '">ทุกคนในบริษัท</option>' + (me.aud || []).map(function (a) { return '<option value="' + E(a.v) + '" data-n="' + (+a.n || 0) + '"' + (a.v === o.aud ? ' selected' : '') + '>' + E(a.l) + '</option>'; }).join('') + '</select>' + CB.ic('down') + '</label>' +
       '<label class="cbx-pill cbx-sel">' + CB.ic('folder') + '<select id="cbx-cat" aria-label="หมวด">' + o.cats.map(function (c) { return '<option value="' + E(c.id) + '"' + (c.id === o.cat ? ' selected' : '') + '>' + E(c.name) + '</option>'; }).join('') + '</select>' + CB.ic('down') + '</label></div></div></div>' +
       '<textarea id="cbx-txt" class="cbx-txt" maxlength="5000" placeholder="คุณคิดอะไรอยู่ ' + E(CB.who(me)) + '">' + E(o.text || '') + '</textarea><div class="cbups" id="cbups"></div><div id="cbx-pop"></div>' +
       '<div class="cbx-add"><b>เพิ่มลงในโพสต์ของคุณ</b><label class="cbx-ic cbg" title="รูปภาพ (สูงสุด 4)" aria-label="รูปภาพ">' + CB.ic('image') + '<input type="file" accept="image/*" multiple data-cbfile class="cbvh"></label>' +
       '<button class="cbx-ic cbbl" data-cbtag title="แท็กเพื่อนร่วมงาน" aria-label="แท็กเพื่อนร่วมงาน">' + CB.ic('tag') + '</button><button class="cbx-ic cbor" data-cbemo="cbx-txt" title="อีโมจิ" aria-label="อีโมจิ">' + CB.ic('smile') + '</button></div>' +
       // ปักหมุด: ไม่อยู่ในหน้าต่างนี้ (ผู้ใช้ให้ตัดออก 1 พ.ย. 2569) · ผู้ดูแลปักหมุดจากเมนู ⋯ ของโพสต์
-      '<div class="cbx-ann" id="cbx-ann" hidden>' + CB.ic('bell') + '<span>หมวดประกาศ: โพสต์แล้วระบบจะแจ้งพนักงาน <b>' + (me.reach || 0) + ' คน</b> ทาง LINE</span></div>' +
+      '<div class="cbx-ann" id="cbx-ann" hidden>' + CB.ic('bell') + '<span>หมวดประกาศ: โพสต์แล้วระบบจะแจ้งพนักงาน <b id="cbx-ann-n">' + (me.reach || 0) + ' คน</b> ทาง LINE</span></div>' +
       '<button class="cbx-go" id="cbx-go"' + (o.text ? '' : ' disabled') + '>โพสต์</button>'; };
   /* หมวดประกาศ (post_perm mod) → แสดงแถบแจ้งเตือน + ปุ่ม "โพสต์และแจ้งทุกคน" */
   CB.annSync = function (cats) { var s = document.getElementById('cbx-cat'), n = document.getElementById('cbx-ann'), g = document.getElementById('cbx-go'); if (!s || !n || !g) return false;
-    var ann = CB.cat(cats, s.value).post_perm === 'mod'; n.hidden = !ann; g.textContent = ann ? 'โพสต์และแจ้งทุกคน' : 'โพสต์'; return ann; };
+    var ann = CB.cat(cats, s.value).post_perm === 'mod', au = document.getElementById('cbx-aud'), all = !au || au.value === 'all', nb = document.getElementById('cbx-ann-n'); n.hidden = !ann; if (nb) nb.textContent = CB.annN() + ' คน'; g.textContent = ann ? (all ? 'โพสต์และแจ้งทุกคน' : 'โพสต์และแจ้งผู้เห็นโพสต์') : 'โพสต์'; return ann; };
+  /* จำนวนคนที่จะได้รับแจ้ง LINE ตามผู้เห็นโพสต์ที่เลือก */
+  CB.annN = function () { var au = document.getElementById('cbx-aud'), op = au && au.options[au.selectedIndex]; return op ? (+op.getAttribute('data-n') || 0) : 0; };
   /* ผลการแจ้งหลังโพสต์ประกาศ (notified จากหลังบ้าน) */
   CB.annDone = function (x) { if (!x) return 'โพสต์แล้ว'; return { sent: 'โพสต์แล้ว · แจ้งทาง LINE ' + x.sent + ' คน', off: 'โพสต์แล้ว · การแจ้งประกาศทาง LINE ปิดอยู่ (ตั้งค่า › การแจ้งเตือน)', skipped: 'โพสต์แล้ว · ยังไม่ได้เชื่อม LINE (ตั้งค่า › LINE)', skipped_dev: 'โพสต์แล้ว · ระบบทดสอบไม่ส่ง LINE', error: 'โพสต์แล้ว แต่ส่ง LINE ไม่สำเร็จ ลองตรวจที่ ตั้งค่า › LINE' }[x.status] || 'โพสต์แล้ว'; };
   /* แผงอีโมจิ (ใส่ลงในข้อความ) + แผงค้นชื่อสำหรับแท็ก */

@@ -66,7 +66,7 @@
 
 /* สร้างโพสต์ */
 .cbx-who{display:flex;gap:10px;align-items:center}.cbx-who b{font-size:15px;font-weight:600}
-.cbx-pills{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap}
+.cbx-pills{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap}.cbx-aud select{max-width:230px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cbaud{display:inline-flex;align-items:center;gap:3px;vertical-align:middle;margin-left:2px;padding:0 6px;border-radius:5px;background:#EFEFEF;color:#444;font-size:11.5px;font-weight:500;white-space:nowrap}.cbaud .cbi{width:12px;height:12px}
 .cbx-pill{position:relative;display:inline-flex;align-items:center;gap:5px;background:#E9EAEC;border-radius:7px;padding:3px 8px;font-size:12.5px;font-weight:600;color:#111}
 .cbx-pill .cbi{width:15px;height:15px}.cbx-pill select{all:unset;font-size:12.5px;font-weight:600;padding-right:20px;margin-right:-20px;cursor:pointer;color:#111;position:relative;z-index:1}
 .cbx-txt{width:100%;min-height:140px;border:0;outline:none;resize:none;background:none;font:inherit;font-size:22px;line-height:32px;color:#111;padding:6px 0}

@@ -3,7 +3,7 @@
  * การกดทั้งหมดรับที่ตัวรับคลิกตัวเดียว (cbClick) · วาดใหม่เฉพาะส่วน (#cb-feed / #cb-post) · ทุกไฟล์ admin-*.js ใช้ชื่อร่วมกัน (global) โหลดตามลำดับใน admin.html (ก่อน admin-org.js) */
 'use strict';
 var CB_BASE=API.replace(/\/api$/,'');
-function cbMe(){var b=A.cbB&&A.cbB.me||{},m=A.d&&A.d.me||{};return {id:m.id,name:m.name||'ผู้ดูแลระบบ',nick:m.nickname||'',ph:b.ph,pic:b.pic,mod:!!b.mod,ann:!!(b.ann||b.mod),reach:b.reach||0,admin:!!b.admin,ro:!!b.ro}}
+function cbMe(){var b=A.cbB&&A.cbB.me||{},m=A.d&&A.d.me||{};return {id:m.id,name:m.name||'ผู้ดูแลระบบ',nick:m.nickname||'',ph:b.ph,pic:b.pic,mod:!!b.mod,ann:!!(b.ann||b.mod),reach:b.reach||0,aud:b.aud||[],admin:!!b.admin,ro:!!b.ro}}
 function cbBoot(force){if(A.cbBP&&!force)return A.cbBP;A.cbFail=0;A.cbBP=aCall('cbBoot').then(function(b){A.cbB=b;cbBadge(b.unread);return b}).catch(function(e){A.cbBP=null;A.cbFail=Date.now();throw e});return A.cbBP}
 function cbBadge(n){A.cbUn=n||0;var a=$('.side a[data-nav="cb"]');if(!a)return;var c=a.querySelector('.cnt');if(!A.cbUn){if(c)c.remove();return}if(!c){c=document.createElement('span');c.className='cnt';a.appendChild(c)}c.textContent=A.cbUn}
 function cbOpts(){return {base:CB_BASE,cats:(A.cbB&&A.cbB.cats)||[],me:cbMe()}}
@@ -55,14 +55,14 @@ function cbCompose(){var b=A.cbB||{cats:[],me:{}},me=cbMe(),cats=b.cats.filter(f
   A.cbXUps=[];var w=document.createElement('div');w.className='cba-mw';
   w.innerHTML='<div class="cba-modal cbx" role="dialog" aria-modal="true" aria-labelledby="cbx-t"><div class="cba-mh"><span></span><h3 id="cbx-t">สร้างโพสต์</h3><button class="cba-x" data-cbxclose aria-label="ปิด">'+CB.ic('x')+'</button></div><div class="cba-mb">'+
     CB.composer({base:CB_BASE,me:me,cats:cats,cat:cat})+'</div></div>';
-  document.body.appendChild(w);$('#cbx-txt').focus();CB.annSync(b.cats);$('#cbx-cat').onchange=function(){CB.annSync(b.cats)};
+  document.body.appendChild(w);$('#cbx-txt').focus();CB.annSync(b.cats);$('#cbx-cat').onchange=function(){CB.annSync(b.cats)};$('#cbx-aud').onchange=function(){CB.annSync(b.cats)};
   w.addEventListener('mousedown',function(e){if(e.target===w&&!$('#cbx-txt').value.trim())cbComposeClose()})}
 function cbComposeClose(){var w=$('.cba-mw');if(w)w.remove();A.cbXUps=[]}
 function cbComposeGo(btn){var t=$('#cbx-txt');if(!t.value.trim())return;if(A.cbXUps.some(function(u){return !u.id}))return toast('รอรูปอัปโหลดเสร็จก่อน',1);
-  var a={cat:$('#cbx-cat').value,body:t.value,imgs:A.cbXUps.map(function(u){return u.id})},go=function(){busy(btn,1);
+  var a={aud:$('#cbx-aud').value,cat:$('#cbx-cat').value,body:t.value,imgs:A.cbXUps.map(function(u){return u.id})},go=function(){busy(btn,1);
   aCall('cbPost',a).then(function(r){cbComposeClose();toast(CB.annDone(r.notified));A.cbId=r.id;A.cbP=null;A.cbL=null;A.view='cb';render();scrollTo(0,0)}).catch(function(e){busy(btn,0);toast(e.message,1)})};
   if(!CB.annSync(A.cbB.cats))return go();   // ประกาศ → ยืนยันก่อนแจ้งทุกคน
-  ask({title:'โพสต์ประกาศและแจ้งทุกคน?',desc:'ระบบจะส่งการ์ดประกาศถึงพนักงาน '+(cbMe().reach||0)+' คนทาง LINE ทันที · แก้ไขภายหลังได้แต่จะไม่ส่งซ้ำ',buttons:[{k:'no',label:'ยกเลิก'},{k:'ok',label:'โพสต์และแจ้ง'}]}).then(function(k){if(k==='ok')go()})}
+  ask({title:$('#cbx-aud').value==='all'?'โพสต์ประกาศและแจ้งทุกคน?':'โพสต์ประกาศและแจ้งผู้เห็นโพสต์?',desc:'ระบบจะส่งการ์ดประกาศถึงพนักงาน '+(CB.annN())+' คนทาง LINE ทันที · แก้ไขภายหลังได้แต่จะไม่ส่งซ้ำ',buttons:[{k:'no',label:'ยกเลิก'},{k:'ok',label:'โพสต์และแจ้ง'}]}).then(function(k){if(k==='ok')go()})}
 
 /* ───────── แผงอีโมจิ / แท็กคน ───────── */
 function cbPop(html,anchor){cbPopClose();var p=document.createElement('div');p.className='cba-pop';p.innerHTML=html;document.body.appendChild(p);var r=anchor.getBoundingClientRect(),w=p.firstChild.offsetWidth||320;
