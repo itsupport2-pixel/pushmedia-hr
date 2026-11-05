@@ -143,7 +143,7 @@ function empCards(rows){
   var pn=function(e){return String(org('positions',e.position_id)||'')},isEx=function(e){return e.role==='exec'||/managing director|^ceo$|^coo$|^cfo$|กรรมการผู้จัดการ/i.test(pn(e))},isMg=function(e){return !isEx(e)&&(e.role==='manager'||/department manager|ผู้จัดการแผนก/i.test(pn(e)))};
   var ex=rows.filter(isEx).sort(by),mg=rows.filter(isMg).sort(by),rest=rows.filter(function(e){return !isEx(e)&&!isMg(e)});
   var PH_I='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>',
-      EM_I='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>';
+      EM_I=GMAIL_IC;
   var card=function(e,showDept){var sub=showDept?org('departments',e.department_id):org('teams',e.team_id);
     return '<div class="ec ck" data-id="'+e.id+'" tabindex="0" role="button" aria-label="'+esc(e.first_name+' '+e.last_name)+'">'+av(e,84)+'<div class="ec-t"><div class="ec-n"><b>'+esc(e.first_name+' '+e.last_name)+'</b>'+(e.nickname?' <span>('+esc(e.nickname)+')</span>':'')+'</div>'+
       '<div class="ec-p">'+esc(org('positions',e.position_id)||'—')+'</div>'+(sub?'<div class="ec-s">'+esc(sub)+'</div>':'')+

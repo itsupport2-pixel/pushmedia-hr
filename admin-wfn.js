@@ -34,7 +34,7 @@ function wfnInsp(n,c,trig){var b=wfnBase(trig),br=(b==='leave'||b==='messenger'|
   var opt=function(list,v){return list.map(function(o){return '<option value="'+esc(o[0])+'"'+(String(v)===String(o[0])?' selected':'')+'>'+esc(o[1])+'</option>'}).join('')};
   var cards=wfnCards(trig,br,to),gcards=wfnGCards(trig,br),fix=false;if(cards.indexOf(c.card)<0){c.card=cards[0];fix=true}if(gcards.indexOf(c.gcard)<0){c.gcard=gcards[0];fix=true}if(fix){WE.dirty=true;setTimeout(function(){wfDraw(true)},0)}
   var chip=function(k,l){return '<button type="button" class="wfn-ch'+(ch[k]?' on':'')+'" data-nch="'+k+'" aria-pressed="'+!!ch[k]+'">'+l+'</button>'};
-  var h='<div class="f">ช่องทาง <small class="faint">เลือกได้หลายช่องพร้อมกัน</small><div class="wfn-chs">'+chip('line','LINE รายคน')+chip('group','LINE กลุ่ม')+chip('mail','อีเมล')+'</div></div>';
+  var h='<div class="f">ช่องทาง <small class="faint">เลือกได้หลายช่องพร้อมกัน</small><div class="wfn-chs">'+chip('line','LINE รายคน')+chip('group','LINE กลุ่ม')+chip('mail',GMAIL_IC+'อีเมล')+'</div></div>';
   if(ch.line||ch.mail){var em=wfnEmps().filter(function(e){return c.people.indexOf(e.id)<0}).sort(function(a,x){return String(a.emp_code)<String(x.emp_code)?-1:1});
     h+='<div class="f">ส่งถึง'+(WFN_ROLES[b]||[]).map(function(r){return '<label class="fl-c"><input type="checkbox" data-nto="'+r+'"'+(to.indexOf(r)>=0?' checked':'')+'><span>'+esc(wfnRoleL(r,b))+'</span></label>'}).join('')+'</div>'+
      '<div class="f">เพิ่มรายคน'+c.people.map(function(id,i){return '<div class="wfe-em"><span style="flex:1;min-width:0">'+esc(wfnEmpName(id))+'</span><button class="btn sm" data-npdel="'+i+'" aria-label="เอาออก">✕</button></div>'}).join('')+
