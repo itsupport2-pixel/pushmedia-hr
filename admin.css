@@ -840,6 +840,8 @@ html.th-sky .co-brand.lgc{box-shadow:0 0 0 1px #D2EEFA}
 .tp-low{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:12px;align-items:start}.tp-low .xd-c{margin-bottom:0}.tp-dep{grid-column:span 2}
 .tp-dt2{min-width:0!important;table-layout:fixed}.tp-dt2 th:first-child,.tp-dt2 td:first-child{width:30%;white-space:normal}.tp-dt2 th:nth-child(2),.tp-dt2 td:nth-child(2){width:52px}
 .tp-mono .xd-chip i{display:none}.tp-mono .xd-ii{background:#F1F1F1;color:#141414}
+.tp-ms{padding:10px 16px;margin-bottom:12px}.tp-msr{display:flex;align-items:center;gap:14px;flex-wrap:wrap}.tp-msm{flex:1 1 320px;min-width:0}.tp-mst{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:14.5px}.tp-msd{font-size:12.5px;margin-top:2px}
+.tp-mss{font-size:12.5px;font-weight:600;color:var(--mut)}.tp-mss.ok{color:var(--ok)}.tp-mss.warn{color:var(--warn)}
 @media(max-width:1280px){.tp-low{grid-template-columns:minmax(0,1fr)}.tp-dep{grid-column:auto}}
 .wfe-em{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:8px;padding:6px 8px;margin-top:6px;font-size:13px}.wfe-er input{flex:1;min-width:0}
 /* สรุปประจำเดือน: แถบสถานะการแจ้งเตือน + ตัวอย่างทุกรูปแบบ (admin-ms.js · 1 พ.ย. 2569) */

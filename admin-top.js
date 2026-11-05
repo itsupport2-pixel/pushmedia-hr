@@ -15,7 +15,7 @@ function tpBind(draw){var load=function(){$('#tp-body').innerHTML='<div class="l
     aCall('execDashboard',A.tpYm).then(function(d){A.tp=d;draw()}).catch(function(e){if($('#tp-body'))$('#tp-body').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})};
   $('#tp-ym').onchange=function(){A.tpYm=this.value;load()};$('#tp-rl').onclick=function(){fxArm('rep');load()};
   if(A.tp&&A.tp.ym===A.tpYm)draw();else load()}
-function bTop(){tpBind(drawTop)}
+function bTop(){A.tpMs=null;tpBind(drawTop)}
 function bBh(){tpBind(drawBh)}
 /* แผนก (ปุ่มเลือก) · ใช้ร่วมกันทั้ง 2 แท็บ */
 function tpPs(){var d=A.tp,dep=A.tpDep||'all';return dep==='all'?d.people:d.people.filter(function(p){return p.dept===dep})}
@@ -40,7 +40,7 @@ var TP_C={lv:['#7C3AED','#F5F3FF'],abs:['#DC2626','#FEF2F2'],adj:['#EA580C','#FF
  * โทนขาว–ดำสำหรับผู้บริหาร (5 พ.ย. 2569 ผู้ใช้: "ไม่เอาแถบสี มันดูเด็กน้อยไป") · สีเหลือเฉพาะ ▲ แดง / ▼ เขียว ที่บอกทิศทาง
  * ด้านล่าง: ตารางแผนกรวม 3 หมวด (กดเพื่อกรอง) + ข้อสังเกตรวมทุกหมวด ── */
 function tpLvShort(t){return String(t).replace(/^ลา(?=\S)/,'')}
-function drawTop(){var d=A.tp;if(!d||!$('#tp-body'))return;var ym=d.ym,i=d.months.indexOf(ym),pm=i>0?d.months[i-1]:null,ps=tpPs(),h=tpChips(),R={},H={},in10={};
+function drawTop(){var d=A.tp;if(!d||!$('#tp-body'))return;var ym=d.ym,i=d.months.indexOf(ym),pm=i>0?d.months[i-1]:null,ps=tpPs(),h=(isHR()?'<section class="card tp-ms" id="tp-ms"><span class="faint">กำลังโหลดสถานะการส่ง…</span></section>':'')+tpChips(),R={},H={},in10={};
   TP_K.forEach(function(k){var f=k[0];R[f]=tpRank(d,ps,f);R[f].slice(0,10).forEach(function(x){(in10[x.p.id]=in10[x.p.id]||[]).push(k[1])});
     H[f]={};d.months.slice(0,i).forEach(function(m){var o=H[f][m]={};tpRank(d,ps,f,m).slice(0,10).forEach(function(x){o[x.p.id]=1})})});
   var streak=function(f,id){var n=1;for(var j=i-1;j>=0&&H[f][d.months[j]][id];j--)n++;return n};
@@ -77,9 +77,29 @@ function drawTop(){var d=A.tp;if(!d||!$('#tp-body'))return;var ym=d.ym,i=d.month
   var insH='<section class="card xd-c"><h3>ข้อสังเกต</h3><div class="faint xd-cs">สรุปอัตโนมัติจากตัวเลข</div>'+(ins.length?'<div class="xd-ins">'+ins.slice(0,6).map(function(x){return '<div><span class="xd-ii '+x[1]+'">'+x[0]+'</span><span>'+esc(x[2])+'</span></div>'}).join('')+'</div>':'<div class="faint">ไม่มี</div>')+'</section>';
   h+='<div class="tp-low">'+dep+insH+'</div>';
   h+='<div class="faint" style="font-size:12.5px;line-height:1.6">เท่ากันเรียงตามยอด 6 เดือน · กดแถวเพื่อดูรายละเอียด · ป้าย “2 หมวด” = ติด Top 10 หลายหมวด<br>ลา = วันที่ระบบสรุปว่าลา (ครึ่งวันนับ 1 วัน) · ขาดงาน = วันทำงานที่ไม่มีบันทึกเวลาและไม่ได้ลา · แก้ไขเวลา = วันที่มี HR ลงเวลาแทน/แก้เวลา</div>';
-  $('#tp-body').innerHTML='<div class="tp-mono">'+h+'</div>';tpBindCommon(drawTop);loadPhotos();
+  $('#tp-body').innerHTML='<div class="tp-mono">'+h+'</div>';tpBindCommon(drawTop);loadPhotos();tpMsLoad();
   $$('#tp-body .tp-r').forEach(function(b){var same=function(on){$$('#tp-body .tp-r').forEach(function(o){if(o.dataset.tpp===b.dataset.tpp)o.classList.toggle('hl',on)})};b.onmouseenter=function(){same(true)};b.onmouseleave=function(){same(false)}});
   $$('[data-tpa]').forEach(function(b){b.onclick=function(){var k='tpAll_'+b.dataset.tpa;A[k]=!A[k];drawTop()}})}
+
+/* ── แถบสถานะการส่งสรุปประจำเดือนบนหน้า Top 10 (5 พ.ย. 2569 ผู้ใช้: "เพิ่มปุ่มกดส่ง หรือแสดงสถานะการส่ง ว่าของแต่ละเดือนถูกส่งยัง" + "แสดงสถานะเฉพาะเดือนที่เลือก ไม่ต้องแสดงทั้งหมด")
+ * เฉพาะ HR/admin/ผู้บริหาร (msGet ต้องระดับ HR) · ปุ่มส่ง = เปิดหน้าต่างอนุมัติเดิม msRunDetail (ตรวจรายชื่อ · ยืนยันก่อนส่ง) ไม่มีทางลัดส่งทันที */
+var TP_MS_ST={sent:['ok','ส่งแล้ว'],prepared:['warn','รอ HR อนุมัติส่ง'],skipped:['','ไม่ส่งรอบนี้']};
+function tpMsLoad(){if(!isHR())return;var ym=A.tpYm;if(A.tpMs&&A.tpMs.ym===ym){tpMsDraw();return}
+  aCall('msGet',ym).then(function(d){if(A.tpYm!==ym)return;A.tpMs=d;tpMsDraw()}).catch(function(e){var b=$('#tp-ms');if(b)b.innerHTML='<div class="alert" style="margin:0">'+esc(e.message)+'</div>'})}
+function tpMsDraw(){var b=$('#tp-ms'),d=A.tpMs;if(!b||!d||d.ym!==A.tpYm)return;var ym=d.ym,run=d.run,cfg=d.cfg||{},cur=dIso(new Date()).slice(0,7),st=['','ยังไม่ส่ง'],txt='',btn='';
+  var hour=('0'+cfg.hour).slice(-2)+':00',it=run?run.items||[]:[],go=it.filter(function(x){return !x.excluded&&x.line}).length;
+  if(ym>=cur){st=['','ยังไม่ถึงรอบส่ง'];txt='เดือนนี้ยังไม่จบ · ระบบเตรียมรายชื่อให้วันที่ '+cfg.day+' ของเดือนถัดไป เวลา '+hour+' น.'}
+  else if(!run){txt='ยังไม่ได้เตรียมรายชื่อ · ส่งอีเมลผู้บริหาร + LINE พนักงาน หมวดลาและขาดงาน';btn='<button class="btn" data-tpms="prep">เตรียมส่ง</button>'}
+  else if(run.status==='prepared'){st=TP_MS_ST.prepared;var mt=(run.mail_to||[]).length;txt='อีเมล '+mt+' ฉบับ · LINE '+go+' คน'+(mt?'':' · ยังไม่มีผู้รับอีเมล');btn='<button class="btn pri" data-tpms="open">ตรวจและส่ง</button>'}
+  else if(run.status==='skipped'){st=TP_MS_ST.skipped;txt='ปิดรอบนี้โดยไม่ส่งถึงใคร · เปลี่ยนใจได้โดยเตรียมรายชื่อใหม่';btn='<button class="btn" data-tpms="prep">เตรียมส่งใหม่</button>'}
+  else{st=TP_MS_ST.sent;var sentN=it.filter(function(x){return x.line_status==='sent'||x.line_status==='skipped_dev'}).length,ml=(run.mails||[]).filter(function(m){return !m.test}),exp=it.filter(function(x){return !x.excluded});
+    txt=fdt(run.sent_at)+(run.sent_by?' โดย '+run.sent_by:'')+' · LINE '+sentN+' คน · อีเมล '+ml.length+' ฉบับ · ชี้แจงแล้ว '+exp.filter(function(x){return x.exp_status}).length+' จาก '+exp.length;btn='<button class="btn" data-tpms="view">ดูการติดตาม</button>'}
+  b.innerHTML='<div class="tp-msr"><div class="tp-msm"><div class="tp-mst"><b>สรุปประจำเดือน · '+xdYmTxt(ym)+'</b><span class="tp-mss '+st[0]+'">'+st[1]+'</span></div><div class="faint tp-msd">'+esc(txt)+'</div></div>'+btn+'</div>';
+  var detail=function(r){msRunDetail({kind:'ms_run',id:r.id,ym:r.ym,no:'MS-'+r.ym.replace('-',''),test:false,mine:true})};
+  $$('#tp-ms [data-tpms]').forEach(function(x){x.onclick=function(){var k=x.dataset.tpms;
+    if(k==='open')return detail(run);
+    if(k==='view'){A.rpTab='ms';A.msYm=ym;A.ms=null;fxArm('rep');render();return}
+    busy(x,1);aCall('msPrepare',ym).then(function(r){A.tpMs=r;tpMsDraw();detail(r.run)}).catch(function(e){busy(x,0);toast(e.message,1)})}})}
 
 /* ── วิเคราะห์พฤติกรรม ──
  * ฐาน = ค่าเฉลี่ย 3 เดือนก่อนหน้าที่มีข้อมูล (อย่างน้อย 1 เดือน) · คนที่ไม่มีเดือนก่อนหน้า (พนักงานใหม่) ไม่นำมาเทียบ
