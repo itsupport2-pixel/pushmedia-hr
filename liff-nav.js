@@ -62,18 +62,18 @@ document.addEventListener("click",e=>{const t=e.target.closest("button,[data-dcl
 /* ลงเวลา · early = เหตุผลออกก่อนเวลา (จากหน้าต่างเตือน) */
 function earlySheet(r){sheet(`<div style="align-self:center;width:52px;height:52px;border-radius:50%;background:var(--orange-soft,#FFF3DC);color:var(--orange,#B26A00);display:grid;place-items:center">${ic("alarm")}</div><h3 style="text-align:center;margin:0">ยังไม่ถึงเวลาเลิกงาน</h3><span class="cap" style="text-align:center">${r.shift?"กะ"+esc(r.shift)+" ":""}เลิก ${esc(r.end)} น. · ตอนนี้ ${hhmm()} น.<br>ออกก่อนเวลา ${r.early_min>=60?Math.floor(r.early_min/60)+" ชม. ":""}${r.early_min%60} นาที · ระบบจะบันทึกเป็น "ออกก่อนเวลา"</span>${fl("er","เหตุผลที่ออกก่อนเวลา (ไม่บังคับ)",`<textarea class="ta" id="er" placeholder="เช่น ลาครึ่งบ่าย · ไปหน้างานต่อ · ป่วยกลับบ้าน"></textarea><span class="emsg" id="er-e" hidden></span>`)}<button class="btn pri" data-earlyok>ลงเวลาออกตอนนี้</button><button class="btn out" data-dclose>ยังไม่ออก · กลับ</button>`);
   }
-function doClock(kind,t,early){const n=$("#cn"),note=n?n.value.trim():"",p=S.pos;{const d={clock:kind};
+function doClock(kind,t,early){const n=$("#cn"),note=n?n.value.trim():"",p=S.pos;if(kind==="in"&&n&&n.dataset.req==="1"&&!note){n.classList.add("err");const er=$("#cn-e");er.hidden=false;er.textContent="อยู่นอกพื้นที่ กรุณาระบุเหตุผล"+((S.today&&S.today.jobs||[]).length?" หรือเลือกจากตารางงาน":"");n.scrollIntoView({block:"center",behavior:"smooth"});return}{const d={clock:kind};
     t.disabled=true;const old=t.innerHTML;t.innerHTML='<span class="spin"></span>กำลังบันทึก…';
     api("clock",d.clock,p.lat,p.lng,p.acc,note,devInfo(),d.clock==="in"?S.shift||"":"",early||"").then(r=>{
       if(!r.ok&&r.need_early_note){t.disabled=false;t.innerHTML=old;earlySheet(r);return}
       if(!r.ok&&r.need_shift){t.disabled=false;t.innerHTML=old;toast("เลือกกะการทำงานก่อนลงเวลา");return}
       if(!r.ok&&(r.device_pending||r.device_blocked)){t.disabled=false;t.innerHTML=old;S.devmsg=r;S.stack[S.stack.length-1]="devwait";show("fade");return}
       if(!r.ok&&r.need_note){t.disabled=false;t.innerHTML=old;n.classList.add("err");const er=$("#cn-e");er.hidden=false;er.textContent="อยู่นอกพื้นที่"+(r.target?" (ห่าง "+r.target+" "+fmtDist(r.distance_m)+")":"")+" กรุณาระบุเหตุผล";n.focus();return}
-      S.last=r;S.today=null;S.month=null;S.stack[S.stack.length-1]="done";show("fade");refreshToday();
+      S.cn="";S.cnj=null;S.last=r;S.today=null;S.month=null;S.stack[S.stack.length-1]="done";show("fade");refreshToday();
       const now=new Date();api("myAttendance",`${now.getFullYear()}-${p2(now.getMonth()+1)}`).then(m=>{S.month=m}).catch(()=>{});
     }).catch(err=>{
       if(CFG.backup&&DOWN_RE.test(err.message)){t.innerHTML='<span class="spin"></span>ระบบหลักขัดข้อง · กำลังบันทึกสำรอง…';
-        return backupClock(d.clock,p,note,d.clock==="in"?S.shift||"":"").then(r=>{S.last={ok:true,backup:true,time:r.time,kind:r.kind,location:"บันทึกสำรอง (รอนำเข้า)",in_area:true,lat:p.lat,lng:p.lng};S.stack[S.stack.length-1]="done";show("fade")})
+        return backupClock(d.clock,p,note,d.clock==="in"?S.shift||"":"").then(r=>{S.cn="";S.cnj=null;S.last={ok:true,backup:true,time:r.time,kind:r.kind,location:"บันทึกสำรอง (รอนำเข้า)",in_area:true,lat:p.lat,lng:p.lng};S.stack[S.stack.length-1]="done";show("fade")})
           .catch(e2=>{t.disabled=false;t.innerHTML=old;toast(e2.message)})}
       t.disabled=false;t.innerHTML=old;toast(err.message)})}}
 document.addEventListener("change",e=>{const id=e.target.id;
