@@ -19,8 +19,9 @@
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%}
-body{margin:0;background:#C9D1DC;font-family:var(--font);color:var(--text);font-size:16px;line-height:1.45;-webkit-font-smoothing:antialiased}
+body{margin:0;background:#C9D1DC;font-family:var(--font);color:var(--text);font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased}
 button,input,select,textarea{font:inherit;color:inherit}
+input,select,textarea{font-size:16px}   /* คงไว้ 16px: iOS ซูมจอเมื่อแตะช่องที่เล็กกว่านี้ */
 button{cursor:pointer;border:0;background:none;padding:0;text-align:inherit}
 button:active{transform:scale(.97);transition:transform .08s}
 :focus-visible{outline:2px solid var(--blue);outline-offset:2px}
@@ -455,3 +456,31 @@ a.btn{text-decoration:none;display:flex;align-items:center;justify-content:cente
 .sl-netbox{display:flex;justify-content:space-between;align-items:center;background:#111;color:#fff;border-radius:12px;padding:12px 14px;margin-top:8px}.sl-netbox b{font-size:20px;font-variant-numeric:tabular-nums}
 /* เลือกงานจากตารางงานเป็นเหตุผลลงเวลานอกพื้นที่ (6 พ.ย. 2569) */
 .cnj-l{display:flex;flex-direction:column;gap:8px}.cnj{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:14px;background:#fff;text-align:left;font:inherit;color:inherit}.cnj b{display:block;font-size:15px;font-weight:600;overflow-wrap:anywhere}.cnj small{display:block;margin-top:1px;font-size:13px;color:var(--mut,#6B7280);overflow-wrap:anywhere}.cnj-c{flex:none;display:grid;place-items:center;width:22px;height:22px;border:1.5px solid #C9C9C9;border-radius:50%;color:transparent}.cnj-c svg{width:14px;height:14px}.cnj[aria-pressed="true"]{border-color:#111;background:#F6F6F6}.cnj[aria-pressed="true"] .cnj-c{background:#111;border-color:#111;color:#fff}
+
+/* ───────── ปรับหน้าตาแอปพนักงาน (6 พ.ย. 2569) ─────────
+ * ตัวอักษร: หัวหน้า 20 · หัวข้อส่วน 17 · เนื้อหา 15 · คำอธิบาย 13 · ป้ายเล็ก 12 (ช่องกรอกคง 16)
+ * สี: พื้นขาว เส้นบาง · สีเฉพาะตัวเลข/สถานะที่ต้องระวัง · หัวหน้าเป็นแถบขาวแบบเดียวกันทุกหน้า */
+.band,.wbar{height:52px;padding:0 8px;background:#fff;color:var(--text);border-bottom:1px solid #EEEEEE}
+.band button{width:44px;height:44px;margin:0;color:var(--text);border-radius:10px}.band svg.i{width:26px;height:26px;stroke-width:2.2}
+.band h1,.wbar h1{position:absolute;left:52px;right:52px;margin:0;text-align:center;font-size:20px;font-weight:600;letter-spacing:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.band>button,.wbar>button{position:relative;z-index:1}
+.phead{background:#fff;color:var(--text);padding:0 16px 16px;border-radius:0;border-bottom:1px solid #EEEEEE}.phead .top{position:relative;height:52px;margin:0 -8px 8px}.phead .top button{position:relative;z-index:1;width:44px;height:44px;align-items:center;justify-content:center;color:var(--text)}.phead .top h1{position:absolute;left:52px;right:52px;margin:0;text-align:center;font-size:20px;font-weight:600}.phead .who div{font-size:13px;color:var(--text-2)}.phead .who b{font-size:17px;color:var(--text)}
+.sec h3{background:#fff;color:var(--text);font-size:15px;border-bottom:1px solid var(--line)}
+.tabbed::after{content:"";flex:none;height:46px}   /* เว้นที่ให้ปุ่มลงเวลาที่ยื่นขึ้นมาจากแถบล่าง */
+.sec-h h2,.sheet .h h2{font-size:17px}
+.shorts{margin-left:-8px;margin-right:-8px}.shorts button{font-size:12px;letter-spacing:0}.shorts svg.i{width:28px;height:28px}
+.chip{font-size:13px}.daily .chip{font-size:13px}.shift{color:var(--text)}
+.inout span{font-size:13px;margin-bottom:6px}.inout b{font-size:17px}
+.mband{margin:8px 0 0;padding:12px 16px 10px;background:none;color:var(--text);border-radius:0}.mband b{font-size:17px;font-weight:700}
+.sheet{margin-top:0;border-radius:18px 18px 0 0;padding:18px 16px 24px;gap:14px}
+.tiles .tile{border:1px solid var(--line);background:#fff;color:var(--text-2);padding:12px 2px 10px}.tile svg.i{width:26px;height:26px;stroke-width:1.6}.tile b{font-weight:500;color:var(--text-2)}.tile span{font-size:12px}.tile.on.t-red strong{color:#D92D32}.tile.on.t-orange strong,.tile.on.t-yellow strong{color:#C2570C}
+.docs{gap:10px}.docs .doc{padding:14px;box-shadow:none;border:1px solid var(--line)}.doc .l{gap:5px;color:var(--text-2)}.doc .l svg.i{color:var(--text-2)}.doc strong{font-size:22px}.doc strong small{font-size:15px}.doc.on strong{color:#C2570C}
+.mrow{gap:14px;padding:14px 16px;border-radius:14px;font-size:15px;box-shadow:none;border:1px solid var(--line)}.mrow svg.i{width:24px;height:24px;color:var(--text)}.mrow .chev svg.i{color:#8A93A0}
+.mrow.soon{background:transparent;color:var(--text-3)}.mrow.soon svg.i{color:var(--text-3)}.mrow.soon .chip{background:#EDEDED;color:var(--text-2)}
+.note{font-size:13px}
+.drawer{background:#fff}.drawer .logo{border-bottom:1px solid var(--line);padding:20px 16px 14px;margin:0 16px}.drawer nav{padding:8px 12px}.drawer nav button{gap:14px;padding:11px 14px;font-size:15px;color:var(--text)}.drawer nav svg.i{width:24px;height:24px}.drawer nav button[aria-current="page"]{background:#F2F2F2;font-weight:600}
+.drawer .ver{font-size:12px;color:var(--text-2);padding:0 12px 8px;line-height:1.5}.drawer footer{grid-template-columns:1fr 1px 64px;padding:10px 0 26px}.drawer footer i{background:var(--line)}.drawer footer button{align-items:center;gap:8px;font-size:14px;color:var(--text);min-height:44px}.drawer footer svg.i{width:24px;height:24px}
+.clk{padding:10px 16px 12px}.clk .d{font-size:13px}.clk .t{font-size:40px;font-weight:600;color:var(--text);letter-spacing:0}
+.lab{font-size:13px;color:var(--text-2)}.shc b{font-size:15px}.late{font-size:13px;background:#F6F6F6}.late svg.i{color:var(--text-2)}
+.loc b{font-size:17px}.loc .s{font-size:13px}.opt{gap:14px;padding:13px 14px;border-width:1px;border-radius:14px}.opt b{font-size:15px;font-weight:600}.opt .s{font-size:13px}
+.cnd summary{cursor:pointer;width:max-content;padding:6px 0;font-size:13px;color:var(--text-2)}.cnd[open] summary{margin-bottom:6px}

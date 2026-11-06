@@ -19,7 +19,7 @@ const cbPost=id=>(S.cb.P[id]&&S.cb.P[id].post)||((S.cb.L&&S.cb.L.items)||[]).fin
 /* ── การ์ดบนหน้าหลัก: ปักหมุด + ล่าสุด ── */
 function cbHomeCard(){const b=S.cb.b;if(!b)return "";
   return `<div class="card cbl-home"><button class="cbl-hh" data-act="go:cb"><b>Community</b>${b.unread?`<span class="cbl-badge">${b.unread} ใหม่</span>`:""}<span style="flex:1"></span><span class="cap">ดูทั้งหมด ›</span></button>${b.latest.length?b.latest.slice(0,4).map(p=>`<button class="cbl-hr" data-cbo="${CB.esc(p.id)}">${CB.av(CB_BASE,p.author,26)}${p.pinned?CB.ic("pin","cbl-pin"):""}${CB.chip(b.cats,p.cat)}<span class="cbl-ht${p.unread?" un":""}">${CB.esc(p.body.split("\n")[0])}</span></button>`).join(""):`<span class="cap" style="padding:2px 16px 12px">ยังไม่มีโพสต์ · กดเพื่อเริ่มโพสต์แรก</span>`}</div>`}
-V.home=(f=>()=>{const h=f();if(!S.today||!S.cb.b)return h;const i=h.indexOf('<div class="tiles">');return i<0?h+cbHomeCard():h.slice(0,i)+cbHomeCard()+h.slice(i)})(V.home);
+V.home=(f=>()=>{const h=f();if(!S.today||!S.cb.b)return h;return h.includes('<!--cb-->')?h.replace('<!--cb-->',()=>cbHomeCard()):h+cbHomeCard()})(V.home);   // 6 พ.ย. 2569: วางท้ายส่วนข้อมูลประจำวัน ไม่แทรกกลางสรุปเดือน
 
 /* ── ฟีด ── */
 V.cb=()=>{const b=S.cb.b,L=S.cb.L,f=S.cb.f,o=cbO();if((!L||S.cb.dirty)&&!S.cb.loading)setTimeout(()=>cbLoad(),0);if(!b&&!S.cb.bp)cbBootLoad().then(()=>{if(cur()==="cb")repaint()}).catch(e=>toast(e.message));
@@ -109,6 +109,6 @@ document.addEventListener("change",e=>{const t=e.target;if(t.hasAttribute&&t.has
 document.addEventListener("input",e=>{const t=e.target;if(t.id==="cbx-txt"){S.cb.ntext=t.value;cbSendState()}if(t.id==="cbct"){cbSendState();t.style.height="auto";t.style.height=Math.min(120,t.scrollHeight)+"px"}if(t.id==="cbtag-q")cbTagSearch(t.value)});
 
 /* เมนูขวา: + Community · เข้าหน้า = โหลดข้อมูล · เปิดแอป = โหลดการ์ดหน้าหลัก */
-drawer=(f=>open=>{f(open);if(!open)return;const nav=document.querySelector("#ov .drawer nav");if(nav&&!nav.querySelector('[data-dgo="go:cb"]'))nav.children[1].insertAdjacentHTML("beforebegin",`<button data-dgo="go:cb">${ic("chat")}Community${S.cb.b&&S.cb.b.unread?` <span class="cbl-badge">${S.cb.b.unread}</span>`:""}</button>`)})(drawer);
+drawer=(f=>open=>{f(open);if(!open)return;const nav=document.querySelector("#ov .drawer nav");if(nav&&!nav.querySelector('[data-dgo="go:cb"]'))nav.children[1].insertAdjacentHTML("beforebegin",`<button data-dgo="go:cb" ${cur().split(":")[0]==="cb"?'aria-current="page"':""}>${ic("chat")}Community${S.cb.b&&S.cb.b.unread?` <span class="cbl-badge">${S.cb.b.unread}</span>`:""}</button>`)})(drawer);
 onEnter=(f=>()=>{f();const n=cur().split(":")[0];if(n==="cbnew"&&!S.cb.ntext)S.cb.ups=[];if(n==="cb")cbBootLoad().then(()=>{if(cur()==="cb")repaint()}).catch(()=>{})})(onEnter);
 boot=(f=>function(){const r=f.apply(this,arguments);setTimeout(()=>cbBootLoad().then(()=>{if(cur()==="home")repaint()}).catch(()=>{}),400);return r})(boot);
