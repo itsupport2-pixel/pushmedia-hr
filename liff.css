@@ -506,3 +506,5 @@ a.btn{text-decoration:none;display:flex;align-items:center;justify-content:cente
 .drawer .ver{flex:none;padding:10px 16px;font-size:12px;line-height:1.4;text-align:center;color:var(--text-3)}.drawer .ver a{color:inherit;text-decoration:none}
 /* ปุ่มเลือกไฟล์ซ่อน (.vh) ต้องอยู่ในกรอบของมันเอง ไม่งั้นคลุมทั้งฟอร์มและแตะช่องอื่นไม่ได้ (6 พ.ย. 2569) */
 .as-up,.as-ph label,.mphoto{position:relative;overflow:hidden}
+/* ลงทะเบียน: ค้นหาจากรายการเครื่องมือ (6 พ.ย. 2569) */
+.af-s{display:flex;flex-direction:column;gap:2px;max-height:280px;overflow-y:auto;border:1px solid var(--line);border-radius:10px;background:#fff;padding:4px;margin-top:-6px;-webkit-overflow-scrolling:touch}.af-s[hidden]{display:none}.af-si{display:flex;align-items:center;gap:10px;width:100%;min-height:52px;padding:6px 8px;border:0;background:none;border-radius:8px;text-align:left;font:inherit;color:inherit}.af-si:active{background:#F3F3F3}.as-pic.sm{width:40px;height:40px;border-radius:8px;background:#fff;border:1px solid #EEE}.as-pic.sm img{object-fit:contain}.af-si .as-m b{font-size:14px;font-weight:500}.af-sm{padding:8px 10px}.af-picked{color:#14743A;margin-top:-6px}
