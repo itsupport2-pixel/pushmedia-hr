@@ -548,7 +548,7 @@ var USQ={n:10e6,rr:25e9,rw:50e6};
 function usPct(v,q){var p=v/q*100;return p<0.01?'< 0.01%':p<1?p.toFixed(2)+'%':p.toFixed(1)+'%'}
 var USG=[['ลงเวลา (แอปพนักงาน)',/^(clock|todayInfo|myAttendance|clockBackup)$/],['แอปพนักงาน (เข้าระบบ · โปรไฟล์ · การลา)',/^(loginLine|refreshLine|my|updateMy|setMy|leaveInfo|previewLeave|submitLeave|leaveDetail|cancelLeave|redeemInvite|requestLink|publicInfo|backupInfo)/],
   ['หลังบ้าน: เปิดหน้า · Dashboard · พนักงาน',/^(adminBootstrap|hrDashboard|listEmployees|getEmployee|empOverview|login|logout|getOrg|getAccess|saveEmployee|saveEmp|deleteEmp|revealBank|createInvites|unlinkLine|saveOrg|setOrg|firstHrSetup)/],
-  ['ลงเวลา (หลังบ้าน) · รายงาน Matrix',/^(attendanceToday|attMatrix|attLocationFill|dayRecords|adjustTime|voidRecord|syncNow)$/],['ศูนย์อนุมัติ · การลา',/^(approvalsList|decideLeave|ackLeave|leaveAdminList|approvalCenter|photosFor|decideLink|listLinkRequests|decideDevice|decideLoginHelp)$/],
+  ['ลงเวลา (หลังบ้าน) · รายงาน Matrix',/^(attendanceToday|attMatrix|attRawImport|dayRecords|adjustTime|voidRecord|syncNow)$/],['ศูนย์อนุมัติ · การลา',/^(approvalsList|decideLeave|ackLeave|leaveAdminList|approvalCenter|photosFor|decideLink|listLinkRequests|decideDevice|decideLoginHelp)$/],
   ['ตารางงาน · Confirmed',/^(wtm|schedule|sched|saveJob|deleteJob|saveVehicle|listVehicles|saveSched)/],['เงินเดือน',/^pay/],['ตั้งค่า · Audit Log',/^(getSettings|saveSettings|saveLeaveType|auditList|saveCompanyLogo|perfStats|usage|saveShift|saveEmployeeShifts|saveHoliday|deleteHoliday|saveAccess)/],
   ['สำเนา Google Sheets (อัตโนมัติทุก 15 นาที)',/^_mirror/],['สรุปลงเวลาประจำวัน (อัตโนมัติ 23:30)',/^_cron$/]];
 function usGroup(fn){for(var i=0;i<USG.length;i++)if(USG[i][1].test(fn))return USG[i][0];return 'อื่น ๆ'}
