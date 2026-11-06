@@ -504,3 +504,5 @@ a.btn{text-decoration:none;display:flex;align-items:center;justify-content:cente
 .ac-cmp{display:grid;grid-template-columns:1fr 1fr;gap:8px}.ac-cmp .as-pic.c{width:100%;height:128px}.ac-cmp .as-up{height:128px}.ac-cmp .as-ph{flex-direction:column;align-items:stretch;padding:6px}.ac-cmp .as-ph img{width:100%;height:80px}.ac-cmp .as-ph label{margin:0;width:100%}.ac-note{background:#F7F7F7;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--text-2)}
 /* เมนูข้าง: เหลือลิงก์นโยบายบรรทัดเดียว เว้นจากรายการเมนู (6 พ.ย. 2569) */
 .drawer .ver{flex:none;padding:10px 16px;font-size:12px;line-height:1.4;text-align:center;color:var(--text-3)}.drawer .ver a{color:inherit;text-decoration:none}
+/* ปุ่มเลือกไฟล์ซ่อน (.vh) ต้องอยู่ในกรอบของมันเอง ไม่งั้นคลุมทั้งฟอร์มและแตะช่องอื่นไม่ได้ (6 พ.ย. 2569) */
+.as-up,.as-ph label,.mphoto{position:relative;overflow:hidden}
