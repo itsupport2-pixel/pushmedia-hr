@@ -44,7 +44,7 @@ V.cbnew=()=>{const b=S.cb.b,o=cbO();if(!b){cbBootLoad().then(()=>{if(cur()==="cb
 
 /* ── รูปที่แนบ ── */
 function cbPaintUps(){const b=$("#cbups");if(b)b.innerHTML=CB.upsHTML(S.cb.ups);cbSendState()}
-function cbSendState(){const t=$("#cbct"),s=$("[data-cbsend]");if(t&&s)s.disabled=!t.value.trim();const x=$("#cbx-txt"),g=$("#cbx-go");if(x&&g)g.disabled=!x.value.trim()}
+function cbSendState(){const t=$("#cbct"),s=$("[data-cbsend]");if(t&&s){const u=S.cb.ups||[];s.disabled=!(t.value.trim()||u.length)||u.some(i=>!i.id)}const x=$("#cbx-txt"),g=$("#cbx-go");if(x&&g)g.disabled=!x.value.trim()}
 function cbAddFiles(inp){let fs=[...(inp.files||[])];inp.value="";if(S.cb.ups.length+fs.length>4){toast("แนบรูปได้ไม่เกิน 4 รูป");fs=fs.slice(0,4-S.cb.ups.length)}
   fs.forEach(f=>{const u={src:"",id:""};S.cb.ups.push(u);cbPaintUps();CB.shrink(f).then(d=>{u.src=d;cbPaintUps();return api("cbUpload",{data:d})}).then(r=>{u.id=r.id;cbPaintUps()}).catch(e=>{S.cb.ups.splice(S.cb.ups.indexOf(u),1);cbPaintUps();toast(e.message)})})}
 
@@ -92,14 +92,14 @@ document.addEventListener("click",e=>{const t=e.target.closest("[data-cbstart],[
   if(d.cbedc){const c=P.comments.find(x=>x.id===d.cbedc);sheet(`<h3>แก้ไขความคิดเห็น</h3><textarea class="cbl-edt" id="cbedt" maxlength="2000">${CB.esc(c.body)}</textarea><button class="btn pri" data-cbdo="editc|${CB.esc(c.id)}">บันทึก</button>`);return}
   if(d.cbdelc){sheet(`<h3>ลบความคิดเห็นนี้?</h3><span class="cap">ซ่อนจากทุกคนทันที · ข้อมูลยังเก็บไว้ในระบบและบันทึกใน Audit Log</span><button class="btn cbl-bad" data-cbdo="delc|${CB.esc(d.cbdelc)}">ลบ</button><button class="btn" data-dclose>ยกเลิก</button>`);return}
   if(d.cbsol!==undefined){t.disabled=true;api("cbSolve",{post_id:pid,comment_id:d.cbsol}).then(()=>{S.cb.dirty=true;return cbOpen(pid)}).catch(x=>{t.disabled=false;toast(x.message)});return}
-  if(d.cbsend!==undefined){const ta=$("#cbct"),v=ta?ta.value:"";if(!v.trim())return;if(S.cb.ups.some(u=>!u.id))return toast("รอรูปอัปโหลดเสร็จก่อน");t.disabled=true;
+  if(d.cbsend!==undefined){const ta=$("#cbct"),v=ta?ta.value:"";if(!v.trim()&&!S.cb.ups.length)return;if(S.cb.ups.some(u=>!u.id))return toast("รอรูปอัปโหลดเสร็จก่อน");t.disabled=true;
     api("cbComment",{post_id:pid,parent_id:S.cb.reply||"",body:v,imgs:S.cb.ups.map(u=>u.id)}).then(()=>{S.cb.reply=null;S.cb.ups=[];S.cb.dirty=true;return cbOpen(pid)}).then(()=>{const v2=liveView();if(v2)v2.scrollTop=v2.scrollHeight}).catch(x=>{t.disabled=false;toast(x.message)});return}
   if(d.cbrm){S.cb.ups.splice(+d.cbrm,1);cbPaintUps();return}
   if(d.cbemo){S.cb.emoT=d.cbemo;sheet(`<h3>อีโมจิ</h3>${CB.emojiPanel(d.cbemo)}`);return}
   if(d.cbemi){const [tid,em]=d.cbemi.split("|");cbSheetClose();CB.insert(document.getElementById(tid),em);return}
   if(d.cbtag!==undefined){sheet(`<h3>แท็กเพื่อนร่วมงาน</h3>${CB.tagPanel(null,"")}`);setTimeout(()=>{const i=$("#cbtag-q");if(i)i.focus()},50);return}
   if(d.cbtagp){cbSheetClose();CB.insert($("#cbx-txt"),"@"+d.cbtagp+" ");return}
-  if(t.id==="cbx-go"||d.cbannok!==undefined){const ta=$("#cbx-txt"),v=ta?ta.value:"";if(!v.trim())return;if(S.cb.ups.some(u=>!u.id))return toast("รอรูปอัปโหลดเสร็จก่อน");const a={aud:($("#cbx-aud")||{}).value||"all",cat:($("#cbx-cat")||{}).value||S.cb.ncat,body:v,imgs:S.cb.ups.map(u=>u.id)};
+  if(t.id==="cbx-go"||d.cbannok!==undefined){const ta=$("#cbx-txt"),v=ta?ta.value:"";if(!v.trim()&&!S.cb.ups.length)return;if(S.cb.ups.some(u=>!u.id))return toast("รอรูปอัปโหลดเสร็จก่อน");const a={aud:($("#cbx-aud")||{}).value||"all",cat:($("#cbx-cat")||{}).value||S.cb.ncat,body:v,imgs:S.cb.ups.map(u=>u.id)};
     if(t.id==="cbx-go"&&CB.annSync(S.cb.b.cats)){sheet(`<h3>${$("#cbx-aud").value==="all"?"โพสต์ประกาศและแจ้งทุกคน?":"โพสต์ประกาศและแจ้งผู้เห็นโพสต์?"}</h3><span class="cap">ระบบจะส่งการ์ดประกาศถึงพนักงาน ${CB.annN()} คนทาง LINE ทันที · แก้ไขภายหลังได้แต่จะไม่ส่งซ้ำ</span><button class="btn pri" data-cbannok>โพสต์และแจ้ง</button><button class="btn" data-dclose>ยกเลิก</button>`);return}
     if(d.cbannok!==undefined)cbSheetClose();
     t.disabled=true;

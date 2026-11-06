@@ -84,7 +84,7 @@
   CB.comment = function (c, d, o) { if (c.deleted) return '<div class="cbcm del"><span class="cbdelx">' + CB.ic('eyeoff') + 'ความคิดเห็นนี้ถูก admin ลบ</span></div>';
     var best = d.post.solved_id === c.id;
     return '<div class="cbcm' + (best ? ' best' : '') + '" id="cbc-' + E(c.id) + '">' + CB.av(o.base, c.author, c.parent ? 28 : 34) + '<div class="cbcb">' + (best ? '<span class="cbbest">' + CB.ic('check') + 'คำตอบที่เจ้าของโพสต์เลือก</span>' : '') +
-      '<div class="cbbub"><b data-noi18n>' + E(CB.full(c.author)) + '</b>' + (c.author && c.author.pos ? '<small>' + E(c.author.pos) + '</small>' : '') + '<div data-noi18n>' + CB.text(c.body) + '</div></div>' + CB.imgs(o.base, c.imgs, 1) +
+      '<div class="cbbub"><b data-noi18n>' + E(CB.full(c.author)) + '</b>' + (c.author && c.author.pos ? '<small>' + E(c.author.pos) + '</small>' : '') + (c.body ? '<div data-noi18n>' + CB.text(c.body) + '</div>' : '') + '</div>' + CB.imgs(o.base, c.imgs, 1) +
       '<div class="cbca"><span>' + CB.ago(c.created_at) + (c.edited ? ' · แก้ไขแล้ว' : '') + '</span>' + (d.can.comment ? '<button data-cbrep="' + E(c.id) + '">ตอบกลับ</button>' : '') +
       (c.mine ? '<button data-cbedc="' + E(c.id) + '">แก้ไข</button>' : '') + (d.can.solve && !c.parent ? '<button data-cbsol="' + (best ? '' : E(c.id)) + '">' + (best ? 'ยกเลิกคำตอบ' : 'เลือกเป็นคำตอบ') + '</button>' : '') +
       (d.can.del ? '<button class="bad" data-cbdelc="' + E(c.id) + '">ลบ</button>' : '') + '</div></div></div>'; };

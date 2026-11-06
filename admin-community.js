@@ -45,7 +45,7 @@ function cbReloadPost(){return A.cbId?cbOpenPost(A.cbId):cbLoad()}
 /* ───────── รูปที่แนบ (ช่องความคิดเห็น / หน้าต่างสร้างโพสต์) ───────── */
 A.cbUps=[];A.cbXUps=[];
 function cbPaintUps(){var b=$('.cbx #cbups');if(b)b.innerHTML=CB.upsHTML(A.cbXUps);var c=$('.cbcbox #cbups');if(c)c.innerHTML=CB.upsHTML(A.cbUps);cbSendState()}
-function cbSendState(){var t=$('#cbct'),s=$('[data-cbsend]');if(t&&s)s.disabled=!t.value.trim();var x=$('#cbx-txt'),g=$('#cbx-go');if(x&&g)g.disabled=!x.value.trim()}
+function cbSendState(){var t=$('#cbct'),s=$('[data-cbsend]');if(t&&s){var u=A.cbUps||[];s.disabled=!(t.value.trim()||u.length)||u.some(function(i){return !i.id})}var x=$('#cbx-txt'),g=$('#cbx-go');if(x&&g)g.disabled=!x.value.trim()}
 function cbAddFiles(inp){var ups=inp.closest('.cbx')?A.cbXUps:A.cbUps,files=Array.prototype.slice.call(inp.files||[]);inp.value='';
   if(ups.length+files.length>4){toast('แนบรูปได้ไม่เกิน 4 รูป',1);files=files.slice(0,4-ups.length)}
   files.forEach(function(f){var u={src:'',id:''};ups.push(u);cbPaintUps();CB.shrink(f).then(function(d){u.src=d;cbPaintUps();return aCall('cbUpload',{data:d})}).then(function(r){u.id=r.id;cbPaintUps()}).catch(function(e){ups.splice(ups.indexOf(u),1);cbPaintUps();toast(e.message,1)})})}
@@ -107,7 +107,7 @@ function cbClick(e){if(A.view!=='cb'&&!$('.cba-mw')&&!$('.cba-pop'))return;var t
   if(d.cbsol!==undefined){busy(t,1);aCall('cbSolve',{post_id:P.post.id,comment_id:d.cbsol}).then(function(){cbOpenPost(P.post.id)}).catch(function(x){busy(t,0);toast(x.message,1)});return}
   if(d.cbdelc){ask({title:'ลบความคิดเห็นนี้?',desc:'ซ่อนจากทุกคนทันที · ข้อมูลยังเก็บไว้ในระบบและบันทึกใน Audit Log',tone:'bad',icon:'del',buttons:[{k:'no',label:'ยกเลิก'},{k:'ok',label:'ลบ',tone:'bad'}]}).then(function(r){if(r!=='ok')return;
     aCall('cbDelete',{kind:'comment',id:d.cbdelc}).then(function(){toast('ลบแล้ว');cbOpenPost(P.post.id)}).catch(function(x){toast(x.message,1)})});return}
-  if(d.cbsend!==undefined){var v=$('#cbct').value;if(!v.trim())return;if(A.cbUps.some(function(u){return !u.id}))return toast('รอรูปอัปโหลดเสร็จก่อน',1);busy(t,1);
+  if(d.cbsend!==undefined){var v=$('#cbct').value;if(!v.trim()&&!A.cbUps.length)return;if(A.cbUps.some(function(u){return !u.id}))return toast('รอรูปอัปโหลดเสร็จก่อน',1);busy(t,1);
     aCall('cbComment',{post_id:P.post.id,parent_id:A.cbReply||'',body:v,imgs:A.cbUps.map(function(u){return u.id})}).then(function(){A.cbReply=null;A.cbUps=[];return cbOpenPost(P.post.id)}).catch(function(x){busy(t,0);toast(x.message,1)});return}
   if(d.cbrm){var inX=!!t.closest('.cbx');(inX?A.cbXUps:A.cbUps).splice(+d.cbrm,1);cbPaintUps();return}
   if(d.cbemo){if($('.cba-pop .cbemo')){cbPopClose();return}cbPop(CB.emojiPanel(d.cbemo),t);return}
