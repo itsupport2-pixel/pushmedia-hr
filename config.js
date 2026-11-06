@@ -1,7 +1,7 @@
 /* Push Media HR · ค่าระบบจริง (GitHub Pages) · LINE MINI App "Push Media HR" (Provider 2004436385)
  * แต่ละช่องตั้ง Endpoint URL ต่างกันเล็กน้อย เพื่อให้หน้าเว็บรู้ว่าเปิดมาจากช่องไหน แล้วใช้ LIFF ID ให้ตรง:
- *   Developing → https://itsupport2-pixel.github.io/pushmedia-hr/            (ค่าเริ่มต้น · เปิดได้เฉพาะ Admin/Tester)
- *   Published  → https://itsupport2-pixel.github.io/pushmedia-hr/?ch=pub     (สำหรับพนักงานทุกคน)
+ *   Developing → https://pct.push.co.th/            (ค่าเริ่มต้น · เปิดได้เฉพาะ Admin/Tester)
+ *   Published  → https://pct.push.co.th/?ch=pub     (สำหรับพนักงานทุกคน)
  * จำช่องล่าสุดไว้ในเครื่อง (ตอน LINE login แล้วกลับมา พารามิเตอร์อาจหาย)
  * หลังบ้าน: Cloudflare Workers + D1 (ย้ายระบบ 24 ต.ค. 2569) · Apps Script เดิมหยุดรับคำสั่งแล้ว (ชีตเป็นสำเนา)
  * ถอยกลับ: เปลี่ยน DEFAULT_BE เป็น 'gas' หลังรัน cutoverRollback ใน Apps Script */
