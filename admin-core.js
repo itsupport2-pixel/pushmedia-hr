@@ -363,7 +363,7 @@ function boot(){A.fx='*';var va=ss('hr_va');if(va){if(va.exp>Date.now()&&store('
   if(!A.tok)return renderLogin();var c=ss('hr_boot');
   if(c&&c.me){A.d=c;A.db=c.dash;A.dbAt=0;render()}else $('#app').innerHTML='<div class="loading"><span class="spin"></span>กำลังโหลดข้อมูล…</div>';
   aCall('adminBootstrap',A.view==='dash').then(function(d){if(!d||!d.me)throw new Error('โหลดข้อมูลไม่สำเร็จ ลองใหม่อีกครั้ง');A.d=d;try{store('hr_who',d.me.code||d.me.id||'')}catch(e){}if(d.dash){A.db=d.dash;A.dbAt=Date.now()}ss('hr_boot',d);
-    if(!c||['dash','list'].indexOf(A.view)>=0)render();else updNav()}).catch(function(e){if(A.tok&&!c)$('#app').innerHTML='<div class="loading">'+esc(e.message)+' <button class="btn" onclick="location.reload()">ลองใหม่</button></div>'})}
+    if(!c||['dash','list'].indexOf(A.view)>=0)render();else updNav()}).catch(function(e){if(A.tok&&!c)$('#app').innerHTML='<div class="loading">'+esc(e.message)+' <button class="btn" data-reload>ลองใหม่</button></div>'})}
 function updNav(){var a=$('.side a[data-nav="appr"]');if(!a)return;var dot=$('#tb-bell .dot'),pn=(A.d.pendingCount||0)+A.d.linkRequests.length;if(pn&&!dot&&$('#tb-bell'))$('#tb-bell').insertAdjacentHTML('beforeend','<span class="dot"></span>');else if(!pn&&dot)dot.remove();var n=(A.d.pendingCount||0)+A.d.linkRequests.length,c=a.querySelector('.cnt');if(n){if(!c){c=document.createElement('span');c.className='cnt';a.appendChild(c)}c.textContent=n}else if(c)c.remove()}
 /* ── นำเข้าพนักงานจาก Excel (29 ต.ค. 2569 ผู้ใช้ขอ) · อ่านไฟล์ในเบราว์เซอร์ (ไม่อัปโหลดไฟล์) → ดูตัวอย่าง → ยืนยันจึงบันทึก
  * รองรับไฟล์ "Employee Master … กรองแล้ว.xlsx": แผ่น "ทำงานอยู่ (นำเข้า)" + "ลาออกแล้ว" (หัวตารางแถวที่มีคำว่า รหัสพนักงาน) */

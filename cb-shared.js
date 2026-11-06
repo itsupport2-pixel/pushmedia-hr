@@ -52,7 +52,7 @@
   /* รูปโปรไฟล์: ตัวอักษรแรก + รูปในระบบ (p.ph → /photo/:id) หรือรูป LINE (p.pic) ทับเมื่อโหลดได้ */
   CB.av = function (base, p, s) { var id = p && p.id;
     return '<span class="cbav" style="width:' + s + 'px;height:' + s + 'px;font-size:' + Math.round(s / 2.5) + 'px">' + E(CB.who(p).slice(0, 1)) +
-      (p && p.ph && id ? '<img src="' + base + '/photo/' + encodeURIComponent(id) + '" alt="" loading="lazy" onerror="this.remove()">' : p && /^https:\/\//.test(p.pic || '') ? '<img src="' + E(p.pic) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">' : '') + '</span>'; };
+      (p && p.ph && id ? '<img src="' + base + '/photo/' + encodeURIComponent(id) + '" alt="" loading="lazy" data-rmerr>' : p && /^https:\/\//.test(p.pic || '') ? '<img src="' + E(p.pic) + '" alt="" loading="lazy" referrerpolicy="no-referrer" data-rmerr>' : '') + '</span>'; };
   CB.img = function (base, id) { return base + '/cb/img/' + encodeURIComponent(id); };
   CB.imgs = function (base, ids, link) { if (!ids || !ids.length) return '';
     return '<div class="cbimgs n' + Math.min(ids.length, 4) + '">' + ids.slice(0, 4).map(function (i) { var u = CB.img(base, i);

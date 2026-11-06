@@ -273,7 +273,7 @@ function drawXd(){var d=A.xd;if(!d||!$('#xd-body'))return;var all=d.people,dep=A
   var grid='<div class="xd-hm" style="grid-template-columns:150px repeat('+dd.length+',minmax(14px,1fr))"><span></span>'+dd.map(function(s){return '<span class="xd-hd'+(d.holidays[s]?' ho':'')+'">'+(+s.slice(8))+'</span>'}).join('');
   rows.slice().sort(function(p,q){return (q.a.rate||0)-(p.a.rate||0)}).forEach(function(r){grid+='<span class="xd-hn"><i class="xd-dot" style="background:'+xdColor(r.id)+'"></i>'+esc(r.name)+'</span>'+dd.map(function(s){var e=0,p=0,hw=0;r.ps.forEach(function(x){var v=x.days[s];if(!v)return;if(v[0]==='p'||v[0]==='a'){e++;if(v[0]==='p')p++}if(v[0]==='p'&&d.holidays[s])hw++});
     if(s>d.end)return '<span class="xd-c0 fu"></span>';if(d.holidays[s])return '<span class="xd-c0 hol"'+(hw?' title="ทำงานวันหยุด '+hw+' คน"':' title="'+esc(d.holidays[s])+'"')+'>'+(hw||'')+'</span>';
-    if(!e)return '<span class="xd-c0"></span>';var rr=p/e*100;return '<span class="xd-c0 '+cl(rr)+'" title="'+dTxt(s)+' · '+r.name+' · '+rr.toFixed(0)+'% ('+p+'/'+e+')"></span>'}).join('')});grid+='</div>';
+    if(!e)return '<span class="xd-c0"></span>';var rr=p/e*100;return '<span class="xd-c0 '+cl(rr)+'" title="'+dTxt(s)+' · '+esc(r.name)+' · '+rr.toFixed(0)+'% ('+p+'/'+e+')"></span>'}).join('')});grid+='</div>';
   var lvSum=function(arr){var m={},req={};arr.forEach(function(z){if(!ps.some(function(p){return p.id===z[0]}))return;m[z[1]]=(m[z[1]]||0)+z[2];(req[z[1]]=req[z[1]]||{})[z[3]]=1});
     return Object.keys(m).map(function(k){return {n:k,v:m[k],r:Object.keys(req[k]).length}}).sort(function(x,y){return y.v-x.v})};
   var lm=lvSum(d.leave_month),la=lvSum(d.leave_ahead),lmT=lm.reduce(function(s,x){return s+x.v},0),laT=la.reduce(function(s,x){return s+x.v},0),laR=la.reduce(function(s,x){return s+x.r},0),lmM=Math.max.apply(0,lm.map(function(x){return x.v}).concat([1])),laM=Math.max.apply(0,la.map(function(x){return x.v}).concat([1]));
@@ -367,7 +367,7 @@ function paintMap(){var d=A.mp,m=A.mpMap;if(!d||!m||!A.mpLayer||!window.L||!L.ma
     L.marker([s.lat+s.radius/111320,s.lng],{interactive:false,icon:L.divIcon({className:'',html:'<div class="amp-site"><span>'+esc(d.sites.length===1||/^push ?media$/i.test(s.name||'')?'สำนักงาน':(s.name||'สำนักงาน'))+'</span></div>',iconSize:[0,0]}),zIndexOffset:-500}).addTo(A.mpLayer)});
   var cl=A.mpCl=L.markerClusterGroup({animate:true,animateAddingMarkers:false,maxClusterRadius:function(z){return z>=19?28:60},spiderfyOnMaxZoom:true,showCoverageOnHover:false,zoomToBoundsOnClick:true});
   ps.forEach(function(p){bounds.push([p.lat,p.lng]);var u=mpPhoto(p.id),c=xdColor2(p.dept);
-    var face=u?'<img src="'+esc(u)+'" alt="" referrerpolicy="no-referrer" onerror="this.replaceWith(Object.assign(document.createElement(\'span\'),{textContent:this.dataset.i}))" data-i="'+esc(mpIni(p))+'">':'<span style="background:'+c+';color:#fff">'+esc(mpIni(p))+'</span>';
+    var face=u?'<img src="'+esc(u)+'" alt="" referrerpolicy="no-referrer" data-rmerr data-fbtxt="'+esc(mpIni(p))+'">':'<span style="background:'+c+';color:#fff">'+esc(mpIni(p))+'</span>';
     var mk=L.marker([p.lat,p.lng],{icon:L.divIcon({className:'',html:'<div class="amp-pin" style="border-color:'+c+'">'+face+'<i class="'+(p.in_area?'':'o')+'"></i></div>',iconSize:[0,0]}),title:p.name}).bindPopup(pop(p),{closeButton:false,offset:[0,-16]});
     cl.addLayer(mk);A.mpMk[p.id]=mk});
   m.addLayer(cl);

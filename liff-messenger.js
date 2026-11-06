@@ -35,7 +35,7 @@ function msgDet(no,force){if(S.mdet[no]&&!force)return S.mdet[no];if(!S.mdet["_l
 const MACT={create:"สร้างงาน",edit:"แก้ไขงาน",accept:"รับงาน",assign:"มอบหมายให้",done:"ส่งเสร็จ",cancel:"ยกเลิก",fail:"ส่งไม่สำเร็จ"};
 V.mjob=no=>{const j=msgDet(no);if(!j)return band(esc(no))+`<div class="pad"><div class="skel" style="height:220px"></div></div>`;if(j.err)return band(esc(no))+`<div class="pad"><div class="note c-red">${ic("alert")}<span>${esc(j.err)}</span></div></div>`;
   const st=MSTW(j.st),D=DT(j.d),c=j.can||{};
-  const gm=j.lat!=null?`https://www.google.com/maps/dir/?api=1&destination=${j.lat},${j.lng}`:j.map||(j.addr||j.place?`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(j.addr||j.place)}`:"");
+  const gm=j.lat!=null?`https://www.google.com/maps/dir/?api=1&destination=${j.lat},${j.lng}`:(/^https?:\/\//i.test(j.map||"")?j.map:"")||(j.addr||j.place?`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(j.addr||j.place)}`:"");
   const kv=(a,b)=>b?`<div class="kv"><span>${a}</span><b>${b}</b></div>`:"";
   const ph=(j.photos||[]);
   return band(esc(j.no))+`<div class="pad" style="gap:12px"><div class="card" style="padding:16px;display:flex;flex-direction:column;gap:10px">

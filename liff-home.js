@@ -54,7 +54,7 @@ V.clock=()=>{const t=S.today,p=S.pos;if(t&&t.clock_off)return wbar("ลงเว
   // วันนี้เข้า-ออกครบแล้ว: ไม่ให้เลือกกะทันที · เสนอ "อัปเดตเวลาออก" ก่อน · เข้ารอบใหม่ต้องกดยืนยันอีกชั้น
   const done=!out&&last&&last.kind==="OUT",again=done&&S.again,firstIn=(t.records.find(r=>r.kind==="IN")||{}).time||"—",prevSh=sf&&(t.records.find(r=>r.kind==="IN"&&r.shift)||{}).shift,prevName=prevSh&&sf?((sf.list.find(x=>x.id===prevSh)||{}).name||""):"";
   if(sf&&!lockId&&!sf.list.some(x=>x.id===S.shift))S.shift=sf.suggested;
-  const selId=lockId||S.shift,sel=sf?(open?open.shift:sf.list.find(x=>x.id===selId)):null,shName=sel?"กะ"+sel.name:"";
+  const selId=lockId||S.shift,sel=sf?(open?open.shift:sf.list.find(x=>x.id===selId)):null,shName=sel?"กะ"+esc(sel.name):"";
   const tg=t.targets.map(g=>{const d=p.err||g.lat==null?null:dist(p.lat,p.lng,g.lat,g.lng);return {g,d,inside:d!=null&&d<=g.radius_m}}).sort((a,b)=>(a.d==null?1e9:a.d-a.g.radius_m)-(b.d==null?1e9:b.d-b.g.radius_m));
   const inA=tg.some(x=>x.inside),near=tg[0];if(S.opt>=tg.length)S.opt=0;
   const needR=!inA&&!p.err&&!out&&!done,jobs=!inA&&!p.err?t.jobs||[]:[];   // 6 พ.ย. 2569: ลงเวลาเข้านอกพื้นที่ต้องมีเหตุผล · ลงเวลาออกไม่บังคับ · เลือกงานจากตารางงานวันนี้ใส่เป็นเหตุผลได้
