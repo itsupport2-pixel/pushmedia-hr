@@ -67,7 +67,7 @@ function inSc(e,sc){var me=A.d.me;if(!e)return false;if(sc==='all')return true;i
 function canEdit(e){return isHR()||inSc(e,acc('edit'))}
 function selfOnly(){return !isHR()&&A.d.me.id!=='admin'&&acc('emp')==='self'}
 function scopeTxt(a){var me=A.d.me,sc=acc(a);return sc==='all'?'ทั้งบริษัท':sc==='dept'?'แผนก '+org('departments',me.department_id):sc==='team'?'ทีม '+org('teams',me.team_id):sc==='self'?'ตัวเอง':'—'}
-function navFor(me){var a=navFor0(me).slice();if(a.indexOf('msg')<0)a.push('msg');   // 2 พ.ย. 2569 ผู้ใช้: เมนูงานเมสเซนเจอร์เปิดให้พนักงานทุกคน (คนทั่วไปเห็นงานที่ตัวเองขอ · จัดการ/ตั้งค่า = HR/admin/ผู้จัดงาน)
+function navFor(me){var a=navFor0(me).slice();if(a.indexOf('asset')<0&&acc('asset')!=='none')a.push('asset');if(a.indexOf('msg')<0)a.push('msg');   // 2 พ.ย. 2569 ผู้ใช้: เมนูงานเมสเซนเจอร์เปิดให้พนักงานทุกคน (คนทั่วไปเห็นงานที่ตัวเองขอ · จัดการ/ตั้งค่า = HR/admin/ผู้จัดงาน)
 if(me.pay&&a.indexOf('pay')<0)a.push('pay');if((me.role==='admin'||me.role==='exec')&&a.indexOf('errlog')<0)a.push('errlog');if(a.indexOf('set')>=0&&a.indexOf('usage')<0)a.push('usage');return a}   // บันทึก error: ผู้ดูแลระบบเท่านั้น// เงินเดือน: me.pay (เปิดใช้ + HR/ผู้ดูแลระบบ/ฝ่ายบัญชีที่ได้รับสิทธิ์)
 function navFor0(me){if(me.role==='exec')return ROLE_NAV.admin;if(isHR()||me.role==='admin')return ROLE_NAV[me.role]||ROLE_NAV.hr;
   var b=(ROLE_NAV[me.role]||[]).filter(function(k){return SOON[k]}),add=function(k,on){if(on&&b.indexOf(k)<0)b.push(k)};
