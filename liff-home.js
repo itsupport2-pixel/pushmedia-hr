@@ -171,7 +171,7 @@ document.addEventListener("click",e=>{const t=e.target.closest("button");if(!t)r
 
 /* กระดิ่งแจ้งเตือน (6 พ.ย. 2569): รายการจากข้อความที่ระบบส่งถึงพนักงาน · กดแล้วไปยังเรื่องนั้น · ไม่มีหน้าปลายทาง = แถวธรรมดา */
 const NF_LEAD=()=>!!(L.info&&L.info.isLead||S.me&&["lead","manager","hr","exec","admin"].includes(S.me.role));
-function nfLink(x){const e=x.event||"",t=x.text||"";if(/leave_(submitted|new)/.test(e))return NF_LEAD()&&!/^ส่งคำขอ/.test(t)?"go:approve":"go:myreqs";if(/leave_decided/.test(e))return "go:myreqs";if(/^cb_/.test(e))return "go:cb";if(/msg/.test(e))return "go:mmine";if(/^asset/.test(e))return "go:ahist";if(/^ms_|monthsum/.test(e))return "tab:home";return ""}
+function nfLink(x){const e=x.event||"",t=x.text||"";if(/leave_(submitted|new)/.test(e))return NF_LEAD()&&!/^ส่งคำขอ/.test(t)?"go:approve":"go:myreqs";if(/leave_decided/.test(e))return "go:myreqs";if(/^cb_/.test(e))return "go:cb";if(/msg/.test(e))return "go:mmine";if(/^asset_(round|remind)/.test(e))return "go:assets";if(/^asset/.test(e))return "go:ahist";if(/^ms_|monthsum/.test(e))return "tab:home";return ""}
 const nfIc=e=>/leave|substitute/.test(e)?"doc":/^cb_/.test(e)?"chat":/msg/.test(e)?"pin":/^ms_|monthsum/.test(e)?"cal":/shift/.test(e)?"clock":"bell";
 function nfWhen(at){const d=String(at||""),td=ISO(new Date()),hm=d.slice(11,16);return d.slice(0,10)===td?"วันนี้ "+hm:fDY(d.slice(0,10))+" "+hm}
 function nfRefresh(){return api("notifCount").then(r=>{const n=+r.unread||0;if(n===(S.nfN||0))return;S.nfN=n;if(cur()==="home")repaint()}).catch(()=>{})}
