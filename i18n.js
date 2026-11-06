@@ -222,7 +222,7 @@
     // ── รายงาน › Matrix (27 ต.ค. 2569) ──
     'Dashboard ผู้บริหาร': 'Executive dashboard', 'สรุปทำเงินเดือน': 'Payroll summary', 'รายงาน OT': 'OT report', 'ตารางสรุปรายวันต่อคน': 'Daily summary per person',
     'ส่งออก': 'Export', 'ช่วงวันที่': 'Date range', 'ค้นหาชื่อ': 'Search name', 'กดเพื่อเรียง': 'Click to sort', 'สำนักงาน': 'Office',
-    'มาทำงาน': 'Present', 'ไม่มีออก': 'No clock-out', 'ไม่มีเข้า': 'No clock-in', 'เช็คอินนอกพื้นที่': 'checked in outside area', 'เข้างานครั้งแรก': 'first clock-in', 'ขอแก้เวลา': 'Time edits',
+    'มาทำงาน': 'Present', 'ไม่มีออก': 'No clock-out', 'ไม่มีเข้า': 'No clock-in', 'เช็คอินนอกพื้นที่': 'checked in outside area', 'ขอแก้เวลา': 'Time edits',
     'วันไม่ทำงาน': 'Non-working day', 'ก่อนเริ่มใช้ระบบ': 'before system start', 'ก่อนวันเริ่มงาน': 'before start date',
     'มา': 'Present', 'ขาด': 'Absent', 'นอกฯ': 'Outside',
     'ไม่รวม': 'excluding', 'คนที่ไม่ต้องลงเวลา': 'people exempt from clock-in', 'ตั้งที่ ข้อมูลพนักงาน › ประเภทการลงเวลา': 'Set in Employee info › Check-in type',
