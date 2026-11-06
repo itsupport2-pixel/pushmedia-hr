@@ -1084,3 +1084,17 @@ a.btn.mj-act{display:flex;align-items:center;justify-content:center;gap:9px;min-
 /* ตัวอย่างเอกสาร + ฟอร์มทรัพย์สิน (6 พ.ย. 2569) */
 .ast-pv{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(1180px,96vw);height:92vh;background:var(--sf);border-radius:14px;box-shadow:0 12px 44px rgba(0,0,0,.28);z-index:42;display:flex;flex-direction:column;overflow:hidden}.ast-pvh{display:flex;align-items:center;gap:12px;padding:13px 18px;border-bottom:1px solid var(--line)}.ast-pvh b{display:block;font-size:16px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ast-pvh small{font-size:12.5px}.ast-pv iframe{flex:1;width:100%;border:0;background:#E7E7E7}.ast-pvf{display:flex;align-items:center;gap:8px;padding:12px 18px;border-top:1px solid var(--line)}
 .ast-fhd{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--sf);border:1px solid var(--line);border-radius:14px;padding:12px 18px;margin-bottom:12px;font-size:13px;color:var(--mut)}.ast-fhd b{font-size:15px;font-weight:600;color:var(--fg);font-variant-numeric:tabular-nums}
+/* จอแคบ · ย่อหน้าต่างแล้วไม่ล้นกรอบ (6 พ.ย. 2569) */
+.grid>*,.card,.cb,.kpi{min-width:0}.kpi .kh .l{min-width:0;overflow-wrap:anywhere}.tb .tb-menu{display:none}.bars2 .bc{min-width:0}
+@media(max-width:820px){
+ .tb .tb-menu{display:grid;place-items:center;flex:none}.tb .tt{flex:1;min-width:0}.tb .tt b{overflow:hidden;text-overflow:ellipsis}.tb .grow{display:none}.tb .lang,.tb .ib,.tb .usr{flex:none}
+ .shell.peek .side{display:flex}.shell.mnav .side{display:flex;position:fixed;left:0;top:0;bottom:0;z-index:70;width:232px;max-width:86vw;overflow-y:auto;box-shadow:10px 0 36px rgba(0,0,0,.28)}.shell.mnav::after{content:"";position:fixed;inset:0;z-index:65;background:rgba(0,0,0,.38)}.shell.mnav .rl-tg{display:none}
+ .kv2{flex-wrap:wrap;white-space:normal;row-gap:2px}.kv2 i{display:none}.ch{flex-wrap:wrap;row-gap:8px}.xd-nm,.xd-nm small{white-space:normal;flex-wrap:wrap}
+ .ast-kpi{grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}.ast-hd{flex-wrap:wrap}.ast-ctl input,.ast-ctl select{max-width:100%}.ast-rc{flex-wrap:wrap}.ast-prog{width:100%;order:3}
+}
+@media(max-width:600px){
+ .tb .tb-logo,.tb .dv.l{display:none}.tb{gap:8px}.bars2{gap:3px}.bars2 .bc span,.bars2 .bc em{font-size:10px;white-space:nowrap}
+ .bars2.many .bc:nth-last-child(even) span,.bars2.many .bc:nth-last-child(even) em{visibility:hidden}.ph .sp{display:none}.ph{align-items:flex-start}.ast-ctl #ast-q{width:100%!important}
+}
+@media(max-width:400px){.dpt{min-width:0;width:100%}.drg{flex-wrap:wrap;max-width:100%}.tools{flex-wrap:wrap}.tools>*{max-width:100%}.xd-kv{font-size:22px;overflow-wrap:anywhere}}
+@media(max-width:360px){.g6{grid-template-columns:1fr}.tb .lang button{min-width:30px;padding:0 6px}}
