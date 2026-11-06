@@ -112,4 +112,4 @@ function getPos(){
       ()=>ok({err:"ไม่ได้รับอนุญาตให้ใช้ตำแหน่ง กรุณาเปิดตำแหน่งที่ตั้ง (GPS) แล้วกดปุ่มอัปเดตตำแหน่ง"}),{enableHighAccuracy:true,timeout:15000,maximumAge:0})});
 }
 function dist(a,b,c,d){const R=6371000,r=Math.PI/180,x=Math.sin((c-a)*r/2),y=Math.sin((d-b)*r/2),h=x*x+Math.cos(a*r)*Math.cos(c*r)*y*y;return Math.round(2*R*Math.atan2(Math.sqrt(h),Math.sqrt(1-h)))}
-function openClock(){S.pos=null;S.opt=0;S.shift=null;S.again=false;go("clock");Promise.all([refreshToday().then(t=>t||(S.today&&S.today.date===ISO(new Date())?S.today:null)||(CFG.backup&&(S.today=outageToday()))),getPos()]).then(x=>{S.pos=x[1];if(cur()==="clock"){repaint();startClock()}})}
+function openClock(){S.pos=null;S.opt=0;S.shift=null;S.again=false;go("clock");const off=S.today&&S.today.clock_off;Promise.all([refreshToday().then(t=>t||(S.today&&S.today.date===ISO(new Date())?S.today:null)||(CFG.backup&&(S.today=outageToday()))),off?null:getPos()]).then(x=>{S.pos=x[1];if(cur()!=="clock")return;if(off&&S.today&&!S.today.clock_off)return getPos().then(p=>{S.pos=p;if(cur()==="clock"){repaint();startClock()}});repaint();startClock()})}
