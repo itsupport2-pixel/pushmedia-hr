@@ -131,10 +131,6 @@ Privacy contact: the Company's Human Resources (HR) department</p>
 <p>We may update this policy and will notify you in the app before changes take effect. The current version is always on this page.</p>
 </section>
 </main>
-<script>
-(function(){var b=document.body,set=function(l){b.classList.toggle('en',l==='en');document.documentElement.lang=l;document.querySelectorAll('[data-set]').forEach(function(x){x.setAttribute('aria-pressed',x.dataset.set===l)});try{localStorage.setItem('pmhr_lang',l)}catch(e){}};
-var q=new URLSearchParams(location.search).get('lang'),s;try{s=localStorage.getItem('pmhr_lang')}catch(e){}set(q==='en'||q==='th'?q:(s==='en'?'en':'th'));
-document.querySelectorAll('[data-set]').forEach(function(x){x.onclick=function(){set(x.dataset.set)}})})();
-</script>
+<script src="privacy.js"></script>
 </body>
 </html>
