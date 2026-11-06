@@ -150,7 +150,7 @@ function repSort(k){var s=A.rps,num=k!=='name'&&k!=='pos',first=num?-1:1;
 function repTh(k,cls,html){var s=A.rps,on=s&&s.k===k,st=on?(s.dir<0?'desc':'asc'):'none';
   return '<th class="'+cls+' sk'+(on?' on':'')+'" data-sk="'+k+'" aria-sort="'+(on?(s.dir<0?'descending':'ascending'):'none')+'" title="กดเพื่อเรียง">'+html+'<i class="si '+st+'"></i></th>'}
 function repCell(x,ds,d){if(x.s==='nodata'){var w=dObj(ds).getDay();return d.holidays[ds]?{c:'ho',h:'วันหยุด',t:'วันหยุด'}:(w===0||w===6)?{c:'we',h:'',t:''}:{c:'nd',h:'–',t:'ไม่มีข้อมูล'}}var we=x.s==='off',ho=x.s==='holiday'||(!x.i&&d.holidays[ds]);
-  if(x.i||x.o){var t=x.i&&x.o?x.i+'–'+x.o:x.i?x.i:'ออก '+x.o,c=x.off?'of':'',sub=x.off?'นอกพื้นที่':'สำนักงาน';if(x.adj){c+=' aj';sub='แก้เวลา'}if(x.lv)sub=x.lv;
+  if(x.i||x.o){var t=x.i&&x.o?x.i+'–'+x.o:x.i?x.i:'ออก '+x.o,c=x.off?'of':'',sub=x.off?'นอกพื้นที่':x.old?'ระบบเดิม':'สำนักงาน';if(x.adj){c+=' aj';sub='แก้เวลา'}if(x.lv)sub=x.lv;
     return {c:c,h:'<span class="'+(x.l?'late':'')+'">'+t+'</span><small>'+esc(sub)+'</small>',t:t+(x.off?' นอกพื้นที่':'')+(x.adj?' แก้เวลา':'')+(x.l?' สาย '+x.l+' นาที':'')}}
   if(/leave/.test(x.s))return {c:'lv',h:esc(x.lv||'ลา')+(x.s==='leave_wait'?'<small>รออนุมัติ</small>':''),t:'ลา '+(x.lv||'')};
   if(ho)return {c:'ho',h:'วันหยุด',t:'วันหยุด'};if(we)return {c:'we',h:'',t:''};
