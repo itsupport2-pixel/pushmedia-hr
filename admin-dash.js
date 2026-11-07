@@ -3,7 +3,9 @@
  * ทุกไฟล์ admin-*.js ใช้ชื่อร่วมกัน (global) และต้องโหลดตามลำดับใน admin.html */
 'use strict';
 /* ───────── Dashboard ───────── */
-function vDash(){var nm=String(A.d.me.nickname||A.d.me.name||'').split(' ')[0];return '<div class="ph"><div><h1>'+(A.d.me.id==='admin'?'Dashboard':'สวัสดี คุณ'+esc(nm))+'</h1><div class="sub" id="db-sub">กำลังโหลด…</div></div><span class="sp"></span><button class="btn" id="db-re">รีเฟรช</button></div><div id="db-body"><div class="loading"><span class="spin"></span>กำลังโหลด…</div></div>'}
+/* เตือน HR ว่าปิดรับลงเวลาอยู่ (7 พ.ย. 2569 · รายงานประเมินข้อ 10): ถ้าลืมเปิดตอนเริ่มใช้จริง พนักงานจะลงเวลาไม่ได้ทั้งบริษัท */
+function clockOffBar(){return isHR()&&A.d.clockOff?'<div class="note-b" role="status" style="margin-bottom:14px"><b>ระบบยังปิดรับการลงเวลาอยู่</b> · พนักงานกดลงเวลาในแอปไม่ได้ · ก่อนเริ่มใช้จริงให้เปิดที่ ตั้งค่า › เวลาทำงาน</div>':''}
+function vDash(){var nm=String(A.d.me.nickname||A.d.me.name||'').split(' ')[0];return clockOffBar()+'<div class="ph"><div><h1>'+(A.d.me.id==='admin'?'Dashboard':'สวัสดี คุณ'+esc(nm))+'</h1><div class="sub" id="db-sub">กำลังโหลด…</div></div><span class="sp"></span><button class="btn" id="db-re">รีเฟรช</button></div><div id="db-body"><div class="loading"><span class="spin"></span>กำลังโหลด…</div></div>'}
 function bDash(){var load=function(force){aCall('hrDashboard',!!force).then(function(d){A.db=d;A.dbAt=Date.now();var w=(A.fxAt||0)+2600-Date.now();if(w>0)setTimeout(drawDash,w);else drawDash()}).catch(function(e){if($('#db-body')&&!A.db)$('#db-body').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})};
   $('#db-re').onclick=function(){$('#db-sub').textContent='กำลังรีเฟรช…';fxArm('dash');load(true)};if(A.db)drawDash();if(!A.db||Date.now()-(A.dbAt||0)>60000)load()}
 function drawDash(){if(!$('#db-body'))return;var d=A.db,k=d.kpi,dt=new Date(d.date+'T12:00:00'),TD=['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'],TM=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
