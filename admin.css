@@ -1118,3 +1118,6 @@ a.btn.mj-act{display:flex;align-items:center;justify-content:center;gap:9px;min-
 .sk-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.sk-kpi{display:flex;flex-direction:column;gap:12px;background:#fff;border-radius:12px;padding:16px;min-width:0}
 @media(max-width:820px){.sk-nav,.sk-hide{display:none}.sk-top{padding:14px 16px}.sk-body{padding:18px 16px}.sk-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .sk-fail{min-height:70vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:24px;color:var(--mut)}.sk-fail b{color:var(--fg);font-size:16px}
+
+/* หน้าต่างแก้เวลา: ตารางต้องพอดีความกว้างหน้าต่าง ไม่งั้นปุ่มยกเลิกล้นออกนอกจอ (7 พ.ย. 2569) */
+#fx-body .tw table{min-width:0;width:100%}#fx-body .tw th,#fx-body .tw td{padding-left:8px;padding-right:8px}#fx-body .tw td:last-child{white-space:nowrap;text-align:right}
