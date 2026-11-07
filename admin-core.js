@@ -233,7 +233,7 @@ function renderLogin(){
   lgIntro();lgPinsIntro();lgPhoneGo();
   $('#lg-line').onclick=function(){lineLogin()};
   $$('[data-help]').forEach(function(b){b.onclick=function(){lgHelp(b.dataset.help)}});
-  if($('#lg-pw'))$('#lg-pw').onsubmit=function(ev){ev.preventDefault();var b=ev.submitter;busy(b,1);call('loginAdmin',$('#pw').value).then(function(r){done(r.token)}).catch(function(e){busy(b,0);$('#lg-err').textContent=e.message})};
+  if($('#lg-pw'))$('#lg-pw').onsubmit=function(ev){ev.preventDefault();var b=ev.submitter;busy(b,1);call('loginAdmin',$('#pw').value,($('#pw-code')||{}).value||'').then(function(r){done(r.token)}).catch(function(e){busy(b,0);if(e.message==='TOTP_REQUIRED'){if(!$('#pw-code')){var w=document.createElement('div');w.className='lg-in';w.innerHTML='<input id="pw-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="รหัส 6 หลักจากแอป Authenticator">';$('#pw').closest('.lg-in').after(w)}$('#lg-err').textContent='กรอกรหัส 6 หลักจากแอป Authenticator';$('#pw-code').focus();return}$('#lg-err').textContent=e.message})};
   $$('[data-dev]').forEach(function(b){b.onclick=function(){var p=b.dataset.dev.split('|');loginWith('dev|'+p[0]+'|'+p[1])}});
 }
 /* Google: โหลดสคริปต์ล่วงหน้าตอนเปิดหน้า เพื่อให้กดแล้วเปิดหน้าต่างได้ทันที (เบราว์เซอร์บล็อกหน้าต่างที่ไม่ได้เปิดจากการกดโดยตรง)
