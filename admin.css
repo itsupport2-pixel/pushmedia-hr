@@ -1,6 +1,6 @@
 /* สี Push Media ขาว–ดำ ตามโลโก้ (22 ต.ค. 2569) · สีสถานะ ok/warn/bad คงไว้ */
 :root{--nav:#0B0B0B;--nav2:#1F1F1F;--nav-ink:#C8C8C8;--acc:#111111;--acc-soft:#EDEDED;--bg:#F4F4F4;--sf:#FFFFFF;--sf2:#F8F8F8;--line:#E3E3E3;
- --fg:#141414;--mut:#5F5F5F;--fnt:#909090;--ok:#1A8A4A;--ok-s:#E3F4EA;--warn:#B26A00;--warn-s:#FFF3DC;--bad:#C0392B;--bad-s:#FCE8E6;--info:#3A3A3A;--info-s:#EDEDED;
+ --fg:#141414;--mut:#5F5F5F;--fnt:#6E6E6E;--ok:#12703A;--ok-s:#E3F4EA;--warn:#8A5200;--warn-s:#FFF3DC;--bad:#C0392B;--bad-s:#FCE8E6;--info:#3A3A3A;--info-s:#EDEDED;
  --sans:"IBM Plex Sans Thai",system-ui,sans-serif;--mono:"IBM Plex Mono",ui-monospace,monospace;--r:10px}
 *{box-sizing:border-box}html,body{height:100%;margin:0}
 body{background:var(--bg);color:var(--fg);font:14px/1.5 var(--sans)}
