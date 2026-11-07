@@ -17,7 +17,7 @@ function repaint(){const box=$("#views"),v=liveView();if(!v)return show("fade");
 function fitChips(){document.querySelectorAll("#views .daily .chip").forEach(c=>{c.style.fontSize="";let f=14;while(c.scrollWidth>c.clientWidth+1&&f>11){f-=.5;c.style.fontSize=f+"px"}})}
 /* แถบแท็บเลื่อนได้: เลื่อนให้แท็บที่เลือกอยู่ในจอเสมอ (หลังวาดหน้าใหม่ scrollLeft กลับเป็น 0) */
 function tabsToActive(){document.querySelectorAll("#views .tabs").forEach(t=>{const a=t.querySelector('[aria-pressed="true"]');if(a)t.scrollLeft=Math.max(0,a.offsetLeft-t.offsetLeft-16)})}
-function show(mode){const box=$("#views");box.querySelectorAll(".out-r").forEach(x=>x.remove());const old=box.lastElementChild;clearInterval(tick);
+function show(mode){const box=$("#views");box.querySelectorAll(".boot-sk").forEach(x=>x.remove());box.querySelectorAll(".out-r").forEach(x=>x.remove());const old=box.lastElementChild;clearInterval(tick);
   if(mode==="back"&&old&&old.classList.contains("view")){const v=build();box.insertBefore(v,old);old.classList.add("out-r");old.addEventListener("animationend",()=>old.remove(),{once:true});setTimeout(()=>old.remove(),400);}
   else{const v=build(mode==="push"?"in-r":"fade");box.appendChild(v);if(old){if(mode==="push")setTimeout(()=>old.remove(),300);else old.remove();}}
   paintChrome();if(cur()==="clock")startClock();tabsToActive();fitChips();}

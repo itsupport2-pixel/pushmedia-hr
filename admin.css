@@ -1105,3 +1105,16 @@ a.btn.mj-act{display:flex;align-items:center;justify-content:center;gap:9px;min-
 .tl-new{display:flex;gap:8px}.tl-new input{flex:1;min-width:0;height:40px;border:1px solid #DADADA;border-radius:10px;padding:0 12px;font:inherit;font-size:14px;background:#FAFAFA}.tl-up{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.tl-fi{position:absolute;width:1px;height:1px;opacity:0}.tl-mr{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #F0F0F0;flex-wrap:wrap}.tl-mr input{flex:1;min-width:140px;height:36px;border:1px solid #DADADA;border-radius:8px;padding:0 10px;font:inherit;font-size:14px}.tl-mr .faint{font-size:12.5px;white-space:nowrap}
 /* Matrix: เวลาเข้าครั้งแรกนอกพื้นที่ = สีส้ม แยกจากขอแก้เวลาสีเหลือง (6 พ.ย. 2569) */
 .rp-of{background:#FFEDD5;color:#C2410C}.rp-t td.dy.of{background:#FFEDD5;color:#C2410C}.rp-t td.dy.of small{color:#C2410C}.rp-t td.dy.of.aj{background:#FFFBEB;color:#B45309}.rp-t td.dy.of.aj small{color:#B45309}
+/* หน้ากำลังโหลดแบบโครงหน้า (Figma หน้า 20 แบบ B) */
+.boot-sk{animation:skIn .16s .3s both}@keyframes skIn{from{opacity:0}to{opacity:1}}@keyframes skP{0%,100%{opacity:1}50%{opacity:.55}}
+.bsk{display:block;flex:none;background:#E7E7E7;border-radius:6px;max-width:100%;animation:skP 1.4s ease-in-out infinite}.bsk.rd{border-radius:50%}.bsk.dk{background:#2A2A2A}
+.sk-col{display:flex;flex-direction:column;gap:7px;min-width:0}.sk-row{display:flex;align-items:center;gap:12px;padding:12px 14px}.sk-card{background:#fff;border-radius:12px;overflow:hidden}.sk-card.sk-pad{display:flex;flex-direction:column;gap:14px;padding:18px}
+.sk-ni{display:flex;flex-direction:column;align-items:center;gap:7px}.sk-g{flex:1}.sk-msg{text-align:center;font-size:13.5px;color:#5F5F5F;display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px}.sk-msg b{color:#141414;font-weight:600}.sk-t{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.sk-btn{margin-top:8px;border:0;border-radius:10px;background:#111;color:#fff;font:inherit;font-weight:600;padding:9px 20px;cursor:pointer}
+@media(prefers-reduced-motion:reduce){.boot-sk,.bsk{animation:none}}
+.sk-msg.on{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:70;background:#fff;border-radius:12px;padding:12px 18px;box-shadow:0 6px 20px rgba(0,0,0,.14);width:max-content;max-width:calc(100vw - 32px)}
+.sk-admin{display:flex;min-height:100vh;background:#F3F3F3}.sk-nav{width:92px;flex:none;background:#0B0B0B;display:flex;flex-direction:column;align-items:center;gap:18px;padding:62px 0 20px}
+.sk-main{flex:1;min-width:0;display:flex;flex-direction:column}.sk-top{display:flex;align-items:center;gap:10px;background:#fff;padding:16px 26px}.sk-top img{display:block}.sk-body{display:flex;flex-direction:column;gap:16px;padding:24px 26px}
+.sk-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.sk-kpi{display:flex;flex-direction:column;gap:12px;background:#fff;border-radius:12px;padding:16px;min-width:0}
+@media(max-width:820px){.sk-nav,.sk-hide{display:none}.sk-top{padding:14px 16px}.sk-body{padding:18px 16px}.sk-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.sk-fail{min-height:70vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:24px;color:var(--mut)}.sk-fail b{color:var(--fg);font-size:16px}

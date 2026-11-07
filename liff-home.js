@@ -5,7 +5,7 @@
 const V={};
 /* งานของฉันวันนี้ (6 พ.ย. 2569): t.jobs รวมงานที่ไม่มีพิกัด · แอปที่ได้ข้อมูลเก่าไม่มี t.jobs ใช้ targets แทน */
 const todayJobs=t=>t.jobs&&t.jobs.length?t.jobs.map(j=>({title:j.title,name:j.site||j.title,job_no:j.job_no})):t.targets.filter(x=>x.kind==="job");
-V.home=()=>{const t=S.today,me=S.me||{};if(!t)return loadingV();
+V.home=()=>{const t=S.today,me=S.me||{};if(!t)return pmSkAppBody();
   const now=DT(t.date),last=t.records[t.records.length-1],ins=t.records.filter(r=>r.kind==="IN"),outs=t.records.filter(r=>r.kind==="OUT");
   /* การ์ดข้อมูลประจำวัน (ผู้ใช้ส่งตัวอย่าง 23 ต.ค.): ป้ายบอกประเภทวัน + ชื่อวันหยุดในป้ายเดียว · ใต้ป้ายแสดงเวลาทำงานเสมอ (เลือกกะแล้ว = เวลากะ) */
   const HK={national:"วันหยุดนักขัตฤกษ์",company:"วันหยุดบริษัท"},LP={full:"ลาเต็มวัน",am:"ลาครึ่งเช้า",pm:"ลาครึ่งบ่าย"};
