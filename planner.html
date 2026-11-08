@@ -1474,8 +1474,11 @@ body,button,input,select,textarea{font-family:'IBM Plex Sans Thai',system-ui,san
  #cfp .pc-hd{margin-bottom:8px!important}#cfp .pc-hd h2,#cfp .pc-hd .pc-lead{display:none!important}#cfp .pc-hd>div:first-child{display:none!important}
  #cfp>.pz-bar{margin-bottom:10px}#cfp .pz-q{flex:1 1 auto;margin-right:0}#cfp .pz-q input{width:100%!important;height:38px;border-radius:10px;font-size:16px;min-width:0}
  #cfp .pc-tabs{display:flex!important;flex-wrap:nowrap!important;overflow-x:auto;gap:6px!important;margin-bottom:10px!important;scrollbar-width:none}#cfp .pc-tabs::-webkit-scrollbar{display:none}
- #cfp .pc-tab{flex:none!important;min-width:0!important;width:auto!important;height:32px!important;min-height:0!important;padding:0 10px!important;border-radius:99px!important;display:inline-flex!important;flex-direction:row!important;align-items:center;gap:6px;white-space:nowrap}
- #cfp .pc-tab span{font-size:12px!important}#cfp .pc-tab b{font-size:14px!important;line-height:1!important}
+ #cfp .pc-tab{flex:none!important;min-width:0!important;width:auto!important;height:32px!important;min-height:0!important;padding:0 10px!important;border-radius:99px!important;display:inline-flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;gap:6px!important;white-space:nowrap;text-align:center!important}
+ #cfp .pc-tab>*{margin:0!important;padding:0!important;line-height:1.2!important;display:inline-flex!important;align-items:center!important;gap:5px!important}#cfp .pc-tab span{font-size:12px!important}#cfp .pc-tab b{font-size:14px!important}
+ #cfp .pc-tabs{padding:1px!important;margin-top:0!important}
+ #content input::placeholder{font-size:13px!important;color:#9A9A9A}
+ .hr-sum>button{align-items:center!important}.hr-sum>button>*{line-height:1.2!important;margin:0!important}.hr-sum{padding:1px!important}
  #cfp .pc-tools{margin-bottom:8px!important;gap:6px!important}#cfp .pc-tools .pc-spc{display:none}
  table.pz-card{min-width:0!important;width:100%!important;display:block}table.pz-card thead{display:none}table.pz-card tbody{display:block}
  table.pz-card tr{display:flex;flex-wrap:wrap;align-items:center;gap:3px 10px;padding:10px 12px;border-bottom:1px solid #EEE}
@@ -1507,6 +1510,13 @@ body,button,input,select,textarea{font-family:'IBM Plex Sans Thai',system-ui,san
  table.pz-rl td[data-k="full"] button,table.pz-rl td[data-k="full"] [onclick]{height:28px!important;padding:0 10px!important;font-size:12px!important}
  table.pz-rl td[data-k="d"]{width:calc(100% + 28px)!important;flex:0 0 calc(100% + 28px)!important;text-align:left!important}table.pz-rl td[data-k="d"]>*{justify-content:flex-start!important;text-align:left!important}table.pz-rl tr:not(.pz-dstart){min-height:0!important}table.pz-rl tr{padding-top:5px;padding-bottom:5px}
  table.pz-rl td[data-k="d"] *{display:inline!important}table.pz-rl td[data-k="d"] *+*{margin-left:6px!important}
+ /* มุมมองตาราง/รายชื่อทีม/ตามช่าง: แถบเลือกวัน + ทีละวัน */
+ .pz-days{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 0 10px;position:sticky;top:0;z-index:5;background:var(--bg,#F4F4F4);padding:4px 0}.pz-days::-webkit-scrollbar{display:none}
+ .pz-days button{flex:1 0 44px;display:flex;flex-direction:column;align-items:center;gap:0;padding:5px 0;border:1px solid #DADADA;border-radius:10px;background:#fff;font:inherit;cursor:pointer;color:#141414}
+ .pz-days button span{font-size:11px;color:#8C8C8C}.pz-days button b{font-size:15px;line-height:1.2}.pz-days button.on{background:#141414;border-color:#141414;color:#fff}.pz-days button.on span{color:#DADADA}
+ table.pz-day{min-width:0!important;width:100%!important;table-layout:auto!important}table.pz-day colgroup{display:none}table.pz-day .pz-off{display:none!important}
+ table.pz-day th,table.pz-day td{width:auto!important;min-width:0!important;max-width:none!important}table.pz-day .pz-on{width:58%!important}table.pz-day .pz-on *{white-space:normal!important;max-width:none!important}
+ #content div:has(>table.pz-day){overflow-x:visible!important;min-width:0!important}
  .pz-b{display:flex;flex-direction:column;gap:10px}.pz-b>.hb{display:flex!important;align-items:center;gap:8px;height:44px!important;justify-content:flex-start!important;font-size:14px!important;width:100%;padding:0 14px!important}.pz-b .hr-pds{flex-wrap:wrap!important}.pz-b .hr-tg{flex-wrap:wrap}
 }
 </style>
@@ -1797,7 +1807,7 @@ function fi(name, size=16, cls='', style='') {
 
 
 <script src="config.js"></script>
-<script src="planner-mobile.js?v=pm1108c"></script>
+<script src="planner-mobile.js?v=pm1108f"></script>
 <script>
 /* Push Media HR — หน้าตารางงาน = โค้ด Workforce Task Manager เดิม (สร้างด้วย app/tools/build-planner.mjs · อย่าแก้ไฟล์นี้ตรง ๆ)
  * ที่เก็บข้อมูลในเบราว์เซอร์ใส่คำนำหน้าทุกคีย์ (WTM จริงอยู่โดเมนเดียวกัน) · ยกเว้น hr_tok = การเข้าสู่ระบบของหลังบ้าน */

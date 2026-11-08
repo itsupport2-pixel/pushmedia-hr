@@ -43,7 +43,27 @@
         var x=td.textContent.trim();td.classList.toggle('pz-e',k!=='d'&&k!=='tm'&&k!=='pj'&&(x===''||x==='—'||x==='-'||x==='+'||/^฿?0(\.00)?$/.test(x)));
         for(var r=0;r<rs;r++){occ[ri+r]=occ[ri+r]||[];for(var c=0;c<cs;c++)occ[ri+r][col+c]=1}col+=cs});
       tr.classList.toggle('pz-dstart',!!tr.querySelector('td[data-k="d"]'));tr.classList.toggle('pz-tstart',!!tr.querySelector('td[data-k="tm"]'))})})}
-  function run(){if(busy)return;busy=true;try{if(!MQ.matches)close();else{refill();bar();cards();rlist()}}catch(e){if(window.console)console.warn('pz',e)}ob.takeRecords();busy=false}
+  /* มุมมองตาราง / รายชื่อทีม / ตามช่าง (คน/ทีม × 7 วัน): แถบเลือกวัน + แสดงทีละวัน · ไม่ลบข้อมูล แค่ซ่อนคอลัมน์วันอื่น */
+  var DAYRX=/(^|\D)([0-9]{1,2})(\D|$)/,DAYNM=/จันทร์|อังคาร|พุธ|พฤหัส|ศุกร์|เสาร์|อาทิตย์|^(จ|อ|พ|พฤ|ศ|ส|อา)\s*[0-9]/,pzDay='';
+  function dayCols(t){var hr=t.tHead&&t.tHead.rows[t.tHead.rows.length-1];if(!hr)return null;var col=0,m={},n=0;
+    [].forEach.call(hr.cells,function(c){var x=c.textContent.replace(/\s+/g,''),d=DAYRX.exec(x);if(d&&DAYNM.test(x)&&c.colSpan===1){m[col]=String(+d[2]);n++}col+=c.colSpan||1});return n>=5?m:null}
+  function mtx(){
+    var v=window._plannerView||'list',strip=document.querySelector('#content .pz-days');
+    var ts=[].filter.call(document.querySelectorAll('#content table'),function(t){return !t.classList.contains('pz-rl')&&!t.closest('.pz-ov')&&dayCols(t)});
+    if(!ts.length){if(strip)strip.remove();return}
+    var m0=dayCols(ts[0]),hr=ts[0].tHead.rows[ts[0].tHead.rows.length-1],labels=[],col=0;
+    [].forEach.call(hr.cells,function(c){if(m0[col]){var x=c.textContent.replace(/\s+/g,' ').trim();labels.push({d:m0[col],t:x})}col+=c.colSpan||1});
+    var today=String(new Date().getDate());if(!labels.some(function(l){return l.d===pzDay}))pzDay=labels.some(function(l){return l.d===today})?today:labels[0].d;
+    var host=ts[0].closest('.card')||ts[0].parentElement;
+    if(!strip||strip.nextElementSibling!==host&&!host.contains(strip)){if(strip)strip.remove();strip=document.createElement('div');strip.className='pz-days';host.parentNode.insertBefore(strip,host)}
+    var html=labels.map(function(l){var p=l.t.match(DAYRX),num=p?p[2]:l.d,nm=l.t.replace(num,'').replace(/วัน\S*$/,'').trim().slice(0,3);return '<button type="button" data-pzd="'+l.d+'" class="'+(l.d===pzDay?'on':'')+'"><span>'+nm+'</span><b>'+num+'</b></button>'}).join('');
+    if(strip.innerHTML!==html){strip.innerHTML=html;strip.onclick=function(e){var b=e.target.closest('[data-pzd]');if(!b)return;pzDay=b.getAttribute('data-pzd');run()}}
+    ts.forEach(function(t){var m=dayCols(t);t.classList.add('pz-day');
+      var mark=function(rows){var occ=[];[].forEach.call(rows,function(tr,ri){var col=0;occ[ri]=occ[ri]||[];[].forEach.call(tr.cells,function(td){while(occ[ri][col])col++;var rs=td.rowSpan||1,cs=td.colSpan||1;
+        var d=cs===1?m[col]:null;td.classList.toggle('pz-off',!!d&&d!==pzDay);td.classList.toggle('pz-on',!!d&&d===pzDay);
+        for(var r=0;r<rs;r++){occ[ri+r]=occ[ri+r]||[];for(var c=0;c<cs;c++)occ[ri+r][col+c]=1}col+=cs})})};
+      if(t.tHead)mark(t.tHead.rows);[].forEach.call(t.tBodies,function(b){mark(b.rows)})})}
+  function run(){if(busy)return;busy=true;try{if(!MQ.matches)close();else{refill();bar();cards();rlist();mtx()}}catch(e){if(window.console)console.warn('pz',e)}ob.takeRecords();busy=false}
   var ob=new MutationObserver(function(){clearTimeout(tm);tm=setTimeout(run,30)});
   function start(){ob.observe(document.body,{childList:true,subtree:true});run()}
   if(document.body)start();else document.addEventListener('DOMContentLoaded',start);
