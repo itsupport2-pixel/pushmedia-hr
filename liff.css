@@ -517,3 +517,6 @@ a.btn{text-decoration:none;display:flex;align-items:center;justify-content:cente
 @media(prefers-reduced-motion:reduce){.boot-sk,.bsk,.skel{animation:none}}
 .sk-msg.on{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:70;background:#fff;border-radius:12px;padding:12px 18px;box-shadow:0 6px 20px rgba(0,0,0,.14);width:max-content;max-width:calc(100vw - 32px)}
 .sk-app{display:block}.sk-ph{background:#fff;padding:18px 18px 16px}.sk-who{display:flex;align-items:center;gap:12px;margin-bottom:18px}.sk-quick{display:flex;justify-content:space-between;gap:8px}.sk-abody{display:flex;flex-direction:column;gap:14px;padding:16px}
+/* ประเภทการลา: dropdown + บรรทัดสรุป (8 พ.ย. 2569) */
+.lt-sel{display:flex;flex-direction:column;gap:6px}.lt-sel select{height:46px;min-height:46px;padding:0 12px;border:1.5px solid var(--line);border-radius:12px;background:#fff;font-size:16px}
+.lt-info{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 2px}.lt-info .cap{min-width:0}

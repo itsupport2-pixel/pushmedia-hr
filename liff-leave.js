@@ -50,7 +50,8 @@ V.leave=()=>{const i=L.info;if(!i)return band("ขอลางาน")+loadingV(
   return band(f.edit_id?"แก้ไขคำขอลา":"ขอลางาน")+`<form class="pad" id="f" novalidate>
   ${f.edit_id?nt("c-blue","info","คำขอนี้ยังไม่ได้รับอนุมัติ แก้ไขได้ทันที หัวหน้าทีมจะเห็นป้าย “แก้ไขแล้ว”"):""}
   <div class="lv-step"><span class="n">1</span><b>ประเภทการลา</b></div>
-  <div class="lt-g">${i.types.map(x=>`<button type="button" class="ltc" data-lvtype="${x.id}" aria-pressed="${f.type_id===x.id}"><span class="ltc-c">${ic("chk")}</span><span class="ltc-m"><b>${esc(x.name)}</b><span class="cap">${x.no_advance?"ห้ามยื่นล่วงหน้า"+(x.backdate_days?" · ย้อนหลังได้ "+x.backdate_days+" วัน":""):x.advance_days?"ยื่นล่วงหน้า "+x.advance_days+" วัน":x.backdate_days?"ยื่นย้อนหลังได้ "+x.backdate_days+" วัน":"ยื่นได้ทุกเมื่อ"}${x.reserved?` · รออนุมัติ ${nd(x.reserved)}`:""}</span></span><span class="ltc-q${x.left!=null&&x.left<=0?" z":""}">${x.left==null?"ไม่จำกัด":`เหลือ <b>${esc(String(x.left))}</b> วัน`}</span></button>`).join("")}</div>
+  ${(()=>{const rule=x=>x.no_advance?"ห้ามยื่นล่วงหน้า"+(x.backdate_days?" · ย้อนหลังได้ "+x.backdate_days+" วัน":""):x.advance_days?"ยื่นล่วงหน้า "+x.advance_days+" วัน":x.backdate_days?"ยื่นย้อนหลังได้ "+x.backdate_days+" วัน":"ยื่นได้ทุกเมื่อ",q=x=>x.left==null?"ไม่จำกัด":"เหลือ "+x.left+" วัน",cur=i.types.find(x=>x.id===f.type_id);   // 8 พ.ย. 2569 ผู้ใช้ขอ: ประเภทการลาเป็น dropdown แทนปุ่มใหญ่ทีละประเภท
+    return `<div class="lt-sel"><select id="lvsel" class="inp" aria-label="ประเภทการลา">${cur?"":`<option value="" selected disabled>เลือกประเภทการลา</option>`}${i.types.map(x=>`<option value="${esc(x.id)}"${f.type_id===x.id?" selected":""}${x.left!=null&&x.left<=0?" data-z=\"1\"":""}>${esc(x.name)} · ${esc(q(x))}</option>`).join("")}</select>${cur?`<div class="lt-info"><span class="cap">${esc(rule(cur))}${cur.reserved?` · รออนุมัติ ${nd(cur.reserved)}`:""}</span><span class="ltc-q${cur.left!=null&&cur.left<=0?" z":""}">${cur.left==null?"ไม่จำกัด":`เหลือ <b>${esc(String(cur.left))}</b> วัน`}</span></div>`:""}</div>`})()}
   <div class="lv-step"><span class="n">2</span><b>เลือกวันลา</b><span class="cap" style="margin-left:auto">แตะวันแรก แล้วแตะวันสุดท้าย</span></div>
   ${cal(f)}
   ${ds.length?`<div class="dl">${ds.map(x=>{const j=i.jobDays.find(z=>z.date===x.date);return `<div class="dr"><div class="t"><b>${fD(x.date)}</b>${j?`<span class="chip c-blue mini">${ic("cal","width:13px;height:13px")}งาน ${esc(j.site||j.job)}</span>`:`<span class="chip c-grey mini">ทำงานปกติ</span>`}</div>${t.half_day?`<div class="seg" role="group" aria-label="ช่วงเวลา ${fD(x.date)}">${Object.keys(PART).map(p=>`<button type="button" data-lvpart="${x.date}|${p}" aria-pressed="${x.part===p}">${PART[p]}</button>`).join("")}</div>`:""}</div>`}).join("")}</div>`:""}
@@ -169,6 +170,7 @@ document.addEventListener("click",e=>{const t=e.target.closest("button");if(!t)r
 },true);
 function openDetailReplace(id){api("leaveDetail",id).then(r=>{L.det[id]=r;if(cur()==="lvdetail:"+id)repaint()})}
 document.addEventListener("change",e=>{if(e.target.id==="lsub"&&L.f){L.f.substitute_id=e.target.value;runPreview()}});
+document.addEventListener("change",e=>{if(e.target.id==="lvsel"&&L.f){L.f.type_id=e.target.value;repaint();runPreview()}});
 document.addEventListener("input",e=>{if(e.target.id==="lr"&&L.f)L.f.reason=e.target.value;if(e.target.id==="ldoc"&&L.f)L.f.doc_no=e.target.value});
 
 

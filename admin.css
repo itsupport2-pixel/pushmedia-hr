@@ -1122,44 +1122,78 @@ a.btn.mj-act{display:flex;align-items:center;justify-content:center;gap:9px;min-
 /* หน้าต่างแก้เวลา: ตารางต้องพอดีความกว้างหน้าต่าง ไม่งั้นปุ่มยกเลิกล้นออกนอกจอ (7 พ.ย. 2569) */
 #fx-body .tw table{min-width:0;width:100%}#fx-body .tw th,#fx-body .tw td{padding-left:8px;padding-right:8px}#fx-body .tw td:last-child{white-space:nowrap;text-align:right}
 
-/* หลังบ้านบนจอมือถือ (8 พ.ย. 2569) · คู่กับ admin-mobile.js */
-.m-ft,.m-dn{display:none}
+/* หลังบ้านบนจอมือถือแบบแอป (8 พ.ย. 2569 รอบ 2) · คู่กับ admin-mobile.js · มีผลเฉพาะจอ ≤ 640px
+ * ขนาดกลาง: ตัวอักษร 13–14 · หัวข้อ 18 · ตัวเลขสรุป 18 · ปุ่ม 32 · ช่องกรอก 38 (ตัวอักษร 16 กัน iPhone ซูม) · ไอคอน 16–18 · มุม 10 · ระยะ 8/12 */
+.m-bar,.m-dn,.m-csel{display:none}
 @media(hover:none){.tipx{display:none!important}}
 @media(max-width:640px){
+ .content{padding:10px 12px 72px}
+ .plf{width:calc(100% + 24px)!important;margin:-10px -12px -72px!important;height:calc(100vh - 52px)!important}
+ .tb{height:52px;gap:8px;padding:0 10px}.tb .tt b{font-size:16px}.tb .ib{width:34px;height:34px}.tb .ib svg{width:18px;height:18px}
+ .tb .lang button{min-width:30px;height:26px;padding:0 7px;font-size:12px}.tb .usr .av,.tb .usr img{width:32px!important;height:32px!important}
+ .main .btn{padding:0 12px;height:32px;font-size:13px;border-radius:8px;gap:5px}.main .btn svg,.main .btn img{width:16px;height:16px}.main .btn.sm{height:28px;padding:0 10px;font-size:12px}
  .main input:not([type=checkbox]):not([type=radio]),.main select,.main textarea{font-size:16px}
- .main .btn,.main select,.main input:not([type=checkbox]):not([type=radio]){min-height:40px}
- .tb .tt b{font-size:16px}
- .m-dup{display:none}.ph{flex-wrap:wrap;gap:8px}.ph>div:first-child{width:100%;flex:none}
- .m-dn{display:block;font-size:12.5px;color:var(--mut);background:var(--sf);border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin-bottom:12px}
- /* ตัวกรอง: พับไว้ เหลือช่องค้นหา + ปุ่มตัวกรอง */
- .m-ft{display:inline-flex;align-items:center;justify-content:center;flex:none}
- .m-fc:not(.m-open) select,.m-fc:not(.m-open) .drg,.m-fc:not(.m-open) [id^=ofs-],.m-fc:not(.m-open) #ap-rg,.m-fc:not(.m-open) #lv-rg,.m-fc:not(.m-open) #ast-x-xls,.m-fc:not(.m-open) #ast-x-pdf,.m-fc:not(.m-open) #ms-xl{display:none!important}
- .m-fc.m-open [id^=ofs-]{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:100%}
- .m-fc.m-open select{width:100%;max-width:100%}.m-fc.m-open #ap-rg,.m-fc.m-open #lv-rg{width:100%}
- .tools.m-fc,.ast-ctl.m-fc{display:flex;flex-wrap:wrap;gap:8px}.tools.m-fc>*,.ast-ctl.m-fc>*{order:3}.tools.m-fc input#q,.tools.m-fc #ms-q,.ast-ctl.m-fc #ast-q{order:1;flex:1 1 60%;min-width:0;width:auto!important}.tools.m-fc>.m-ft,.ast-ctl.m-fc>.m-ft{order:2}
- #ap-body .toolbar button{min-height:36px}
- .tools.m-fc.m-open select,.ast-ctl.m-fc.m-open select{flex:1 1 calc(50% - 4px);width:auto}
- .att-dt{flex:1 1 100%;display:flex;gap:8px}.att-dt input{flex:1;min-width:0}
- /* งานนำเข้าไฟล์ทำบนจอคอม */
+ .main input:not([type=checkbox]):not([type=radio]),.main select{height:38px;padding:0 10px;border-radius:8px}
+ /* หัวหน้า */
+ .ph{margin-bottom:8px;gap:6px;align-items:center}.ph h1{font-size:18px;line-height:1.3}.ph .sub{font-size:12px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+ .ph>div:first-child{flex:1 1 100%;min-width:0}.m-dup{display:none}
+ .m-dn{display:block;font-size:11.5px;color:var(--fnt);margin:0 0 8px}
+ /* แถบเครื่องมือ: ตัวกรอง · ⋯ · ปุ่มหลัก */
+ .m-bar{display:flex;gap:8px;align-items:center;margin:0 0 10px}.m-bar .btn{height:38px;border-radius:10px}.m-bar .m-mr{width:38px;padding:0;justify-content:center;font-size:18px;line-height:1}
+ .m-bar .m-q{flex:1;min-width:0;display:flex}.m-bar .m-q[hidden]{display:none}.m-bar .m-q>*{flex:1;min-width:0;width:100%!important;max-width:none!important;margin:0!important}.m-bar .m-q input{height:38px;border-radius:10px;width:100%}
+ .m-bar .m-ft{gap:6px}.m-bar.m-wq .m-ft{width:38px;padding:0;justify-content:center;position:relative}.m-bar.m-wq .m-ft span:empty{display:none}
+ .m-bar.m-wq .m-ft span{position:absolute;top:-5px;right:-5px;min-width:17px;height:17px;border-radius:9px;background:var(--fg);color:#fff;font-size:10.5px;line-height:17px;text-align:center;padding:0 4px}
+ .m-bar .m-ft.on{border-color:var(--fg)}
+ .m-bar .m-q>.m-tabrow{margin:0!important;border-bottom:0!important;flex-wrap:nowrap!important;overflow-x:auto}.m-bar .m-q:has(>.m-tabrow){overflow:hidden}
+ .m-sh-b .xd-chips{display:flex;flex-wrap:wrap;gap:6px}.m-sh-b .xd-l{display:flex;align-items:center;gap:8px}.m-sh-b .xd-l select{flex:1}
+ .xd-g6{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}.xd-k{padding:10px 12px!important}.xd-kv{font-size:20px!important}
+ .content{position:relative}.m-bar.m-solo{position:absolute;top:10px;right:12px;margin:0;z-index:2}.content:has(>.m-bar.m-solo)>.ph{padding-right:50px}
+ .m-sh-b label{display:flex;flex-direction:column;gap:4px;width:100%;font-size:12px;color:var(--mut)}.m-sh-b label>select,.m-sh-b label>input,.m-sh-b label>.dpt{width:100%!important;max-width:none!important}.m-sh-b>div{display:flex;flex-direction:column;gap:10px;width:100%}
+ .li.fl-r{flex-wrap:wrap;row-gap:6px}.li.fl-r>div:has(>.muted),.li.fl-r>div:not(:has(button,input,label,select)){flex:1 1 180px!important;min-width:160px!important}
+ .m-bar>.m-ft{margin-left:auto}.m-bar .m-q:not([hidden])+.m-ft{margin-left:0}.m-bar.m-dt .m-q{flex:0 1 64%;margin-right:auto}.m-bar.m-dt .m-q .att-dt{display:flex;gap:4px;flex:1}.m-bar.m-dt .att-dt input{height:38px;min-width:0;flex:1;font-size:16px;padding:0 6px}.m-bar.m-dt .att-dt .btn{width:30px;height:38px;padding:0;justify-content:center}
+ .ast-ctl{flex-wrap:nowrap!important;overflow-x:auto;scrollbar-width:none}.ast-ctl::-webkit-scrollbar{display:none}.ast-ctl>*{flex:none}.ast-ctl>span[style*=flex]{display:none}
+ .content .m-empty{display:none!important}.ph .evs{display:none!important}
+ .m-fab{position:fixed;right:16px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:60;height:44px!important;padding:0 18px!important;border-radius:22px!important;font-size:14px!important;box-shadow:0 6px 18px rgba(0,0,0,.22)}
+ .cba-head,.cba-start{display:none!important}
+ .m-bar [hidden]{display:none!important}
+ .content .m-hid{display:none!important}
+ .att-dt{display:flex;gap:6px;flex:1 1 100%}.att-dt input{flex:1;min-width:0}.att-dt .btn{width:38px;padding:0;justify-content:center}
+ .tools,.ast-ctl{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}.tools input#q,#ms-q,#ast-q{flex:1 1 100%;width:100%!important;max-width:none!important;min-width:0!important}
  #imp,#imp-ph,#imp-tr,#imp-tpl,#ast-imp{display:none!important}
- /* ตัวเลขสรุปและแท็บ: แถวเดียว ปัดได้ */
- [role=tablist],.sum,.rp-tabs,.segt{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;max-width:100%}.segt{display:flex}
- .sum::-webkit-scrollbar,.rp-tabs::-webkit-scrollbar,.segt::-webkit-scrollbar{display:none}
- [role=tablist] button,.sum button,.rp-tabs button,.segt button{flex:none;white-space:nowrap}[role=tablist]{display:flex}
- .main .grid.g4{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.main .grid.g4 .kpi{padding:12px 14px;min-width:0}
- .ast-kpi{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.ast-kpi .kpi{padding:10px 12px}
- /* ตาราง → การ์ด */
+ /* แผ่นจากด้านล่าง */
+ .m-sh-ov{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.36);display:flex;align-items:flex-end}
+ .m-sh{background:var(--sf);width:100%;max-height:82vh;overflow:auto;border-radius:16px 16px 0 0;padding:6px 14px calc(16px + env(safe-area-inset-bottom));box-shadow:0 -8px 30px rgba(0,0,0,.18)}
+ .m-sh-h{display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--sf);padding:10px 0 8px;border-bottom:1px solid var(--line);margin-bottom:10px}.m-sh-h b{font-size:15px}
+ .m-sh-b{display:flex;flex-direction:column;gap:10px}.m-sh-b>*{width:100%!important;max-width:none!important}.m-sh-b [id^=ofs-]{display:grid;grid-template-columns:1fr 1fr;gap:8px}.m-sh-b [id^=ofs-] select{width:100%}
+ .m-sh-b>.btn{height:44px;justify-content:flex-start;font-size:14px;border-radius:10px}.m-sh-b .drg{display:flex;gap:8px;flex-wrap:wrap}
+ /* ตัวเลขสรุป: แถบปัดได้ */
+ .m-ks{display:flex!important;gap:8px;overflow-x:auto;scrollbar-width:none;margin-bottom:10px;padding-bottom:2px}.m-ks::-webkit-scrollbar{display:none}
+ .m-ks>.kpi{flex:0 0 auto;min-width:104px;padding:8px 12px!important;border-radius:10px!important;gap:0}.m-ks .kpi .l,.m-ks .kpi .kh{font-size:11.5px;margin:0}.m-ks .kpi .kh i{display:none}
+ .m-ks .kpi .v{font-size:18px!important;line-height:1.3}.m-ks .kpi .s,.m-ks .kpi small,.m-ks .kpi .faint{font-size:10.5px;white-space:nowrap}
+ /* Dashboard: 2 คอลัมน์แบบกะทัดรัด */
+ .main .grid.g4{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.main .grid .kpi{padding:10px 12px;border-radius:10px}.main .kpi .v{font-size:20px}.main .kpi .kh{gap:6px;margin-bottom:2px}.main .kpi .kh i{width:24px;height:24px;border-radius:7px}.main .kpi .kh i svg{width:14px;height:14px}.main .kpi .l,.main .kpi .kh .l{font-size:12px}
+ .main .card .ch{padding:10px 12px}.main .card .ch h3{font-size:14px}.main .card .cb{padding:10px 12px}
+ /* แท็บ ชิป ตัวเลขสั้น: แถวเดียว ปัดได้ */
+ [role=tablist],.rp-tabs,.otab,.segt,.sum{display:flex;flex-wrap:nowrap!important;overflow-x:auto;scrollbar-width:none;max-width:100%}
+ [role=tablist]::-webkit-scrollbar,.rp-tabs::-webkit-scrollbar,.otab::-webkit-scrollbar,.segt::-webkit-scrollbar,.sum::-webkit-scrollbar{display:none}
+ [role=tablist] button,.rp-tabs button,.otab button,.segt button,.sum button{flex:none;white-space:nowrap}
+ .rp-tabs button,.otab button{padding:8px 12px;font-size:13.5px}.segt button{padding:5px 10px;font-size:12.5px}
+ .sum{gap:6px;margin-bottom:10px}.sum button{padding:4px 10px;border-radius:99px;gap:5px}.sum b{font-size:14px}.sum span{font-size:12px}
+ .m-chipbox{flex-wrap:nowrap}.m-chipbox>button.chip,.m-chipbox>button.cba-chip{display:none}.m-csel{display:block;width:100%}
+ /* ตาราง → แถวรายการ */
  .tw:has(>table.m-card){overflow:visible}
  table.m-card{min-width:0!important;width:100%;display:block}table.m-card thead{display:none}table.m-card tbody{display:block}
- table.m-card tr{display:block;padding:12px 14px;border-bottom:1px solid var(--line)}table.m-card tr:last-child{border-bottom:0}
- table.m-card td{display:grid;grid-template-columns:minmax(0,auto) minmax(0,1fr);justify-items:end;align-items:center;column-gap:12px;row-gap:2px;padding:4px 0;border:0;text-align:right;min-height:0;white-space:normal;overflow-wrap:anywhere}table.m-card td>*{grid-column:2;max-width:100%}
- table.m-card td::before{content:attr(data-l);grid-column:1;justify-self:start;font-size:12.5px;color:var(--mut);text-align:left}
- table.m-card td[data-l=""]::before{display:none}
- table.m-card td.m-e{display:none}
- table.m-card td.m-h{display:flex;flex-wrap:wrap;justify-content:flex-start;align-items:center;gap:6px;text-align:left;font-weight:600;padding-bottom:6px}table.m-card td.m-h::before{display:none}table.m-card td.m-h>*{justify-content:flex-start;margin-left:0!important;text-align:left}
- .mx .stp{flex-direction:column;align-items:flex-start;gap:10px}.mx .stp .ln{display:none}.mx .stp .s{width:100%}
- table.m-card td.m-full{display:block;text-align:center}table.m-card td.m-full::before{display:none}
- table.m-card td.m-x{display:none}
- .main .py-t{display:block;overflow-x:auto;min-width:0!important;max-width:100%}.main .card{min-width:0;max-width:100%}.main .grid>*{min-width:0}
+ table.m-card tr{display:flex;flex-wrap:wrap;align-items:center;gap:3px 10px;padding:10px 12px;border-bottom:1px solid var(--line);position:relative}table.m-card tr:last-child{border-bottom:0}
+ table.m-card td{display:inline-flex;align-items:center;gap:4px;padding:0;border:0;font-size:12.5px;color:var(--fg);white-space:normal;text-align:left;min-height:0;max-width:100%}
+ table.m-card td{background:transparent!important}table.m-card td:not(.m-h):not(.m-act):not(.m-bdg){color:var(--mut)}
+ table.m-card td::before{content:attr(data-l);color:var(--fnt);font-size:11.5px;display:none}table.m-card td.m-lbl::before{display:inline}table.m-card td[data-l=""]::before{display:none}
+ table.m-card td.m-h{display:flex;flex:1 1 100%;align-items:center;gap:8px;font-size:14px;font-weight:600;margin-bottom:1px}table.m-card td.m-h>*{margin-left:0!important}
+ table.m-card tr.m-has-act td.m-h{padding-right:84px}
+ table.m-card td.m-act{position:absolute;top:8px;right:12px}table.m-card td.m-act::before{display:none}
+ table.m-card td.m-h img,table.m-card td.m-h .av{width:28px!important;height:28px!important;flex:none}
+ table.m-card td.m-e,table.m-card td.m-x{display:none}table.m-card td.m-full{display:block;flex:1 1 100%;text-align:center}
+ table.m-card .badge,table.m-card .pill{font-size:11.5px;padding:1px 8px}
+ /* หน้าที่เคยล้นจอ */
+ .main .py-t{display:block;overflow-x:auto;min-width:0!important;max-width:100%}.main .card{min-width:0;max-width:100%}.main .grid>*{min-width:0}.py-2{grid-template-columns:minmax(0,1fr)}
+ .mx .stp{flex-direction:column;align-items:flex-start;gap:8px}.mx .stp .ln{display:none}.mx .stp .s{width:100%}
 }
-@media(max-width:640px){.py-2{grid-template-columns:minmax(0,1fr)}}

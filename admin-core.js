@@ -231,7 +231,7 @@ function renderLogin(){
   if($('#lg-goo')){if(!DEV){var gp=function(){gsiLoad().catch(function(){})};$('#lg-goo').addEventListener('pointerenter',gp,{once:true});$('#lg-goo').addEventListener('focus',gp,{once:true});setTimeout(function(){(window.requestIdleCallback||setTimeout)(gp)},3600)}$('#lg-goo').onclick=googleLogin}   // 30 ต.ค. 2569: ไม่โหลดระหว่างภาพเปิดหน้า (กระตุก)
   if($('#lg-eye'))$('#lg-eye').onclick=function(){var i=$('#pw'),v=i.type==='password';i.type=v?'text':'password';this.setAttribute('aria-label',v?'ซ่อนรหัสผ่าน':'แสดงรหัสผ่าน')};
   lgIntro();lgPinsIntro();lgPhoneGo();
-  $('#lg-line').onclick=function(){lineLogin()};
+  $('#lg-line').onclick=function(){lineLogin()};if(!DEV&&/[?&]code=/.test(location.search)&&/[?&]liff(ClientId|RedirectUri)=/.test(location.search))setTimeout(lineLogin,0);   // 8 พ.ย. 2569: กลับจากหน้า LINE แล้วเข้าสู่ระบบต่อเอง ไม่ต้องกดซ้ำ
   $$('[data-help]').forEach(function(b){b.onclick=function(){lgHelp(b.dataset.help)}});
   if($('#lg-pw'))$('#lg-pw').onsubmit=function(ev){ev.preventDefault();var b=ev.submitter;busy(b,1);call('loginAdmin',$('#pw').value,($('#pw-code')||{}).value||'').then(function(r){done(r.token)}).catch(function(e){busy(b,0);if(e.message==='TOTP_REQUIRED'){if(!$('#pw-code')){var w=document.createElement('div');w.className='lg-in';w.innerHTML='<input id="pw-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="รหัส 6 หลักจากแอป Authenticator">';$('#pw').closest('.lg-in').after(w)}$('#lg-err').textContent='กรอกรหัส 6 หลักจากแอป Authenticator';$('#pw-code').focus();return}$('#lg-err').textContent=e.message})};
   $$('[data-dev]').forEach(function(b){b.onclick=function(){var p=b.dataset.dev.split('|');loginWith('dev|'+p[0]+'|'+p[1])}});
@@ -240,7 +240,7 @@ function renderLogin(){
  * ขอ access token (openid email profile) → หลังบ้านตรวจกับ Google ว่าออกให้ Client ID ของเรา + อีเมลยืนยันแล้ว → จับคู่อีเมลพนักงาน */
 var GSI=null;
 function gsiLoad(){if(GSI)return GSI;GSI=new Promise(function(res,rej){if(window.google&&google.accounts&&google.accounts.oauth2)return res();var sc=document.createElement('script');sc.src='https://accounts.google.com/gsi/client';sc.async=true;sc.onload=function(){res()};sc.onerror=function(){GSI=null;rej(new Error('โหลดระบบ Google ไม่สำเร็จ กรุณาลองใหม่'))};document.head.appendChild(sc)});return GSI}
-function googleLogin(){var b=$('#lg-goo');$('#lg-err').textContent='';$('#lg-noemail').hidden=true;
+function googleLogin(){var b=$('#lg-goo');$('#lg-err').textContent='';$('#lg-noemail').hidden=true;if(/ Line\//i.test(navigator.userAgent)){$('#lg-err').textContent='เบราว์เซอร์ในแอป LINE ใช้ Google ไม่ได้ (Google ไม่อนุญาต) · กดปุ่ม ⋮ มุมขวาล่าง แล้วเลือกเปิดใน Safari หรือ Chrome หรือเข้าด้วย LINE แทน';return}   // 8 พ.ย. 2569
   if(DEV)return loginGoogleWith('dev-google|'+(A.devGoogle||'hr@example.com')+'|true|');
   if(!(window.google&&google.accounts&&google.accounts.oauth2))return gsiLoad().then(function(){toast('พร้อมแล้ว กดปุ่ม Google อีกครั้ง')}).catch(function(e){$('#lg-err').textContent=e.message});
   google.accounts.oauth2.initTokenClient({client_id:CFG.googleClientId,scope:'openid email profile',prompt:'select_account',
@@ -253,9 +253,17 @@ function loginGoogleWith(at){var b=$('#lg-goo');busy(b,1);call('loginGoogle',at)
 function lineLogin(){
   if(DEV)return toast('โหมดทดสอบ: เลือกบทบาทจากกล่องสีเหลือง');
   if(!window.liff||!CFG.liffId)return $('#lg-err').textContent='ยังไม่ได้ตั้งค่า LIFF ID';
-  liff.init({liffId:CFG.liffId}).then(function(){if(!liff.isLoggedIn())return liff.login({redirectUri:location.href});loginWith(liff.getIDToken())}).catch(function(e){$('#lg-err').textContent=e.message});
+  liff.init({liffId:CFG.liffId}).then(function(){if(!liff.isLoggedIn())return liff.login({redirectUri:lineBack()});var t=liff.getIDToken();if(!t||!lineFresh(t))return lineRelogin();loginWith(t)}).catch(function(e){$('#lg-err').textContent=e.message});
 }
-function loginWith(idt){call('loginLine',idt).then(function(r){if(!r.linked){$('#lg-err').textContent='บัญชี LINE นี้ยังไม่ได้เชื่อมกับพนักงาน ให้เปิดลิงก์เชื่อม LINE จาก HR ก่อน';return}done(r.token)}).catch(function(e){$('#lg-err').textContent=e.message})}
+/* 8 พ.ย. 2569: เปิดหลังบ้านนอกแอป LINE (เช่น เบราว์เซอร์ในแชต LINE) LINE จำการเข้าสู่ระบบไว้ แต่ ID token อายุราว 1 ชม.
+ * เปิดซ้ำทีหลังจึงได้ token หมดอายุ → เซิร์ฟเวอร์ตรวจไม่ผ่าน · ตรวจเวลาหมดอายุก่อนส่ง ถ้าหมด/ตรวจไม่ผ่าน ออกแล้วเข้าใหม่ 1 ครั้ง
+ * ที่อยู่ที่ส่งกลับให้ LINE ตัดพารามิเตอร์ที่ LINE ใส่มารอบก่อน (code/state/liff…) ออก */
+function lineBack(){var u=new URL(location.href);['code','state','liffClientId','liffRedirectUri','error','error_description'].forEach(function(k){u.searchParams.delete(k)});u.hash='';return u.toString()}
+function lineFresh(t){try{var p=JSON.parse(atob(String(t).split('.')[1].replace(/-/g,'+').replace(/_/g,'/')));return +p.exp*1000>Date.now()+60000}catch(e){return false}}
+function lineRelogin(){var k='pmhr_lgre',n=0;try{n=+sessionStorage.getItem(k)||0}catch(e){}
+  if(n<1&&window.liff&&!liff.isInClient()){try{sessionStorage.setItem(k,String(n+1))}catch(e){}try{liff.logout()}catch(e){}liff.login({redirectUri:lineBack()});return}
+  try{sessionStorage.removeItem(k)}catch(e){}$('#lg-err').textContent='ยืนยันตัวตน LINE ไม่สำเร็จ กรุณาปิดหน้านี้แล้วเปิดใหม่จาก LINE อีกครั้ง'}
+function loginWith(idt){call('loginLine',idt).then(function(r){try{sessionStorage.removeItem('pmhr_lgre')}catch(e){}if(!r.linked){$('#lg-err').textContent='บัญชี LINE นี้ยังไม่ได้เชื่อมกับพนักงาน ให้เปิดลิงก์เชื่อม LINE จาก HR ก่อน';return}done(r.token)}).catch(function(e){if(/ยืนยันตัวตน LINE ไม่สำเร็จ/.test(e.message||'')&&!/แอปไม่ตรง/.test(e.message))return lineRelogin();$('#lg-err').textContent=e.message})}
 function done(tok){A.tok=tok;store('hr_tok',tok);boot()}
 /* เปิดหน้าเร็ว: แสดงข้อมูลชุดล่าสุดของแท็บนี้ทันที (sessionStorage · ปิดแท็บ/ออกจากระบบ = ล้าง) แล้วโหลดของใหม่ทับ
  * หน้าแรกเรียกเซิร์ฟเวอร์ครั้งเดียว (adminBootstrap รวม Dashboard) */
