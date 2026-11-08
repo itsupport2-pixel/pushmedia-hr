@@ -1470,6 +1470,24 @@ body,button,input,select,textarea{font-family:'IBM Plex Sans Thai',system-ui,san
  .pz-ov{display:flex;position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.36);align-items:flex-end}
  .pz-sh{background:#fff;width:100%;max-height:82vh;overflow:auto;border-radius:16px 16px 0 0;padding:6px 14px calc(16px + env(safe-area-inset-bottom));box-shadow:0 -8px 30px rgba(0,0,0,.18)}
  .pz-h{display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;padding:10px 0 8px;border-bottom:1px solid #E8E8E8;margin-bottom:10px}.pz-h b{font-size:15px}.pz-x{height:28px;padding:0 10px;border:1px solid #DADADA;border-radius:8px;background:#fff;font:inherit;font-size:12px}
+ /* หน้า Confirmed */
+ #cfp .pc-hd{margin-bottom:8px!important}#cfp .pc-hd h2,#cfp .pc-hd .pc-lead{display:none!important}#cfp .pc-hd>div:first-child{display:none!important}
+ #cfp>.pz-bar{margin-bottom:10px}#cfp .pz-q{flex:1 1 auto;margin-right:0}#cfp .pz-q input{width:100%!important;height:38px;border-radius:10px;font-size:16px;min-width:0}
+ #cfp .pc-tabs{display:flex!important;flex-wrap:nowrap!important;overflow-x:auto;gap:6px!important;margin-bottom:10px!important;scrollbar-width:none}#cfp .pc-tabs::-webkit-scrollbar{display:none}
+ #cfp .pc-tab{flex:none!important;min-width:0!important;width:auto!important;height:32px!important;min-height:0!important;padding:0 10px!important;border-radius:99px!important;display:inline-flex!important;flex-direction:row!important;align-items:center;gap:6px;white-space:nowrap}
+ #cfp .pc-tab span{font-size:12px!important}#cfp .pc-tab b{font-size:14px!important;line-height:1!important}
+ #cfp .pc-tools{margin-bottom:8px!important;gap:6px!important}#cfp .pc-tools .pc-spc{display:none}
+ table.pz-card{min-width:0!important;width:100%!important;display:block}table.pz-card thead{display:none}table.pz-card tbody{display:block}
+ table.pz-card tr{display:flex;flex-wrap:wrap;align-items:center;gap:3px 10px;padding:10px 12px;border-bottom:1px solid #EEE}
+ table.pz-card td{display:inline-flex;align-items:center;gap:4px;padding:0!important;border:0!important;font-size:12.5px;color:#5A5A5A;background:transparent!important;white-space:normal;min-width:0;max-width:100%;text-align:left!important}
+ table.pz-card td::before{content:attr(data-l);color:#9A9A9A;font-size:11.5px;display:none}table.pz-card td.pz-lbl::before{display:inline}
+ table.pz-card td.pz-h{flex:1 1 100%;font-size:14px;font-weight:700;color:#141414}table.pz-card td.pz-e{display:none}table.pz-card td.pz-full{flex:1 1 100%;justify-content:center}
+ #cfp .pc-ft{flex-wrap:wrap;gap:6px}
+ #cfp .pc-hd,#cfp .pc-tools{display:none!important}
+ .pz-b .pc-seg{display:flex;flex-wrap:wrap;gap:6px;background:none;padding:0;border:0}.pz-b .pc-seg button{height:32px;padding:0 12px;border:1px solid #DADADA;border-radius:99px;background:#fff;font:inherit;font-size:13px;color:#141414;cursor:pointer}
+ .pz-b .pc-seg button.on,.pz-b .pc-seg button[aria-pressed=true]{background:#141414;color:#fff;border-color:#141414}.pz-b .pc-seg button i{font-style:normal;opacity:.7;margin-left:4px}
+ .pz-b .pc-l{font-size:12px;color:#8C8C8C;margin-top:2px}.pz-b .pc-tog{display:flex;align-items:center;gap:8px;font-size:13px}
+ .pz-b>.pc-mng{display:flex;align-items:center;height:44px;width:100%;padding:0 14px;border:1px solid #DADADA;border-radius:10px;background:#fff;font:inherit;font-size:14px;text-align:left;cursor:pointer}
  .pz-b{display:flex;flex-direction:column;gap:10px}.pz-b>.hb{display:flex!important;align-items:center;gap:8px;height:44px!important;justify-content:flex-start!important;font-size:14px!important;width:100%;padding:0 14px!important}.pz-b .hr-pds{flex-wrap:wrap!important}.pz-b .hr-tg{flex-wrap:wrap}
 }
 </style>
@@ -1760,7 +1778,7 @@ function fi(name, size=16, cls='', style='') {
 
 
 <script src="config.js"></script>
-<script src="planner-mobile.js?v=pm1108a"></script>
+<script src="planner-mobile.js?v=pm1108b"></script>
 <script>
 /* Push Media HR — หน้าตารางงาน = โค้ด Workforce Task Manager เดิม (สร้างด้วย app/tools/build-planner.mjs · อย่าแก้ไฟล์นี้ตรง ๆ)
  * ที่เก็บข้อมูลในเบราว์เซอร์ใส่คำนำหน้าทุกคีย์ (WTM จริงอยู่โดเมนเดียวกัน) · ยกเว้น hr_tok = การเข้าสู่ระบบของหลังบ้าน */
