@@ -18,7 +18,7 @@
     'ผู้ดูแล': 'Admin', 'ผู้ทำ': 'By', 'ผู้ขอ': 'Requester', 'ผู้รับเหมา': 'Contractor', 'ทีมผู้รับเหมา': 'Contractor team',
     // ── ปุ่ม / คำทั่วไป ──
     'บันทึก': 'Save', 'ยกเลิก': 'Cancel', 'ยืนยัน': 'Confirm', 'แก้ไข': 'Edit', 'ลบ': 'Delete', 'เพิ่ม': 'Add', 'ปิด': 'Close', 'ดู': 'View', 'กด': 'Click',
-    'รีเฟรช': 'Refresh', 'กำลังรีเฟรช': 'Refreshing', 'กำลังโหลด': 'Loading', 'กำลังโหลดข้อมูล': 'Loading data', 'โหลด': 'Load', 'ลองใหม่': 'Try again', 'อีกครั้ง': 'again',
+    'ตัวกรอง': 'Filters', 'หน้านี้เหมาะกับจอคอม · บนมือถือดูได้ แต่บางตารางต้องปัดซ้าย–ขวา': 'Best on a computer · viewable on mobile, some tables scroll sideways', 'รีเฟรช': 'Refresh', 'กำลังรีเฟรช': 'Refreshing', 'กำลังโหลด': 'Loading', 'กำลังโหลดข้อมูล': 'Loading data', 'โหลด': 'Load', 'ลองใหม่': 'Try again', 'อีกครั้ง': 'again',
     'ค้นหาตำแหน่ง': 'Search positions', 'เลือก': 'Select', 'เลือกได้': 'Selectable', 'ใช่': 'Yes', 'ไม่': 'No', 'ไม่ใช่': 'Not', 'ใหม่': 'New', 'ก่อนหน้า': 'Previous', 'ถัดไป': 'Next',
     'ดูทั้งหมด': 'View all', 'รายละเอียด': 'Details', 'ประวัติ': 'History', 'สถานะ': 'Status', 'ประเภท': 'Type', 'หมายเหตุ': 'Note', 'เหตุผล': 'Reason', 'วันที่': 'Date', 'เวลา': 'Time',
     'จาก': 'from', 'ถึง': 'to', 'ถึงวันที่': 'To date', 'คน': 'people', 'วัน': 'days', 'ครั้ง': 'times', 'นาที': 'min', 'ชม': 'h', 'วินาที': 'sec', 'ปี': 'yr', 'เดือน': 'mo', 'ใบ': 'items', 'คัน': 'vehicles', 'รายการ': 'items', 'บาท': 'THB',

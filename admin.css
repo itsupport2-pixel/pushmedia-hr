@@ -1121,3 +1121,45 @@ a.btn.mj-act{display:flex;align-items:center;justify-content:center;gap:9px;min-
 
 /* หน้าต่างแก้เวลา: ตารางต้องพอดีความกว้างหน้าต่าง ไม่งั้นปุ่มยกเลิกล้นออกนอกจอ (7 พ.ย. 2569) */
 #fx-body .tw table{min-width:0;width:100%}#fx-body .tw th,#fx-body .tw td{padding-left:8px;padding-right:8px}#fx-body .tw td:last-child{white-space:nowrap;text-align:right}
+
+/* หลังบ้านบนจอมือถือ (8 พ.ย. 2569) · คู่กับ admin-mobile.js */
+.m-ft,.m-dn{display:none}
+@media(hover:none){.tipx{display:none!important}}
+@media(max-width:640px){
+ .main input:not([type=checkbox]):not([type=radio]),.main select,.main textarea{font-size:16px}
+ .main .btn,.main select,.main input:not([type=checkbox]):not([type=radio]){min-height:40px}
+ .tb .tt b{font-size:16px}
+ .m-dup{display:none}.ph{flex-wrap:wrap;gap:8px}.ph>div:first-child{width:100%;flex:none}
+ .m-dn{display:block;font-size:12.5px;color:var(--mut);background:var(--sf);border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin-bottom:12px}
+ /* ตัวกรอง: พับไว้ เหลือช่องค้นหา + ปุ่มตัวกรอง */
+ .m-ft{display:inline-flex;align-items:center;justify-content:center;flex:none}
+ .m-fc:not(.m-open) select,.m-fc:not(.m-open) .drg,.m-fc:not(.m-open) [id^=ofs-],.m-fc:not(.m-open) #ap-rg,.m-fc:not(.m-open) #lv-rg,.m-fc:not(.m-open) #ast-x-xls,.m-fc:not(.m-open) #ast-x-pdf,.m-fc:not(.m-open) #ms-xl{display:none!important}
+ .m-fc.m-open [id^=ofs-]{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:100%}
+ .m-fc.m-open select{width:100%;max-width:100%}.m-fc.m-open #ap-rg,.m-fc.m-open #lv-rg{width:100%}
+ .tools.m-fc,.ast-ctl.m-fc{display:flex;flex-wrap:wrap;gap:8px}.tools.m-fc>*,.ast-ctl.m-fc>*{order:3}.tools.m-fc input#q,.tools.m-fc #ms-q,.ast-ctl.m-fc #ast-q{order:1;flex:1 1 60%;min-width:0;width:auto!important}.tools.m-fc>.m-ft,.ast-ctl.m-fc>.m-ft{order:2}
+ #ap-body .toolbar button{min-height:36px}
+ .tools.m-fc.m-open select,.ast-ctl.m-fc.m-open select{flex:1 1 calc(50% - 4px);width:auto}
+ .att-dt{flex:1 1 100%;display:flex;gap:8px}.att-dt input{flex:1;min-width:0}
+ /* งานนำเข้าไฟล์ทำบนจอคอม */
+ #imp,#imp-ph,#imp-tr,#imp-tpl,#ast-imp{display:none!important}
+ /* ตัวเลขสรุปและแท็บ: แถวเดียว ปัดได้ */
+ [role=tablist],.sum,.rp-tabs,.segt{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;max-width:100%}.segt{display:flex}
+ .sum::-webkit-scrollbar,.rp-tabs::-webkit-scrollbar,.segt::-webkit-scrollbar{display:none}
+ [role=tablist] button,.sum button,.rp-tabs button,.segt button{flex:none;white-space:nowrap}[role=tablist]{display:flex}
+ .main .grid.g4{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.main .grid.g4 .kpi{padding:12px 14px;min-width:0}
+ .ast-kpi{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.ast-kpi .kpi{padding:10px 12px}
+ /* ตาราง → การ์ด */
+ .tw:has(>table.m-card){overflow:visible}
+ table.m-card{min-width:0!important;width:100%;display:block}table.m-card thead{display:none}table.m-card tbody{display:block}
+ table.m-card tr{display:block;padding:12px 14px;border-bottom:1px solid var(--line)}table.m-card tr:last-child{border-bottom:0}
+ table.m-card td{display:grid;grid-template-columns:minmax(0,auto) minmax(0,1fr);justify-items:end;align-items:center;column-gap:12px;row-gap:2px;padding:4px 0;border:0;text-align:right;min-height:0;white-space:normal;overflow-wrap:anywhere}table.m-card td>*{grid-column:2;max-width:100%}
+ table.m-card td::before{content:attr(data-l);grid-column:1;justify-self:start;font-size:12.5px;color:var(--mut);text-align:left}
+ table.m-card td[data-l=""]::before{display:none}
+ table.m-card td.m-e{display:none}
+ table.m-card td.m-h{display:flex;flex-wrap:wrap;justify-content:flex-start;align-items:center;gap:6px;text-align:left;font-weight:600;padding-bottom:6px}table.m-card td.m-h::before{display:none}table.m-card td.m-h>*{justify-content:flex-start;margin-left:0!important;text-align:left}
+ .mx .stp{flex-direction:column;align-items:flex-start;gap:10px}.mx .stp .ln{display:none}.mx .stp .s{width:100%}
+ table.m-card td.m-full{display:block;text-align:center}table.m-card td.m-full::before{display:none}
+ table.m-card td.m-x{display:none}
+ .main .py-t{display:block;overflow-x:auto;min-width:0!important;max-width:100%}.main .card{min-width:0;max-width:100%}.main .grid>*{min-width:0}
+}
+@media(max-width:640px){.py-2{grid-template-columns:minmax(0,1fr)}}
