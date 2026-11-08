@@ -33,7 +33,17 @@
     var n=count(),lab=b.querySelector('.pz-ft span');if(lab.textContent!==(n?String(n):''))lab.textContent=n?String(n):'';
     filt().concat(more()).forEach(function(e){e.classList.add('pz-hid')});
     var pri=document.querySelector('#content .hr-ph > .btn-p');if(pri)pri.classList.add('pz-fab')}
-  function run(){if(busy)return;busy=true;try{if(!MQ.matches)close();else{refill();bar();cards()}}catch(e){if(window.console)console.warn('pz',e)}ob.takeRecords();busy=false}
+  /* ตารางรายวัน (มุมมองรายการ · table.rp-list): คำนวณคอลัมน์จริงจาก rowspan แล้วติดชนิดช่อง → CSS จัดเป็นกลุ่ม วัน → ทีม → งาน */
+  function kind(h){h=h.replace(/\s+/g,'');if(h==='วันที่')return 'd';if(h==='แผนก')return 'dep';if(h==='ทีม')return 'tm';if(/โครงการ/.test(h))return 'pj';if(h==='รถ')return 'car';if(/ค่าใช้จ่าย/.test(h))return 'cost';return 'p'}
+  function rlist(){document.querySelectorAll('#content table.rp-list').forEach(function(t){
+    var hs=[].map.call(t.querySelectorAll('thead th'),function(h){return kind(h.textContent)}),occ=[];t.classList.add('pz-rl');
+    [].forEach.call(t.tBodies[0]?t.tBodies[0].rows:[],function(tr,ri){var col=0;occ[ri]=occ[ri]||[];
+      [].forEach.call(tr.cells,function(td){while(occ[ri][col])col++;var k=hs[col]||'p',rs=td.rowSpan||1,cs=td.colSpan||1;
+        td.setAttribute('data-k',k);if(cs>1)td.setAttribute('data-k','full');
+        var x=td.textContent.trim();td.classList.toggle('pz-e',k!=='d'&&k!=='tm'&&k!=='pj'&&(x===''||x==='—'||x==='-'||x==='+'||/^฿?0(\.00)?$/.test(x)));
+        for(var r=0;r<rs;r++){occ[ri+r]=occ[ri+r]||[];for(var c=0;c<cs;c++)occ[ri+r][col+c]=1}col+=cs});
+      tr.classList.toggle('pz-dstart',!!tr.querySelector('td[data-k="d"]'));tr.classList.toggle('pz-tstart',!!tr.querySelector('td[data-k="tm"]'))})})}
+  function run(){if(busy)return;busy=true;try{if(!MQ.matches)close();else{refill();bar();cards();rlist()}}catch(e){if(window.console)console.warn('pz',e)}ob.takeRecords();busy=false}
   var ob=new MutationObserver(function(){clearTimeout(tm);tm=setTimeout(run,30)});
   function start(){ob.observe(document.body,{childList:true,subtree:true});run()}
   if(document.body)start();else document.addEventListener('DOMContentLoaded',start);
