@@ -41,7 +41,7 @@ function trDraw(){var b=$('#tr-body');if(!b||!TR.d)return;var R=trCalc(),D=TR.d,
    (TR.tab==='pe'?'<div class="segt tr-seg" role="group" aria-label="สถานะการอบรม"><button type="button" data-trn="0" aria-pressed="'+!TR.none+'">อบรมแล้ว<span class="trc">'+R.people.filter(function(p){return p.n>0}).length+'</span></button><button type="button" data-trn="1" aria-pressed="'+!!TR.none+'">ยังไม่เคยอบรม<span class="trc">'+R.people.filter(function(p){return !p.n}).length+'</span></button></div>':'')+'</div>';
   h+=TR.tab==='ov'?trOv(R):TR.tab==='co'?trCo(R):TR.tab==='pe'?trPe(R):trEx(R);
   b.innerHTML=h;
-  $$('[data-trt]').forEach(function(x){x.onclick=function(){TR.tab=x.dataset.trt;TR.q='';trDraw()}});
+  $$('[data-trt]').forEach(function(x){x.onclick=function(){TR.tab=x.dataset.trt;TR.q='';fxArm('train');trDraw()}});
   $('#tr-yr').onchange=function(){TR.yr=this.value;trDraw()};ofBind('tr',trDraw);
   if($('#tr-q')){var q=$('#tr-q');q.oninput=function(){TR.q=q.value;var p=q.selectionStart;trDraw();var n=$('#tr-q');if(n){n.focus();n.setSelectionRange(p,p)}}}
   $$('[data-trn]').forEach(function(b){b.onclick=function(){TR.none=b.dataset.trn==='1';trDraw()}});

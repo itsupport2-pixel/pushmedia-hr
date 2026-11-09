@@ -157,6 +157,8 @@ drawAppr=(function(f){return function(){var r=f.apply(this,arguments);pgFx();ret
 usDraw=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(usDraw);
 ouDraw=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(ouDraw);   // การใช้งาน › Odoo เล่นภาพเปิดเหมือน Cloudflare (4 พ.ย. 2569)
 drawAtt=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(drawAtt);
+if(window.trDraw)trDraw=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(trDraw);   // 9 พ.ย. 2569: การอบรม เล่นภาพเปิดหลังโหลดข้อมูล
+if(window.astDraw)astDraw=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(astDraw);   // ทรัพย์สิน
 drawErr=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(drawErr);
 drawSet=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(drawSet);
 bOrg=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(bOrg);
