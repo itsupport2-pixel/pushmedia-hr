@@ -106,8 +106,9 @@ function trCourse(k,tab){var R=trCalc(),rs0=R.rows.filter(function(r){return trK
    (t==='done'?'<div class="tw"><table class="xd-t tr-t"><thead><tr><th>พนักงาน</th><th class="num">วันที่อบรม</th><th class="num">หมดอายุ</th><th class="num">ใบรับรอง</th></tr></thead><tbody>'+done.map(function(r){var e=M[r.employee_id]||{},left=r.expiry_date?trDays(today,r.expiry_date):null;
      return '<tr><td><div style="display:flex;align-items:center;gap:10px">'+av(e,30)+'<div><b>'+esc(trNm(e))+'</b><div class="faint" style="font-size:12px">'+esc(e.emp_code||'')+' · '+esc(e.dept||'—')+(r.hours?' · '+r.hours+' ชม.':'')+'</div></div></div></td><td class="num">'+esc(dTxt(r.date_from))+'</td><td class="num">'+(r.expiry_date?(left<=TR_SOON?'<span class="badge b-bad">'+(left<0?'หมดแล้ว ':'หมด ')+esc(dTxt(r.expiry_date))+'</span>':esc(dTxt(r.expiry_date))):'—')+'</td><td class="num">'+trFileCell(r,e)+'</td></tr>'}).join('')+'</tbody></table></div>':
     (not.length?'<div class="tw"><table class="xd-t tr-t"><thead><tr><th>พนักงาน</th><th>แผนก / ตำแหน่ง</th></tr></thead><tbody>'+not.map(function(e){return '<tr><td><div style="display:flex;align-items:center;gap:10px">'+av(e,30)+'<b>'+esc(trNm(e))+'</b></div></td><td class="faint">'+esc(e.dept||'—')+(e.position?' · '+esc(e.position):'')+'</td></tr>'}).join('')+'</tbody></table></div>':'<div class="faint">ทุกคนอบรมหลักสูตรนี้แล้ว</div>'));
-  drawer(c.name,body,(TR.d.canEdit?'<button class="btn pri" id="trc-add">+ เพิ่มผู้เข้าอบรม</button>':'')+exBtn('xls','trc-xl','Export รายชื่อ'));
+  drawer(c.name,body,(TR.d.canEdit?'<button class="btn" id="trc-ed">แก้ทั้งหลักสูตร</button><button class="btn pri" id="trc-add">+ เพิ่มผู้เข้าอบรม</button>':'')+exBtn('xls','trc-xl','Export รายชื่อ'));
   $$('[data-trct]').forEach(function(b){b.onclick=function(){trCourse(k,b.dataset.trct)}});trFileBind(function(){trCourse(k,t)});
+  if($('#trc-ed'))$('#trc-ed').onclick=function(){trEditCourse(c.name,rs0,k)};
   if($('#trc-add'))$('#trc-add').onclick=function(){trAdd({course:c.name,ids:t==='not'?not.map(function(e){return e.id}):[]})};
   $('#trc-xl').onclick=function(){trXlsRows(this,'อบรม-'+c.name,done.map(function(r){var e=M[r.employee_id]||{};return {'หลักสูตร':c.name,'รหัส':e.emp_code||'','ชื่อ-นามสกุล':trNm(e),'แผนก':e.dept||'','วันที่อบรม':r.date_from,'ถึง':r.date_to||'','ชั่วโมง':r.hours||'','ผู้จัด':r.provider||'','หมดอายุ':r.expiry_date||'','ใบรับรอง':r.file_id?'มี':'—'}}).concat(not.map(function(e){return {'หลักสูตร':c.name,'รหัส':e.emp_code||'','ชื่อ-นามสกุล':trNm(e),'แผนก':e.dept||'','วันที่อบรม':'ยังไม่อบรม','ถึง':'','ชั่วโมง':'','ผู้จัด':'','หมดอายุ':'','ใบรับรอง':''}})))}}
 /* ประวัติรายคน · Export Excel / พิมพ์ PDF / ดาวน์โหลดใบรับรองทั้งหมด */
@@ -162,6 +163,22 @@ function trAdd(pre){pre=pre||{};var D=TR.d,R=trCalc(),sel={};(pre.ids||[]).forEa
     aCall('trainSaveBulk',{course:$('#ta-c').value,provider:$('#ta-p').value,hours:$('#ta-h').value,date_from:$('#ta-d1').value,date_to:$('#ta-d2').value,expiry_date:$('#ta-ex').value,note:$('#ta-n').value,employee_ids:ids}).then(function(r){busy(b,0);
       if(!r.ok){$('#ta-er').textContent=Object.keys(r.errors).map(function(k){return r.errors[k]}).join(' · ');return}
       toast('บันทึกการอบรม '+r.added+' คน'+(r.skipped?' · ข้าม '+r.skipped+' คนที่มีอยู่แล้ว':''));closeD();TR.at=0;TR.d=null;render()}).catch(function(e){busy(b,0);$('#ta-er').textContent=e.message})}}
+/* แก้ทั้งหลักสูตรครั้งเดียว (9 พ.ย. 2569 ผู้ใช้ขอ) · เปลี่ยนเฉพาะช่องที่แก้ · ใช้กับทุกคนทุกรุ่นของหลักสูตรนี้ */
+function trEditCourse(name,rs,k){var top=function(f){var n={},b='',m=0;rs.forEach(function(r){var v=String(r[f]==null?'':r[f]);n[v]=(n[v]||0)+1;if(n[v]>m){m=n[v];b=v}});var mx=Object.keys(n).length>1;return {v:mx||(f==='hours'&&+b===0)?'':b,mixed:mx}};
+  var P=top('provider'),H=top('hours'),hint=function(x){return x.mixed?'<small class="faint">ตอนนี้แต่ละคนไม่เท่ากัน · กรอกแล้วจะใช้ค่าเดียวกันทุกคน</small>':''};
+  var body='<section class="tr-sec"><h4><span class="tr-n">1</span>ข้อมูลหลักสูตร</h4><label class="f"><span>ชื่อหลักสูตร *</span><input id="te-c" value="'+esc(name)+'"></label>'+
+    '<div class="tr-g" style="grid-template-columns:2fr 1fr"><label class="f"><span>ผู้จัด</span><input id="te-p" value="'+esc(P.v)+'">'+hint(P)+'</label><label class="f"><span>ชั่วโมง</span><input id="te-h" inputmode="decimal" value="'+esc(H.v)+'" placeholder="'+(H.mixed?'กรอกชั่วโมง':'0')+'">'+hint(H)+'</label></div>'+
+    '<div class="tr-hint">ใช้กับทุกรายการของหลักสูตรนี้ <b>'+rs.length+' รายการ</b> (ทุกคน ทุกรุ่น) · ช่องที่ไม่ได้แก้จะไม่เปลี่ยน</div></section><div class="er" id="te-er" style="color:var(--bad)"></div>';
+  drawer('แก้ทั้งหลักสูตร',body,'<button class="btn" id="te-x">ยกเลิก</button><button class="btn pri" id="te-ok">บันทึกทุกคน</button>');
+  var c0=$('#te-c').value,p0=$('#te-p').value,h0=$('#te-h').value,dirty={};
+  ['te-p','te-h'].forEach(function(id){$('#'+id).oninput=function(){dirty[id]=1}});
+  $('#te-x').onclick=function(){trCourse(k)};
+  $('#te-ok').onclick=function(){var b=this,set={},cv=$('#te-c').value.trim(),pv=$('#te-p').value.trim(),hv=$('#te-h').value.trim();
+    if(cv!==c0)set.course=cv;if(pv!==p0||(dirty['te-p']&&P.mixed))set.provider=pv;if(hv!==h0||(dirty['te-h']&&H.mixed))set.hours=hv;
+    if(!Object.keys(set).length)return trCourse(k);$('#te-er').textContent='';busy(b,1);
+    aCall('trainEditCourse',{course:name,set:set}).then(function(r){busy(b,0);
+      if(!r.ok){$('#te-er').textContent=Object.keys(r.errors).map(function(x){return r.errors[x]}).join(' · ');return}
+      toast('แก้แล้ว '+r.changed+' รายการ');closeD();TR.at=0;TR.d=null;render()}).catch(function(e){busy(b,0);$('#te-er').textContent=e.message})}}
 function trXls(b,R){var M={};TR.d.emps.forEach(function(e){M[e.id]=e});var rows;
   if(TR.tab==='pe')rows=R.people.map(function(p){var e=p.e;return {'รหัส':e.emp_code,'ชื่อ-นามสกุล':trNm(e),'ชื่อเล่น':e.nickname,'แผนก':e.dept,'ตำแหน่ง':e.position,'จำนวนหลักสูตร':p.n,'ชั่วโมง':Math.round(p.hrs*10)/10,'อบรมล่าสุด':p.last,'ใบรับรองใกล้หมด':p.soon,'หมดแล้ว':p.gone}});
   else if(TR.tab==='ex')rows=R.exp.map(function(r){var e=M[r.employee_id]||{};return {'รหัส':e.emp_code,'ชื่อ-นามสกุล':trNm(e),'แผนก':e.dept,'หลักสูตร':r.course,'วันที่อบรม':r.date_from,'หมดอายุ':r.expiry_date,'เหลือ (วัน)':r.left}});
