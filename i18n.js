@@ -355,6 +355,7 @@
   var word = function (w) { return D.hasOwnProperty(w) ? D[w] : null; };
   var TPK = { 'การลา': 'leave', 'ขาดงาน': 'absence', 'แก้ไขเวลา': 'time corrections' };
   function tr(s) {
+    s = s.replace(/(^|[^\d\/])(\d{1,2}\/\d{1,2}\/)(25\d\d)(?!\d)/g, function (m, a, dm, y) { return a + dm + (Number(y) - 543); });   // 9 พ.ย. 2569: 5/6/2569 → 5/6/2026 (อังกฤษ = ค.ศ. ทั้งระบบ)
     if (!TH.test(s)) return s;
     var whole = s.trim(); if (D.hasOwnProperty(whole)) return s.replace(whole, D[whole]);   // ข้อความเต็มที่มีเครื่องหมาย (เช่น สร้าง/แก้ไข) ตรงพจนานุกรมทั้งก้อน
     s = s.replace(MRE, function (m, mo, sp, y) { return TM[mo] + (y ? sp + (Number(y) - 543) : sp); })
@@ -380,7 +381,8 @@
   var SKIP = /^(SCRIPT|STYLE|TEXTAREA|INPUT|CODE|PRE|IFRAME|SVG)$/, ATTR = ['placeholder', 'title', 'aria-label'];
   var touched = [];   // โหนดที่แปลแล้ว (เก็บข้อความเดิม) → กลับเป็นไทย
   function skip(el) { for (var n = el; n && n.nodeType === 1; n = n.parentNode) { if (SKIP.test(n.tagName) || n.isContentEditable || n.hasAttribute('data-noi18n')) return true; } return false; }
-  function doText(t) { var v = t.nodeValue; if (!v || !TH.test(v) || skip(t.parentNode)) return; var n = tr(v); if (n !== v) { if (t.__th == null) { t.__th = v; touched.push(t); if (touched.length > 6000) touched = touched.filter(function (x) { return x.isConnected; }); } t.nodeValue = n; } }
+  var BED = /\d\/\d{1,2}\/25\d\d/;
+  function doText(t) { var v = t.nodeValue; if (!v || !(TH.test(v) || BED.test(v)) || skip(t.parentNode)) return; var n = tr(v); if (n !== v) { if (t.__th == null) { t.__th = v; touched.push(t); if (touched.length > 6000) touched = touched.filter(function (x) { return x.isConnected; }); } t.nodeValue = n; } }
   function skipA(el) { for (var n = el; n && n.nodeType === 1; n = n.parentNode) { if (/^(SCRIPT|STYLE|IFRAME)$/.test(n.tagName) || n.isContentEditable || n.hasAttribute('data-noi18n')) return true; } return false; }
   function doEl(el) { if (skipA(el)) return; ATTR.forEach(function (a) { var v = el.getAttribute(a); if (v && TH.test(v)) { var n = tr(v); if (n !== v) { (el.__tha = el.__tha || {})[a] = el.__tha[a] || v; if (touched.indexOf(el) < 0) touched.push(el); el.setAttribute(a, n); } } }); }
   function walk(root) {
