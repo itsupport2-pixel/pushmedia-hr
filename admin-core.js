@@ -159,7 +159,7 @@ function lgIntro(){
  * ภาพวาดเองด้วย HTML/CSS (ไม่ใช้ภาพจากไฟล์ตัวอย่าง) · ข้อมูลในมือถือเป็นตัวอย่าง · จอแคบ (<1000px) ซ่อนภาพประกอบ */
 /* วินาทีบนนาฬิกาในมือถือหน้าเข้าสู่ระบบ (เดินจริง · หยุดเองเมื่อไม่มีหน้าเข้าสู่ระบบ) */
 setInterval(function(){var e=document.querySelector('.pa-s');if(e)e.textContent=('0'+((+e.textContent+1)%60)).slice(-2)},1000);
-function lgSplit(pub,IC,GOO){
+function lgSplit(pub,IC,GOO,ADM){
   var pin='<svg viewBox="0 0 24 30" aria-hidden="true"><path d="M12 0C5.4 0 0 5.3 0 11.8 0 20.6 12 30 12 30s12-9.4 12-18.2C24 5.3 18.6 0 12 0Z" fill="#141414"/><circle cx="12" cy="11.6" r="4.3" fill="#fff"/></svg>';
   /* รอบมือถือ (30 ต.ค. 2569 ผู้ใช้เลือกแบบ 4): ไอคอนบริษัทในเครือ 3 อันบนวงนอก (Push Media · Push Logix · Push Codex) + หมุดเล็กสีจาง 5 อัน · เปิดหน้า = หมุนเป็นวง ชนกัน แล้วกระจาย (lgPinsIntro) */
   var CO3={0:['pm',MARK,'Push Media'],4:['pl',CO_MARK.pl,'Push Logix'],3:['pc',CX_MARK,'Push Codex']},pinS=pin.replace('fill="#141414"','fill="#9C9C9C"');
@@ -183,7 +183,9 @@ function lgSplit(pub,IC,GOO){
     '<button class="lg-btn lg-line" id="lg-line"><span class="ic">'+IC.line+'</span><span class="lb">เข้าสู่ระบบด้วย LINE</span></button>'+
     (GOO?'<div class="lg-or2" aria-hidden="true"><i></i>หรือ<i></i></div><button class="lg-btn lg-goo" id="lg-goo"><span class="ic">'+IC.goo+'</span><span class="lb">เข้าสู่ระบบด้วย Google</span></button>':'')+
     '<div class="lg-row"><span>'+(GOO?'Google: ใช้อีเมลที่ลงทะเบียนไว้':'ใช้บัญชี LINE เดียวกับแอปพนักงาน')+'</span><button type="button" class="lg-link" data-help="">Forgot Password?</button></div>'+
-    (DEV?'<div class="cb" style="background:var(--warn-s);border-radius:8px;font-size:13px"><b>โหมดทดสอบในเครื่อง</b> · เข้าเป็น <button class="btn sm" data-dev="Uhr1|มิ้นท์">HR</button> <button class="btn sm" data-dev="Umgr1|โอ๊ต">ผู้จัดการ</button> <button class="btn sm" data-dev="Ulead1|ต้น">หัวหน้าทีม</button> <button class="btn sm" data-dev="Uemp1|บอย">พนักงาน</button></div>':'')+
+    /* ?admin=1 (9 พ.ย. 2569 ผู้ใช้ขอ): ใช้หน้าแบบเดียวกับหน้าเข้าสู่ระบบปกติ แค่เพิ่มช่องรหัสผ่านผู้ดูแลระบบใต้ปุ่ม LINE / Google */
+    (ADM?'<div class="lg-or2" aria-hidden="true"><i></i>หรือ<i></i></div><form class="lg-adm" id="lg-pw"><h2>ผู้ดูแลระบบ</h2><label class="lg-lab" for="pw">รหัสผ่าน</label><div class="lg-in">'+IC.lock+'<input id="pw" type="password" autocomplete="current-password" placeholder="รหัสผ่านผู้ดูแลระบบ"><button type="button" class="lg-eye" id="lg-eye" aria-label="แสดงรหัสผ่าน">'+IC.eye+'</button></div><button class="lg-go">เข้าสู่ระบบ</button></form>':'')+
+    (DEV?'<div class="cb" style="background:var(--warn-s);border-radius:8px;font-size:13px"><b>โหมดทดสอบในเครื่อง</b> · เข้าเป็น <button class="btn sm" data-dev="Uhr1|มิ้นท์">HR</button> <button class="btn sm" data-dev="Umgr1|โอ๊ต">ผู้จัดการ</button> <button class="btn sm" data-dev="Ulead1|ต้น">หัวหน้าทีม</button> <button class="btn sm" data-dev="Uemp1|บอย">พนักงาน</button>'+(ADM?' · รหัส admin: demo1234':'')+'</div>':'')+
     '<div id="lg-err" class="er" role="alert" style="color:var(--bad);font-size:14px;text-align:center"></div>'+
     '<div class="lg-first">ใช้ครั้งแรก? <b>เปิดแอปพนักงานใน LINE</b> <span>เพื่อเชื่อมบัญชี</span><br><span>หรือขอลิงก์เชิญจาก HR</span></div>'+
     '</main><footer class="lg-foot"><span data-noi18n>© '+new Date().getFullYear()+' '+esc(pub.company||'Push Media')+'</span><span>ใช้ได้บน Chrome · Edge · Safari</span></footer></div></div>';
@@ -218,16 +220,7 @@ function renderLogin(){
    eye:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="20" height="20" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>'};
   var GOO=!!CFG.googleClientId||DEV;   // ปุ่ม Google แสดงเมื่อตั้ง OAuth Client ID ใน config.js แล้ว (เครื่องผู้พัฒนาใช้บัญชีจำลอง)
   var ADM=/[?&]admin=1/.test(location.search);   // ช่องรหัสผ่านผู้ดูแลระบบ: ซ่อนจากหน้าเข้าสู่ระบบ (28 ต.ค. 2569 ผู้ใช้ขอ) · เปิดได้ที่ admin.html?admin=1 เท่านั้น (ทางเข้าสำรอง/ฉุกเฉิน)
-  $('#app').innerHTML=!ADM?lgSplit(pub,IC,GOO):('<div class="login"><svg class="lg-wave" viewBox="0 0 1440 400" preserveAspectRatio="none" aria-hidden="true"><path fill="#2B2B2B" d="M0 40 C 432 150, 1008 140, 1440 -70 L 1440 400 L 0 400 Z"/><path fill="#111111" d="M0 90 C 461 210, 1037 200, 1440 -10 L 1440 400 L 0 400 Z"/></svg>'+
-   '<header class="lg-top"><img src="push-media-logo-black.svg" alt="Push Media · Innovative solutions"></header>'+
-   '<main class="lg-card"><div class="lg-h"><h1><span>เข้าสู่ระบบ</span><b id="lg-app">'+esc(pub.app||'Push Media Center')+'</b></h1><p><b>ใช้ครั้งแรก?</b> เปิดแอปพนักงานใน LINE แล้วเชื่อมบัญชี หรือขอลิงก์เชิญจาก HR</p></div>'+
-    '<div class="lg-cols"><section class="lg-col">'+(ADM?'<h2>บัญชีพนักงาน</h2>':'')+'<div class="lg-alert" id="lg-noemail" role="alert" hidden></div><div class="lg-note">HR หัวหน้างาน ผู้จัดการ · เปิดเมนูตามสิทธิ์</div>'+
-     '<button class="lg-btn lg-line" id="lg-line"><span class="ic">'+IC.line+'</span><span class="lb">เข้าสู่ระบบด้วย LINE</span></button>'+
-     (GOO?'<button class="lg-btn lg-goo" id="lg-goo"><span class="ic">'+IC.goo+'</span><span class="lb">เข้าสู่ระบบด้วย Google</span></button><div class="lg-hint">Google: ใช้อีเมลเดียวกับที่ลงทะเบียนในข้อมูลพนักงาน</div>':'<div class="lg-hint">ใช้บัญชี LINE เดียวกับที่ลงเวลาในแอปพนักงาน</div>')+'</section>'+(ADM?
-     '<div class="lg-or" aria-hidden="true">หรือ</div>'+
-     '<form class="lg-col" id="lg-pw"><h2>ผู้ดูแลระบบ</h2><label class="lg-lab" for="pw">รหัสผ่าน</label><div class="lg-in">'+IC.lock+'<input id="pw" type="password" autocomplete="current-password" placeholder="รหัสผ่านผู้ดูแลระบบ"><button type="button" class="lg-eye" id="lg-eye" aria-label="แสดงรหัสผ่าน">'+IC.eye+'</button></div><button class="lg-go">เข้าสู่ระบบ</button><button type="button" class="lg-link" data-help="pass" style="align-self:flex-end">Forgot Password?</button></form>':'')+'</div>'+
-    (DEV?'<div class="cb" style="background:var(--warn-s);border-radius:8px;font-size:13px"><b>โหมดทดสอบในเครื่อง</b> · เข้าเป็น <button class="btn sm" data-dev="Uhr1|มิ้นท์">HR</button> <button class="btn sm" data-dev="Umgr1|โอ๊ต">ผู้จัดการ</button> <button class="btn sm" data-dev="Ulead1|ต้น">หัวหน้าทีม</button> <button class="btn sm" data-dev="Uemp1|บอย">พนักงาน</button> · รหัส admin: demo1234</div>':'')+
-    '<div id="lg-err" class="er" role="alert" style="color:var(--bad);font-size:14px;text-align:center"></div><div class="lg-foot">เข้าใช้ไม่ได้? ติดต่อ HR หรือผู้ดูแลระบบ · ใช้ได้บน Chrome · Edge · Safari</div></main></div>');
+  $('#app').innerHTML=lgSplit(pub,IC,GOO,ADM);   // 9 พ.ย. 2569: ?admin=1 ใช้หน้าแบบเดียวกัน + ช่องผู้ดูแลระบบ (แบบการ์ด 2 คอลัมน์เดิมเลิกใช้)
   if($('#lg-goo')){if(!DEV){var gp=function(){gsiLoad().catch(function(){})};$('#lg-goo').addEventListener('pointerenter',gp,{once:true});$('#lg-goo').addEventListener('focus',gp,{once:true});setTimeout(function(){(window.requestIdleCallback||setTimeout)(gp)},3600)}$('#lg-goo').onclick=googleLogin}   // 30 ต.ค. 2569: ไม่โหลดระหว่างภาพเปิดหน้า (กระตุก)
   if($('#lg-eye'))$('#lg-eye').onclick=function(){var i=$('#pw'),v=i.type==='password';i.type=v?'text':'password';this.setAttribute('aria-label',v?'ซ่อนรหัสผ่าน':'แสดงรหัสผ่าน')};
   lgIntro();lgPinsIntro();lgPhoneGo();

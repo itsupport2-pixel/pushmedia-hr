@@ -1200,3 +1200,6 @@ a.btn.mj-act{display:flex;align-items:center;justify-content:center;gap:9px;min-
  .main .py-t{display:block;overflow-x:auto;min-width:0!important;max-width:100%}.main .card{min-width:0;max-width:100%}.main .grid>*{min-width:0}.py-2{grid-template-columns:minmax(0,1fr)}
  .mx .stp{flex-direction:column;align-items:flex-start;gap:8px}.mx .stp .ln{display:none}.mx .stp .s{width:100%}
 }
+/* ช่องผู้ดูแลระบบในหน้าเข้าสู่ระบบแบบแบ่ง 2 ฝั่ง (?admin=1 · 9 พ.ย. 2569) */
+.lg-adm{display:flex;flex-direction:column;gap:10px}.lg-adm h2{margin:0;font-size:17px;font-weight:600;color:#141414}
+.login.split .lg-adm .lg-in{height:54px;border-radius:12px}.login.split .lg-adm .lg-go{height:54px;border-radius:12px;font-size:16px}
