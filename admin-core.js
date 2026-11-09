@@ -591,16 +591,7 @@ function anChart(el,pts,o){var W=600,H=el.classList.contains('sm')?96:150,max=0;
   pl.onpointermove=function(e){show(e.clientX)};pl.onpointerleave=function(){xl.hidden=dot.hidden=tip.hidden=true};
   pl.tabIndex=0;pl.setAttribute('role','img');pl.setAttribute('aria-label',o.title+' · ใช้ลูกศรซ้าย/ขวาดูค่า');var fi=pts.length-1;pl.onkeydown=function(e){if(e.key!=='ArrowLeft'&&e.key!=='ArrowRight')return;e.preventDefault();fi=Math.max(0,Math.min(pts.length-1,fi+(e.key==='ArrowRight'?1:-1)));var r=pl.getBoundingClientRect();show(r.left+fi/(pts.length-1||1)*(r.width-56))}}
 
-/* error ล่าสุด (29 ต.ค. 2569): จาก Worker ตาราง _errors · รวมตามคำสั่ง + ข้อความ · fail = คำสั่งตอบไม่สำเร็จ (รวมกรอกไม่ครบ/หมดเวลาเข้าสู่ระบบ) · crash = ระบบขัดข้อง */
-var US_FN={SESSION_EXPIRED:'หมดเวลาเข้าสู่ระบบ'};
-function usErrHtml(){var e=(US&&US.errors)||[];if(!US||!('errors' in US))return '';
-  var g={},o=[];e.forEach(function(x){var k=x.fn+'|'+x.msg;if(!g[k]){g[k]={fn:x.fn,msg:x.msg,kind:x.kind,n:0,last:x.at,first:x.at};o.push(g[k])}g[k].n++;g[k].first=x.at});
-  var se=o.filter(function(x){return /SESSION_EXPIRED|หมดเวลา|เข้าสู่ระบบใหม่/i.test(x.msg)}).reduce(function(a,x){return a+x.n},0),cr=o.filter(function(x){return x.kind==='crash'}).reduce(function(a,x){return a+x.n},0);
-  var rows=US.erAll?o:o.slice(0,12);
-  return '<div class="us-er"><div class="an-hd"><b>error ล่าสุด</b><span class="faint" style="font-size:12px">'+e.length+' ครั้ง (ล่าสุดสูงสุด 200 รายการ · เก็บ 60 วัน) · ระบบขัดข้อง '+cr+' · หมดเวลาเข้าสู่ระบบ '+se+'</span></div>'+
-   (o.length?'<div class="tw"><table class="xd-t"><thead><tr><th>ล่าสุด</th><th>คำสั่ง</th><th>ข้อความ</th><th class="num">ครั้ง</th><th>ชนิด</th></tr></thead><tbody>'+rows.map(function(x){
-     return '<tr><td class="num">'+esc(x.last.slice(5,16))+'</td><td class="mono">'+esc(x.fn)+'</td><td style="white-space:normal;max-width:520px">'+esc(US_FN[x.msg]||x.msg)+'</td><td class="num">'+x.n+'</td><td>'+(x.kind==='crash'?'<span class="badge b-bad">ระบบขัดข้อง</span>':'<span class="badge b-mute">ไม่สำเร็จ</span>')+'</td></tr>'}).join('')+'</tbody></table></div>'+
-     (o.length>12?'<button class="lnk" id="us-erall" style="margin-top:8px">'+(US.erAll?'ย่อรายการ':'ดูทั้งหมด '+o.length+' แบบ')+'</button>':''):'<div class="faint" style="padding:8px 0">ยังไม่มี error ที่บันทึกไว้</div>')+'</div>'}
+/* error ล่าสุด: เอาออกจากหน้าการใช้งานแล้ว (9 พ.ย. 2569 ผู้ใช้ขอ · ซ้ำกับเมนูบันทึก error) */
 function usDraw(){var d=US,b=$('#us-body');if(!b)return;var M={},cur=dIso(new Date()).slice(0,7);
   d.months.forEach(function(r){var m=M[r.p]||(M[r.p]={p:r.p,n:0,rr:0,rw:0,ms:0,fns:[]});m.n+=r.n;m.rr+=r.rr;m.rw+=r.rw;m.ms+=r.ms;m.fns.push(r)});
   var ms=Object.keys(M).sort().reverse();if(!ms.length){b.innerHTML='<span class="muted">ยังไม่มีข้อมูล · ระบบเริ่มนับตั้งแต่ขึ้นเวอร์ชันนี้ (ตัวเลขจะเพิ่มขึ้นเมื่อมีคนใช้งาน)</span>';return}
@@ -623,7 +614,6 @@ function usDraw(){var d=US,b=$('#us-body');if(!b)return;var M={},cur=dIso(new Da
      m.fns.slice().sort(function(a,c){return c.rr-a.rr}).slice(0,10).map(function(r){return '<tr><td class="num">'+esc(r.fn)+'</td><td class="faint">'+esc(usGroup(r.fn))+'</td><td class="r num">'+nfmt(r.n)+'</td><td class="r num">'+nfmt(r.rr)+'</td><td class="r num">'+nfmt(Math.round(r.rr/Math.max(1,r.n)))+'</td><td class="r num">'+nfmt(r.rw)+'</td></tr>'}).join('')+'</tbody></table></details></div>'+
    '</div>'+
    '<div class="note-b" style="margin-top:12px">ตัวเลขนับเองในระบบเพื่อดูแนวโน้ม ไม่ใช่ใบแจ้งหนี้ · ยอดจริงดูที่ Cloudflare Dashboard › Billing · แพ็กเกจปัจจุบัน Workers Paid ($5/เดือน): รวมคำขอ 10 ล้าน · D1 อ่าน 25,000 ล้านแถว · เขียน 50 ล้านแถว ต่อเดือน · R2 ฟรี 10 GB · เปิด 10 ล้านครั้ง · เขียน 1 ล้านครั้ง · ใช้เกินคิดเงินเพิ่ม (ระบบไม่หยุด)</div>'+r2h;
-  b.insertAdjacentHTML('beforeend',usErrHtml()+(isAdm()?'<button class="btn sm" data-go="errlog" style="margin-top:8px">เปิดบันทึก error แบบละเอียด →</button>':''));$$('#us-body [data-go]').forEach(function(x){x.onclick=function(){go(x.dataset.go)}});if($('#us-erall'))$('#us-erall').onclick=function(){US.erAll=!US.erAll;usDraw()};
   $$('[data-usm]').forEach(function(x){x.onclick=function(){US.sel=x.dataset.usm;usDraw()}});
   $$('[data-anr]').forEach(function(x){x.onclick=function(){US.rng=x.dataset.anr;$$('[data-anr]').forEach(function(y){y.setAttribute('aria-pressed',y===x)});anDraw()}});anDraw()}
 /* ปุ่มเลือกเดือน (แทน <input type="month"> ของเบราว์เซอร์ ให้หน้าตาเหมือนปฏิทินของระบบ) · ค่าอยู่ใน <input type="hidden" id> = 'YYYY-MM' (ค.ศ.) หรือ ''
