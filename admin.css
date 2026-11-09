@@ -1203,3 +1203,7 @@ a.btn.mj-act{display:flex;align-items:center;justify-content:center;gap:9px;min-
 /* ช่องผู้ดูแลระบบในหน้าเข้าสู่ระบบแบบแบ่ง 2 ฝั่ง (?admin=1 · 9 พ.ย. 2569) */
 .lg-adm{display:flex;flex-direction:column;gap:10px}.lg-adm h2{margin:0;font-size:17px;font-weight:600;color:#141414}
 .login.split .lg-adm .lg-in{height:54px;border-radius:12px}.login.split .lg-adm .lg-go{height:54px;border-radius:12px;font-size:16px}
+/* เมนูการอบรม (9 พ.ย. 2569) */
+@media(max-width:1100px){.tr-g2{grid-template-columns:1fr!important}}
+table.tr-t{min-width:0!important}table.tr-t td{white-space:normal}table.tr-t td.num,table.tr-t th.num{white-space:nowrap}
+.trc{display:inline-block;min-width:20px;padding:1px 7px;margin-left:7px;border-radius:99px;background:#E9E9E9;color:#4A4A4A;font-size:11.5px;font-weight:600;line-height:1.5;text-align:center}.segt [aria-pressed=true] .trc{background:rgba(255,255,255,.22);color:#fff}.trc.hot{background:#111;color:#fff}

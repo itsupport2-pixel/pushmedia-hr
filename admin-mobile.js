@@ -6,7 +6,7 @@
  * - ชิปหลายตัว (≥ 5) → dropdown · ตัวเลขสรุป → แถบปัดได้ */
 (function(){
   var MQ=window.matchMedia('(max-width:640px)');
-  var CARD={att:1,appr:1,lv:1,list:1,asset:1,msg:1,ot:1,audit:1,errlog:1,org:1};
+  var CARD={train:1,att:1,appr:1,lv:1,list:1,asset:1,msg:1,ot:1,audit:1,errlog:1,org:1};
   var DESK={set:1,pay:1,rep:1,usage:1,sched:1,srep:1,conf:1};
   var FSEL='select,.drg,[id^=ofs-],#ap-rg,#lv-rg,.dpt,.xd-l';
   var busy=false,tm=0,sh=null;
