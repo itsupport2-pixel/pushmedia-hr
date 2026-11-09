@@ -3,7 +3,7 @@
  * ทุกไฟล์ admin-*.js ใช้ชื่อร่วมกัน (global) และต้องโหลดตามลำดับใน admin.html */
 'use strict';
 /* ───────── ตารางงาน = หน้าเว็บ Workforce Task Manager เดิมทั้งชุด (planner.html · สร้างด้วย app/tools/build-planner.mjs · หลังบ้าน app/gas/schedule/Wtm.js) ───────── */
-var PLANNER_V='dp1109a';   // เลขรุ่นหน้า planner.html (build-planner.mjs ตั้งให้ทุกครั้ง · กันเบราว์เซอร์จำหน้าเก่า)
+var PLANNER_V='dp1109b';   // เลขรุ่นหน้า planner.html (build-planner.mjs ตั้งให้ทุกครั้ง · กันเบราว์เซอร์จำหน้าเก่า)
 function vConf(){return '<iframe class="plf" src="planner.html?desktop=1&page=confirmed'+(A.fx==='conf'||A.fx==='*'?'&fx=1':'')+'&v='+PLANNER_V+'" title="Confirmed"></iframe>'}
 function vPlanner(){return '<iframe class="plf" src="planner.html?desktop=1'+(A.fx==='sched'||A.fx==='*'?'&fx=1':'')+'&v='+PLANNER_V+'" title="ตารางงาน" allow="geolocation"></iframe>'}
 /* (เดิม) ตารางงานช่วง 1 ที่เขียนใหม่ — ไม่ได้ใช้แล้ว เก็บไว้อ้างอิง */
@@ -171,7 +171,7 @@ var EXTF=[['#','ชื่อภาษาอังกฤษ'],['first_name_en','�
 function extCards(p,edit){
   if(!p)return '<section class="card"><div class="ch"><h3>ข้อมูลเพิ่มเติมและที่อยู่</h3></div><div class="cb"><span class="spin"></span></div></section>';
   var x=p.ext||{},v=function(k){return esc(x[k]||'—')};
-  var item=function(k,it){if(k!=='training'&&k!=='assets')return itemNew(k,it);return k==='training'?'<b>'+esc(it.course)+'</b>'+(it.provider?' <span class="faint">'+esc(it.provider)+'</span>':'')+(it.file_id?' <button class="btn sm" data-itfv="'+esc(it.file_id)+'">ดูรูป</button>':'')+'<br><span class="faint">'+(it.date_from||it.date_to?thd(it.date_from||it.date_to)+(it.date_to&&it.date_to!==it.date_from&&it.date_from?' – '+thd(it.date_to):''):'ไม่ระบุวันที่')+(it.hours?' · '+esc(it.hours)+' ชม.':'')+(it.expiry_date?' · หมดอายุ '+thd(it.expiry_date):'')+'</span>'+trExpBadge(it.expiry_date)
+  var item=function(k,it){if(k!=='training'&&k!=='assets')return itemNew(k,it);return k==='training'?'<b>'+esc(it.course)+'</b>'+(it.provider?' <span class="faint">'+esc(it.provider)+'</span>':'')+(it.file_id?' <button class="btn sm" data-itfv="'+esc(it.file_id)+'">ดูไฟล์</button>':'')+'<br><span class="faint">'+(it.date_from||it.date_to?thd(it.date_from||it.date_to)+(it.date_to&&it.date_to!==it.date_from&&it.date_from?' – '+thd(it.date_to):''):'ไม่ระบุวันที่')+(it.hours?' · '+esc(it.hours)+' ชม.':'')+(it.expiry_date?' · หมดอายุ '+thd(it.expiry_date):'')+'</span>'+trExpBadge(it.expiry_date)
     :'<b>'+esc(it.name)+'</b>'+(it.serial?' <span class="mono faint">'+esc(it.serial)+'</span>':'')+' <span class="badge '+(it.returned_date?'b-mute">คืนแล้ว':'b-ok">ถือครอง')+'</span><br><span class="faint">รับ '+thd(it.received_date)+(it.returned_date?' · คืน '+thd(it.returned_date):'')+'</span>'};
   var list=function(k){var a=p[k]||[];return '<section class="card"><div class="ch"><h3>'+ITK[k][0]+'</h3>'+(edit?'<button class="btn sm" data-itadd="'+k+'" style="margin-left:auto">+ เพิ่ม</button>':'')+'</div><div class="cb">'+(a.length?'<ul class="tl">'+a.map(function(it){
     return '<li style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span style="flex:1;min-width:160px">'+item(k,it)+'</span>'+(edit?'<button class="btn sm" data-ited="'+k+'|'+esc(it.id)+'">แก้ไข</button><button class="btn sm bad" data-itdel="'+k+'|'+esc(it.id)+'">ลบ</button>':'')+'</li>'}).join('')+'</ul>':'<span class="faint">'+(k==='license'?'ไม่มีใบขับขี่':'ไม่มีข้อมูล')+'</span>')+'</div></section>'};
@@ -179,7 +179,7 @@ function extCards(p,edit){
 }
 /* วันที่ผ่านทดลองงาน + เหตุผลลาออก (HR) */
 function ehrCard(p){if(!isHR()||p.education===undefined)return '';return '<section class="card"><div class="ch"><h3>ข้อมูลการจ้าง</h3><button class="btn sm" id="ehred" style="margin-left:auto">แก้ไข</button></div><div class="cb"><dl class="kv"><dt>วันที่ผ่านการทดลองงาน</dt><dd>'+(p.probation_passed_date?thd(p.probation_passed_date):'—')+'</dd><dt>เหตุผลที่ลาออก</dt><dd style="white-space:pre-line">'+esc(p.resign_reason||'—')+'</dd></dl></div></section>'}
-function itemNew(k,it){var f=it.file_id?' <button class="btn sm" data-itfv="'+esc(it.file_id)+'">ดูรูป</button>':'',D=function(x){return x?thd(x):''},J=function(a){return a.filter(String).map(esc).join(' · ')};
+function itemNew(k,it){var f=it.file_id?' <button class="btn sm" data-itfv="'+esc(it.file_id)+'">ดูไฟล์</button>':'',D=function(x){return x?thd(x):''},J=function(a){return a.filter(String).map(esc).join(' · ')};
   if(k==='education')return '<b>'+esc(it.institute)+'</b>'+(it.level?' <span class="faint">'+esc(it.level)+'</span>':'')+'<br><span class="faint">'+(J([it.major,it.grad_date?'จบ '+D(it.grad_date):it.grad_year?'จบปี '+it.grad_year:'',it.gpa?'เกรดเฉลี่ย '+it.gpa:''])||'—')+'</span>';
   if(k==='work_prev')return '<b>'+esc(it.company)+'</b>'+(it.position?' <span class="faint">'+esc(it.position)+'</span>':'')+'<br><span class="faint">'+(J([D(it.date_from)+(it.date_to?' – '+D(it.date_to):''),it.reason])||'—')+'</span>';
   if(k==='job_hist')return '<b>'+esc(D(it.effective_date))+'</b> '+(J([it.department,it.team,it.position])||'—')+(it.note?'<br><span class="faint">'+esc(it.note)+'</span>':'');
@@ -226,7 +226,7 @@ function bExt(){
   if(PROF)astProfileBind(PROF);
   if($('#xed'))$('#xed').onclick=function(){drawerForm('ข้อมูลเพิ่มเติมและที่อยู่',EXTF,PROF.ext||{},function(d){d.reason='HR แก้ไขข้อมูลเพิ่มเติม';return aCall('saveEmployeeExt',A.id,d).then(function(r){if(r.ok){PROF.ext=r.ext;closeD();render();toast(r.changed?'บันทึกแล้ว':'ไม่มีอะไรเปลี่ยน')}return r})})};
   if($('#ehred'))$('#ehred').onclick=function(){drawerForm('ข้อมูลการจ้าง',EHRF,PROF,function(d){return aCall('saveEmployeeHr',A.id,d).then(function(r){if(r.ok){PROF.probation_passed_date=r.probation_passed_date;PROF.resign_reason=r.resign_reason;closeD();render();toast(r.changed?'บันทึกแล้ว':'ไม่มีอะไรเปลี่ยน')}return r})})};
-  $$('[data-itfv]').forEach(function(b){b.onclick=function(){busy(b,1);aCall('getEmpFile',b.dataset.itfv).then(function(d){busy(b,0);if(/^data:application\/pdf/.test(d)&&window.trDl){trDl(d,'ใบรับรอง');return}drawer('รูปแนบ','<img src="'+esc(d)+'" alt="รูปแนบ" style="display:block;max-width:100%;border-radius:8px">','<button class="btn" id="itfx">ปิด</button>');$('#itfx').onclick=closeD}).catch(function(e){busy(b,0);toast(e.message,1)})}});
+  $$('[data-itfv]').forEach(function(b){b.onclick=function(){busy(b,1);aCall('getEmpFile',b.dataset.itfv).then(function(d){busy(b,0);if(window.fvOpen){fvOpen(d,b.dataset.itfn||(/^data:application\/pdf/.test(d)?'ใบรับรอง':'รูปแนบ'));return}drawer('รูปแนบ','<img src="'+esc(d)+'" alt="รูปแนบ" style="display:block;max-width:100%;border-radius:8px">','<button class="btn" id="itfx">ปิด</button>');$('#itfx').onclick=closeD}).catch(function(e){busy(b,0);toast(e.message,1)})}});
   var form=itemForm;
   var find=function(v){var p=v.split('|');return [p[0],(PROF[p[0]]||[]).filter(function(x){return x.id===p[1]})[0]]};
   $$('[data-itadd]').forEach(function(b){b.onclick=function(){form(b.dataset.itadd,{})}});

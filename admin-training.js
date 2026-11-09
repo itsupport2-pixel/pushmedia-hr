@@ -38,13 +38,13 @@ function trDraw(){var b=$('#tr-body');if(!b||!TR.d)return;var R=trCalc(),D=TR.d,
    (TR.tab==='co'||TR.tab==='pe'?pySearch('tr-q',TR.q,TR.tab==='co'?(TR.course?'ค้นหาชื่อ รหัส แผนก':'ค้นหาชื่อหลักสูตร หรือผู้จัด'):'ค้นหาชื่อ ชื่อเล่น รหัส'):'')+
    '<select id="tr-yr" class="fsel" aria-label="ปี"><option value="">ทุกปี</option>'+Object.keys(yrs).sort().reverse().map(function(y){return '<option value="'+y+'"'+(y===Y?' selected':'')+'>ปี '+y+'</option>'}).join('')+'</select>'+
    ofSel('tr')+
-   (TR.tab==='pe'?'<label class="chk"><input type="checkbox" id="tr-none"'+(TR.none?' checked':'')+'> ยังไม่เคยอบรม ('+R.people.filter(function(p){return !p.n}).length+')</label>':'')+'</div>';
+   (TR.tab==='pe'?'<div class="segt tr-seg" role="group" aria-label="สถานะการอบรม"><button type="button" data-trn="0" aria-pressed="'+!TR.none+'">อบรมแล้ว<span class="trc">'+R.people.filter(function(p){return p.n>0}).length+'</span></button><button type="button" data-trn="1" aria-pressed="'+!!TR.none+'">ยังไม่เคยอบรม<span class="trc">'+R.people.filter(function(p){return !p.n}).length+'</span></button></div>':'')+'</div>';
   h+=TR.tab==='ov'?trOv(R):TR.tab==='co'?trCo(R):TR.tab==='pe'?trPe(R):trEx(R);
   b.innerHTML=h;
   $$('[data-trt]').forEach(function(x){x.onclick=function(){TR.tab=x.dataset.trt;TR.q='';trDraw()}});
   $('#tr-yr').onchange=function(){TR.yr=this.value;trDraw()};ofBind('tr',trDraw);
   if($('#tr-q')){var q=$('#tr-q');q.oninput=function(){TR.q=q.value;var p=q.selectionStart;trDraw();var n=$('#tr-q');if(n){n.focus();n.setSelectionRange(p,p)}}}
-  if($('#tr-none'))$('#tr-none').onchange=function(){TR.none=this.checked;trDraw()};
+  $$('[data-trn]').forEach(function(b){b.onclick=function(){TR.none=b.dataset.trn==='1';trDraw()}});
   if($('#tr-cs'))$('#tr-cs').onchange=function(){TR.course=this.value;TR.q='';trDraw()};trFileBind(trDraw);
   $$('[data-trc]').forEach(function(x){x.onclick=function(){trCourse(x.dataset.trc)}});$$('[data-trcn]').forEach(function(x){x.onclick=function(){trCourse(x.dataset.trcn,'not')}});
   $$('[data-trp]').forEach(function(x){x.onclick=function(){trPerson(x.dataset.trp)}});
@@ -87,9 +87,16 @@ function trEx(R){return '<section class="card"><div class="ch"><h3>ใบรั�
 function trFname(r,e){return ('ใบรับรอง-'+(e&&e.emp_code||'')+'-'+r.course).replace(/[\\/:*?"<>|]/g,'-').slice(0,80)}
 function trDl(d,name){var m=/^data:([^;]+);base64,(.*)$/.exec(String(d||''));if(!m)return toast('ไฟล์ไม่ถูกต้อง',1);var b=atob(m[2]),u8=new Uint8Array(b.length);for(var i=0;i<b.length;i++)u8[i]=b.charCodeAt(i);
   var ext=m[1]==='application/pdf'?'pdf':m[1]==='image/png'?'png':m[1]==='image/webp'?'webp':'jpg',url=URL.createObjectURL(new Blob([u8],{type:m[1]})),a=document.createElement('a');a.href=url;a.download=name+'.'+ext;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url)},4000)}
-function trFileCell(r,e){var up=TR.d.canEdit;return r.file_id?'<button class="btn sm tr-pdf" data-trf="'+esc(r.file_id)+'" data-trn="'+esc(trFname(r,e))+'" title="ดาวน์โหลดใบรับรอง">'+fileIc('pdf')+'PDF</button>':up?'<button class="btn sm tr-add" data-tru="'+esc(r.id)+'" title="แนบใบรับรอง (PDF หรือรูป)" aria-label="แนบใบรับรอง">+</button>':'<span class="faint">—</span>'}
+function trFileCell(r,e){var up=TR.d.canEdit;return r.file_id?'<button class="btn sm tr-pdf" data-trf="'+esc(r.file_id)+'" data-trn="'+esc(trFname(r,e))+'" title="ดูใบรับรอง">'+fileIc('pdf')+'PDF</button>':up?'<button class="btn sm tr-add" data-tru="'+esc(r.id)+'" title="แนบใบรับรอง (PDF หรือรูป)" aria-label="แนบใบรับรอง">+</button>':'<span class="faint">—</span>'}
+/* พรีวิวไฟล์ก่อนดาวน์โหลด (9 พ.ย. 2569 ผู้ใช้ขอ: "กดดูให้พรีวิวก่อน ค่อยมีปุ่มดาวน์โหลด") · PDF แสดงในกรอบ (blob: · CSP frame-src) · รูปแสดงเต็ม · Esc / กดพื้นหลัง = ปิด */
+function fvOpen(d,name){var m=/^data:([^;]+);base64,(.*)$/.exec(String(d||''));if(!m)return toast('ไฟล์ไม่ถูกต้อง',1);var pdf=m[1]==='application/pdf',url='';
+  if(pdf){var b=atob(m[2]),u8=new Uint8Array(b.length);for(var i=0;i<b.length;i++)u8[i]=b.charCodeAt(i);url=URL.createObjectURL(new Blob([u8],{type:'application/pdf'}))}
+  var w=document.createElement('div');w.className='fpv';w.setAttribute('role','dialog');w.setAttribute('aria-label','พรีวิวไฟล์');
+  w.innerHTML='<div class="fpv-box"><div class="fpv-h">'+(pdf?fileIc('pdf'):ic('img'))+'<b>'+esc(name||'ไฟล์แนบ')+'</b><span class="faint">'+(pdf?'PDF':'รูป')+' · '+(Math.round(m[2].length*0.75/1024)>1024?(m[2].length*0.75/1048576).toFixed(1)+' MB':Math.round(m[2].length*0.75/1024)+' KB')+'</span><span style="flex:1"></span><button class="btn pri sm" id="fpv-dl">'+ic('dl')+'ดาวน์โหลด</button><button class="btn sm fpv-x" id="fpv-x" aria-label="ปิด">'+ic('x')+'</button></div><div class="fpv-b">'+(pdf?'<iframe src="'+url+'#view=FitH" title="'+esc(name||'PDF')+'"></iframe>':'<img src="'+esc(d)+'" alt="'+esc(name||'รูปแนบ')+'">')+'</div></div>';
+  document.body.appendChild(w);var close=function(){w.remove();if(url)setTimeout(function(){URL.revokeObjectURL(url)},1000);document.removeEventListener('keydown',k,true)},k=function(e){if(e.key==='Escape'){e.stopPropagation();close()}};
+  document.addEventListener('keydown',k,true);w.onclick=function(e){if(e.target===w)close()};w.querySelector('#fpv-x').onclick=close;w.querySelector('#fpv-dl').onclick=function(){trDl(d,name||'ไฟล์แนบ')}}
 function trFileBind(again){
-  $$('[data-trf]').forEach(function(b){b.onclick=function(){busy(b,1);aCall('getEmpFile',b.dataset.trf).then(function(d){busy(b,0);trDl(d,b.dataset.trn||'ใบรับรอง')}).catch(function(e){busy(b,0);toast(e.message,1)})}});
+  $$('[data-trf]').forEach(function(b){b.onclick=function(){busy(b,1);aCall('getEmpFile',b.dataset.trf).then(function(d){busy(b,0);fvOpen(d,b.dataset.trn||'ใบรับรอง')}).catch(function(e){busy(b,0);toast(e.message,1)})}});
   $$('[data-tru]').forEach(function(b){b.onclick=function(){var inp=document.createElement('input');inp.type='file';inp.accept='application/pdf,image/jpeg,image/png,image/webp';inp.onchange=function(){var f=inp.files[0];if(!f)return;
     var send=function(d){busy(b,1);aCall('trainSetFile',b.dataset.tru,d).then(function(r){busy(b,0);if(!r.ok){toast(r.errors.file,1);return}TR.d.rows.forEach(function(x){if(x.id===b.dataset.tru)x.file_id=r.file_id});toast('แนบใบรับรองแล้ว');if(again)again()}).catch(function(e){busy(b,0);toast(e.message,1)})};
     if(f.type==='application/pdf'){if(f.size>10*1024*1024)return toast('PDF ใหญ่เกิน 10 MB · ลองบันทึกใหม่แบบลดขนาด หรือสแกนความละเอียดต่ำลง',1);var fr=new FileReader();fr.onload=function(){send(String(fr.result))};fr.readAsDataURL(f)}

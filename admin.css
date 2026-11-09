@@ -1215,3 +1215,17 @@ table.tr-t{min-width:0!important}table.tr-t td{white-space:normal}table.tr-t td.
 [data-trf] svg,[data-tru] svg,#trp-all svg{width:15px;height:15px;margin-right:5px;vertical-align:-3px;flex:none}
 .tr-flt{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}.tr-flt .pyq{min-width:220px;flex:1;max-width:340px}
 .btn.tr-pdf{display:inline-flex;align-items:center;gap:6px;padding:5px 12px}.btn.tr-pdf svg{width:18px;height:18px}.btn.tr-add{min-width:34px;justify-content:center;color:#DC2626;border-color:#F3B4B4;background:#FFF5F5;font-size:17px;font-weight:600;line-height:1;padding:5px 10px}.btn.tr-add:hover{background:#FDE8E8}
+/* 9 พ.ย. 2569: พรีวิวไฟล์ก่อนดาวน์โหลด */
+.fpv{position:fixed;inset:0;z-index:9000;background:rgba(17,17,17,.55);display:grid;place-items:center;padding:24px;animation:fpvIn .14s ease-out}@keyframes fpvIn{from{opacity:0}to{opacity:1}}
+.fpv-box{width:min(1000px,100%);height:min(88vh,1100px);background:#fff;border-radius:14px;box-shadow:0 24px 60px rgba(0,0,0,.25);display:flex;flex-direction:column;overflow:hidden}
+.fpv-h{display:flex;align-items:center;gap:10px;padding:12px 14px 12px 18px;border-bottom:1px solid var(--line)}.fpv-h b{font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}.fpv-h .faint{font-size:12.5px;white-space:nowrap}.fpv-h>svg{width:20px;height:20px;flex:none}
+.fpv-h .btn svg{width:16px;height:16px}.fpv-x{width:34px;padding:0!important;justify-content:center}
+.fpv-b{flex:1;min-height:0;background:#F3F4F6;display:flex;align-items:center;justify-content:center;overflow:auto}.fpv-b iframe{width:100%;height:100%;border:0;background:#fff}.fpv-b img{max-width:100%;max-height:100%;object-fit:contain;display:block}
+@media(max-width:640px){.fpv{padding:0}.fpv-box{height:100%;border-radius:0}.fpv-h .faint{display:none}}
+/* 9 พ.ย. 2569: แถวตัวกรองการอบรม (ผู้ใช้: ดูเด็กเกินไป) · แถบเดียวพื้นขาว · ช่องสีเทาอ่อนไม่มีกรอบ · สถานะเป็นปุ่มสลับ */
+.tr-flt{background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px;gap:8px}
+.tr-flt .pyq,.tr-flt .fsel{height:38px;border-color:transparent;background-color:#F4F4F5;border-radius:9px;font-size:14px}
+.tr-flt .fsel{font-weight:500;color:var(--fg);cursor:pointer;min-width:120px}.tr-flt .fsel:hover,.tr-flt .pyq:hover{background-color:#ECECEE}.tr-flt .fsel:focus{outline:none;border-color:var(--acc);background-color:#fff}
+.tr-flt .pyq:focus-within{border-color:var(--acc);background:#fff}
+.tr-flt .tr-seg{margin-left:auto;background:#F4F4F5;border:0;padding:3px;border-radius:10px}.tr-flt .tr-seg button{height:32px;font-size:13.5px}
+
