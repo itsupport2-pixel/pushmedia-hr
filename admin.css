@@ -1228,4 +1228,7 @@ table.tr-t{min-width:0!important}table.tr-t td{white-space:normal}table.tr-t td.
 .tr-flt .fsel{font-weight:500;color:var(--fg);cursor:pointer;min-width:120px}.tr-flt .fsel:hover,.tr-flt .pyq:hover{background-color:#ECECEE}.tr-flt .fsel:focus{outline:none;border-color:var(--acc);background-color:#fff}
 .tr-flt .pyq:focus-within{border-color:var(--acc);background:#fff}
 .tr-flt .tr-seg{margin-left:auto;background:#F4F4F5;border:0;padding:3px;border-radius:10px}.tr-flt .tr-seg button{height:32px;font-size:13.5px}
-
+/* 10 พ.ย. 2569: แถบโหมดสำรอง · ปุ่มลองระบบหลัก + เวลาที่สลับ */
+#fo-bar{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}#fo-bar .fo-w{opacity:.85;font-weight:500}#fo-bar button{border:1px solid rgba(255,255,255,.7);background:rgba(255,255,255,.14);color:#fff;font:inherit;font-size:12.5px;padding:3px 10px;border-radius:999px;cursor:pointer}#fo-bar button:hover{background:rgba(255,255,255,.28)}
+/* 10 พ.ย. 2569: นำเข้าใบรับรอง แบบหลายหลักสูตรต่อคน */
+.ti-m{border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:4px}.ti-m .tr-li{border-bottom:0}.ti-mf{display:grid;gap:8px;padding:0 10px 0 48px}.ti-mf .f span{font-size:12px}.ti-mf .fsel{max-width:none;width:100%}.ti-mf input{height:36px}
