@@ -45,7 +45,7 @@ V.cbnew=()=>{const b=S.cb.b,o=cbO();if(!b){cbBootLoad().then(()=>{if(cur()==="cb
 /* ── รูปที่แนบ ── */
 function cbPaintUps(){const b=$("#cbups");if(b)b.innerHTML=CB.upsHTML(S.cb.ups);cbSendState()}
 function cbSendState(){const t=$("#cbct"),s=$("[data-cbsend]");if(t&&s){const u=S.cb.ups||[];s.disabled=!(t.value.trim()||u.length)||u.some(i=>!i.id)}const x=$("#cbx-txt"),g=$("#cbx-go");if(x&&g)g.disabled=!x.value.trim()}
-function cbAddFiles(inp){let fs=[...(inp.files||[])];inp.value="";if(S.cb.ups.length+fs.length>4){toast("แนบรูปได้ไม่เกิน 4 รูป");fs=fs.slice(0,4-S.cb.ups.length)}
+function cbAddFiles(inp){let fs=[...(inp.files||[])];const mx=inp.closest(".cbx")&&((S.cb.b||{}).me||{}).admin?10:4;inp.value="";if(S.cb.ups.length+fs.length>mx){toast("แนบรูปได้ไม่เกิน "+mx+" รูป");fs=fs.slice(0,Math.max(0,mx-S.cb.ups.length))}
   fs.forEach(f=>{const u={src:"",id:""};S.cb.ups.push(u);cbPaintUps();CB.shrink(f).then(d=>{u.src=d;cbPaintUps();return api("cbUpload",{data:d})}).then(r=>{u.id=r.id;cbPaintUps()}).catch(e=>{S.cb.ups.splice(S.cb.ups.indexOf(u),1);cbPaintUps();toast(e.message)})})}
 
 /* ── เมนู ⋯ / ผู้ดูแล / แก้ไข (แผ่นเลื่อนขึ้น) ── */

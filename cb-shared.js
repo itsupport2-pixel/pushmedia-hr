@@ -54,9 +54,11 @@
     return '<span class="cbav" style="width:' + s + 'px;height:' + s + 'px;font-size:' + Math.round(s / 2.5) + 'px">' + E(CB.who(p).slice(0, 1)) +
       (p && p.ph && id ? '<img src="' + base + '/photo/' + encodeURIComponent(id) + '" alt="" loading="lazy" data-rmerr>' : p && /^https:\/\//.test(p.pic || '') ? '<img src="' + E(p.pic) + '" alt="" loading="lazy" referrerpolicy="no-referrer" data-rmerr>' : '') + '</span>'; };
   CB.img = function (base, id) { return base + '/cb/img/' + encodeURIComponent(id); };
-  CB.imgs = function (base, ids, link) { if (!ids || !ids.length) return '';
-    return '<div class="cbimgs n' + Math.min(ids.length, 4) + '">' + ids.slice(0, 4).map(function (i) { var u = CB.img(base, i);
-      return link ? '<a href="' + u + '" target="_blank" rel="noopener"><img src="' + u + '" alt="รูปแนบ" loading="lazy"></a>' : '<img src="' + u + '" alt="รูปแนบ" loading="lazy">'; }).join('') + '</div>'; };
+  /* รูปแนบ: หน้ารวมแสดง 4 รูป รูปที่ 4 ขึ้น +N (ผู้ดูแลแนบได้ 10 รูป · 10 พ.ย. 2569) · all = หน้าโพสต์เต็มแสดงครบทุกรูป */
+  CB.imgs = function (base, ids, link, all) { if (!ids || !ids.length) return '';
+    var n = ids.length, show = all ? ids : ids.slice(0, 4), more = all ? 0 : n - 4;
+    return '<div class="cbimgs n' + (all && n > 4 ? 'm' : Math.min(n, 4)) + '">' + show.map(function (i, k) { var u = CB.img(base, i), plus = more > 0 && k === 3 ? '<span class="cbmore">+' + more + '</span>' : '';
+      return link ? '<a href="' + u + '" target="_blank" rel="noopener"><img src="' + u + '" alt="รูปแนบ" loading="lazy">' + plus + '</a>' : '<span class="cbim"><img src="' + u + '" alt="รูปแนบ" loading="lazy">' + plus + '</span>'; }).join('') + '</div>'; };
   /* เมนู ⋯ ของโพสต์ (เฉพาะที่คนนี้ทำได้) · me = {id, mod, admin, ro} */
   CB.menuItems = function (p, me) { var it = [], own = p.author && p.author.id === me.id && !me.ro, mod = me.mod && !me.ro;
     if (mod) it.push(p.pinned ? { k: 'unpin', ic: 'pinoff', t: 'เลิกปักหมุดโพสต์' } : { k: 'pin', ic: 'pin', t: 'ปักหมุดโพสต์', d: 'แสดงบนสุดของ Community จนถึงวันที่เลือก' });
@@ -76,7 +78,7 @@
       (hasMenu ? '<div class="cbmw"><button class="cbmore" data-cbmenu="' + E(p.id) + '" aria-label="ตัวเลือกโพสต์" aria-expanded="' + !!o.menuOpen + '">' + CB.ic('more') + '</button>' + (o.menuOpen ? CB.menu(p, me) : '') + '</div>' : '') + '</header>' +
       (p.solved || p.locked ? '<div class="cbflags">' + (p.solved ? '<span class="ok">' + CB.ic('check') + 'มีคำตอบแล้ว</span>' : '') + (p.locked ? '<span>' + CB.ic('lock') + 'ปิดการแสดงความคิดเห็น</span>' : '') + '</div>' : '') +
       '<div class="cbtxt' + (long ? ' clamp' : '') + '" data-noi18n>' + CB.text(p.body) + '</div>' + (long ? '<button class="cbseemore" data-cbopen="' + E(p.id) + '">ดูเพิ่มเติม</button>' : '') +
-      (o.full ? CB.imgs(base, p.imgs, 1) : (p.imgs && p.imgs.length ? '<div data-cbopen="' + E(p.id) + '" class="cbimgl">' + CB.imgs(base, p.imgs) + '</div>' : '')) +
+      (o.full ? CB.imgs(base, p.imgs, 1, 1) : (p.imgs && p.imgs.length ? '<div data-cbopen="' + E(p.id) + '" class="cbimgl">' + CB.imgs(base, p.imgs) + '</div>' : '')) +
       '<div class="cbstat">' + (p.likes ? '<span class="cblk">' + CB.ic('like') + '</span>' + p.likes : '') + '<span class="sp"></span>' + (p.replies ? '<button data-cbopen="' + E(p.id) + '">' + p.replies + ' ความคิดเห็น</button>' : '') + '</div>' +
       '<div class="cbacts"><button data-cblike="' + E(p.id) + '" class="' + (p.liked ? 'on' : '') + '" aria-pressed="' + !!p.liked + '">' + CB.ic('like') + 'ถูกใจ</button>' +
       '<button data-cbcomment="' + E(p.id) + '">' + CB.ic('comment') + 'แสดงความคิดเห็น</button></div></article>'; };

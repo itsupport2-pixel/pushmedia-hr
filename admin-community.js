@@ -47,7 +47,8 @@ A.cbUps=[];A.cbXUps=[];
 function cbPaintUps(){var b=$('.cbx #cbups');if(b)b.innerHTML=CB.upsHTML(A.cbXUps);var c=$('.cbcbox #cbups');if(c)c.innerHTML=CB.upsHTML(A.cbUps);cbSendState()}
 function cbSendState(){var t=$('#cbct'),s=$('[data-cbsend]');if(t&&s){var u=A.cbUps||[];s.disabled=!(t.value.trim()||u.length)||u.some(function(i){return !i.id})}var x=$('#cbx-txt'),g=$('#cbx-go');if(x&&g)g.disabled=!x.value.trim()}
 function cbAddFiles(inp){var ups=inp.closest('.cbx')?A.cbXUps:A.cbUps,files=Array.prototype.slice.call(inp.files||[]);inp.value='';
-  if(ups.length+files.length>4){toast('แนบรูปได้ไม่เกิน 4 รูป',1);files=files.slice(0,4-ups.length)}
+  var mx=inp.closest('.cbx')&&cbMe().admin?10:4;   // สร้างโพสต์: ผู้ดูแลระบบ 10 รูป · ความคิดเห็น/คนอื่น 4 รูป
+  if(ups.length+files.length>mx){toast('แนบรูปได้ไม่เกิน '+mx+' รูป',1);files=files.slice(0,Math.max(0,mx-ups.length))}
   files.forEach(function(f){var u={src:'',id:''};ups.push(u);cbPaintUps();CB.shrink(f).then(function(d){u.src=d;cbPaintUps();return aCall('cbUpload',{data:d})}).then(function(r){u.id=r.id;cbPaintUps()}).catch(function(e){ups.splice(ups.indexOf(u),1);cbPaintUps();toast(e.message,1)})})}
 
 /* ───────── สร้างโพสต์ (หน้าต่างแบบ Facebook) ───────── */

@@ -135,3 +135,5 @@
 .cbl-f{display:flex;flex-direction:column;gap:6px;font-size:14px}.cbl-f input{font:inherit;font-size:16px;padding:10px;border:1px solid #D4D4D4;border-radius:10px}
 .cbl-edt{width:100%;min-height:140px;border:1px solid #D4D4D4;border-radius:10px;padding:10px;font:inherit;font-size:16px;resize:vertical}
 .btn.cbl-bad{background:#C0392B;color:#fff}.sheetm .cbemo,.sheetm .cbtag{box-shadow:none;padding:0;max-width:none}.sheetm .cbemo button{font-size:26px}
+/* รูปแนบเกิน 4 (10 พ.ย. 2569): +N บนรูปที่ 4 · หน้าโพสต์เต็ม 2 คอลัมน์ทุกรูป */
+.cbimgs.nm{grid-template-columns:1fr 1fr}.cbimgs a,.cbim{position:relative;display:block}.cbmore{position:absolute;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.45);color:#fff;font-size:28px;font-weight:600}
