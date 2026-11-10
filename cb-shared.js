@@ -54,11 +54,27 @@
     return '<span class="cbav" style="width:' + s + 'px;height:' + s + 'px;font-size:' + Math.round(s / 2.5) + 'px">' + E(CB.who(p).slice(0, 1)) +
       (p && p.ph && id ? '<img src="' + base + '/photo/' + encodeURIComponent(id) + '" alt="" loading="lazy" data-rmerr>' : p && /^https:\/\//.test(p.pic || '') ? '<img src="' + E(p.pic) + '" alt="" loading="lazy" referrerpolicy="no-referrer" data-rmerr>' : '') + '</span>'; };
   CB.img = function (base, id) { return base + '/cb/img/' + encodeURIComponent(id); };
-  /* รูปแนบ: หน้ารวมแสดง 4 รูป รูปที่ 4 ขึ้น +N (ผู้ดูแลแนบได้ 10 รูป · 10 พ.ย. 2569) · all = หน้าโพสต์เต็มแสดงครบทุกรูป */
+  /* รูปแนบ (10 พ.ย. 2569 ผู้ใช้: รูปในโพสต์ใหญ่เกิน → รูปย่อ กดแล้วค่อยดูรูปใหญ่)
+   * รูปย่อสี่เหลี่ยมแถวเดียว (สูงสุด 4 · รูปที่ 4 ขึ้น +N) · all = หน้าโพสต์เต็ม แสดงรูปย่อครบทุกรูป · กดรูป = หน้าดูรูป (CB.lb) เลื่อนซ้าย/ขวาได้ */
   CB.imgs = function (base, ids, link, all) { if (!ids || !ids.length) return '';
-    var n = ids.length, show = all ? ids : ids.slice(0, 4), more = all ? 0 : n - 4;
-    return '<div class="cbimgs n' + (all && n > 4 ? 'm' : Math.min(n, 4)) + '">' + show.map(function (i, k) { var u = CB.img(base, i), plus = more > 0 && k === 3 ? '<span class="cbmore">+' + more + '</span>' : '';
-      return link ? '<a href="' + u + '" target="_blank" rel="noopener"><img src="' + u + '" alt="รูปแนบ" loading="lazy">' + plus + '</a>' : '<span class="cbim"><img src="' + u + '" alt="รูปแนบ" loading="lazy">' + plus + '</span>'; }).join('') + '</div>'; };
+    var n = ids.length, show = all ? ids : ids.slice(0, 4), more = all ? 0 : n - 4, urls = ids.map(function (i) { return CB.img(base, i); });
+    return '<div class="cbimgs t' + (all && n > 4 ? 'm' : Math.min(n, 4)) + '" data-cbset="' + E(urls.join('|')) + '">' + show.map(function (i, k) {
+      return '<button type="button" class="cbth" data-cblb="' + k + '" aria-label="ดูรูปที่ ' + (k + 1) + ' จาก ' + n + '"><img src="' + urls[k] + '" alt="รูปแนบ" loading="lazy">' + (more > 0 && k === 3 ? '<span class="cbplus">+' + more + '</span>' : '') + '</button>'; }).join('') + '</div>'; };
+  /* หน้าดูรูปใหญ่: ← → / ปัดนิ้ว เลื่อนรูป · Esc / กดพื้นหลัง ปิด */
+  CB.lb = function (urls, i) { var old = document.querySelector('.cblb'); if (old) old.remove();
+    var w = document.createElement('div'); w.className = 'cblb'; w.setAttribute('role', 'dialog'); w.setAttribute('aria-modal', 'true'); w.setAttribute('aria-label', 'ดูรูป');
+    var arr = function (d) { return '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + (d < 0 ? 'M15 6l-6 6 6 6' : 'M9 6l6 6-6 6') + '"/></svg>'; };
+    w.innerHTML = '<div class="cblb-n"></div><button type="button" class="cblb-x" aria-label="ปิด"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>' +
+      (urls.length > 1 ? '<button type="button" class="cblb-p" aria-label="รูปก่อนหน้า">' + arr(-1) + '</button><button type="button" class="cblb-q" aria-label="รูปถัดไป">' + arr(1) + '</button>' : '') + '<img alt="รูปแนบ">';
+    var img = w.querySelector('img'), cnt = w.querySelector('.cblb-n'), go = function (k) { i = (k + urls.length) % urls.length; img.src = urls[i]; cnt.textContent = urls.length > 1 ? (i + 1) + ' / ' + urls.length : ''; };
+    var close = function () { w.remove(); document.removeEventListener('keydown', kd, true); }, kd = function (e) { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); close(); } else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); e.stopPropagation(); go(i + (e.key === 'ArrowLeft' ? -1 : 1)); } };
+    w.addEventListener('click', function (e) { var b = e.target.closest('button'); if (b && b.classList.contains('cblb-p')) go(i - 1); else if (b && b.classList.contains('cblb-q')) go(i + 1); else if (!b && e.target === img) return; else close(); });
+    var x0 = null; w.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+    w.addEventListener('touchend', function (e) { if (x0 == null) return; var dx = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(dx) > 50 && urls.length > 1) go(i + (dx > 0 ? -1 : 1)); }, { passive: true });
+    document.addEventListener('keydown', kd, true); document.body.appendChild(w); go(i); w.querySelector('.cblb-x').focus(); };
+  /* กดรูปย่อที่ไหนก็ได้ (หลังบ้าน + แอปพนักงาน) → หน้าดูรูป · จับก่อนตัวจัดการอื่น (ไม่เปิดหน้าโพสต์แทน) */
+  if (typeof document !== 'undefined' && document.addEventListener) document.addEventListener('click', function (e) { var t = e.target.closest && e.target.closest('[data-cblb]'); if (!t) return; var set = t.closest('[data-cbset]'); if (!set) return;
+    e.preventDefault(); e.stopPropagation(); CB.lb(set.getAttribute('data-cbset').split('|'), Number(t.getAttribute('data-cblb')) || 0); }, true);
   /* เมนู ⋯ ของโพสต์ (เฉพาะที่คนนี้ทำได้) · me = {id, mod, admin, ro} */
   CB.menuItems = function (p, me) { var it = [], own = p.author && p.author.id === me.id && !me.ro, mod = me.mod && !me.ro;
     if (mod) it.push(p.pinned ? { k: 'unpin', ic: 'pinoff', t: 'เลิกปักหมุดโพสต์' } : { k: 'pin', ic: 'pin', t: 'ปักหมุดโพสต์', d: 'แสดงบนสุดของ Community จนถึงวันที่เลือก' });
