@@ -4,39 +4,44 @@ var WFN_ROLE_L={approver:'ผู้อนุมัติขั้นปัจจ
 var WFN_ROLES={leave:['approver','employee','hr','dept_head'],messenger:['requester','assignee','messengers','organizers','hr'],help_new:['hr'],monthsum:['top10','employee','leads','hr','dept_heads','execs']};
 var WFN_MAIN=[['help_new','แจ้งเข้าระบบไม่ได้'],['leave','การลา'],['messenger','งานเมสเซนเจอร์'],['monthsum','สรุปประจำเดือน']];
 function wfnBase(t){return /^leave/.test(t)?'leave':t}
-function wfnRoleL(r,t){return t==='monthsum'&&r==='employee'?'พนักงานเจ้าของคำชี้แจง':(WFN_ROLE_L[r]||r)}
-function wfnDef(tr){var b=wfnBase(tr),d={ch:{line:true},to:['hr'],people:[],groups:[],mails:[],card:'text',text:'',conds:[]};
+WF_CARD.auto='ข้อความ/การ์ดเดิมของระบบ';
+/* Workflow ของการแจ้งเตือนอื่น ๆ (10 พ.ย. 2569) · ช่องทาง "ในระบบ" = กระดิ่ง · ผู้รับ subject = ผู้รับตามเหตุการณ์ */
+function wfnSimple(t){var T=((A.wfd||{}).trig||{})[t];return T&&T.simple?T:null}
+function wfnRolesOf(t){var S=wfnSimple(t);return S?(S.group?['hr']:['subject','hr']):(WFN_ROLES[wfnBase(t)]||[])}
+function wfnRoleL(r,t){if(r==='subject'){var S=wfnSimple(t);return 'ผู้รับตามเหตุการณ์'+(S?' ('+S.who+')':'')}return t==='monthsum'&&r==='employee'?'พนักงานเจ้าของคำชี้แจง':(WFN_ROLE_L[r]||r)}
+function wfnDef(tr){var b=wfnBase(tr),d={ch:{line:true},to:['hr'],people:[],groups:[],mails:[],card:'text',text:'',conds:[]},S=wfnSimple(tr);
+  if(S)return Object.assign(d,S.group?{ch:{group:true},to:[],groups:['hr']}:{ch:{app:true,line:true},to:['subject']},{card:'auto',gcard:'auto'});
   if(b==='leave'){d.to=['approver'];d.card='request'}else if(b==='messenger'){d.to=['requester'];d.card='msg_status'}else if(b==='monthsum')d.text='สรุปเดือน {ym} · {name}';else d.text='แจ้งเข้าระบบไม่ได้ {req_no} · รหัส {code} {name}';return d}
 function wfnEmps(){return ((A.d&&A.d.employees)||[]).filter(function(e){return e.status!=='resigned'})}
 function wfnEmpName(id){var e=((A.d&&A.d.employees)||[]).filter(function(x){return x.id===id})[0];return e?e.first_name+' '+e.last_name+(e.nickname?' ('+e.nickname+')':''):'(ไม่พบพนักงาน)'}
 function wfnTitle(c,trig){var ch=c.ch||{},b=wfnBase(trig),who=[];
-  if(ch.line||ch.mail)who=(c.to||[]).map(function(r){return wfnRoleL(r,b).replace(/ \(.*\)$/,'')}).concat((c.people||[]).map(wfnEmpName));
+  if(ch.line||ch.mail||ch.app)who=(c.to||[]).map(function(r){return wfnRoleL(r,b).replace(/ \(.*\)$/,'')}).concat((c.people||[]).map(wfnEmpName));
   if(ch.group)who=who.concat((c.groups&&c.groups.length?c.groups:['hr']).map(wfGroupName));
   if(ch.mail)who=who.concat((c.mails||[]).filter(function(m){return m.on!==false}).map(function(m){return m.label||m.email}));
-  var chs=[ch.line?'LINE':'',ch.group?'กลุ่ม LINE':'',ch.mail?'อีเมล':''].filter(String);
+  var chs=[ch.app?'ในระบบ':'',ch.line?'LINE':'',ch.group?'กลุ่ม LINE':'',ch.mail?'อีเมล':''].filter(String);
   return ['ส่งถึง '+(who.length?who.slice(0,2).join(', ')+(who.length>2?' +'+(who.length-2):''):'…'),(chs.length?chs.join(' · '):'ยังไม่เลือกช่องทาง')+((c.conds||[]).length?' · มีเงื่อนไข':'')]}
-function wfnIssues(n,c,add){var ch=c.ch||{};if(!ch.line&&!ch.group&&!ch.mail){add(n.id,'ยังไม่ได้เลือกช่องทาง');return}
-  var who=(c.to||[]).length+(c.people||[]).length;if(ch.line&&!who)add(n.id,'LINE: ยังไม่ได้เลือกผู้รับ');
+function wfnIssues(n,c,add){var ch=c.ch||{};if(!ch.line&&!ch.group&&!ch.mail&&!ch.app){add(n.id,'ยังไม่ได้เลือกช่องทาง');return}
+  var who=(c.to||[]).length+(c.people||[]).length;if((ch.line||ch.app)&&!who)add(n.id,'LINE: ยังไม่ได้เลือกผู้รับ');
   if(ch.mail&&!who&&!(c.mails||[]).some(function(m){return m.on!==false}))add(n.id,'อีเมล: ยังไม่มีผู้รับ');
   if(ch.group){var gs=(((A.cfg||{}).lineMsg||{}).groups||[]);(c.groups&&c.groups.length?c.groups:['hr']).forEach(function(g){if(g==='hr'){if(!sv('hr_line_group'))add(n.id,'ยังไม่ได้เลือกกลุ่ม HR (ตั้งค่า › LINE)')}else if(g==='msg'){if(!sv('msg_line_group'))add(n.id,'ยังไม่ได้เลือกกลุ่ม Messenger')}else if(!gs.some(function(x){return x.id===g&&!x.left_at}))add(n.id,'กลุ่มนี้ไม่มีแล้ว หรือบอทออกจากกลุ่ม')})}
-  var needT=(ch.line&&c.card==='text')||(ch.group&&(c.gcard||'text')==='text');if(needT&&!String(c.text||'').trim())add(n.id,'ยังไม่ได้พิมพ์ข้อความ');
+  var needT=((ch.line||ch.app)&&c.card==='text')||(ch.group&&(c.gcard||'text')==='text');if(needT&&!String(c.text||'').trim())add(n.id,'ยังไม่ได้พิมพ์ข้อความ');
   (c.conds||[]).forEach(function(x,i){if(x.value===''||x.value==null)add(n.id,'เงื่อนไขที่ '+(i+1)+' ยังไม่ใส่ค่า')})}
-function wfnCards(trig,br,to){var b=wfnBase(trig);
+function wfnCards(trig,br,to){var b=wfnBase(trig);if(wfnSimple(trig))return ['auto','text'];
   if(b==='monthsum')return to.indexOf('top10')>=0?['ms_emp']:br==='ready'||br==='remind'?['ms_ready','text']:br==='done'||br==='info'?['ms_ack','text']:['text'];   // top10 = การ์ดรายคนเสมอ (2 พ.ย. 2569: เดิมกลายเป็น text แล้วเตือนให้พิมพ์ข้อความ)
   if(b==='messenger')return {'new':['msg_job','msg_status','text'],cancel:['msg_status','msg_cancel','text'],late:['msg_status','msg_overdue','text']}[br]||['msg_status','msg_job','text'];
   if(b==='help_new')return ['text'];
   var dec=['ok','no','back'].indexOf(br)>=0||trig==='leave_decided',onlyEmp=to.length===1&&to[0]==='employee';
   return dec?(onlyEmp?['result','text']:['result','request','text']):onlyEmp?['receipt','text']:['request','text']}
-function wfnGCards(trig,br){var b=wfnBase(trig);if(b==='monthsum')return ['ms_ready','text'];if(b==='messenger')return {'new':['msg_job','text'],cancel:['msg_cancel','msg_status','text'],late:['msg_overdue','text']}[br]||['msg_status','text'];if(b==='help_new')return ['text'];return ['summary','text']}
+function wfnGCards(trig,br){var b=wfnBase(trig);if(wfnSimple(trig))return ['auto','text'];if(b==='monthsum')return ['ms_ready','text'];if(b==='messenger')return {'new':['msg_job','text'],cancel:['msg_cancel','msg_status','text'],late:['msg_overdue','text']}[br]||['msg_status','text'];if(b==='help_new')return ['text'];return ['summary','text']}
 function wfnFields(trig,br){var b=wfnBase(trig),dp=((A.d&&A.d.org&&A.d.org.departments)||[]).map(function(d){return [d.name,d.name]});
-  var F=b==='monthsum'?[]:wfFields(b==='leave'?(['ok','no','back'].indexOf(br)>=0?'leave_decided':'leave_new'):trig);return F.concat([['rdept','แผนกของผู้รับ','sel',dp]])}
+  var F=b==='monthsum'||wfnSimple(trig)?[]:wfFields(b==='leave'?(['ok','no','back'].indexOf(br)>=0?'leave_decided':'leave_new'):trig);return F.concat([['rdept','แผนกของผู้รับ','sel',dp]])}
 function wfnInsp(n,c,trig){var b=wfnBase(trig),br=(b==='leave'||b==='messenger'||b==='monthsum')?wfBranch(n.id):'',ch=c.ch=c.ch||{},to=c.to=c.to||[];c.people=c.people||[];c.mails=c.mails||[];c.conds=c.conds||[];
   var opt=function(list,v){return list.map(function(o){return '<option value="'+esc(o[0])+'"'+(String(v)===String(o[0])?' selected':'')+'>'+esc(o[1])+'</option>'}).join('')};
   var cards=wfnCards(trig,br,to),gcards=wfnGCards(trig,br),fix=false;if(cards.indexOf(c.card)<0){c.card=cards[0];fix=true}if(gcards.indexOf(c.gcard)<0){c.gcard=gcards[0];fix=true}if(fix){WE.dirty=true;setTimeout(function(){wfDraw(true)},0)}
   var chip=function(k,l){return '<button type="button" class="wfn-ch'+(ch[k]?' on':'')+'" data-nch="'+k+'" aria-pressed="'+!!ch[k]+'">'+l+'</button>'};
-  var h='<div class="f">ช่องทาง <small class="faint">เลือกได้หลายช่องพร้อมกัน</small><div class="wfn-chs">'+chip('line',LINE_IC+'LINE รายคน')+chip('group',LINE_IC+'LINE กลุ่ม')+chip('mail',GMAIL_IC+'อีเมล')+'</div></div>';
-  if(ch.line||ch.mail){var em=wfnEmps().filter(function(e){return c.people.indexOf(e.id)<0}).sort(function(a,x){return String(a.emp_code)<String(x.emp_code)?-1:1});
-    h+='<div class="f">ส่งถึง'+(WFN_ROLES[b]||[]).map(function(r){return '<label class="fl-c"><input type="checkbox" data-nto="'+r+'"'+(to.indexOf(r)>=0?' checked':'')+'><span>'+esc(wfnRoleL(r,b))+'</span></label>'}).join('')+'</div>'+
+  var S=wfnSimple(trig),h='<div class="f">ช่องทาง <small class="faint">เลือกได้หลายช่องพร้อมกัน</small><div class="wfn-chs">'+(S?chip('app',ic('bell')+'ในระบบ (กระดิ่ง)'):'')+chip('line',LINE_IC+'LINE รายคน')+chip('group',LINE_IC+'LINE กลุ่ม')+chip('mail',GMAIL_IC+'อีเมล')+'</div></div>';
+  if(ch.line||ch.mail||ch.app){var em=wfnEmps().filter(function(e){return c.people.indexOf(e.id)<0}).sort(function(a,x){return String(a.emp_code)<String(x.emp_code)?-1:1});
+    h+='<div class="f">ส่งถึง'+wfnRolesOf(trig).map(function(r){return '<label class="fl-c"><input type="checkbox" data-nto="'+r+'"'+(to.indexOf(r)>=0?' checked':'')+'><span>'+esc(wfnRoleL(r,b))+'</span></label>'}).join('')+'</div>'+
      '<div class="f">เพิ่มรายคน'+c.people.map(function(id,i){return '<div class="wfe-em"><span style="flex:1;min-width:0">'+esc(wfnEmpName(id))+'</span><button class="btn sm" data-npdel="'+i+'" aria-label="เอาออก">✕</button></div>'}).join('')+
      '<select id="wfn-padd"><option value="">+ เลือกพนักงาน…</option>'+em.map(function(e){return '<option value="'+esc(e.id)+'">'+esc((e.emp_code||'')+' '+e.first_name+' '+e.last_name+(e.nickname?' ('+e.nickname+')':''))+'</option>'}).join('')+'</select></div>'}
   if(ch.group){var gs=(((A.cfg||{}).lineMsg||{}).groups||[]).filter(function(g){return !g.left_at}),G=c.groups&&c.groups.length?c.groups:[b==='messenger'?'msg':'hr'];c.groups=G;
@@ -45,9 +50,9 @@ function wfnInsp(n,c,trig){var b=wfnBase(trig),br=(b==='leave'||b==='messenger'|
   if(ch.mail)h+='<div class="f">อีเมลเพิ่ม <small class="faint">นอกจากอีเมลของผู้รับข้างบน</small>'+c.mails.map(function(m,i){return '<div class="wfe-em"><label class="fl-c" style="flex:1;min-width:0"><input type="checkbox" data-nmon="'+i+'"'+(m.on!==false?' checked':'')+'><span style="min-width:0"><b>'+esc(m.label||m.email)+'</b>'+(m.label?'<br><small class="faint">'+esc(m.email)+'</small>':'')+'</span></label><button class="btn sm" data-nmdel="'+i+'" aria-label="ลบ">✕</button></div>'}).join('')+
      '<div class="wfe-row wfe-er"><input id="wfn-em" placeholder="อีเมล" inputmode="email"><input id="wfn-el" placeholder="ชื่อ/ตำแหน่ง"></div><button class="btn sm" id="wfn-ea">+ เพิ่มอีเมล</button></div>'+
      (b==='monthsum'?'<label class="fl-c"><input type="checkbox" id="wfn-pdf"'+(c.pdf!==false?' checked':'')+'><span>แนบ PDF (A4 แนวนอน)</span></label><div class="faint" style="font-size:12px">เนื้อหาอีเมล = สรุป Top 10 ทั้งบริษัท (ฉบับเดียวกันทุกคน)</div>':'<div class="faint" style="font-size:12px">เนื้อหาอีเมล = ข้อความด้านล่าง</div>');
-  if(ch.line)h+='<label class="f">การ์ด LINE รายคน<select data-c="card">'+opt(cards.map(function(k){return [k,WF_CARD[k]]}),c.card)+'</select></label>'+(b==='monthsum'&&to.indexOf('top10')>=0?'<div class="faint" style="font-size:12px">พนักงานที่ติด Top 10 ได้การ์ดสรุปของตัวเองเสมอ · คนที่ HR ตัดออกไม่ได้รับ</div>':'');
+  if(ch.line||(S&&ch.app))h+='<label class="f">'+(S?'ข้อความ':'การ์ด LINE รายคน')+'<select data-c="card">'+opt(cards.map(function(k){return [k,WF_CARD[k]]}),c.card)+'</select></label>'+(b==='monthsum'&&to.indexOf('top10')>=0?'<div class="faint" style="font-size:12px">พนักงานที่ติด Top 10 ได้การ์ดสรุปของตัวเองเสมอ · คนที่ HR ตัดออกไม่ได้รับ</div>':'');
   if(ch.group)h+='<label class="f">การ์ดเข้ากลุ่ม<select data-c="gcard">'+opt(gcards.map(function(k){return [k,WF_CARD[k]]}),c.gcard)+'</select></label>';
-  if((ch.line&&c.card==='text')||(ch.group&&c.gcard==='text')||(ch.mail&&b!=='monthsum')){var V=b==='monthsum'?['ym','name','code','by','note']:b==='messenger'?['req_no','company','dates','type','name','by','note']:['name','type','days','dates','req_no','code','by','note'];
+  if(((ch.line||(S&&ch.app))&&c.card==='text')||(ch.group&&c.gcard==='text')||(ch.mail&&b!=='monthsum'&&(!S||c.card==='text'))){var V=S?['name','count','text']:b==='monthsum'?['ym','name','code','by','note']:b==='messenger'?['req_no','company','dates','type','name','by','note']:['name','type','days','dates','req_no','code','by','note'];
     h+='<label class="f">ข้อความ<textarea data-c="text" rows="3">'+esc(c.text||'')+'</textarea></label><div class="wfe-vars">'+V.map(function(v){return '<button class="btn sm" data-var="{'+v+'}">{'+v+'}</button>'}).join('')+'</div>'}
   var F=wfnFields(trig,br),fo=function(f){return f||['','','sel',[]]},fd=function(k){return fo(F.filter(function(f){return f[0]===k})[0])};
   h+='<div class="f">เงื่อนไข <small class="faint">ทุกข้อต้องตรง · แผนกของผู้รับ = กรองผู้รับ</small>'+c.conds.map(function(x,i){var f=fd(x.field);
