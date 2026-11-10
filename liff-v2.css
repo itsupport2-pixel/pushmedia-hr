@@ -77,4 +77,5 @@ html.in-line .phead{padding-top:14px}
 .inout b{font-size:17px}
 .cap{font-size:12.5px}
 .lnk-del{border:0;background:none;padding:0;margin-top:2px;align-self:flex-start;color:var(--red);font:inherit;font-size:13px;font-weight:600}
-
+/* การ์ดข้อมูลประจำวัน: เวลากะหลายช่วง (เช่น 08:30 - 12:00 - 13:00 - 17:30) ล้นใต้ปุ่ม › → ตัดบรรทัด (10 พ.ย. 2569) */
+.daily .r1>div:not(.dt){min-width:0;flex:1}.daily .shift{white-space:normal;line-height:1.35;overflow-wrap:anywhere}

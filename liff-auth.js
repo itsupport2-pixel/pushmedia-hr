@@ -103,7 +103,7 @@ function mobileOnlyScreen(){const mob=/iPhone|iPad|iPod|Android/i.test(navigator
 function start(){if(!mobileLineOk()){mobileOnlyScreen();return}loadPub();
   if(VA){S.tok=VA;["today","leave"].forEach(x=>LS.del(x));const b=document.createElement("div");b.id="va-bar";b.innerHTML='<svg class="va-i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="7" r="3.2"/><path d="M3.5 19.5c0-3.1 2.5-5.5 5.5-5.5 1.2 0 2.3.4 3.2 1"/><path d="M15.5 13.5h5.5l-2-2"/><path d="M21 17.5h-5.5l2 2"/></svg>มุมมองผู้ดูแลระบบ · ดูได้อย่างเดียว';document.body.appendChild(b);boot();return}
   const t=LS.get("tok");
-  if(t&&!S.invite){S.tok=t;if(window.liff&&CFG.liffId&&!DEV)liff.init({liffId:CFG.liffId}).then(refreshLine).catch(()=>{});boot();return}
+  if(t&&!S.invite){S.tok=t;if(window.liff&&CFG.liffId&&!DEV)liff.init({liffId:CFG.liffId}).then(()=>{if(toLiffApp())return;refreshLine()}).catch(()=>{});boot();return}   // จำการเข้าระบบไว้แล้วแต่เปิดในเบราว์เซอร์ในแอป LINE (Android) → ย้ายไปหน้าต่างแอปพนักงานเหมือน iOS
   startLine()}
 /* เข้าระบบจากที่จำไว้ → อัปเดตชื่อ/รูปโปรไฟล์ LINE วันละครั้ง (เงียบ ๆ ไม่กระทบการใช้งาน) */
 function refreshLine(){try{if(LS.get("lpic")===ISO(new Date())||!liff.isLoggedIn())return;const t=liff.getIDToken();if(!t)return;
