@@ -6,10 +6,10 @@
 const TABS=[["home","หน้าหลัก","home"],["sched","ตารางงาน","cal"],["clock","ลงเวลางาน","finger"],["req","เอกสาร","doc"],["menu","เมนู","menu"]];
 let tick=null;
 const cur=()=>S.stack.length?S.stack[S.stack.length-1]:S.tab;
-function paintChrome(){const [n]=cur().split(":");document.title=(TITLE[n]||"Push Media Center")+" · Push Media Center";
+function paintChrome(){const [n]=cur().split(":");document.title=TITLE[n]||"Push Media Center";   // 10 พ.ย. 2569: หัว LINE แสดงชื่อหน้าอย่างเดียว (แบบ HumanSoft)
   const tb=$("#tabbar");tb.hidden=NOTAB.includes(n);
-  tb.innerHTML=TABS.map(x=>x[0]==="clock"?`<button class="fab" data-tab="clock"><span class="ring"><i>${ic("finger")}</i></span>${x[1]}</button>`:`<button data-tab="${x[0]}" ${S.tab===x[0]&&!S.stack.length?'aria-current="page"':""}>${ic(x[2])}${x[1]}</button>`).join("");}
-function build(anim){const [n,arg]=cur().split(":");const v=document.createElement("div");v.className="view "+(n==="home"?"home":["clock","done","lvdone"].includes(n)?"white":"")+(NOTAB.includes(n)?"":" tabbed");v.innerHTML=V[n](arg);if(anim)v.classList.add(anim);return v;}
+  tb.innerHTML=TABS.map(x=>x[0]==="clock"?`<button class="fab" data-tab="clock"><span class="ring"><i>${ic("finger")}</i></span>${x[1]}</button>`:`<button data-tab="${x[0]}" ${S.tab===x[0]?'aria-current="page"':""}>${ic(x[2])}${x[1]}</button>`).join("");}
+function build(anim){const [n,arg]=cur().split(":");const v=document.createElement("div");v.className="view v-"+n+" "+(n==="home"?"home":["clock","done","lvdone"].includes(n)?"white":"")+(NOTAB.includes(n)?"":" tabbed");v.innerHTML=V[n](arg);if(anim)v.classList.add(anim);return v;}
 /* หน้าที่แสดงอยู่ = ตัวท้ายสุดที่ไม่ได้กำลังเลื่อนออก (ระหว่างแอนิเมชันย้อนกลับ หน้าเก่ายังค้างอยู่ท้ายสุดได้ ~0.4 วิ · หลังบ้านตอบเร็วกว่านั้นได้) */
 const liveView=()=>[...$("#views").children].reverse().find(v=>!v.classList.contains("out-r"))||null;
 function repaint(){const box=$("#views"),v=liveView();if(!v)return show("fade");const st=v.scrollTop,[n,arg]=cur().split(":");v.innerHTML=V[n](arg);v.scrollTop=st;if(cur()==="clock")startClock();if(n==="leave")paintLeaveChecks();tabsToActive();fitChips()}

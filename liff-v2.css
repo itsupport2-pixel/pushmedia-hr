@@ -1,0 +1,80 @@
+/* แอปพนักงาน · ดีไซน์ใหม่ (Figma หน้า 22 · 10 พ.ย. 2569 ผู้ใช้เลือก)
+ * ใช้สีเดิมทั้งหมด (liff.css) · เพิ่มความลึก: การ์ดขอบ 1px + เงา 2 ชั้น · มุมโค้ง 20–22 การ์ด / 14–16 ปุ่ม · ปุ่มย้อนกลับวงกลม
+ * ผู้ใช้ขอแบบเดิม: หน้าหลัก · ลงเวลางาน (v-clock/done/devwait) · Community (v-cb*) · แถบล่าง (แบบเดิม · แท็บที่อยู่เป็นสีดำ) · เมนูอยู่ขวา + โลโก้ (แบบเดิม)
+ * ถอยกลับ: เอา <link liff-v2.css> และ <script liff-v2.js> ออกจาก liff.html */
+:root{--e1:0 0 0 1px rgba(17,17,17,.045),0 1px 2px rgba(17,17,17,.04),0 6px 18px rgba(17,17,17,.05);--e2:0 0 0 1px rgba(17,17,17,.04),0 2px 4px rgba(17,17,17,.05),0 14px 30px rgba(17,17,17,.09);--r-card:20px;--r-btn:14px}
+
+/* ── หัวหน้า (10 พ.ย. 2569 ผู้ใช้: ไม่ต้องแสดงชื่อเมนูซ้ำ เปลืองพื้นที่) · ในแอป LINE ใช้หัวของ LINE (ชื่อหน้า + ปุ่มย้อนกลับ · ประวัติหน้าซิงก์กับ history แล้ว)
+ * นอก LINE (โหมดทดสอบในเครื่อง) ยังแสดงแถบเดิม · หน้าหลักใช้แบบเดิม */
+html.in-line .band,html.in-line .phead .top,html.in-line :is(.v-clock,.v-done,.v-devwait) .wbar{display:none!important}
+html.in-line .phead{padding-top:14px}
+/* ── การ์ด · รายการ · ปุ่ม (ยกเว้นหน้าที่ใช้แบบเดิม) ── */
+.view:not(.v-clock):not(.v-done):not(.v-devwait):not([class*=" v-cb"]) :is(.card,.qcard,.fcard,.doc,.empty,.mrow,.as-it,.nf){border-radius:var(--r-card);box-shadow:var(--e1)}
+.view:not(.v-clock):not(.v-done):not(.v-devwait):not([class*=" v-cb"]) .mrow{border-radius:18px}
+.view:not(.v-clock):not(.v-done):not(.v-devwait):not([class*=" v-cb"]) .btn{border-radius:var(--r-btn)}
+.view:not(.v-clock):not(.v-done):not(.v-devwait):not([class*=" v-cb"]) .btn.pri{box-shadow:0 6px 16px rgba(17,17,17,.22)}
+.view:not(.v-clock):not(.v-done):not(.v-devwait):not([class*=" v-cb"]) .btn.out{border-width:1.5px;background:#fff}
+.view .card,.view .qcard,.view .doc,.view .mrow{transition:transform .12s ease}
+.view :is(.card,.qcard,.doc,.mrow,.as-it,.nf,.btn):active{transform:scale(.97)}
+
+/* ── โควตาการลา (ใหม่) ── */
+.qv2{display:flex;flex-direction:column;gap:8px;padding:12px 14px 12px;background:#fff;border-radius:var(--r-card);box-shadow:var(--e1)}
+.qv2 .t{display:flex;align-items:center;gap:12px}
+.qv2 .ti{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none}
+.qv2 .ti svg.i{width:18px;height:18px;stroke-width:1.8}
+.qv2 .nm{flex:1;min-width:0}.qv2 .nm b{display:block;font-size:14.5px;font-weight:600;line-height:1.3}.qv2 .nm span{font-size:12px;color:var(--text-3,#9A9A9A)}
+.qv2 .n{font-size:20px;font-weight:700;letter-spacing:-.5px;white-space:nowrap}.qv2 .n small{font-size:12px;font-weight:400;color:var(--text-3,#9A9A9A);margin-left:3px}
+.qv2 .bar{height:4px;border-radius:99px;background:#EDEDED;overflow:hidden;display:flex}.qv2 .bar i{display:block;height:100%;background:#111}.qv2 .bar i.r{background:var(--orange);opacity:.65}
+.qv2 .rs{font-size:12.5px;color:var(--orange)}
+.qlink{display:flex;align-items:center;gap:10px;width:100%;padding:11px 14px;border-radius:14px;background:#fff;border:1.5px solid #111;font-size:14.5px;font-weight:600;color:#111;text-align:left}
+.qlink svg.i{width:18px;height:18px}.qlink .chev{margin-left:auto;display:grid}
+
+/* ── รายละเอียดทรัพย์สิน (ใหม่ · รูปใหญ่แบบเดิม) ── */
+.adv2-h{background:#fff;border-radius:var(--r-card);box-shadow:var(--e2);padding:12px 12px 18px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
+.adv2-h .as-pic{width:100%!important;height:auto!important;aspect-ratio:358/220;border-radius:16px!important;margin:0}
+.adv2-h h2{margin:6px 0 0;font-size:20px;font-weight:700}
+.adv2-code{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:10px;background:#F4F4F5;font-weight:600;font-size:14px;letter-spacing:.3px}
+.adv2-code svg.i{width:16px;height:16px}
+.adv2-l{background:#fff;border-radius:var(--r-card);box-shadow:var(--e1);padding:4px 14px}
+.adv2-r{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}.adv2-r:last-child{border-bottom:0}
+.adv2-r .ti{width:32px;height:32px;border-radius:10px;background:#F4F4F5;display:grid;place-items:center;flex:none}.adv2-r .ti svg.i{width:17px;height:17px;stroke-width:1.8;color:#5F5F5F}
+.adv2-r span{flex:1;color:var(--text-2);font-size:14px}.adv2-r b{font-weight:600;text-align:right;font-size:15px}
+.adv2-rep{display:flex;align-items:center;gap:12px;width:100%;padding:14px 16px;border-radius:16px;background:#FFF1F1;border:1px solid #F7C9C9;text-align:left;color:#C0392B}
+.adv2-rep svg.i{width:20px;height:20px;flex:none}.adv2-rep b{display:block;font-size:15px}.adv2-rep span{display:block;font-size:12.5px;color:#9A6B6B}.adv2-rep .chev{margin-left:auto;display:grid}
+
+/* ── การแจ้งเตือน: ยังไม่มีรายการ ── */
+.nfe{display:flex;flex-direction:column;align-items:center;gap:6px;padding:28px 20px 26px;background:#fff;border-radius:var(--r-card);box-shadow:var(--e1);text-align:center}
+.nfe .bi{width:56px;height:56px;border-radius:50%;background:#F4F4F5;display:grid;place-items:center;margin-bottom:6px;box-shadow:0 0 0 8px #FAFAFA}
+.nfe .bi svg.i{width:24px;height:24px;stroke-width:1.7}
+.nfe b{font-size:16px;font-weight:600}.nfe span{font-size:13px;color:var(--text-2);line-height:1.55}
+
+@media (prefers-reduced-motion:reduce){.view :is(.card,.qcard,.doc,.mrow,.as-it,.nf,.btn):active{transform:none}}
+
+/* ── ขนาดตัวอักษรบนมือถือ (10 พ.ย. 2569 ผู้ใช้: ตรวจทั้งระบบ ตัวไหนใหญ่เกินเปลี่ยนได้เลย)
+ * หลัก: เนื้อหา 14–15 · หัวข้อการ์ด 15–16 · ตัวเลขเด่น 20–30 · คำอธิบาย 12–13 · ปุ่ม 15 สูง 44 · ช่องกรอก 16 (iOS ซูมถ้าเล็กกว่า) สูง 44 */
+.btn{min-height:44px;font-size:15.5px;padding:10px 14px}.btn.sm{min-height:38px;font-size:14px}
+.inp,.sel,.ta{min-height:44px;padding:9px 13px;border-radius:12px}
+.fl>span{font-size:13px}.fl{gap:5px}
+.kv{font-size:14.5px;padding:11px 0;gap:10px}.kv span{font-size:14px}
+.sec h3{font-size:15.5px}
+.mrow{font-size:15px;padding:11px 16px;gap:14px}.mrow svg.i{width:24px;height:24px}
+.tabs .pill{font-size:14px}
+.itm b{font-size:15px}
+.drawer nav button{font-size:15px}
+.sec-h h2{font-size:16.5px}
+.sheet .h h2{font-size:17px}.sheetm h3{font-size:17px}
+.prof .nm b{font-size:16px}.prof .nm span{font-size:13.5px}
+.phead .who b{font-size:17px}
+.linebar .t b,.loc b,.mband b,.opt b,.mstrip button b{font-size:15.5px}
+.qcard .r{font-size:15px}
+.doc strong{font-size:22px}.doc strong small{font-size:15px}
+.tile strong{font-size:16px}
+.side h2,.mstat b,.sl-netbox b,.mband .mb-t b,.ltc-q b{font-size:18px}
+.okv h2,.wl-hero h2{font-size:19px}
+.lv-step b,.ltc b,.cal-h b,.ac-bn b,.shc b{font-size:15px}
+.week button b{font-size:16px}.day .n b{font-size:20px}
+.ms-t b,.as-t b{font-size:20px}.ms-li .d b{font-size:17px}
+.inout b{font-size:17px}
+.cap{font-size:12.5px}
+.lnk-del{border:0;background:none;padding:0;margin-top:2px;align-self:flex-start;color:var(--red);font:inherit;font-size:13px;font-weight:600}
+
