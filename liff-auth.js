@@ -82,7 +82,19 @@ function getIdToken(){
 }
 /* ชื่อระบบ + โลโก้บริษัท (ตั้งค่าระบบ › ข้อมูลบริษัท) · ไม่ต้องล็อกอิน · จำไว้ในเครื่อง */
 function loadPub(){S.pub=LS.get("pub");return call("publicInfo").then(p=>{S.pub=p;LS.set("pub",p);if(p.app)document.title=p.app}).catch(()=>{})}
-function start(){loadPub();
+/* 10 พ.ย. 2569 ผู้ใช้ขอ: แอปพนักงานใช้ได้เฉพาะในแอป LINE บนมือถือ (iOS / Android)
+ * เปิดจากเบราว์เซอร์คอม · LINE PC · Safari/Chrome บนมือถือ (คัดลอกลิงก์ไปเปิด) = แสดงหน้าแจ้ง ไม่เข้าระบบ
+ * ยกเว้นโหมดทดสอบในเครื่อง (?dev=) และ View as ของผู้ดูแลระบบ · ใช้ได้ก่อน liff.init (isInClient / getOS) + ดู User-Agent ประกอบ */
+function mobileLineOk(){if(DEV||VA)return true;const ua=navigator.userAgent||"",inLine=/\bLine\//i.test(ua)||(window.liff&&liff.isInClient&&liff.isInClient()),os=window.liff&&liff.getOS?liff.getOS():(/iPhone|iPad|iPod/i.test(ua)?"ios":/Android/i.test(ua)?"android":"web");
+  return !!inLine&&(os==="ios"||os==="android")&&!/\bLine\/[\d.]+\s*(Desktop|Mac|Win)/i.test(ua)}
+function mobileOnlyScreen(){const mob=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent||""),url=CFG.liffId?"https://liff.line.me/"+CFG.liffId:"";
+  document.body.innerHTML='<div class="mo-wrap" style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:32px 24px;text-align:center;font-family:inherit;color:#141414;background:#fff">'+
+   '<svg viewBox="0 0 24 24" width="56" height="56" fill="none" stroke="#141414" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M10.5 18.5h3"/></svg>'+
+   '<h1 style="font-size:20px;margin:4px 0 0">เปิดได้เฉพาะในแอป LINE บนมือถือ</h1>'+
+   '<p style="margin:0;color:#6B7280;font-size:15px;line-height:1.6;max-width:320px">'+(mob?'กรุณาเปิดผ่านแอป LINE · กดเมนูแอปพนักงานใน LINE OA ของบริษัท':'แอปพนักงานใช้บนโทรศัพท์มือถือเท่านั้น · เปิด LINE บนมือถือ แล้วกดเมนูแอปพนักงานใน LINE OA ของบริษัท')+'</p>'+
+   (mob&&url?'<a href="'+url+'" style="margin-top:6px;display:inline-flex;align-items:center;justify-content:center;height:48px;padding:0 28px;border-radius:12px;background:#06C755;color:#fff;font-weight:700;text-decoration:none">เปิดในแอป LINE</a>':'')+
+   '<p style="margin:8px 0 0;color:#9CA3AF;font-size:12.5px">HR / หัวหน้างาน ใช้หลังบ้านบนคอมได้ที่ pct.push.co.th</p></div>'}
+function start(){if(!mobileLineOk()){mobileOnlyScreen();return}loadPub();
   if(VA){S.tok=VA;["today","leave"].forEach(x=>LS.del(x));const b=document.createElement("div");b.id="va-bar";b.innerHTML='<svg class="va-i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="7" r="3.2"/><path d="M3.5 19.5c0-3.1 2.5-5.5 5.5-5.5 1.2 0 2.3.4 3.2 1"/><path d="M15.5 13.5h5.5l-2-2"/><path d="M21 17.5h-5.5l2 2"/></svg>มุมมองผู้ดูแลระบบ · ดูได้อย่างเดียว';document.body.appendChild(b);boot();return}
   const t=LS.get("tok");
   if(t&&!S.invite){S.tok=t;if(window.liff&&CFG.liffId&&!DEV)liff.init({liffId:CFG.liffId}).then(refreshLine).catch(()=>{});boot();return}
