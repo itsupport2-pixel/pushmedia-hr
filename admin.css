@@ -1234,3 +1234,12 @@ table.tr-t{min-width:0!important}table.tr-t td{white-space:normal}table.tr-t td.
 .ti-m{border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:4px}.ti-m .tr-li{border-bottom:0}.ti-mf{display:grid;gap:8px;padding:0 10px 0 48px}.ti-mf .f span{font-size:12px}.ti-mf .fsel{max-width:none;width:100%}.ti-mf input{height:36px}
 /* 10 พ.ย. 2569: แจ้งหลักสูตรที่ถูกซ่อนด้วยตัวกรองปี */
 .tr-hid{display:flex;align-items:center;gap:8px;margin:-6px 0 12px;padding:9px 12px;border-radius:10px;background:#F4F4F5;font-size:13.5px;color:var(--mut)}.tr-hid svg{width:16px;height:16px;flex:none}.tr-hid b{color:var(--fg);font-weight:600}.tr-hid .lnk{margin-left:auto;font-weight:600}
+/* เลื่อนดูพนักงานคนก่อน/ถัดไป (10 พ.ย. 2569 · แบบ B) */
+.pf-top{display:flex;align-items:baseline;gap:12px}.pf-top .back{margin-bottom:10px}.pf-pos{margin-left:auto;font-size:12.5px;color:var(--mut)}
+.phero{position:relative}
+.pf-nav{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:var(--sf);color:var(--fg);border:1px solid var(--line);box-shadow:0 6px 18px rgba(0,0,0,.10);display:grid;place-items:center;padding:0;cursor:pointer;z-index:2;transition:transform .12s,box-shadow .12s}
+.pf-nav-L{left:-20px}.pf-nav-R{right:-20px}
+.pf-nav:hover:not(:disabled){box-shadow:0 8px 22px rgba(0,0,0,.16);transform:translateY(-50%) scale(1.06)}.pf-nav:active:not(:disabled){transform:translateY(-50%) scale(.95)}
+.pf-nav:disabled{opacity:.35;cursor:default;box-shadow:none}
+@media(max-width:900px){.pf-nav{width:36px;height:36px;top:14px;transform:none}.pf-nav-L{left:auto;right:54px}.pf-nav-R{right:12px}.pf-nav:hover:not(:disabled),.pf-nav:active:not(:disabled){transform:none}}
+
