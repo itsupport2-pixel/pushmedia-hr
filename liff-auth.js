@@ -72,14 +72,20 @@ function fatal(e){$("#views").innerHTML=`<div class="view white"><div class="okv
 function getIdToken(){
   if(DEV)return Promise.resolve("dev|"+DEV);
   if(!window.liff||!CFG.liffId)return Promise.reject(new Error("ยังไม่ได้ตั้งค่า LIFF ID"));
-  return liff.init({liffId:CFG.liffId}).then(()=>{try{sessionStorage.removeItem("pmhr_swap")}catch(x){}if(!liff.isLoggedIn()){liff.login({redirectUri:location.href});return new Promise(()=>{})}return liff.getIDToken()})
+  return liff.init({liffId:CFG.liffId}).then(()=>{try{sessionStorage.removeItem("pmhr_swap")}catch(x){}if(!liff.isLoggedIn()){if(toLiffApp())return new Promise(()=>{});liff.login({redirectUri:location.href});return new Promise(()=>{})}return liff.getIDToken()})
     .catch(e=>{   // เปิดจากอีกช่อง LINE (Developing / Published) แต่หน้าเว็บเดาช่องผิด → สลับไปอีกช่องเอง 1 ครั้งต่อการเปิด
       let tried="";try{tried=sessionStorage.getItem("pmhr_swap")||""}catch(x){}
       if(/invalid liff id/i.test(String(e&&e.message))&&!tried){const other=CFG.channel==="pub"?"dev":"pub";
         try{sessionStorage.setItem("pmhr_swap",CFG.channel||"dev");localStorage.setItem("pmhr_ch",other)}catch(x){}
         const u=new URL(location.href);u.searchParams.set("ch",other);location.replace(u.toString());return new Promise(()=>{})}
+      if(toLiffApp())return new Promise(()=>{});
       throw e});
 }
+/* 10 พ.ย. 2569 (Android ขึ้น LINE Login 400 Bad Request): กดลิงก์ในแชต LINE → เปิดในเบราว์เซอร์ในแอป LINE (ไม่ใช่ LIFF)
+ * liff.login จากเบราว์เซอร์ในแอป → access.line.me ตอบ 400 · แก้: ส่งไปเปิดแอปพนักงานผ่านลิงก์ LIFF (LINE เปิดในหน้าต่าง LIFF ล็อกอินให้เอง)
+ * กันวน: ทำครั้งเดียวต่อแท็บ */
+function toLiffApp(){try{if(!window.liff||liff.isInClient()||!/\bLine\//i.test(navigator.userAgent||"")||!/iPhone|iPad|iPod|Android/i.test(navigator.userAgent||""))return false;if(sessionStorage.getItem("pmhr_toliff"))return false;sessionStorage.setItem("pmhr_toliff","1")}catch(x){return false}
+  const id=location.hostname==="pct.push.co.th"?"2012235420-HusTQ3rY":CFG.liffId;if(!id)return false;location.replace("https://liff.line.me/"+id+(S.invite?"?invite="+encodeURIComponent(S.invite):""));return true}
 /* ชื่อระบบ + โลโก้บริษัท (ตั้งค่าระบบ › ข้อมูลบริษัท) · ไม่ต้องล็อกอิน · จำไว้ในเครื่อง */
 function loadPub(){S.pub=LS.get("pub");return call("publicInfo").then(p=>{S.pub=p;LS.set("pub",p);if(p.app)document.title=p.app}).catch(()=>{})}
 /* 10 พ.ย. 2569 ผู้ใช้ขอ: แอปพนักงานใช้ได้เฉพาะในแอป LINE บนมือถือ (iOS / Android)
