@@ -87,7 +87,7 @@ function loadPub(){S.pub=LS.get("pub");return call("publicInfo").then(p=>{S.pub=
  * ยกเว้นโหมดทดสอบในเครื่อง (?dev=) และ View as ของผู้ดูแลระบบ · ใช้ได้ก่อน liff.init (isInClient / getOS) + ดู User-Agent ประกอบ */
 function mobileLineOk(){if(DEV||VA)return true;const ua=navigator.userAgent||"",inLine=/\bLine\//i.test(ua)||(window.liff&&liff.isInClient&&liff.isInClient()),os=window.liff&&liff.getOS?liff.getOS():(/iPhone|iPad|iPod/i.test(ua)?"ios":/Android/i.test(ua)?"android":"web");
   return !!inLine&&(os==="ios"||os==="android")&&!/\bLine\/[\d.]+\s*(Desktop|Mac|Win)/i.test(ua)}
-function mobileOnlyScreen(){const mob=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent||""),url=CFG.liffId?"https://liff.line.me/"+CFG.liffId:"";
+function mobileOnlyScreen(){const mob=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent||""),url=location.hostname==="pct.push.co.th"?"https://liff.line.me/2012235420-HusTQ3rY":CFG.liffId?"https://liff.line.me/"+CFG.liffId:"";   // โดเมนจริง = แอป Push Media Center (ช่อง LINE Login · พนักงานทุกคนเข้าได้)
   document.body.innerHTML='<div class="mo-wrap" style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:32px 24px;text-align:center;font-family:inherit;color:#141414;background:#fff">'+
    '<svg viewBox="0 0 24 24" width="56" height="56" fill="none" stroke="#141414" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M10.5 18.5h3"/></svg>'+
    '<h1 style="font-size:20px;margin:4px 0 0">เปิดได้เฉพาะในแอป LINE บนมือถือ</h1>'+
