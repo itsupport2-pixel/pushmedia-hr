@@ -8,7 +8,7 @@ function isHomeCtx(){try{const ua=navigator.userAgent||"";if(/\bLine\//i.test(ua
 function homeLabel(){const ua=navigator.userAgent||"";return /iPhone/i.test(ua)?"iPhone":/iPad/i.test(ua)?"iPad":/Android/i.test(ua)?((/;\s*([^;)]+)\s+Build\//.exec(ua)||[])[1]||"Android").slice(0,40):"มือถือ"}
 function homeStart(){loadPub();const k=LS.get("home");
   if(!k||!k.d||!k.s){homeReqView();return}
-  $("#views").innerHTML='<div class="view white"><div class="pad" style="padding-top:40vh;text-align:center"><span class="spin"></span></div></div>';$("#tabbar").hidden=true;
+  $("#views").innerHTML='<div class="view white"><div class="pad" style="padding-top:40vh;text-align:center"><span class="spin" style="border-color:#E5E5E5;border-top-color:#111"></span></div></div>';$("#tabbar").hidden=true;
   homeTry(k,true)}
 /* ลองเข้าด้วยกุญแจเครื่อง · รออนุญาต = แสดงหน้ารอ แล้วลองซ้ำทุก 3 วินาที */
 let homePoll=0;
@@ -38,8 +38,8 @@ function homeReqView(msg){$("#tabbar").hidden=true;clearTimeout(homePoll);
 /* ขั้นที่ 2: รอพนักงานกดอนุญาตใน LINE (ลองเข้าใหม่เองทุก 3 วินาที) */
 function homeWaitView(k){if($("#hwv"))return;$("#tabbar").hidden=true;
   $("#views").innerHTML=`<div class="view white" id="hwv">${band("รออนุญาต")}<div class="pad"><div class="fcard" style="gap:12px;align-items:center;text-align:center">
-   <span class="spin" style="width:34px;height:34px"></span><b style="font-size:17px">เปิด LINE แล้วกด "อนุญาต"</b>
-   <span class="cap">ระบบส่งข้อความ <b>ขอเข้าใช้งานจากเครื่องใหม่</b> เข้า LINE ${k&&k.n?"ของคุณ"+esc(k.n):"ของคุณ"} แล้ว · กดอนุญาตภายใน 10 นาที แล้วกลับมาหน้านี้ ระบบจะเข้าให้เอง</span>
+   <span class="spin" style="width:34px;height:34px;border-color:#E5E5E5;border-top-color:#111"></span><b style="font-size:17px">เปิด LINE แล้วกด "อนุญาต"</b>
+   <span class="cap">ระบบส่งข้อความ <b>ขอเข้าใช้งานจากเครื่องใหม่</b> เข้า LINE ${k&&k.n?"ของคุณ "+esc(k.n):"ของคุณ"} แล้ว · กดอนุญาตภายใน 10 นาที แล้วกลับมาหน้านี้ ระบบจะเข้าให้เอง</span>
    ${location.hostname==="pct.push.co.th"?'<a class="btn out" href="line://" style="width:100%">เปิดแอป LINE</a>':""}</div>
    <div style="text-align:center;margin-top:14px"><button type="button" class="lnk-del" id="hwc" style="color:var(--text-2,#666)">ยกเลิก / กรอกใหม่</button></div></div></div>`;
   $("#hwc").onclick=()=>{LS.del("home");homeReqView()}}
