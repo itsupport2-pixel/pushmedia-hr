@@ -1247,3 +1247,17 @@ table.tr-t{min-width:0!important}table.tr-t td{white-space:normal}table.tr-t td.
 .tx-w{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}.tx-wi{border:1px solid var(--line);border-radius:10px;padding:8px 12px;background:var(--sf);font-size:13px}.tx-wi summary{cursor:pointer;font-weight:600}.tx-wi>div{margin-top:6px;line-height:1.6}.tx-bad{border-color:var(--bad);background:var(--bad-s)}.tx-warn{border-color:var(--warn);background:var(--warn-s)}
 @media(max-width:900px){.tx-ks{grid-template-columns:1fr 1fr}}
 
+
+/* คำขอแก้เวลา · หน้าสร้าง (11 พ.ย. 2569 · Figma หน้า 27 เฟรม 1) */
+.ta-steps{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px 18px;margin:4px 0 16px}
+.ta-st{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;color:var(--mut)}.ta-st b{display:grid;place-items:center;min-width:22px;height:22px;border-radius:99px;background:#EDEDED;color:#7A7A7A;font-size:12px}
+.ta-st.on{color:var(--tx);font-weight:600}.ta-st.on b{background:#111;color:#fff}.ta-steps i{color:#C4C4C4;font-style:normal}
+.ta-sel{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;margin-bottom:16px}.ta-sel .f{min-width:200px}.ta-sel .f:first-child{flex:0 1 380px}
+.ta-q{display:flex;gap:22px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 16px}.ta-q:empty{display:none}.ta-q small{display:block;font-size:12px;color:var(--mut)}.ta-q b{font-size:18px}
+.ta-t td,.ta-t th{vertical-align:middle}.ta-t tr.lk td{color:#9A9A9A;background:#FCFCFC}.ta-t tr.on td{background:#FAFAFA}
+.ta-io{display:flex;align-items:center;gap:6px}.ta-io span{color:#9A9A9A}.ta-tm{width:96px;height:38px;border:1px solid var(--line);border-radius:10px;padding:0 10px;font:inherit;background:#fff}.ta-tm:disabled{background:#F4F4F5;color:#7A7A7A}
+.ta-rs{width:100%;min-width:220px;height:38px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font:inherit}
+.ta-ev{height:34px;border:1px dashed #BDBDBD;border-radius:9px;background:#FFF;padding:0 12px;font:inherit;font-size:13px;cursor:pointer;white-space:nowrap}.ta-ev.ok{border-style:solid;background:#F4F4F5;font-weight:600}
+.ta-warn{background:#FFF6E5;border:1px solid #F3D9A6;color:#7A4500;border-radius:14px;padding:14px 18px;margin-top:14px}.ta-err{background:#FFF1F1;color:#C0392B;border-radius:14px;padding:12px 18px;margin-top:10px;font-size:13.5px}
+.ta-foot{display:flex;align-items:center;gap:10px;margin-top:18px;padding-bottom:30px}.ta-foot .faint{font-size:13px}
+.ta-t input[type=checkbox]{width:18px;height:18px;accent-color:#111}
