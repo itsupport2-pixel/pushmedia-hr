@@ -862,7 +862,7 @@ html.th-sky .co-brand.lgc{box-shadow:0 0 0 1px #D2EEFA}
 .msg-alt{font-size:11.5px;color:#fffd;line-height:1.5}
 @media(max-width:860px){.msg-ov{padding:0}.msg-box{border-radius:0;height:100%}.msg-bd{flex-direction:column}.msg-l{width:auto;max-height:38%;border-right:0;border-bottom:1px solid var(--line)}}
 /* Workflow: กล่องส่งแจ้งเตือนรวม (admin-wfn.js · 1 พ.ย. 2569) */
-.wfn-chs{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}.wfn-ch{border:1px solid var(--line);background:var(--sf,#fff);border-radius:99px;padding:6px 12px;font:inherit;font-size:13px;cursor:pointer;color:inherit}.wfn-ch.on{background:#141414;color:#fff;border-color:#141414}
+.wfn-chs{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}.wfn-ch{border:1px solid var(--line);background:var(--sf,#fff);border-radius:99px;padding:6px 12px;font:inherit;font-size:13px;cursor:pointer;color:inherit}.wfn-ch.on{background:#141414;color:#fff;border-color:#141414}.wfn-ch{display:inline-flex;align-items:center;line-height:1.2}.wfn-ch>svg{width:16px;height:16px;flex:none;margin-right:6px}   /* 11 พ.ย. 2569: ไอคอนกระดิ่งไม่มีขนาด ดันปุ่มเป็นวงกลมใหญ่ */
 .wfn-cond{display:grid;grid-template-columns:minmax(0,1.3fr) 58px minmax(0,1fr) auto;gap:6px;margin-top:6px;align-items:center}.wfn-cond select,.wfn-cond input{min-width:0;width:100%}
 .wfe-pv iframe.wfn-if{width:100%;height:440px;border:0;border-radius:8px;background:#EDEDED;display:block}
 .wfe-row3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.wfe-row3 input{width:100%;min-width:0}
