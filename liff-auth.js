@@ -112,9 +112,10 @@ function refreshLine(){try{if(LS.get("lpic")===ISO(new Date())||!liff.isLoggedIn
 function startLine(){getIdToken().then(t=>{S.idt=t;return call("loginLine",t)}).then(r=>{S.relog=0;if(r.linked){setTok(r.token);if(r.me&&!LS.get("seen_"+r.me.id))linkedView(r.me);else boot()}
   else{S.setup=!!r.setup;if(r.pending)waitingView(r.pending.at);else if(S.invite||LS.get("welcomed"))linkView(r.lineName);else welcomeView(r.lineName)}}).catch(fatal)}
 /* เปิดหน้าตรงจากปุ่มในการ์ด LINE (Workflow แจ้งเตือน 30 ต.ค. 2569): ?go=approve|myreqs|leave · LIFF อาจส่งมาใน liff.state */
-const DEEP=(()=>{const st=decodeURIComponent(Q.get("liff.state")||""),gp=k=>Q.get(k)||(new RegExp("[?&]"+k+"=([\\w-]+)").exec(st)||[])[1]||"",g=gp("go");return {approve:1,myreqs:1,leave:1,apd:1,mjob:1,cbp:1,ms:1,assets:1,ahist:1,profile:1}[g]?{g:g,id:gp("id"),act:gp("act"),no:gp("no")}:null})();let deepDone=0;
+const DEEP=(()=>{const st=decodeURIComponent(Q.get("liff.state")||""),gp=k=>Q.get(k)||(new RegExp("[?&]"+k+"=([\\w-]+)").exec(st)||[])[1]||"",g=gp("go");return {approve:1,myreqs:1,leave:1,apd:1,mjob:1,cbp:1,ms:1,assets:1,ahist:1,profile:1,homeok:1}[g]?{g:g,id:gp("id"),act:gp("act"),no:gp("no")}:null})();let deepDone=0;
 /* ปุ่มในการ์ดคำขอลา (?go=apd&id=…&act=ok|no): เปิดรายการอนุมัติ → คำขอนั้น → ยืนยันอนุมัติ / ใส่เหตุผลไม่อนุมัติ (ปุ่มส่งกดได้เมื่อมีเหตุผล) */
-function deepGo(d){if(d.g==="ms")return d.id?go("ms:"+d.id):null;   // การ์ดสรุปประจำเดือน (1 พ.ย. 2569 · liff-ms.js)
+function deepGo(d){if(d.g==="homeok"){if(!d.id)return null;go("homeok:"+d.id);homeOkEnter(d.act);return}   // การ์ดขออนุญาตเครื่องบนหน้าจอโฮม (liff-homeapp.js · 11 พ.ย. 2569)
+  if(d.g==="ms")return d.id?go("ms:"+d.id):null;   // การ์ดสรุปประจำเดือน (1 พ.ย. 2569 · liff-ms.js)
   if(d.g==="mjob")return d.no?go("mjob:"+d.no):null;if(d.g==="cbp")return d.id?(go("cbp:"+d.id),cbOpen(d.id)):go("cb");   // การ์ดประกาศ Community (1 พ.ย. 2569)
   if(d.g!=="apd")return go(d.g);go("approve");let n=0;const t=setInterval(()=>{n++;const a=(L.aps||[]).find(x=>x.id===d.id);
   if(a){clearInterval(t);go("apdetail:"+a.id);if(d.act)setTimeout(()=>{if(!a.step){toast("คำขอนี้ดำเนินการไปแล้ว");return}if(d.act==="no")apNoSheet(a.id,"no");else if(d.act==="ok")sheet(`<h3>อนุมัติคำขอลานี้?</h3><span class="cap" style="text-align:center">${esc(a.employee)} · ${esc(a.type)} ${nd(a.days_total)} · ${esc(a.req_no)}</span><button class="btn pri" data-apokc="${a.id}">ยืนยันอนุมัติ</button><button class="btn out" data-dclose>ยกเลิก</button>`)},400);return}
