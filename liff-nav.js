@@ -27,7 +27,7 @@ function go(s){S.stack.push(s);try{history.pushState({pm:1},"")}catch(x){}show("
 addEventListener("popstate",()=>{if(S.skipPop){S.skipPop=0;return}if(S.stack.length)back()});
 function back(){if(!S.stack.length)return;const c=cur();S.stack.pop();if(c==="leave")L.f=null;show("back");if(cur()==="leave")setTimeout(paintLeaveChecks,0)}
 function toTab(t){S.tab=t;S.stack=[];show("fade");onEnter();if(t==="home")nfRefresh();if(t==="home")loadLeave(true).then(()=>{if(cur()==="home")repaint()}).catch(()=>{})}
-function onEnter(){const n=cur();if(n==="notif")nfLoad();
+function onEnter(){const n=cur();if(n==="notif")nfLoad();if(n==="homeapp"&&typeof homeAppEnter==="function")homeAppEnter();
   if(n==="worktime"){const now=new Date(),ym=S.wym||`${now.getFullYear()}-${p2(now.getMonth()+1)}`;S.wym=ym;api("myAttendance",ym).then(m=>{S.wdata=m;if(cur()==="worktime")repaint()}).catch(e=>toast(e.message))}
   const n0=n.split(":")[0];if(["pedit","paddr","tredit"].includes(n0)){S.perr=null;S.pform=null;S.trFile=null}
   if(["profile","pedit","paddr","tredit"].includes(n0)&&!S.prof)api("myProfile").then(p=>{S.prof=p;if(["profile","pedit","paddr","tredit"].includes(cur().split(":")[0]))repaint()}).catch(e=>toast(e.message));
@@ -37,7 +37,7 @@ function onEnter(){const n=cur();if(n==="notif")nfLoad();
 function toast(m){const t=document.createElement("div");t.className="toast";t.textContent=m;$("#screen").appendChild(t);setTimeout(()=>t.remove(),2300)}
 function drawer(open){const o=$("#ov");if(!open){o.innerHTML="";return}$("#screen").style.setProperty("--top","0px");
   const lead=L.info&&L.info.isLead||S.me&&["lead","manager","hr","exec","admin"].includes(S.me.role);const n0=cur().split(":")[0],here=S.stack.length?(n0==="clock"?"clock":"go:"+n0):"tab:"+S.tab;   // 6 พ.ย. 2569: ไฮไลต์ตามหน้าที่อยู่จริง · ไอคอนตรงกับเมนูลัด/แถบล่าง
-  const M=[["หน้าหลัก","home","tab:home"],["ข้อมูลพนักงาน","user","go:profile"],["เวลาการทำงาน","clock","go:worktime"],["ตารางงาน","cal","tab:sched"],["ลงเวลาการทำงาน","finger","clock"],["ยื่นเอกสาร","doc","tab:req"],["ทรัพย์สินของฉัน","board","go:assets"],["เอกสารของฉัน","docOk","go:myreqs"],...(lead?[["อนุมัติเอกสาร","ok","go:approve"]]:[]),["โควตาการลา","userClock","go:quota"],...(L.info&&L.info.slip?[["สลิปเงินเดือน","cash","go:slip"]]:[]),["การแจ้งเตือน","bell","go:notif"]];
+  const M=[["หน้าหลัก","home","tab:home"],["ข้อมูลพนักงาน","user","go:profile"],["เวลาการทำงาน","clock","go:worktime"],["ตารางงาน","cal","tab:sched"],["ลงเวลาการทำงาน","finger","clock"],["ยื่นเอกสาร","doc","tab:req"],["ทรัพย์สินของฉัน","board","go:assets"],["เอกสารของฉัน","docOk","go:myreqs"],...(lead?[["อนุมัติเอกสาร","ok","go:approve"]]:[]),["โควตาการลา","userClock","go:quota"],...(L.info&&L.info.slip?[["สลิปเงินเดือน","cash","go:slip"]]:[]),["การแจ้งเตือน","bell","go:notif"],...(typeof isHomeCtx==="function"&&!isHomeCtx()&&!(S.pub&&S.pub.home===false)?[["ใช้บนหน้าจอโฮม","phone","go:homeapp"]]:[])];
   o.innerHTML=`<div class="scrim" data-dclose></div><aside class="drawer" role="dialog" aria-label="เมนู"><div class="logo">${S.pub&&S.pub.logo?`<img src="${esc(S.pub.logo)}" alt="${esc(S.pub.company||"")}" style="max-height:44px;max-width:180px;object-fit:contain">`:LOGO}</div><nav>${M.map(m=>`<button data-dgo="${m[2]}" ${m[2]===here?'aria-current="page"':""}>${ic(m[1])}${m[0]}${m[2]==="go:approve"&&L.info&&+L.info.apN?`<b class="nbadge in">${+L.info.apN>99?"99+":+L.info.apN}</b>`:""}${m[2]==="go:notif"&&S.nfN?`<b class="nbadge in">${S.nfN>99?"99+":S.nfN}</b>`:""}</button>`).join("")}</nav><div class="ver"><a href="privacy.html" target="_blank" rel="noopener">นโยบายความเป็นส่วนตัว</a></div><footer><button data-dlogout>${ic("door")}<span>ออกจากระบบ</span></button><i></i><button data-dclose aria-label="ปิดเมนู">${ic("x")}</button></footer></aside>`;}
 
 /* ---------- actions ---------- */
@@ -46,7 +46,7 @@ function act(a){if(a==="soon"){toast("เมนูนี้กำลังพั
 document.addEventListener("click",e=>{const t=e.target.closest("button,[data-dclose]");if(!t)return;const d=t.dataset||{};
   if(d.dclose!==undefined){drawer(false);return}
   if(d.again!==undefined){S.again=d.again==="1";repaint();return}
-  if(d.dlogout!==undefined){drawer(false);call("logout",S.tok);setTok(null);if(window.liff&&liff.closeWindow&&!DEV){try{liff.closeWindow()}catch(_){}}toast("ออกจากระบบแล้ว");return}
+  if(d.dlogout!==undefined){drawer(false);if(typeof isHomeCtx==="function"&&isHomeCtx()){call("logout",S.tok).catch(()=>{});homeLogout();toast("ออกจากระบบแล้ว · ยกเลิกการเชื่อมเครื่องนี้");return}call("logout",S.tok);setTok(null);if(window.liff&&liff.closeWindow&&!DEV){try{liff.closeWindow()}catch(_){}}toast("ออกจากระบบแล้ว");return}
   if(d.toast){toast(d.toast);return}
   if(d.dgo){drawer(false);act(d.dgo);return}
   if(d.act){act(d.act);return}

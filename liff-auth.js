@@ -99,8 +99,9 @@ function mobileOnlyScreen(){const mob=/iPhone|iPad|iPod|Android/i.test(navigator
    '<h1 style="font-size:20px;margin:4px 0 0">เปิดได้เฉพาะในแอป LINE บนมือถือ</h1>'+
    '<p style="margin:0;color:#6B7280;font-size:15px;line-height:1.6;max-width:320px">'+(mob?'กรุณาเปิดผ่านแอป LINE · กดเมนูแอปพนักงานใน LINE OA ของบริษัท':'แอปพนักงานใช้บนโทรศัพท์มือถือเท่านั้น · เปิด LINE บนมือถือ แล้วกดเมนูแอปพนักงานใน LINE OA ของบริษัท')+'</p>'+
    (mob&&url?'<a href="'+url+'" style="margin-top:6px;display:inline-flex;align-items:center;justify-content:center;height:48px;padding:0 28px;border-radius:12px;background:#06C755;color:#fff;font-weight:700;text-decoration:none">เปิดในแอป LINE</a>':'')+
+   (mob?'<p style="margin:10px 0 0;color:#6B7280;font-size:13.5px;line-height:1.6;max-width:320px">หรือเพิ่มหน้านี้ลง<b>หน้าจอโฮม</b> แล้วเปิดจากไอคอน · ผูกเครื่องด้วยรหัสจากแอป LINE (เมนู › ใช้บนหน้าจอโฮม)</p>':'')+
    '<p style="margin:8px 0 0;color:#9CA3AF;font-size:12.5px">HR / หัวหน้างาน ใช้หลังบ้านบนคอมได้ที่ pct.push.co.th</p></div>'}
-function start(){if(!mobileLineOk()){mobileOnlyScreen();return}loadPub();
+function start(){if(!mobileLineOk()){if(typeof isHomeCtx==="function"&&isHomeCtx()){homeStart();return}mobileOnlyScreen();return}loadPub();   // 11 พ.ย. 2569: เปิดจากไอคอนบนหน้าจอโฮม → เข้าด้วยกุญแจเครื่อง (liff-homeapp.js)
   if(VA){S.tok=VA;["today","leave"].forEach(x=>LS.del(x));const b=document.createElement("div");b.id="va-bar";b.innerHTML='<svg class="va-i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="7" r="3.2"/><path d="M3.5 19.5c0-3.1 2.5-5.5 5.5-5.5 1.2 0 2.3.4 3.2 1"/><path d="M15.5 13.5h5.5l-2-2"/><path d="M21 17.5h-5.5l2 2"/></svg>มุมมองผู้ดูแลระบบ · ดูได้อย่างเดียว';document.body.appendChild(b);boot();return}
   const t=LS.get("tok");
   if(t&&!S.invite){S.tok=t;if(window.liff&&CFG.liffId&&!DEV)liff.init({liffId:CFG.liffId}).then(()=>{if(toLiffApp())return;refreshLine()}).catch(()=>{});boot();return}   // จำการเข้าระบบไว้แล้วแต่เปิดในเบราว์เซอร์ในแอป LINE (Android) → ย้ายไปหน้าต่างแอปพนักงานเหมือน iOS

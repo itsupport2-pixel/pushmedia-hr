@@ -5,6 +5,8 @@
   // 10 พ.ย. 2569 ผู้ใช้ขอ: มือถือที่เปิดนอก LINE (Safari/Chrome · กดลิงก์จากข้อความ) → เปิดแอป LINE ที่แอปพนักงาน (LIFF ช่อง LINE Login 2012235420)
   // เฉพาะโดเมนจริง · คอมยังเข้าหลังบ้านเหมือนเดิม · HR ที่จะใช้หลังบ้านบนมือถือ เข้า pct.push.co.th/admin.html ตรง ๆ (หรือ ?web=1)
   var mob = /iPhone|iPad|iPod|Android/i.test(ua), LIFF = 'https://liff.line.me/2012235420-HusTQ3rY';
+  var home = navigator.standalone === true || (window.matchMedia && matchMedia('(display-mode: standalone)').matches);   // 11 พ.ย. 2569: เปิดจากไอคอนบนหน้าจอโฮม → แอปพนักงานในเบราว์เซอร์ (ไม่เด้งไป LINE)
+  if (!inLine && mob && home) { location.replace('liff.html?home=1'); return; }
   if (!inLine && mob && location.hostname === 'pct.push.co.th' && !/[?&]web=1\b/.test(q)) { location.replace(LIFF); return; }
   location.replace((inLine ? 'liff.html' : 'admin.html') + q + location.hash);
 })();
