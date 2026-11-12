@@ -8,6 +8,9 @@
  * นอก LINE (โหมดทดสอบในเครื่อง) ยังแสดงแถบเดิม · หน้าหลักใช้แบบเดิม */
 html.in-line .band,html.in-line .phead .top,html.in-line :is(.v-clock,.v-done,.v-devwait) .wbar{display:none!important}
 html.in-line .phead{padding-top:14px}
+/* หน้าจอโฮม (standalone · 12 พ.ย. 2569): พื้นที่แถบเวลา/แบตเตอรี่เป็นสีพื้นเรียบ เนื้อหาเริ่มใต้แถบ · เดิมเนื้อหาชิดขอบบน → iPhone เบลอทับชื่อ */
+html.standalone .screen{padding-top:env(safe-area-inset-top,0px);background:#fff}
+@media (display-mode: standalone){.screen{padding-top:env(safe-area-inset-top,0px);background:#fff}}
 /* ── การ์ด · รายการ · ปุ่ม (ยกเว้นหน้าที่ใช้แบบเดิม) ── */
 .view:not(.v-clock):not(.v-done):not(.v-devwait):not([class*=" v-cb"]) :is(.card,.qcard,.fcard,.doc,.empty,.mrow,.as-it,.nf){border-radius:var(--r-card);box-shadow:var(--e1)}
 .view:not(.v-clock):not(.v-done):not(.v-devwait):not([class*=" v-cb"]) .mrow{border-radius:18px}

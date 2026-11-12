@@ -3,6 +3,8 @@
  * หน้าอื่นเปลี่ยนแค่หน้าตา (liff-v2.css) · ถอยกลับ: เอา <script liff-v2.js> + <link liff-v2.css> ออกจาก liff.html */
 /* เปิดในแอป LINE → ซ่อนแถบชื่อหน้า (ใช้หัวของ LINE) */
 if(/\bLine\//i.test(navigator.userAgent)||(window.liff&&liff.isInClient&&liff.isInClient()))document.documentElement.classList.add('in-line');
+/* เปิดจากไอคอนบนหน้าจอโฮม (12 พ.ย. 2569): เว้นพื้นที่ใต้แถบเวลา/แบตเตอรี่ ไม่ให้เนื้อหาไปอยู่ใต้แถบ (iPhone ทำเอฟเฟกต์เบลอทับ) */
+try{if(navigator.standalone===true||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches))document.documentElement.classList.add('standalone')}catch(e){}
 Object.assign(P,{
   cam:'<path d="M4 8.5A1.5 1.5 0 0 1 5.5 7H8l1.5-2h5L16 7h2.5A1.5 1.5 0 0 1 20 8.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 17.5z"/><circle cx="12" cy="12.5" r="3.2"/>',
   beach:'<path d="M12 4a8 8 0 0 1 8 8H4a8 8 0 0 1 8-8zM12 12v8M8.5 20h7"/>',

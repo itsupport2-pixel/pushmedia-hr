@@ -8,7 +8,7 @@ function isHomeCtx(){try{const ua=navigator.userAgent||"";if(/\bLine\//i.test(ua
 function homeLabel(){const ua=navigator.userAgent||"";return /iPhone/i.test(ua)?"iPhone":/iPad/i.test(ua)?"iPad":/Android/i.test(ua)?((/;\s*([^;)]+)\s+Build\//.exec(ua)||[])[1]||"Android").slice(0,40):"มือถือ"}
 function homeStart(){loadPub();const k=LS.get("home");
   if(!k||!k.d||!k.s){homeReqView();return}
-  $("#views").innerHTML='<div class="view white"><div class="pad" style="padding-top:40vh;text-align:center"><span class="spin" style="border-color:#E5E5E5;border-top-color:#111"></span></div></div>';$("#tabbar").hidden=true;
+  $("#views").innerHTML='<div class="view white" style="align-items:center;justify-content:center"><span class="spin" role="status" aria-label="กำลังโหลด" style="border-color:#E5E5E5;border-top-color:#111"></span></div>';$("#tabbar").hidden=true;
   homeTry(k,true)}
 /* ลองเข้าด้วยกุญแจเครื่อง · รออนุญาต = แสดงหน้ารอ แล้วลองซ้ำทุก 3 วินาที */
 let homePoll=0;
