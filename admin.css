@@ -1261,3 +1261,10 @@ table.tr-t{min-width:0!important}table.tr-t td{white-space:normal}table.tr-t td.
 .ta-warn{background:#FFF6E5;border:1px solid #F3D9A6;color:#7A4500;border-radius:14px;padding:14px 18px;margin-top:14px}.ta-err{background:#FFF1F1;color:#C0392B;border-radius:14px;padding:12px 18px;margin-top:10px;font-size:13.5px}
 .ta-foot{display:flex;align-items:center;gap:10px;margin-top:18px;padding-bottom:30px}.ta-foot .faint{font-size:13px}
 .ta-t input[type=checkbox]{width:18px;height:18px;accent-color:#111}
+
+/* ช่องค้นหาผู้รับรายคนใน Workflow (12 พ.ย. 2569) */
+.wfn-pk{position:relative;margin-top:6px}.wfn-pk input{width:100%}
+.wfn-pr{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:20;background:var(--sf,#fff);border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.12);padding:4px;max-height:320px;overflow:auto}
+.wfn-po{display:flex;flex-direction:column;align-items:flex-start;gap:1px;width:100%;text-align:left;border:0;background:none;border-radius:8px;padding:7px 10px;font:inherit;cursor:pointer}
+.wfn-po:hover,.wfn-po:focus-visible,.wfn-po.on{background:#F3F4F6}.wfn-po b{font-size:13.5px;font-weight:600}.wfn-po small{font-size:12px;color:var(--mut,#6B7280)}
+.wfn-pn{padding:10px;font-size:13px;color:var(--mut,#6B7280)}

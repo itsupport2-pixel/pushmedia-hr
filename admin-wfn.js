@@ -32,7 +32,7 @@ function wfnCards(trig,br,to){var b=wfnBase(trig);if(wfnSimple(trig))return ['au
   if(b==='help_new')return ['text'];
   var dec=['ok','no','back'].indexOf(br)>=0||trig==='leave_decided',onlyEmp=to.length===1&&to[0]==='employee';
   return dec?(onlyEmp?['result','text']:['result','request','text']):onlyEmp?['receipt','text']:['request','text']}
-function wfnGCards(trig,br){var b=wfnBase(trig);if(wfnSimple(trig))return ['auto','text'];if(b==='monthsum')return ['ms_ready','text'];if(b==='messenger')return {'new':['msg_job','text'],cancel:['msg_cancel','msg_status','text'],late:['msg_overdue','text']}[br]||['msg_status','text'];if(b==='help_new')return ['text'];return ['summary','text']}
+function wfnGCards(trig,br){var b=wfnBase(trig);if(wfnSimple(trig))return ['auto','text'];if(b==='monthsum')return ['ms_ready','text'];if(b==='messenger')return {'new':['msg_job','text'],cancel:['msg_cancel','msg_status','text'],late:['msg_overdue','text']}[br]||['msg_status','text'];if(b==='help_new')return ['help','text'];return ['summary','text']}
 function wfnFields(trig,br){var b=wfnBase(trig),dp=((A.d&&A.d.org&&A.d.org.departments)||[]).map(function(d){return [d.name,d.name]});
   var F=b==='monthsum'||wfnSimple(trig)?[]:wfFields(b==='leave'?(['ok','no','back'].indexOf(br)>=0?'leave_decided':'leave_new'):trig);return F.concat([['rdept','แผนกของผู้รับ','sel',dp]])}
 function wfnInsp(n,c,trig){var b=wfnBase(trig),br=(b==='leave'||b==='messenger'||b==='monthsum')?wfBranch(n.id):'',ch=c.ch=c.ch||{},to=c.to=c.to||[];c.people=c.people||[];c.mails=c.mails||[];c.conds=c.conds||[];
@@ -43,7 +43,7 @@ function wfnInsp(n,c,trig){var b=wfnBase(trig),br=(b==='leave'||b==='messenger'|
   if(ch.line||ch.mail||ch.app){var em=wfnEmps().filter(function(e){return c.people.indexOf(e.id)<0}).sort(function(a,x){return String(a.emp_code)<String(x.emp_code)?-1:1});
     h+='<div class="f">ส่งถึง'+wfnRolesOf(trig).map(function(r){return '<label class="fl-c"><input type="checkbox" data-nto="'+r+'"'+(to.indexOf(r)>=0?' checked':'')+'><span>'+esc(wfnRoleL(r,b))+'</span></label>'}).join('')+'</div>'+
      '<div class="f">เพิ่มรายคน'+c.people.map(function(id,i){return '<div class="wfe-em"><span style="flex:1;min-width:0">'+esc(wfnEmpName(id))+'</span><button class="btn sm" data-npdel="'+i+'" aria-label="เอาออก">✕</button></div>'}).join('')+
-     '<select id="wfn-padd"><option value="">+ เลือกพนักงาน…</option>'+em.map(function(e){return '<option value="'+esc(e.id)+'">'+esc((e.emp_code||'')+' '+e.first_name+' '+e.last_name+(e.nickname?' ('+e.nickname+')':''))+'</option>'}).join('')+'</select></div>'}
+     '<div class="wfn-pk"><input id="wfn-pq" type="search" placeholder="ค้นหาเพื่อเพิ่ม: รหัส ชื่อ ชื่อเล่น หรือแผนก" autocomplete="off" aria-label="ค้นหาพนักงานเพื่อเพิ่มผู้รับ" aria-controls="wfn-pr"><div id="wfn-pr" class="wfn-pr" role="listbox" hidden></div></div></div>'}   // 12 พ.ย. 2569 ผู้ใช้: เลือกรายคนให้ง่ายกว่ารายการยาว + ค้นหาชื่อได้
   if(ch.group){var gs=(((A.cfg||{}).lineMsg||{}).groups||[]).filter(function(g){return !g.left_at}),G=c.groups&&c.groups.length?c.groups:[b==='messenger'?'msg':'hr'];c.groups=G;
     var it=(b==='messenger'?[['msg','กลุ่ม Messenger (ตามตั้งค่า)']]:[]).concat([['hr','กลุ่ม HR (ตามตั้งค่า)']]).concat(gs.map(function(g){return [g.id,g.name||'(ไม่ทราบชื่อกลุ่ม)']}));
     h+='<div class="f">กลุ่ม LINE'+it.map(function(x){return '<label class="fl-c"><input type="checkbox" data-ngr="'+esc(x[0])+'"'+(G.indexOf(x[0])>=0?' checked':'')+'><span>'+esc(x[1])+'</span></label>'}).join('')+'</div>'}
@@ -63,7 +63,15 @@ function wfnBind(n,c,upd){var re=function(){upd();wfInsp()};
   $$('#wfe-i [data-nch]').forEach(function(x){x.onclick=function(){var k=x.dataset.nch;c.ch[k]=!c.ch[k];re()}});
   $$('#wfe-i [data-nto]').forEach(function(x){x.onchange=function(){var r=x.dataset.nto,i=c.to.indexOf(r);if(x.checked&&i<0)c.to.push(r);if(!x.checked&&i>=0)c.to.splice(i,1);re()}});
   $$('#wfe-i [data-npdel]').forEach(function(x){x.onclick=function(){c.people.splice(+x.dataset.npdel,1);re()}});
-  var pa=$('#wfn-padd');if(pa)pa.onchange=function(){if(pa.value&&c.people.indexOf(pa.value)<0)c.people.push(pa.value);re()};
+  var pq=$('#wfn-pq'),pr=$('#wfn-pr');if(pq&&pr){   // ช่องค้นหาผู้รับรายคน: พิมพ์แล้วขึ้นไม่เกิน 8 คน · Enter = เลือกคนแรก · คนที่เลือกแล้วไม่ขึ้นซ้ำ
+    var dn={};((A.d&&A.d.org&&A.d.org.departments)||[]).forEach(function(d){dn[d.id]=d.name});
+    var nrm=function(t){return String(t||'').toLowerCase().replace(/\s+/g,' ').trim()},hits=[];
+    var draw=function(){var q=nrm(pq.value),ws=q?q.split(' '):[],pool=wfnEmps().filter(function(e){return c.people.indexOf(e.id)<0});
+      hits=pool.filter(function(e){var hay=nrm([e.emp_code,e.first_name,e.last_name,e.nickname,dn[e.department_id]].join(' '));return ws.every(function(w){return hay.indexOf(w)>=0})}).sort(function(a,x){return String(a.emp_code)<String(x.emp_code)?-1:1}).slice(0,8);
+      pr.innerHTML=hits.length?hits.map(function(e,i){return '<button type="button" role="option" class="wfn-po'+(i?'':' on')+'" data-npick="'+esc(e.id)+'"><b>'+esc(e.first_name+' '+e.last_name+(e.nickname?' ('+e.nickname+')':''))+'</b><small>'+esc((e.emp_code||'')+(dn[e.department_id]?' · '+dn[e.department_id]:''))+'</small></button>'}).join(''):'<div class="wfn-pn">ไม่พบพนักงานที่ตรงกับ "'+esc(pq.value)+'"</div>';
+      pr.hidden=false;$$('#wfn-pr [data-npick]').forEach(function(b){b.onmousedown=function(ev){ev.preventDefault()};b.onclick=function(){if(c.people.indexOf(b.dataset.npick)<0)c.people.push(b.dataset.npick);re();setTimeout(function(){var x=$('#wfn-pq');if(x)x.focus()},0)}})};
+    pq.oninput=draw;pq.onfocus=draw;pq.onblur=function(){setTimeout(function(){pr.hidden=true},120)};
+    pq.onkeydown=function(ev){if(ev.key==='Enter'){ev.preventDefault();if(hits[0]){c.people.push(hits[0].id);re();setTimeout(function(){var x=$('#wfn-pq');if(x)x.focus()},0)}}else if(ev.key==='Escape'){pr.hidden=true;pq.blur()}}}
   $$('#wfe-i [data-ngr]').forEach(function(x){x.onchange=function(){var g=x.dataset.ngr,i=c.groups.indexOf(g);if(x.checked&&i<0)c.groups.push(g);if(!x.checked&&i>=0)c.groups.splice(i,1);re()}});
   $$('#wfe-i [data-nmon]').forEach(function(x){x.onchange=function(){c.mails[+x.dataset.nmon].on=x.checked;re()}});
   $$('#wfe-i [data-nmdel]').forEach(function(x){x.onclick=function(){c.mails.splice(+x.dataset.nmdel,1);re()}});
