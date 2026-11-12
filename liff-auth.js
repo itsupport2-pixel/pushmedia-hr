@@ -124,23 +124,26 @@ function boot(){S.tab="home";S.stack=[];const c=LS.get("today");S.today=c&&c.d==
   const now=new Date();api("myAttendance",`${now.getFullYear()}-${p2(now.getMonth()+1)}`).then(m=>{S.month=m;if(cur()==="home")repaint()}).catch(()=>{})}
 function refreshToday(){return api("todayInfo").then(t=>{S.today=t;S.me=t.me;LS.set("today",{d:ISO(new Date()),t});pvCheck(t);if(["home","clock","sched"].includes(cur()))repaint();return t}).catch(e=>{toast(e.message)})}
 
-/* รับทราบนโยบายความเป็นส่วนตัว (12 พ.ย. 2569 · PDPA · security/Privacy.js) · ขึ้นทุกครั้งที่เปิดแอปจนกว่าจะกดรับทราบฉบับปัจจุบัน
- * "รับทราบ" ไม่ใช่ "ยินยอม" (ฐานทางกฎหมาย = สัญญาจ้าง/หน้าที่ตามกฎหมาย) · View as ไม่แสดง */
+/* ยินยอมตามนโยบายความเป็นส่วนตัว (12 พ.ย. 2569 · PDPA · security/Privacy.js) · ขึ้นทุกครั้งที่เปิดแอปจนกว่าจะกดยินยอมฉบับปัจจุบัน
+ * ผู้ใช้สั่ง (12 พ.ย. 2569 เย็น): ไม่ต้องบอกใครเห็นตำแหน่ง · ใช้ช่องติ๊กถูก + ปุ่ม "ยินยอม" แทน "รับทราบ" · ปุ่มกดได้เมื่อติ๊กแล้ว · View as ไม่แสดง */
 function pvCheck(t){const p=t&&t.privacy;if(!p||p.acked||VA||document.getElementById("pv-ov"))return;
   const pts=[["ตำแหน่ง GPS","ขอเฉพาะตอนกดลงเวลา และตอนกดส่งงานเมสเซนเจอร์สำเร็จ · ไม่ติดตามตำแหน่งตลอดเวลา และไม่ทำงานเบื้องหลัง"],
-    ["ใครเห็นตำแหน่ง","หัวหน้าเห็นแค่ว่าลงเวลาในหรือนอกพื้นที่ · พิกัดบนแผนที่เห็นเฉพาะผู้ที่บริษัทกำหนด"],
     ["ใบรับรองแพทย์","ไฟล์ที่แนบในใบลาเห็นเฉพาะผู้อนุมัติและ HR"],
     ["สิทธิของคุณ","ขอดู ขอสำเนา ขอแก้ไข หรือสอบถามเรื่องข้อมูลของคุณได้ที่ HR"]];
   const o=document.createElement("div");o.id="pv-ov";o.setAttribute("role","dialog");o.setAttribute("aria-modal","true");o.setAttribute("aria-labelledby","pv-h");
   o.style.cssText="position:fixed;inset:0;z-index:300;background:rgba(32,40,52,.55);display:flex;align-items:flex-end";
   o.innerHTML=`<div style="background:#fff;width:100%;max-height:92vh;overflow:auto;border-radius:22px 22px 0 0;padding:20px 20px calc(22px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px">
-   <div><h3 id="pv-h" style="font-size:18px;margin:0">นโยบายความเป็นส่วนตัว</h3><div class="cap" style="margin-top:2px">ฉบับ ${esc(thd(p.ver.replace(/^(\d{4})/,y=>String(+y-543))))} · กรุณาอ่านและกดรับทราบ</div></div>
+   <div><h3 id="pv-h" style="font-size:18px;margin:0">นโยบายความเป็นส่วนตัว</h3><div class="cap" style="margin-top:2px">ฉบับ ${esc(thd(p.ver.replace(/^(\d{4})/,y=>String(+y-543))))} · กรุณาอ่านและกดยินยอม</div></div>
    ${pts.map(x=>`<div style="display:flex;gap:10px;align-items:flex-start"><span style="flex:none;width:6px;height:6px;border-radius:50%;background:#141414;margin-top:9px"></span><div style="font-size:14.5px;line-height:1.6"><b>${x[0]}</b><br><span style="color:#5f6672">${x[1]}</span></div></div>`).join("")}
    <a href="privacy.html" style="font-size:14.5px;font-weight:600;color:#141414;text-decoration:underline">อ่านนโยบายฉบับเต็ม ›</a>
-   <div class="cap" style="font-size:12.5px;line-height:1.55">การกดรับทราบเป็นการยืนยันว่าคุณได้อ่านประกาศนี้แล้ว · ไม่ใช่การให้ความยินยอม · บริษัทเก็บข้อมูลตามสัญญาจ้างและกฎหมายแรงงาน</div>
-   <button class="btn pri" id="pv-ok" style="height:46px">รับทราบ</button></div>`;
-  document.body.appendChild(o);const b=document.getElementById("pv-ok");
-  b.onclick=()=>{b.disabled=true;b.textContent="กำลังบันทึก…";api("privacyAck",p.ver).then(()=>{o.remove();p.acked=true;toast("บันทึกการรับทราบแล้ว")}).catch(e=>{b.disabled=false;b.textContent="รับทราบ";toast(e.message)})}}
+   <label for="pv-cb" style="display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1.5px solid #D5DAE1;border-radius:14px;cursor:pointer">
+    <input type="checkbox" id="pv-cb" style="position:absolute;opacity:0;width:1px;height:1px">
+    <span id="pv-box" aria-hidden="true" style="flex:none;width:24px;height:24px;border:2px solid #9CA3AF;border-radius:7px;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:background .15s,border-color .15s"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="opacity:0"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+    <span style="font-size:14.5px;line-height:1.55">ข้าพเจ้าได้อ่านและเข้าใจนโยบายความเป็นส่วนตัวแล้ว และยินยอมตามนโยบายนี้</span></label>
+   <button class="btn pri" id="pv-ok" style="height:46px" disabled>ยินยอม</button></div>`;
+  document.body.appendChild(o);const b=document.getElementById("pv-ok"),cb=document.getElementById("pv-cb"),bx=document.getElementById("pv-box");
+  cb.onchange=()=>{const on=cb.checked;b.disabled=!on;bx.style.background=on?"#141414":"#fff";bx.style.borderColor=on?"#141414":"#9CA3AF";bx.querySelector("svg").style.opacity=on?1:0};
+  b.onclick=()=>{if(!cb.checked)return;b.disabled=true;b.textContent="กำลังบันทึก…";api("privacyAck",p.ver).then(()=>{o.remove();p.acked=true;toast("บันทึกการยินยอมแล้ว")}).catch(e=>{b.disabled=false;b.textContent="ยินยอม";toast(e.message)})}}
 
 /* ---------- ตำแหน่ง GPS (LIFF / LINE MINI App) · ทดสอบในเครื่อง ?lat=&lng= ---------- */
 function getPos(){
