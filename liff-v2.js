@@ -14,12 +14,14 @@ Object.assign(P,{
   tool:'<path d="M14.5 6.5a4 4 0 0 0 5 5l-8.8 8.8a2 2 0 0 1-2.8-2.8l8.8-8.8a4 4 0 0 0-2.2-2.2z"/>',
   barcode:'<path d="M4 6v12M7 6v12M10.5 6v12M13 6v12M16.5 6v12M20 6v12"/>'
 });
+/* ลาวันเสาร์ (12 พ.ย. 2569 ผู้ใช้: เพิ่มไว้ก่อน ขึ้น "เร็ว ๆ นี้" · เริ่มใช้ 1 ม.ค. 2570 · แยกจากโควตาหลัก นับแค่ ลาวันเสาร์ / ขาดวันเสาร์) · แสดงอย่างเดียว ยังไม่มีผล */
+const SAT_SOON=()=>`<div class="qv2 soon" aria-disabled="true"><div class="t"><span class="ti" style="background:#F2F2F2;color:#9A9A9A">${ic("cal")}</span><span class="nm"><b>ลาวันเสาร์</b><span>เริ่มใช้ 1 ม.ค. 2570 · แยกจากโควตาหลัก</span></span><span class="chip">เร็ว ๆ นี้</span></div></div>`;
 /* โควตาการลา: ไอคอนตามประเภท · ตัวเลขคงเหลือใหญ่ · แถบสีดำ = วันคงเหลือ (ตาม Figma) · ส้ม = รออนุมัติ (จองไว้) */
 const QIC=q=>{const n=String(q.name||"");return /พักร้อน|พักผ่อน/.test(n)?["beach","#FFF5E3","#D9921F"]:/ป่วย/.test(n)?["plus","#FDECEC","#D64545"]:/กิจ/.test(n)?["bag","#EEEFFC","#5A5FD6"]:["cal","#F2F2F2","#3A3A3A"]};
 V.quota=()=>{const i=L.info;if(!i)return band("โควตาการลา")+loadingV();
   return band("โควตาการลา")+`<div class="pad" style="gap:12px">${i.types.map(q=>{const c=QIC(q),lf=q.quota?Math.max(0,Math.min(100,q.left/q.quota*100)):0,r=q.quota?Math.min(100-lf,q.reserved/q.quota*100):0;
     return `<div class="qv2"><div class="t"><span class="ti" style="background:${c[1]};color:${c[2]}">${ic(c[0])}</span><span class="nm"><b>${esc(q.name)}</b><span>ใช้แล้ว ${nd(q.used)}</span></span><span class="n">${q.quota==null?'ไม่จำกัด':`${nd(q.left).replace(/\s*วัน$/,"")}<small>/ ${q.quota} วัน</small>`}</span></div>${q.quota?`<div class="bar"><i style="width:${lf}%"></i><i class="r" style="width:${r}%"></i></div>`:""}${q.reserved?`<span class="rs">รออนุมัติ ${nd(q.reserved)} · จองไว้แล้ว</span>`:""}</div>`}).join("")}
-  <button class="qlink" data-act="go:myreqs">${ic("docOk")}ดูคำขอลาของฉัน<span class="chev">${ic("chevR")}</span></button></div>`};
+  ${SAT_SOON()}<button class="qlink" data-act="go:myreqs">${ic("docOk")}ดูคำขอลาของฉัน<span class="chev">${ic("chevR")}</span></button></div>`};
 /* รายละเอียดทรัพย์สิน: การ์ดหัว (รูปใหญ่ · ชื่อ · สถานะ · รหัส) + รายการพร้อมไอคอน + แจ้งชำรุด/สูญหาย */
 V.adet=id=>{const a=(S.as||[]).find(x=>x.id===id);if(!a)return band("รายละเอียดทรัพย์สิน")+`<div class="pad"><div class="empty">ไม่พบรายการนี้</div></div>`;
   const R=[["tag","ประเภท",AS_CATS[asCatK(a.category)]],["tool","ยี่ห้อ / รุ่น",[a.brand,a.model].filter(Boolean).join(" / ")],["barcode","Serial",a.serial],["barcode","รหัสเดิม",a.old_code],["ok","ตรวจล่าสุด",a.last_checked?fDY(a.last_checked):""],["cal","วันที่รับ",a.received_date?fDY(a.received_date):""],["edit","หมายเหตุ",a.note]].filter(x=>x[2]);
