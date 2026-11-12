@@ -6,6 +6,7 @@ var WFN_MAIN=[['help_new','แจ้งเข้าระบบไม่ได�
 function wfnBase(t){return /^leave/.test(t)?'leave':t}
 WF_CARD.auto='ข้อความ/การ์ดเดิมของระบบ';
 /* Workflow ของการแจ้งเตือนอื่น ๆ (10 พ.ย. 2569) · ช่องทาง "ในระบบ" = กระดิ่ง · ผู้รับ subject = ผู้รับตามเหตุการณ์ */
+function wfnSub(t,n){var T=((A.wfd||{}).trig||{})[t];if(!T||!T.multi||!n||typeof WE==='undefined'||!WE||!WE.g||WE.g.nodes.indexOf(n)<0)return t;return wfBranch(n.id)||t}   // 12 พ.ย. 2569 ทุกขั้นตอน: กล่องส่งแจ้งเตือนใช้ข้อมูลของเหตุการณ์ในทางนั้น
 function wfnSimple(t){var T=((A.wfd||{}).trig||{})[t];return T&&T.simple?T:null}
 function wfnRolesOf(t){var S=wfnSimple(t);return S?(S.group?['hr']:['subject','hr']):(WFN_ROLES[wfnBase(t)]||[])}
 function wfnRoleL(r,t){if(r==='subject'){var S=wfnSimple(t);return 'ผู้รับตามเหตุการณ์'+(S?' ('+S.who+')':'')}return t==='monthsum'&&r==='employee'?'พนักงานเจ้าของคำชี้แจง':(WFN_ROLE_L[r]||r)}
