@@ -409,8 +409,8 @@ function empImportTpl(){var b=$('#imp-tpl');busy(b,1);pyXlsxS().then(function(X)
   var wb=X.utils.book_new();X.utils.book_append_sheet(wb,ws,'พนักงาน');X.utils.book_append_sheet(wb,w2,'วิธีกรอก');X.utils.book_append_sheet(wb,w3,'รายการอ้างอิง');
   X.writeFile(wb,'ไฟล์ตัวอย่าง-นำเข้าพนักงาน.xlsx');toast('ดาวน์โหลดไฟล์ตัวอย่างแล้ว')}).catch(function(e){busy(b,0);toast(e.message,1)})}
 function empImport(){var fi=document.createElement('input');fi.type='file';fi.accept='.xlsx,.xls';fi.hidden=true;document.body.appendChild(fi);fi.onchange=function(){var f=fi.files[0];fi.remove();if(!f)return;toast('กำลังอ่านไฟล์…');
-  f.arrayBuffer().then(function(buf){return pyXlsx().then(function(X){var wb=X.read(buf,{type:'array'}),rows=[];
-    wb.SheetNames.forEach(function(sn){if(/สรุป|ต้องตรวจ|วิธีกรอก|อ้างอิง/.test(sn))return;var a=X.utils.sheet_to_json(wb.Sheets[sn],{header:1,raw:false,defval:''}),hi=-1;
+  f.arrayBuffer().then(function(buf){return pyXlsx().then(function(X){var wb=X.read(buf,{type:'array',cellDates:true,cellText:false}),rows=[];
+    wb.SheetNames.forEach(function(sn){if(/สรุป|ต้องตรวจ|วิธีกรอก|อ้างอิง/.test(sn))return;var a=X.utils.sheet_to_json(wb.Sheets[sn],{header:1,raw:false,defval:'',dateNF:'yyyy-mm-dd'}),hi=-1;
       for(var i=0;i<Math.min(6,a.length);i++){if(a[i].map(function(x){return String(x).trim()}).indexOf('รหัสพนักงาน')>=0){hi=i;break}}if(hi<0)return;
       var H=a[hi].map(function(x){return String(x).trim()}),g=function(r,k){var j=H.indexOf(k);return j<0?'':String(r[j]==null?'':r[j]).trim()},res=/ลาออก/.test(sn);
       a.slice(hi+1).forEach(function(r){var code=g(r,'รหัสพนักงาน');if(!code)return;rows.push({code:code,status:g(r,'สถานะ (ระบบ)')||(res?'ลาออก':''),company:g(r,'บริษัท'),title:g(r,'คำนำหน้า'),first:g(r,'ชื่อ'),last:g(r,'นามสกุล'),nickname:g(r,'ชื่อเล่น'),
