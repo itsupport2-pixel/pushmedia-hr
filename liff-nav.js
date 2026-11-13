@@ -65,7 +65,7 @@ function earlySheet(r){sheet(`<div style="align-self:center;width:52px;height:52
   }
 function doClock(kind,t,early){const n=$("#cn"),note=n?n.value.trim():"",p=S.pos;if(kind==="in"&&n&&n.dataset.req==="1"&&!note){n.classList.add("err");const er=$("#cn-e");er.hidden=false;er.textContent="อยู่นอกพื้นที่ กรุณาระบุเหตุผล"+((S.today&&S.today.jobs||[]).length?" หรือเลือกจากตารางงาน":"");n.scrollIntoView({block:"center",behavior:"smooth"});return}{const d={clock:kind};
     t.disabled=true;const old=t.innerHTML;t.innerHTML='<span class="spin"></span>กำลังบันทึก…';
-    api("clock",d.clock,p.lat,p.lng,p.acc,note,devInfo(),d.clock==="in"?S.shift||"":"",early||"").then(r=>{
+    api("clock",d.clock,p.lat,p.lng,p.acc,note,devInfo(),d.clock==="in"?S.shift||"":"",early||"",bkInHint()).then(r=>{
       if(!r.ok&&r.need_early_note){t.disabled=false;t.innerHTML=old;earlySheet(r);return}
       if(!r.ok&&r.need_shift){t.disabled=false;t.innerHTML=old;toast("เลือกกะการทำงานก่อนลงเวลา");return}
       if(!r.ok&&(r.device_pending||r.device_blocked)){t.disabled=false;t.innerHTML=old;S.devmsg=r;S.stack[S.stack.length-1]="devwait";show("fade");return}
@@ -74,7 +74,7 @@ function doClock(kind,t,early){const n=$("#cn"),note=n?n.value.trim():"",p=S.pos
       const now=new Date();api("myAttendance",`${now.getFullYear()}-${p2(now.getMonth()+1)}`).then(m=>{S.month=m}).catch(()=>{});
     }).catch(err=>{
       if(CFG.backup&&DOWN_RE.test(err.message)){t.innerHTML='<span class="spin"></span>ระบบหลักขัดข้อง · กำลังบันทึกสำรอง…';
-        return backupClock(d.clock,p,note,d.clock==="in"?S.shift||"":"").then(r=>{S.cn="";S.cnj=null;S.last={ok:true,backup:true,time:r.time,kind:r.kind,location:"บันทึกสำรอง (รอนำเข้า)",in_area:true,lat:p.lat,lng:p.lng};S.stack[S.stack.length-1]="done";show("fade")})
+        return backupClock(d.clock,p,note,d.clock==="in"?S.shift||"":"").then(r=>{bkAdd({kind:r.kind,time:r.time,shift:d.clock==="in"?S.shift||"":"",backup_id:r.backup_id});if(S.today)S.today=bkMerge(S.today);S.cn="";S.cnj=null;S.last={ok:true,backup:true,time:r.time,kind:r.kind,location:"บันทึกสำรอง (รอนำเข้า)",in_area:true,lat:p.lat,lng:p.lng};S.stack[S.stack.length-1]="done";show("fade")})
           .catch(e2=>{t.disabled=false;t.innerHTML=old;toast(e2.message)})}
       t.disabled=false;t.innerHTML=old;toast(err.message)})}}
 document.addEventListener("change",e=>{const id=e.target.id;

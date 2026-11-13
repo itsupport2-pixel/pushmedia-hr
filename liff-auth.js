@@ -120,9 +120,17 @@ function deepGo(d){if(d.g==="homeok"){if(!d.id)return null;go("homeok:"+d.id);ho
   if(d.g!=="apd")return go(d.g);go("approve");let n=0;const t=setInterval(()=>{n++;const a=(L.aps||[]).find(x=>x.id===d.id);
   if(a){clearInterval(t);go("apdetail:"+a.id);if(d.act)setTimeout(()=>{if(!a.step){toast("คำขอนี้ดำเนินการไปแล้ว");return}if(d.act==="no")apNoSheet(a.id,"no");else if(d.act==="ok")sheet(`<h3>อนุมัติคำขอลานี้?</h3><span class="cap" style="text-align:center">${esc(a.employee)} · ${esc(a.type)} ${nd(a.days_total)} · ${esc(a.req_no)}</span><button class="btn pri" data-apokc="${a.id}">ยืนยันอนุมัติ</button><button class="btn out" data-dclose>ยกเลิก</button>`)},400);return}
   if((L.aps&&n>12)||n>40){clearInterval(t);if(L.aps)toast("ไม่พบคำขอนี้ในรายการรออนุมัติของคุณ · อาจมีคนอนุมัติไปแล้ว")}},250)}
-function boot(){S.tab="home";S.stack=[];const c=LS.get("today");S.today=c&&c.d===ISO(new Date())?c.t:null;if(S.today)S.me=S.today.me;if(!L.info)L.info=LS.get("leave");show("fade");if(DEEP&&!deepDone){deepDone=1;deepGo(DEEP)}refreshToday();nfRefresh();loadLeave(true).then(()=>{if(cur()==="home")repaint()}).catch(()=>{});
+function boot(){S.tab="home";S.stack=[];const c=LS.get("today");S.today=c&&c.d===ISO(new Date())?bkMerge(c.t):null;if(S.today)S.me=S.today.me;if(!L.info)L.info=LS.get("leave");show("fade");if(DEEP&&!deepDone){deepDone=1;deepGo(DEEP)}refreshToday();nfRefresh();loadLeave(true).then(()=>{if(cur()==="home")repaint()}).catch(()=>{});
   const now=new Date();api("myAttendance",`${now.getFullYear()}-${p2(now.getMonth()+1)}`).then(m=>{S.month=m;if(cur()==="home")repaint()}).catch(()=>{})}
-function refreshToday(){return api("todayInfo").then(t=>{S.today=t;S.me=t.me;LS.set("today",{d:ISO(new Date()),t});pvCheck(t);if(["home","clock","sched"].includes(cur()))repaint();return t}).catch(e=>{toast(e.message)})}
+/* รายการลงเวลาสำรองที่ยังไม่ถูกนำเข้าระบบหลัก (13 พ.ย. 2569) · จำในเครื่อง แล้วแสดงรวมกับรายการวันนี้ จนกว่าระบบหลักจะมีรายการนั้น (นำเข้าทุก 15 นาที)
+ * เดิม: บันทึกเข้างานสำรองแล้วระบบหลักกลับมา → แอปขึ้นปุ่ม "ลงเวลาเข้างาน" อีก (พนักงานอาจกดซ้ำ) · ข้ามวัน = ทิ้ง */
+function bkAdd(r){const d=ISO(new Date()),l=(LS.get("bk")||[]).filter(x=>x.d===d);l.push({d,kind:r.kind,time:r.time,shift:r.shift||"",id:r.backup_id||""});LS.set("bk",l)}
+function bkInHint(){const l=(LS.get("bk")||[]).filter(x=>x.d===ISO(new Date())&&x.kind==="IN");return l.length?l[l.length-1].time:""}   // ส่งไปกับคำสั่งลงเวลา: เข้างานสำรองที่ยังรอนำเข้า
+function bkMerge(t){if(!t||!Array.isArray(t.records))return t;let l=(LS.get("bk")||[]).filter(x=>x.d===t.date);
+  const has=x=>t.records.some(r=>r.kind===x.kind&&r.time===x.time);l=l.filter(x=>!has(x));LS.set("bk",l);if(!l.length)return t;
+  const recs=t.records.concat(l.map(x=>({time:x.time,kind:x.kind,shift:x.shift,location:"บันทึกสำรอง (รอนำเข้า)",in_area:true,backup:true}))).sort((a,b)=>a.time<b.time?-1:a.time>b.time?1:0);
+  return Object.assign({},t,{records:recs,backup_pending:l.length})}
+function refreshToday(){return api("todayInfo").then(t=>{t=bkMerge(t);S.today=t;S.me=t.me;LS.set("today",{d:ISO(new Date()),t});pvCheck(t);if(["home","clock","sched"].includes(cur()))repaint();return t}).catch(e=>{toast(e.message)})}
 
 /* ยินยอมตามนโยบายความเป็นส่วนตัว (12 พ.ย. 2569 · PDPA · security/Privacy.js) · ขึ้นทุกครั้งที่เปิดแอปจนกว่าจะกดยินยอมฉบับปัจจุบัน
  * ผู้ใช้สั่ง (12 พ.ย. 2569 เย็น): ไม่ต้องบอกใครเห็นตำแหน่ง · ใช้ช่องติ๊กถูก + ปุ่ม "ยินยอม" แทน "รับทราบ" · ปุ่มกดได้เมื่อติ๊กแล้ว · View as ไม่แสดง */
