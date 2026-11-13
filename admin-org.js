@@ -306,7 +306,7 @@ function ogDir(){if(!A.oarea&&!A.oareaL&&isHR()){A.oareaL=1;aCall('orgAreas').th
   if(M.length)out+=sec('mg','Management Team','หัวหน้าแผนก',M.length,M.map(function(e){return ogCard(e,esc(org('departments',e.department_id)||''))}).join(''),'',OGC.st);
   ogAct('departments').forEach(function(d){var T=ogAct('teams').filter(function(t){return t.department_id===d.id}),ti={};T.forEach(function(t,i){ti[t.id]=i});
     var E=live.filter(function(e){return e.department_id===d.id&&!used[e.id]&&hit(e)}).sort(function(a,b){var la=a.role==='lead'?0:1,lb=b.role==='lead'?0:1;return ((a.team_id in ti?ti[a.team_id]:99)-(b.team_id in ti?ti[b.team_id]:99))||la-lb||String(a.first_name).localeCompare(b.first_name)});
-    if(!E.length&&q)return;
+    if(!E.length&&(q||live.some(function(e){return e.department_id===d.id})))return;   // 13 พ.ย. 2569: ทุกคนแสดงในผู้บริหาร/Management Team แล้ว → ไม่ต้องมีแถบ "0 คน" (ผู้ใช้งงว่าว่างแต่ปิดใช้ไม่ได้)
     out+=sec('',esc(d.name),[ogHeads(d.id)[0]?'หัวหน้าแผนก '+esc(ogHeads(d.id)[0].first_name):'',ogAct('teams').filter(function(t){return t.department_id===d.id}).length?ogAct('teams').filter(function(t){return t.department_id===d.id}).length+' ทีม':''].filter(String).join(' · '),E.length,E.length?E.map(function(e){var l=e.team_id?T.filter(function(t){return t.id===e.team_id})[0]:null,lid=l?(ogLead(l)||{}).id:'';return ogCard(e,'')}).join(''):'<div class="faint" style="padding:6px 2px">ยังไม่มีพนักงาน</div>','<button class="og5-mg" data-ogpn="d|'+d.id+'">'+OGC.cog+'จัดการ</button>')});
   return '<div class="og5">'+out+'</div>'}
 /* แท็บลำดับการอนุมัติ: ทุกแผนกในตารางเดียว */
