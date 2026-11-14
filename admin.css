@@ -1596,3 +1596,7 @@ a.og5-ct:hover span{text-decoration:underline}
 .ms-mcu{display:flex;align-items:center;gap:12px;padding:12px 18px;border-top:1px dashed var(--line);background:var(--sf2);font-size:13px}.ms-mcu>div{flex:1;display:flex;flex-direction:column}.ms-mcu b{font-size:14px}.ms-mcu small{font-size:12px;color:var(--mut)}
 .ms-mo{display:grid;grid-template-columns:1fr 1.4fr auto;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}.ms-mo:first-of-type{border-top:0}.ms-mo>div{display:flex;flex-direction:column}.ms-mo small{font-size:12px;color:var(--mut)}
 .ms-moall{display:grid;grid-template-columns:1fr 1.4fr auto;gap:10px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--sf2)}.ms-moall b{grid-column:1}.ms-moall small{grid-column:1;grid-row:2;font-size:12px;color:var(--mut)}.ms-moall .og9-sel{grid-column:2;grid-row:1/3}.ms-moall .btn{grid-column:3;grid-row:1/3}
+/* ภาพรวมเมสเซนเจอร์ (14 พ.ย. 2569 ผู้ใช้): การ์ดเมสเซนเจอร์ขึ้นด้านบน · ตารางเต็มหน้า · ตัวเลขเล็กลง */
+.ms-ks{gap:10px}.ms-ks .kpi{padding:10px 14px;min-height:0}.ms-ks .kpi small{font-size:12px}
+.ms-mc{margin:12px 0}.ms-mc .ms-mcl{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}.ms-mc .ms-mci{border-top:0;border-right:1px solid var(--line)}
+.ms-full{width:100%}.ms-full .ms-ovt{max-height:none}
