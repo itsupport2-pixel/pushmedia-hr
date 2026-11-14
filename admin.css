@@ -1627,3 +1627,5 @@ a.og5-ct:hover span{text-decoration:underline}
 .lgp-nu{display:inline-flex;align-items:center;font-size:12px;color:var(--mut);background:var(--sf2);border:1px solid var(--line);border-radius:99px;padding:3px 10px;white-space:nowrap}
 .side .rl-logo .mk img.mk-pc{background:#fff;padding:5px;box-sizing:border-box;border-radius:10px;box-shadow:0 0 0 1px #D2EEFA}
 .co-av.ci{display:grid;place-items:center;overflow:hidden}.co-av.ci.pl{background:#132B4F}.co-av.ci.pc{background:#fff;box-shadow:0 0 0 1px #D2EEFA}.co-av.ci img{width:76%;height:76%;object-fit:contain}.co-av.ci svg{width:78%;height:auto}
+.co-av.ci.pm{background:#141414;color:#fff}.co-av.ci.pm svg{width:54%;height:54%}
+[data-co-set]{display:inline-flex;align-items:center;gap:8px}.co-gear{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
