@@ -298,10 +298,12 @@ function ogPerson(e,role,attr,empty){return '<button type="button" class="og4-pc
 function ogFlowBox(f){var st=(OGW[f]||OGW.lead).slice(),h=A.d.leaveHr||{role:'ack',over:3};var S=st.map(function(x){return [x,'อนุมัติ']});S.push(['HR',(h.role==='approve'?'อนุมัติ':'รับทราบ')+(+h.over?' เมื่อลาเกิน '+h.over+' วัน':'')]);
   return '<div class="og4-steps">'+S.map(function(x,i){return (i?'<span class="og4-ar"></span>':'')+'<span class="og4-step"><em>'+(i+1)+'</em><span><b>'+x[0]+'</b><small>'+x[1]+'</small></span></span>'}).join('')+'</div>'}
 /* ทีมเป็นคอลัมน์ (13 พ.ย. 2569 ผู้ใช้ส่งภาพหน้า "ผังแผนก & ทีม"): หัวคอลัมน์ ชื่อทีม + จำนวน + ⋯ · หัวหน้าทีมบนสุด (ตั้ง/เปลี่ยน) · สมาชิกจัดกลุ่มตามตำแหน่ง · × ออกจากทีม · + เพิ่มคนเข้าทีม · คอลัมน์ ยังไม่อยู่ในทีม */
-/* ลำดับตำแหน่งในคอลัมน์ทีม (14 พ.ย. 2569 ผู้ใช้): Project Manager → Project Coordinator → Project Assistant → Senior Technician / Senior Team Lead / Lead Technician (ชั้นเดียวกัน) → Sub Team Lead → Technician → อื่น ๆ → ไม่มีตำแหน่ง */
-var OG_PRK={'project manager':0,'project coordinator':1,'project assistant':2,'senior technician':3,'senior team lead':3,'senir team lead':3,'lead technician':3,'sub team lead':4,'technician':5};
-function ogPosR(n){var k=String(n||'').trim().toLowerCase();return k in OG_PRK?OG_PRK[k]:(k?50:99)}
-function ogPosC(n){var r=ogPosR(n);if(r===0)return '#2563EB';if(r===1)return '#7C3AED';if(r===2)return '#D97706';if(r===3)return '#16A34A';if(r===4)return '#0891B2';if(r===5)return '#64748B';if(!n)return '#A3A3A3';var k=String(n).toLowerCase(),h=0;for(var x=0;x<k.length;x++)h=(h*31+k.charCodeAt(x))%997;return ['#DB2777','#65A30D','#9333EA','#EA580C','#0E7490','#B45309'][h%6]}
+/* ลำดับตำแหน่งในคอลัมน์ทีม (14 พ.ย. 2569 ผู้ใช้ทวนกับชื่อจริงในไฟล์): Project Manager → Project Coordinator → Senior Project Assistant / Project Assistant (ชั้นเดียวกัน)
+ * → Senior TeamLead / Senior Technician / Lead Technician / Team Lead (ชั้นเดียวกัน) → Technician → ตำแหน่งอื่นเรียงตัวอักษร → ไม่มีตำแหน่ง · เทียบแบบไม่สนตัวพิมพ์/ช่องว่าง */
+var OG_PRK={projectmanager:0,projectcoordinator:1,seniorprojectassistant:2,projectassistant:2,seniorteamlead:3,senirteamlead:3,seniortechnician:3,leadtechnician:3,teamlead:3,subteamlead:3,technician:4};   // 14 พ.ย. 2569: Senior Project Assistant กับ Project Assistant ชั้นเดียวกัน
+function ogPosK(n){return String(n||'').toLowerCase().replace(/[^a-z0-9฀-๿]/g,'')}
+function ogPosR(n){var k=ogPosK(n);return k in OG_PRK?OG_PRK[k]:(k?50:99)}
+function ogPosC(n){var r=ogPosR(n);if(r===0)return '#2563EB';if(r===1)return '#7C3AED';if(r===2)return '#D97706';if(r===3)return '#16A34A';if(r===4)return '#64748B';if(!n)return '#A3A3A3';var k=ogPosK(n),h=0;for(var x=0;x<k.length;x++)h=(h*31+k.charCodeAt(x))%997;return ['#DB2777','#65A30D','#9333EA','#EA580C','#0E7490','#BE123C'][h%6]}
 function ogGroups(M,tid){var g={},keys=[];M.forEach(function(e){var n=org('positions',e.position_id)||'';if(!g[n]){g[n]=[];keys.push(n)}g[n].push(e)});
   keys.sort(function(a,b){return ogPosR(a)-ogPosR(b)||a.localeCompare(b)});
   return keys.map(function(n){return '<div class="og8-g"><span class="og8-pill" style="--c:'+ogPosC(n)+'"><i></i>'+esc(n||'สมาชิก')+'</span>'+g[n].sort(function(a,b){return String(a.first_name).localeCompare(b.first_name)}).map(function(e){return ogCard8(e,n,0,tid)}).join('')+'</div>'}).join('')}
