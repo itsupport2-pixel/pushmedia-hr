@@ -1567,3 +1567,18 @@ a.og5-ct:hover span{text-decoration:underline}
 .og2-pk:has(input:checked){border-color:var(--line)}
 .og8-c[data-ogcard]{cursor:pointer}.og8-c[data-ogcard]:hover{border-color:#BDBDBD;box-shadow:0 1px 4px rgba(0,0,0,.06)}.og8-c[data-ogcard]:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
 .og8-nopm{font-size:12px;color:#C2410C;background:#FFF7ED;border:1px dashed #FDBA74;border-radius:8px;padding:7px 10px}
+/* 14 พ.ย. 2569: ปุ่มเพิ่มทีมเล็กที่หัวส่วนทีม · แผงเปลี่ยนคน ส่วนตำแหน่งใหม่แบบทางการ */
+.og8-kh{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.og8-kh>span{flex:1;min-width:0}
+.og8-addt{display:inline-flex;align-items:center;gap:6px}.og8-addt svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.og9{margin-top:18px;border:1px solid var(--line);border-radius:12px;background:var(--sf);overflow:hidden}
+.og9-h{display:flex;flex-direction:column;gap:2px;padding:12px 14px;border-bottom:1px solid var(--line);background:var(--sf2)}.og9-h b{font-size:14px}.og9-h small{font-size:12px;color:var(--mut)}
+.og9-f{display:grid;grid-template-columns:90px 1fr;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line)}.og9-f>span:first-child{font-size:13px;color:var(--mut)}
+.og9-sel{position:relative;display:block}
+.og9-sel select{appearance:none;-webkit-appearance:none;width:100%;height:42px;border:1px solid var(--line);border-radius:10px;background:var(--sf);padding:0 40px 0 14px;font:inherit;font-size:14px;color:var(--fg);cursor:pointer}
+.og9-sel select:hover{border-color:#BDBDBD}.og9-sel select:focus{outline:2px solid var(--fg);outline-offset:1px;border-color:var(--fg)}
+.og9-sel svg{position:absolute;right:13px;top:50%;width:16px;height:16px;transform:translateY(-50%);fill:none;stroke:var(--mut);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+.og9-ck{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;cursor:pointer}
+.og9-ck input{appearance:none;-webkit-appearance:none;flex:none;width:18px;height:18px;margin:2px 0 0;border:1.5px solid #A3A3A3;border-radius:5px;background:var(--sf);cursor:pointer}
+.og9-ck input:checked{border-color:var(--fg);background:var(--fg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center/12px no-repeat}
+.og9-ck input:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
+.og9-ck span{display:flex;flex-direction:column;gap:2px}.og9-ck b{font-size:13.5px;font-weight:600}.og9-ck small{font-size:12px;color:var(--mut)}
