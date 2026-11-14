@@ -1600,3 +1600,17 @@ a.og5-ct:hover span{text-decoration:underline}
 .ms-ks{gap:10px}.ms-ks .kpi{padding:10px 14px;min-height:0}.ms-ks .kpi small{font-size:12px}
 .ms-mc{margin:12px 0}.ms-mc .ms-mcl{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}.ms-mc .ms-mci{border-top:0;border-right:1px solid var(--line)}
 .ms-full{width:100%}.ms-full .ms-ovt{max-height:none}
+/* ตั้งค่า › กลุ่ม LINE (14 พ.ย. 2569) */
+.lg-k{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:4px 0 14px}
+.lg-kc{background:var(--sf);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:2px}.lg-kc small{font-size:12px;color:var(--mut)}.lg-kc b{font-size:24px;font-weight:700}.lg-kc span{font-size:11.5px;color:var(--mut)}
+.lg-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 12px}
+.lg-seg{display:inline-flex;gap:2px;padding:3px;border:1px solid var(--line);border-radius:10px;background:var(--sf2);flex-wrap:wrap}
+.lg-seg button{border:0;background:none;padding:6px 12px;border-radius:8px;font:inherit;font-size:13px;color:var(--mut);cursor:pointer}.lg-seg button i{font-style:normal;font-size:11.5px;color:var(--mut);margin-left:3px}
+.lg-seg button[aria-selected="true"]{background:var(--sf);color:var(--fg);font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.lg-q{margin:0;width:300px;max-width:100%}
+.lg-t td{vertical-align:middle}.lg-g{display:flex;align-items:center;gap:12px;min-width:220px}.lg-g>span{display:flex;flex-direction:column}.lg-g b{font-size:14px;font-weight:600}.lg-g small{font-size:12px;color:var(--mut)}
+.lg-pic{width:40px;height:40px;border-radius:50%;object-fit:cover;flex:none;background:var(--sf2)}.lg-pi{display:grid;place-items:center;font-weight:700;color:var(--mut);border:1px solid var(--line)}
+.lg-id{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--sf2);border-radius:8px;padding:4px 8px;font:12px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--fg);cursor:pointer}.lg-id svg{width:13px;height:13px;fill:none;stroke:var(--mut);stroke-width:2}
+.lg-tag{display:inline-block;font-size:11.5px;padding:2px 8px;border-radius:99px;background:#EEF2FF;color:#3730A3;margin:1px 4px 1px 0}.lg-tag.ok{background:#ECFDF3;color:#1A7A42}
+.lg-ft{padding:10px 16px;font-size:12.5px}
+.lg-t{width:100%;min-width:860px}
