@@ -13751,7 +13751,8 @@ async function init() {
       var _hrSig = function () { try { return JSON.stringify(DB.tasks || []) + '|' + JSON.stringify(DB.vehicles || []); } catch (e) { return String(Math.random()); } }, _hrSig0 = _hrSig();
       loadFromGAS().then(function(ok){
         if (!ok) return;
-        if (_userBusy()) { if (_hrSig() === _hrSig0) return; _remotePending = true; _remoteBar(true); return; }
+        if (_hrSig() === _hrSig0) return;   /* 14 พ.ย. 2569 ผู้ใช้: เข้าตารางงานแล้วโหลด 2 รอบ → ข้อมูลสดเหมือนที่จำไว้ = ไม่วาดหน้าใหม่ */
+        if (_userBusy()) { _remotePending = true; _remoteBar(true); return; }
         try { if (typeof curPage !== 'undefined') go(curPage || 'dashboard'); } catch(_){}
       });
     } else {
