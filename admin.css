@@ -1518,3 +1518,50 @@ a.og5-ct:hover span{text-decoration:underline}
 .og7-l [hidden]{display:none !important}
 .og7-note.top{margin:0 0 18px}
 .og4-good.og4-none{color:var(--mut);border-color:var(--line);background:var(--sf2)}
+
+/* แผนกและทีม: ทีมเป็นคอลัมน์ (13 พ.ย. 2569 · ogBoard) */
+.og8{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px;align-items:start}
+.og8-col{border:1px solid var(--line);border-radius:12px;background:var(--sf2);overflow:hidden;min-width:0}
+.og8-col.nt{border-style:dashed}
+.og8-h{display:flex;align-items:center;gap:10px;padding:12px 12px 12px 14px;border-bottom:1px solid var(--line);background:var(--sf);position:relative}
+.og8-h:before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:3px;border-radius:0 3px 3px 0;background:var(--fg)}
+.og8-col.nt .og8-h:before{background:#A3A3A3}
+.og8-ht{flex:1;min-width:0;display:flex;flex-direction:column}.og8-ht b{font-size:14.5px}.og8-ht small{font-size:12px;color:var(--mut)}
+.og8-b{padding:12px;display:flex;flex-direction:column;gap:8px}
+.og8-b .og4-pc{width:100%}
+.og8-lk{font-size:11.5px;font-weight:600;color:var(--mut);letter-spacing:.02em}
+.og8-g{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.og8-pill{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--c);background:color-mix(in srgb,var(--c) 10%,transparent);border-radius:99px;padding:3px 10px 3px 8px}
+.og8-pill i{width:7px;height:7px;border-radius:50%;background:var(--c)}
+.og8-c{display:flex;align-items:center;gap:10px;background:var(--sf);border:1px solid var(--line);border-radius:10px;padding:8px 10px;min-height:52px}
+.og8-cn{flex:1;min-width:0;display:flex;flex-direction:column}.og8-cn b{font-size:13.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.og8-cn small{font-size:12px;color:var(--mut)}
+.og8-x{flex:none;width:28px;height:28px;border:0;background:none;border-radius:8px;display:grid;place-items:center;cursor:pointer;opacity:0;transition:opacity .15s}
+.og8-c:hover .og8-x,.og8-x:focus-visible{opacity:1}.og8-x:hover{background:var(--sf2)}
+.og8-x svg{width:14px;height:14px;fill:none;stroke:var(--mut);stroke-width:2;stroke-linecap:round}
+@media (hover:none){.og8-x{opacity:1}}
+.og8-e{font-size:12.5px;color:var(--mut);padding:6px 2px}
+.og8-add{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:4px;height:36px;border:1px dashed #C7C7C7;border-radius:10px;background:none;font:inherit;font-size:13px;color:var(--mut);cursor:pointer}
+.og8-add:hover{border-color:var(--fg);color:var(--fg);background:var(--sf)}
+.og8-add svg,.og8-new svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.og8-new{display:flex;align-items:center;justify-content:center;gap:8px;min-height:120px;border:1.5px dashed #C7C7C7;border-radius:12px;background:none;font:inherit;font-size:14px;color:var(--mut);cursor:pointer}
+.og8-new:hover{border-color:var(--fg);color:var(--fg)}
+.og4-sec.og8-sec{grid-template-columns:1fr;gap:10px}
+.og8-sec .og4-v{display:block;width:100%;min-width:0}.og8{width:100%}
+/* รายการเลือกคนในแผง (เปลี่ยนหัวหน้า · ย้ายพนักงาน) 14 พ.ย. 2569 ผู้ใช้: "เมนูด้านข้างจัดหน้าดีๆ ไปกองอยู่ฝั่งขวาทำไม" · ปุ่มเลือกเดิมถูกยืดเต็มกว้าง → แถวเรียบแบบรวมตำแหน่ง (og7) */
+.og2-pick{gap:0;border:1px solid var(--line);border-radius:12px;background:var(--sf);max-height:min(52vh,460px)}
+.og2-pk{position:relative;display:flex;align-items:center;gap:12px;border:0;border-top:1px solid var(--line);border-radius:0;padding:10px 14px 10px 44px;min-height:52px;text-align:left}
+.og2-pick>.og2-pk:first-child,.og2-pick>.og2-pk[style*="none"]+.og2-pk{border-top:0}
+.og2-pk:hover{background:var(--sf2)}
+.og2-pk input{position:absolute;opacity:0;width:1px !important;height:1px;margin:0;padding:0;pointer-events:none}
+.og2-pk:before{content:"";position:absolute;left:14px;top:50%;width:18px;height:18px;border-radius:50%;border:1.5px solid #A3A3A3;transform:translateY(-50%);box-sizing:border-box}
+.og2-pk:has(input[type=checkbox]):before{border-radius:5px}
+.og2-pk:has(input:checked):before{border-color:var(--fg);background:var(--fg);box-shadow:inset 0 0 0 4px var(--sf)}
+.og2-pk:has(input[type=checkbox]:checked):before{box-shadow:inset 0 0 0 3px var(--fg);background:var(--fg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center/12px no-repeat}
+.og2-pk:has(input:focus-visible):before{outline:2px solid var(--fg);outline-offset:2px}
+.og2-pk:has(input:checked){background:var(--sf2)}
+.og2-pk>span{flex:1;min-width:0;font-size:14px;line-height:1.35}
+.og2-pk>span small{font-size:12px;margin-top:1px}
+.og2-pk .av{flex:none}
+.og2-pick [hidden]{display:none !important}
+.og2-pick>[hidden]+.og2-pk{border-top:0}
+.og2-pk:has(input:checked){border-color:var(--line)}
