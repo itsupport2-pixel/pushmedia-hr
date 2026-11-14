@@ -14547,7 +14547,7 @@ function _hideLineLoading() {
         d.onclick = function () { rpOpenExport(); var r = document.querySelector('input[name="rpx-fmt"][value="' + f[0] + '"]'); if (r) { r.checked = true; if (typeof _rpExportFmtChanged === 'function') _rpExportFmtChanged(); } }; ph.appendChild(d); });
       exp.remove(); }
     var right = bar.querySelector('.hr-r'); if (right) { while (right.firstChild) ph.appendChild(right.firstChild); right.remove(); }
-    if (H.cu && H.cu.hr) { var sb = document.createElement('button'); sb.className = 'hb'; sb.id = 'hr-set'; sb.textContent = 'ตั้งค่าตารางงาน'; sb.title = 'สีตำแหน่งงาน · ค่าเบี้ย (ตั้งค่าระบบ › ตารางงาน)';
+    if (H.cu && H.cu.admin) { var sb = document.createElement('button'); sb.className = 'hb'; sb.id = 'hr-set'; sb.textContent = 'ตั้งค่าตารางงาน'; sb.title = 'สีตำแหน่งงาน · ค่าเบี้ย (ตั้งค่าระบบ › ตารางงาน)';
       sb.onclick = function () { try { window.top.hrNav('set', 'sched'); } catch (e) { window.top.location.href = 'admin.html'; } };
       var addB = ph.querySelector('.btn-p'); ph.insertBefore(sb, addB || null); }
     var add = ph.querySelector('.btn-p'); if (add && !/เพิ่มงาน/.test(add.textContent)) add.insertAdjacentText('beforeend', ' เพิ่มงาน');

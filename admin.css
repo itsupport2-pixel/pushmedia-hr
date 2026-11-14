@@ -1582,3 +1582,14 @@ a.og5-ct:hover span{text-decoration:underline}
 .og9-ck input:checked{border-color:var(--fg);background:var(--fg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center/12px no-repeat}
 .og9-ck input:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
 .og9-ck span{display:flex;flex-direction:column;gap:2px}.og9-ck b{font-size:13.5px;font-weight:600}.og9-ck small{font-size:12px;color:var(--mut)}
+/* งานเมสเซนเจอร์ (14 พ.ย. 2569): ผู้ขอมีรูป · การ์ดเมสเซนเจอร์แบบทางการ · รายการงานและรายงานรวมแท็บ */
+.ms-who{display:flex;align-items:center;gap:10px;min-width:0}.ms-who>span{display:flex;flex-direction:column;min-width:0}.ms-who b{font-weight:600;font-size:13.5px}.ms-who small{font-size:12px;color:var(--mut)}
+.ms-mc .ch{display:flex;align-items:baseline;justify-content:space-between}
+.ms-mcl{display:flex;flex-direction:column}
+.ms-mci{display:flex;gap:14px;align-items:center;padding:14px 18px;border-top:1px solid var(--line)}.ms-mci:first-child{border-top:0}
+.ms-mci .av{flex:none;border-radius:50%}
+.ms-mcn{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.ms-mcn>b{font-size:14.5px;font-weight:600}.ms-mcn>span{font-size:12.5px;color:var(--mut)}
+.ms-mcs{display:flex;gap:14px;margin-top:6px;font-size:12px;color:var(--mut)}.ms-mcs b{color:var(--fg);font-size:14px;font-weight:600;margin-right:3px}
+.ms-mcb{display:block;height:4px;border-radius:4px;background:var(--line);margin-top:8px;overflow:hidden}.ms-mcb>i{display:block;height:100%;background:#1A7A42;border-radius:4px}
+.ms-ovt{max-height:640px;overflow:auto}
+.ms-repw{margin:4px 0 18px}.ms-lh{font-size:15px;margin:6px 0 10px}
