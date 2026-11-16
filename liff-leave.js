@@ -197,7 +197,7 @@ function slErr(e){const m=e.message||String(e);if(/PIN_NOT_SET/.test(m)){SL.info
 function slLoad(){if(!SL.info){api("mySlipInfo").then(i=>{SL.info=i;repaint()}).catch(slErr);return}if(slPinOk()&&!SL.list)api("mySlips",SL.pin).then(l=>{SL.list=l;SL.at=Date.now();repaint()}).catch(slErr)}
 const slPinIn=(id,lab)=>fl(id,lab,`<input class="inp sl-pin" id="${id}" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="off" placeholder="••••••">`);
 V.slip=()=>{setTimeout(slLoad,0);const i=SL.info;if(!i)return band("สลิปเงินเดือน")+loadingV();
-  if(!i.enabled)return band("สลิปเงินเดือน")+`<div class="pad">${nt("c-blue","info","ยังไม่เปิดใช้สลิปเงินเดือนในแอป")}</div>`;
+  if(!i.enabled)return band("สลิปเงินเดือน")+`<div class="pad">${nt("c-blue","info","สลิปเงินเดือนยังไม่เปิดใช้งาน")}</div>`;
   if(!i.hasPin)return band("สลิปเงินเดือน")+`<div class="pad"><div class="fcard"><b>ตั้ง PIN สำหรับดูสลิป</b><span class="cap">ตัวเลข 6 หลัก · ห้ามเลขซ้ำหรือเรียงกัน (เช่น 111111, 123456) · ใช้ทุกครั้งที่เปิดดูสลิป</span>${slPinIn("sp1","PIN ใหม่")}${slPinIn("sp2","ยืนยัน PIN อีกครั้ง")}<button class="btn pri" data-slipset>ตั้ง PIN</button></div></div>`;
   if(!slPinOk())return band("สลิปเงินเดือน")+`<div class="pad"><div class="fcard"><b>ใส่ PIN เพื่อดูสลิป</b>${i.lockMin?nt("c-red","alert","ใส่ PIN ผิดหลายครั้ง · ลองใหม่ใน "+i.lockMin+" นาที"):""}${slPinIn("spin","PIN 6 หลัก")}<button class="btn pri" data-slipgo>ดูสลิป</button><span class="cap">ลืม PIN? แจ้ง HR ให้รีเซ็ต แล้วตั้งใหม่ได้ทันที</span></div></div>`;
   const L0=SL.list;if(!L0)return band("สลิปเงินเดือน")+loadingV();
