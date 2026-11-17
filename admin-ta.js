@@ -34,7 +34,7 @@ function taNew(){A.taF={emp:'',ym:taYm(),rows:{},data:null};A.taNewOn=true;close
 function vTaNew(){var st=['เลือกพนักงาน','เลือกวันที่ขาดลงเวลา','ใส่เวลา + เหตุผล + หลักฐาน','บันทึก → เวลาลงระบบทันที','พิมพ์ใบให้พนักงานเซ็นรับทราบ (ถ้าต้องการ)'];
   return '<div class="ph"><div><div class="faint" style="font-size:13px;margin-bottom:4px"><a href="#" id="taf-back" style="color:inherit;text-decoration:none">ลงเวลา › คำขอแก้เวลา</a></div><h1>สร้างคำขอแก้เวลา</h1><div class="sub">ใช้เมื่อพนักงานลืมลงเวลาจริง ๆ เท่านั้น · HR บันทึกแล้วเวลาลงระบบทันที · ทุกครั้งมีเลขที่เอกสารและประวัติ · ผู้บริหารเห็นทุกรายการ</div></div></div>'+
    '<div class="ta-steps">'+st.map(function(x,i){return '<span class="ta-st'+(i<3?' on':'')+'"><b>'+(i+1)+'</b>'+esc(x)+'</span>'+(i<4?'<i>—</i>':'')}).join('')+'</div>'+
-   '<div class="ta-sel"><label class="f">พนักงาน<select id="taf-emp"><option value="">เลือกพนักงาน…</option>'+taEmps().map(function(e){return '<option value="'+esc(e.id)+'"'+(A.taF.emp===e.id?' selected':'')+'>'+esc((e.emp_code||'')+' '+e.first_name+' '+e.last_name+(e.nickname?' ('+e.nickname+')':''))+'</option>'}).join('')+'</select></label>'+
+   '<div class="ta-sel"><div class="f">พนักงาน<div class="tfp" id="tfp"><input type="hidden" id="taf-emp" value="'+esc(A.taF.emp||'')+'"><div class="tfp-in" id="tfp-in"></div><div class="tfp-dd" id="tfp-dd" hidden></div></div></div>'+
    '<label class="f">เดือน<input type="month" id="taf-ym" value="'+esc(A.taF.ym)+'"></label><span class="sp"></span><div class="ta-q" id="taf-q"></div></div>'+
    '<div id="taf-b"><section class="card" style="padding:28px;text-align:center" class="muted"><span class="faint">เลือกพนักงานเพื่อดูวันที่ระบบพบว่าไม่ได้ลงเวลา</span></section></div>'+
    '<div id="taf-ov" class="ta-warn" hidden></div><div id="taf-er" class="ta-err" hidden></div>'+
@@ -42,7 +42,22 @@ function vTaNew(){var st=['เลือกพนักงาน','เลือ�
 function bTaNew(){var back=function(e){if(e)e.preventDefault();A.taNewOn=false;render()};$('#taf-back').onclick=back;$('#taf-cancel').onclick=back;$('#taf-go').onclick=taSubmit;
   var ld=function(){var e=$('#taf-emp').value,y=$('#taf-ym').value;A.taF.emp=e;A.taF.ym=y;A.taF.rows={};A.taF.data=null;if(!e||!y){$('#taf-b').innerHTML='<section class="card" style="padding:28px;text-align:center"><span class="faint">เลือกพนักงานเพื่อดูวันที่ระบบพบว่าไม่ได้ลงเวลา</span></section>';$('#taf-q').innerHTML='';taChk();return}
     $('#taf-b').innerHTML='<div class="loading"><span class="spin"></span></div>';aCall('taMissing',e,y).then(function(r){A.taF.data=r;taFormDraw()}).catch(function(x){$('#taf-b').innerHTML='<div class="alert">'+esc(x.message)+'</div>'})};
-  $('#taf-emp').onchange=ld;$('#taf-ym').onchange=ld;if(A.taF.emp)ld()}
+  tfpBind(ld);$('#taf-ym').onchange=ld;if(A.taF.emp)ld()}
+/* ช่องเลือกพนักงานแบบพิมพ์ค้นหา + รูป (17 พ.ย. 2569 ผู้ใช้ขอ) · ค้นรหัส ชื่อ นามสกุล ชื่อเล่น แผนก · ลูกศรขึ้น/ลง + Enter เลือก · Esc ปิด */
+function tfpName(e){return (e.first_name||'')+' '+(e.last_name||'')+(e.nickname?' ('+e.nickname+')':'')}
+function tfpBind(done){var box=$('#tfp'),inp=$('#tfp-in'),dd=$('#tfp-dd'),hid=$('#taf-emp'),hi=0,list=[];if(!box)return;
+  var E={};taEmps().forEach(function(e){E[e.id]=e});
+  var showSel=function(){var e=E[hid.value];inp.innerHTML=e?av(e,30)+'<span class="tfp-nm"><b>'+esc(tfpName(e))+'</b><span class="faint">'+esc((e.emp_code||'')+(org('departments',e.department_id)?' · '+org('departments',e.department_id):''))+'</span></span><button type="button" class="tfp-x" aria-label="เปลี่ยนพนักงาน">✕</button>'
+    :'<span class="tfp-s">'+ic('search')+'</span><input id="tfp-q" type="search" autocomplete="off" placeholder="พิมพ์ชื่อ ชื่อเล่น หรือรหัสพนักงาน">';
+    if(e){inp.querySelector('.tfp-x').onclick=function(){hid.value='';showSel();done();var q=$('#tfp-q');if(q)q.focus()}}else{var q=$('#tfp-q');q.oninput=function(){hi=0;draw(q.value)};q.onfocus=function(){draw(q.value)};q.onkeydown=key}
+    loadPhotos()};
+  var draw=function(v){v=String(v||'').trim().toLowerCase();list=taEmps().filter(function(e){return !v||[e.emp_code,e.first_name,e.last_name,e.nickname,e.first_name_en,e.last_name_en,org('departments',e.department_id)].join(' ').toLowerCase().indexOf(v)>=0}).slice(0,30);
+    dd.hidden=false;dd.innerHTML=list.length?list.map(function(e,i){return '<button type="button" class="tfp-it'+(i===hi?' on':'')+'" data-tfp="'+esc(e.id)+'">'+av(e,32)+'<span class="tfp-nm"><b>'+esc(tfpName(e))+'</b><span class="faint">'+esc((e.emp_code||'')+(org('departments',e.department_id)?' · '+org('departments',e.department_id):''))+'</span></span></button>'}).join(''):'<div class="faint" style="padding:12px">ไม่พบพนักงาน</div>';
+    $$('[data-tfp]',dd).forEach(function(b){b.onmousedown=function(ev){ev.preventDefault();pick(b.dataset.tfp)}});loadPhotos()};
+  var pick=function(id){hid.value=id;dd.hidden=true;showSel();done()};
+  var key=function(ev){if(dd.hidden)return;if(ev.key==='ArrowDown'){hi=Math.min(hi+1,list.length-1);draw(ev.target.value);ev.preventDefault()}else if(ev.key==='ArrowUp'){hi=Math.max(hi-1,0);draw(ev.target.value);ev.preventDefault()}else if(ev.key==='Enter'&&list[hi]){ev.preventDefault();pick(list[hi].id)}else if(ev.key==='Escape')dd.hidden=true};
+  document.addEventListener('mousedown',function h(ev){if(!document.body.contains(box)){document.removeEventListener('mousedown',h);return}if(!box.contains(ev.target))dd.hidden=true});
+  showSel()}
 function taFormDraw(){var r=A.taF.data,b=$('#taf-b');if(!b)return;
   $('#taf-q').innerHTML='<div><small>แก้ไปแล้วเดือนนี้</small><b>'+r.used+' / '+r.limit+' วัน</b></div><div><small>ทั้งปี</small><b>'+(r.year||0)+' วัน</b></div><div><small>ย้อนหลังได้</small><b>'+r.back+' วัน</b></div>';
   if(r.none){b.innerHTML='<div class="alert">'+esc(r.none)+'</div>';return}
