@@ -188,52 +188,86 @@ document.addEventListener("change",e=>{const t=e.target;if(!t||t.id!=="lvfile"||
   const u=URL.createObjectURL(fl0),im=new Image();im.onload=()=>{let mx=1600,q=.82,d="";for(let k=0;k<7;k++){const sc=Math.min(1,mx/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*sc);c.height=Math.round(im.height*sc);c.getContext("2d").drawImage(im,0,0,c.width,c.height);d=c.toDataURL("image/jpeg",q);if(d.length<=380000)break;mx=Math.round(mx*.8);q=Math.max(.55,q-.05)}
     URL.revokeObjectURL(u);if(d.length>380000)return toast("รูปใหญ่เกินไป");const f=L.f;f.reason=($("#lr")||{}).value||f.reason;f.doc_no=($("#ldoc")||{}).value||f.doc_no;if(!f.ph){f.photos=[];f.ph=true}if(f.photos.length>=3)return;f.photos.push(d);repaint()};im.onerror=()=>{URL.revokeObjectURL(u);toast("เปิดรูปนี้ไม่ได้")};im.src=u});
 
-/* ── สลิปเงินเดือน (3 พ.ย. 2569 ผู้ใช้ขอ: ดูในแอป LINE · มี PIN) · เฉพาะงวดที่จ่ายแล้ว · PIN จำไว้ในหน่วยความจำ 10 นาที (ไม่เก็บลงเครื่อง) ── */
-const SL={info:null,pin:"",at:0,list:null,det:{}};
+/* ── สลิปเงินเดือน (3 พ.ย. 2569 · 17 พ.ย. 2569 ตามแบบ Figma หน้า 42: โทนสว่าง · โลโก้บริษัท · สรุปทั้งปี · บันทึกเป็นรูป / ดาวน์โหลด PDF · ไม่มี PIN) · เห็นเฉพาะของตัวเอง + งวดที่ HR เผยแพร่แล้ว ── */
+const SL={info:null,home:null,det:{}};
 const slM=n=>(+n||0).toLocaleString("th-TH",{minimumFractionDigits:2,maximumFractionDigits:2});
 const slYm=ym=>TH_M[+ym.slice(5,7)-1]+" "+(+ym.slice(0,4)+543);
-const slPinOk=()=>true;   // 17 พ.ย. 2569 ผู้ใช้สั่ง: เอา PIN สลิปออก · กดดูได้ทันที
-function slErr(e){const m=e.message||String(e);if(/PIN_NOT_SET/.test(m)){SL.info=null;SL.pin="";repaint();return}if(/PIN/.test(m)){SL.pin="";SL.list=null;SL.det={}}toast(m);repaint()}
-function slLoad(){if(!SL.info){api("mySlipInfo").then(i=>{SL.info=i;repaint()}).catch(slErr);return}if(slPinOk()&&!SL.list)api("mySlips",SL.pin).then(l=>{SL.list=l;SL.at=Date.now();repaint()}).catch(slErr)}
-const slPinIn=(id,lab)=>fl(id,lab,`<input class="inp sl-pin" id="${id}" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="off" placeholder="••••••">`);
+const slPinOk=()=>true;
+const slD=v=>{if(!v)return "—";const d=DT(v);return d.getDate()+" "+TH_S[d.getMonth()]+" "+(d.getFullYear()+543)};   // วันที่บนสลิป: 26 ก.ย. 2569 (ไม่มีชื่อวัน)
+const SLI={pdf:'<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 12v6"/><path d="M9 15l3 3 3-3"/>',img:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/>',bank:'<path d="M3 10l9-6 9 6"/><path d="M5 10v8M9 10v8M15 10v8M19 10v8M3 20h18"/>',lock:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>'};
+const slI=(k,s,c)=>`<svg viewBox="0 0 24 24" width="${s||18}" height="${s||18}" fill="none" stroke="${c||"currentColor"}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${SLI[k]}</svg>`;
+/* โลโก้: บริษัทอัปโหลดเอง (ตั้งค่า › ข้อมูลบริษัท) ก่อน · ไม่มี = ไฟล์โลโก้จริงของแต่ละบริษัทในระบบ */
+const slLogo=co=>co&&co.logo?co.logo:({pl:"push-logix-logo.svg",pc:"push-codex-logo.png"}[co&&co.id]||"push-media-logo-black.svg");
+const slCard=(h,st)=>`<div style="background:#fff;border:1px solid #E8EAED;border-radius:14px;padding:14px 16px;${st||""}">${h}</div>`;
+const slRow=(l,r,b)=>`<div style="display:flex;justify-content:space-between;gap:12px;padding:7px 0;${b?"border-top:1px solid #EEF0F2;margin-top:4px;padding-top:10px":""}"><span style="color:${b?"#111827":"#6B7280"};${b?"font-weight:600":""}">${l}</span><span style="color:#111827;font-weight:${b?700:500};text-align:right;font-variant-numeric:tabular-nums">${r}</span></div>`;
+const slCoHead=co=>`<div style="display:flex;align-items:center;gap:10px"><img src="${esc(slLogo(co))}" alt="" style="height:26px;max-width:104px;object-fit:contain;flex:none"><div style="min-width:0;overflow:hidden"><b style="display:block;font-size:14px;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(co.name_th)}</b><span class="cap" style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(co.branch||co.short||"")}</span></div></div>`;
+function slErr(e){toast(e.message||String(e));repaint()}
+function slLoad(){if(!SL.info){api("mySlipInfo").then(i=>{SL.info=i;repaint()}).catch(slErr);return}if(SL.info.enabled&&!SL.home)api("mySlipHome").then(h=>{SL.home=h;repaint()}).catch(slErr)}
 V.slip=()=>{setTimeout(slLoad,0);const i=SL.info;if(!i)return band("สลิปเงินเดือน")+loadingV();
   if(!i.enabled)return band("สลิปเงินเดือน")+`<div class="pad">${nt("c-blue","info","สลิปเงินเดือนยังไม่เปิดใช้งาน")}</div>`;
-  if(!i.hasPin)return band("สลิปเงินเดือน")+`<div class="pad"><div class="fcard"><b>ตั้ง PIN สำหรับดูสลิป</b><span class="cap">ตัวเลข 6 หลัก · ห้ามเลขซ้ำหรือเรียงกัน (เช่น 111111, 123456) · ใช้ทุกครั้งที่เปิดดูสลิป</span>${slPinIn("sp1","PIN ใหม่")}${slPinIn("sp2","ยืนยัน PIN อีกครั้ง")}<button class="btn pri" data-slipset>ตั้ง PIN</button></div></div>`;
-  if(!slPinOk())return band("สลิปเงินเดือน")+`<div class="pad"><div class="fcard"><b>ใส่ PIN เพื่อดูสลิป</b>${i.lockMin?nt("c-red","alert","ใส่ PIN ผิดหลายครั้ง · ลองใหม่ใน "+i.lockMin+" นาที"):""}${slPinIn("spin","PIN 6 หลัก")}<button class="btn pri" data-slipgo>ดูสลิป</button><span class="cap">ลืม PIN? แจ้ง HR ให้รีเซ็ต แล้วตั้งใหม่ได้ทันที</span></div></div>`;
-  const L0=SL.list;if(!L0)return band("สลิปเงินเดือน")+loadingV();
-  return band("สลิปเงินเดือน")+`<div class="pad">${L0.length?`<div class="sl-list">${L0.map(x=>`<button class="sl-row" data-slipd="${esc(x.id)}"><span><b>${x.kind==="bonus"?"โบนัส":"งวด"} ${slYm(x.ym)}</b><span class="cap">จ่าย ${x.pay_date?fD(x.pay_date):"—"}</span></span><span class="sl-net">${slM(x.net)}</span>${ic("chevR","width:18px;height:18px")}</button>`).join("")}</div>`:nt("c-blue","info","ยังไม่มีสลิป · รายการเดือนจะขึ้นที่นี่เมื่อ HR เผยแพร่สลิปเดือนนั้นแล้ว")}</div>`};
-V.slipd=id=>{const x=SL.det[id];if(!slPinOk()){SL.pin="";return V.slip()}
-  if(!x){api("mySlip",SL.pin,id).then(d=>{SL.det[id]=d;SL.at=Date.now();repaint()}).catch(slErr);return band("สลิปเงินเดือน")+loadingV()}
-  const inc=x.lines.filter(l=>l.kind==="inc"),ded=x.lines.filter(l=>l.kind==="ded"),li=a=>a.map(l=>`<div class="sl-l"><span>${esc(l.name)}</span><span>${slM(l.amount)}</span></div>`).join("");
-  return band("สลิปเงินเดือน")+`<div class="pad"><div class="fcard sl-card">
-    <div class="sl-co"><b>${esc(x.co.name_th)}${x.co.branch?" ("+esc(x.co.branch)+")":""}</b>${x.co.tax_id?`<span class="cap">เลขประจำตัวผู้เสียภาษี ${esc(x.co.tax_id)}</span>`:""}</div>
-    <div class="sl-hd"><b>${x.run.kind==="bonus"?"ใบแจ้งโบนัส":"ใบแจ้งเงินเดือน · งวด"} ${slYm(x.run.ym)}</b><span class="cap">${fD(x.run.from)} – ${fD(x.run.to)} · จ่าย ${x.run.pay_date?fD(x.run.pay_date):"—"}</span></div>
-    <div class="sl-kv"><span>รหัส</span><b>${esc(x.code)}</b><span>ชื่อ</span><b>${esc(x.name)}</b><span>แผนก</span><b>${esc(x.dept||"—")}</b><span>วันทำงาน</span><b>${x.days} วัน${x.absent?" · ขาด "+x.absent+" วัน":""}</b><span>โอนเข้า</span><b>${esc(x.bank||"—")}</b></div>
-    <h4 class="sl-t">รายได้</h4>${li(inc)}<div class="sl-l sl-s"><span>รวมรายได้</span><span>${slM(x.inc)}</span></div>
-    <h4 class="sl-t">รายการหัก</h4>${ded.length?li(ded):'<span class="cap">ไม่มี</span>'}<div class="sl-l sl-s"><span>รวมรายการหัก</span><span>${slM(x.ded)}</span></div>
-    <div class="sl-netbox"><span>เงินได้สุทธิ</span><b>${slM(x.net)}</b></div><button class="btn" data-slipimg="${esc(id)}" style="margin-top:6px">บันทึกสลิปเป็นรูป</button><span class="cap" style="text-align:center">เอกสารนี้เป็นความลับเฉพาะผู้รับ</span></div></div>`};
-/* บันทึกสลิปเป็นรูป (17 พ.ย. 2569 ผู้ใช้ขอ: พนักงานโหลดสลิปของตัวเองได้) · วาดบน canvas ในเครื่อง ไม่ส่งไปที่ไหน · ในแอป LINE กดค้างที่รูปเพื่อบันทึก / บนคอมกดดาวน์โหลด */
-function slImg(x){const W=900,F=getComputedStyle(document.body).fontFamily||"sans-serif",inc=x.lines.filter(l=>l.kind==="inc"),ded=x.lines.filter(l=>l.kind==="ded");
-  const H=2400,c=document.createElement("canvas");c.width=W*2;c.height=H*2;const g=c.getContext("2d");g.scale(2,2);
-  g.fillStyle="#fff";g.fillRect(0,0,W,H);let y=56;const L=48,R=W-48,t=(s,xx,yy,sz,w,al,col)=>{g.font=(w||400)+" "+sz+"px "+F;g.fillStyle=col||"#111";g.textAlign=al||"left";g.fillText(s,xx,yy)},hr=yy=>{g.fillStyle="#E5E7EB";g.fillRect(L,yy,R-L,1)};
-  t(x.co.name_th+(x.co.branch?" ("+x.co.branch+")":""),L,y,26,700);y+=30;if(x.co.tax_id){t("เลขประจำตัวผู้เสียภาษี "+x.co.tax_id,L,y,17,400,"left","#6B7280");y+=10}y+=22;hr(y);y+=40;
-  t((x.run.kind==="bonus"?"ใบแจ้งโบนัส":"ใบแจ้งเงินเดือน · งวด")+" "+slYm(x.run.ym),L,y,24,700);y+=30;t(fD(x.run.from)+" – "+fD(x.run.to)+" · จ่าย "+(x.run.pay_date?fD(x.run.pay_date):"—"),L,y,17,400,"left","#6B7280");y+=26;hr(y);y+=38;
-  [["รหัส",x.code],["ชื่อ",x.name],["แผนก",x.dept||"—"],["วันทำงาน",x.days+" วัน"+(x.absent?" · ขาด "+x.absent+" วัน":"")],["โอนเข้า",x.bank||"—"]].forEach(k=>{t(k[0],L,y,18,400,"left","#6B7280");t(String(k[1]),L+160,y,18,600);y+=32});y+=8;
-  const sec=(ti,arr,tl,tv)=>{t(ti,L,y,20,700);y+=36;if(!arr.length){t("ไม่มี",L,y,17,400,"left","#6B7280");y+=44}arr.forEach(l=>{t(l.name,L,y,18);t(slM(l.amount),R,y,18,500,"right");y+=32});y+=8;hr(y-22);t(tl,L,y,18,700);t(slM(tv),R,y,18,700,"right");y+=46};
-  sec("รายได้",inc,"รวมรายได้",x.inc);sec("รายการหัก",ded,"รวมรายการหัก",x.ded);
-  g.fillStyle="#111";g.beginPath();if(g.roundRect)g.roundRect(L,y-8,R-L,64,14);else g.rect(L,y-8,R-L,64);g.fill();t("เงินได้สุทธิ",L+22,y+33,20,600,"left","#fff");t(slM(x.net),R-22,y+35,26,700,"right","#fff");y+=96;
-  t("เอกสารนี้เป็นความลับเฉพาะผู้รับ",W/2,y,15,400,"center","#9CA3AF");
-  y+=36;const out=document.createElement("canvas");out.width=W*2;out.height=Math.ceil(y)*2;out.getContext("2d").drawImage(c,0,0);   // วาดบนผืนสูงก่อน แล้วตัดตามความยาวจริง
-  const url=out.toDataURL("image/png"),fn="สลิป-"+x.run.ym+(x.run.kind==="bonus"?"-โบนัส":"")+".png",ov=document.createElement("div");
-  ov.style.cssText="position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.82);display:flex;flex-direction:column;align-items:center;gap:12px;padding:16px;overflow:auto";
-  ov.innerHTML=`<span style="color:#fff;font-size:15px;text-align:center">กดค้างที่รูปแล้วเลือก "บันทึกรูป" · บนคอมกดปุ่มดาวน์โหลด</span><img src="${url}" alt="สลิปเงินเดือน" style="width:100%;max-width:520px;border-radius:12px;background:#fff"><div style="display:flex;gap:8px"><a class="btn pri" href="${url}" download="${esc(fn)}">ดาวน์โหลด</a><button class="btn" data-slimgx style="background:#fff;color:#111">ปิด</button></div>`;
+  const H0=SL.home;if(!H0)return band("สลิปเงินเดือน")+loadingV();
+  const y=H0.ytd,L0=H0.list,by={};L0.forEach(x=>{const k=String(x.pay_date||x.ym).slice(0,4);(by[k]=by[k]||[]).push(x)});
+  const recent=x=>x.pay_date&&(Date.now()-new Date(x.pay_date+"T12:00:00"))<35*864e5;
+  const sum=slCard(slCoHead(H0.co)+`<div class="cap" style="margin:10px 0 0">สรุปปี ${+y.year+543} · ${y.n} งวดที่เผยแพร่</div><div style="display:flex;justify-content:space-between;border-top:1px solid #EEF0F2;margin-top:8px;padding-top:10px">${[["เงินได้สะสม",y.inc],["ภาษีสะสม",y.tax],["ประกันสังคม",y.sso]].map(k=>`<div><span class="cap" style="display:block">${k[0]}</span><b style="font-size:15px;color:#111827;font-variant-numeric:tabular-nums">${slM(k[1])}</b></div>`).join("")}</div>`);
+  const list=Object.keys(by).sort().reverse().map(k=>`<div class="cap" style="margin:14px 2px 6px;font-weight:500">ปี ${+k+543}</div>`+slCard(by[k].map((x,j)=>`<button class="sl-r2" data-slipd="${esc(x.id)}" style="width:100%;display:flex;align-items:center;gap:10px;padding:12px 0;background:none;border:0;${j?"border-top:1px solid #EEF0F2;":""}text-align:left"><span style="flex:1;min-width:0"><b style="display:block;font-size:15px;color:#111827;font-weight:500">${x.kind==="bonus"?"โบนัส":"งวด"} ${slYm(x.ym)}</b><span class="cap">จ่าย ${x.pay_date?slD(x.pay_date):"—"}</span></span>${j===0&&k===Object.keys(by).sort().reverse()[0]&&recent(x)?'<span style="background:#EEF2FF;color:#3730A3;font-size:10px;padding:1px 7px;border-radius:6px">ใหม่</span>':""}<b style="font-size:15px;color:#111827;font-variant-numeric:tabular-nums">${slM(x.net)}</b>${ic("chevR","width:18px;height:18px;color:#9CA3AF")}</button>`).join(""),"padding:2px 16px")).join("");
+  return band("สลิปเงินเดือน")+`<div class="pad" style="background:#F5F6F8">${sum}${L0.length?list:`<div style="margin-top:12px">${nt("c-blue","info","ยังไม่มีสลิป · รายการเดือนจะขึ้นที่นี่เมื่อ HR เผยแพร่สลิปเดือนนั้นแล้ว")}</div>`}<div class="cap" style="display:flex;gap:6px;align-items:center;margin-top:12px">${slI("lock",14,"#9CA3AF")}เห็นเฉพาะสลิปของตัวเอง · งวดที่ HR เผยแพร่แล้วเท่านั้น</div></div>`};
+V.slipd=id=>{const x=SL.det[id];
+  if(!x){api("mySlip","",id).then(d=>{SL.det[id]=d;repaint()}).catch(slErr);return band("สลิปเงินเดือน")+loadingV()}
+  const inc=x.lines.filter(l=>l.kind==="inc"),ded=x.lines.filter(l=>l.kind==="ded"),li=a=>a.map(l=>slRow(esc(l.name),slM(l.amount))).join("");
+  const hd=(t)=>`<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2px"><b style="font-size:14px;color:#111827">${t}</b><span class="cap">บาท</span></div>`;
+  const top=slCard(slCoHead(x.co)+`<div style="border-top:1px solid #EEF0F2;margin-top:10px;padding-top:10px"><b style="display:block;font-size:16px;color:#111827">${x.run.kind==="bonus"?"ใบแจ้งโบนัส":"ใบแจ้งเงินเดือน · งวด"} ${slYm(x.run.ym)}</b><span class="cap">รอบ ${slD(x.run.from)} – ${slD(x.run.to)} · วันที่จ่าย ${x.run.pay_date?slD(x.run.pay_date):"—"}</span></div>
+    <div style="background:#F5F6F8;border:1px solid #E5E7EB;border-radius:12px;padding:12px 14px;margin-top:10px"><span class="cap">เงินได้สุทธิ (Net Pay)</span><b style="display:block;font-size:26px;color:#111827;font-variant-numeric:tabular-nums">${slM(x.net)} บาท</b>${x.bank?`<span class="cap" style="display:flex;gap:6px;align-items:center;margin-top:4px;color:#374151">${slI("bank",14,"#6B7280")}โอนเข้า ${esc(x.bank)}</span>`:""}</div>`);
+  const who=slCard([["รหัสพนักงาน",x.code],["ชื่อ-นามสกุล",x.name],["แผนก / ตำแหน่ง",[x.dept,x.position].filter(Boolean).join(" · ")||"—"],["วันทำงาน",x.days+" วัน"]].map(k=>slRow(k[0],esc(k[1]))).join(""),"padding:6px 16px");
+  const sI=slCard(hd("รายได้ (Earnings)")+li(inc)+slRow("รวมรายได้",slM(x.inc),1)),sD=slCard(hd("รายการหัก (Deductions)")+(ded.length?li(ded):'<span class="cap">ไม่มี</span>')+slRow("รวมรายการหัก",slM(x.ded),1));
+  const btn=(k,l,a,pri)=>`<button class="btn" data-${a}="${esc(id)}" style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border-radius:12px;${pri?"background:#1F2937;color:#fff;border:1px solid #1F2937":"background:#fff;color:#1F2937;border:1px solid #D1D5DB"}">${slI(k,18)}<b style="font-weight:600">${l}</b></button>`;
+  return band("สลิปเงินเดือน")+`<div class="pad" style="background:#F5F6F8;display:flex;flex-direction:column;gap:12px">${top}${who}${sI}${sD}<div style="display:flex;gap:10px">${btn("img","บันทึกเป็นรูป","slipimg")}${btn("pdf","ดาวน์โหลด PDF","slippdf",1)}</div><div class="cap" style="display:flex;gap:6px;align-items:center">${slI("lock",14,"#9CA3AF")}เอกสารนี้เป็นความลับเฉพาะผู้รับ</div></div>`};
+/* สลิปแบบเอกสาร (A4 แนวนอนครึ่งหน้า · Figma หน้า 42 D) วาดบน canvas ในเครื่อง ไม่ส่งไปที่ไหน · ใช้ทั้ง "บันทึกเป็นรูป" และ "ดาวน์โหลด PDF" */
+function slLoadImg(src){return new Promise(ok=>{if(!src)return ok(null);const im=new Image();im.onload=()=>ok(im);im.onerror=()=>ok(null);im.src=src})}
+async function slDraw(x){const W=1123,H=600,P=40,S=2,F=getComputedStyle(document.body).fontFamily||"sans-serif",TX="#1F2937",MU="#6B7280",HD="#EEF0F3";
+  const c=document.createElement("canvas");c.width=W*S;c.height=H*S;const g=c.getContext("2d");g.scale(S,S);g.fillStyle="#fff";g.fillRect(0,0,W,H);
+  const t=(s,xx,yy,sz,w,al,col,mw)=>{g.font=(w||400)+" "+sz+"px "+F;g.fillStyle=col||TX;g.textAlign=al||"left";g.textBaseline="top";let v=String(s==null?"":s);if(mw)while(v.length>1&&g.measureText(v).width>mw)v=v.slice(0,-2)+"…";g.fillText(v,xx,yy)};
+  const bx=(xx,yy,w,h,bg,lw)=>{if(bg){g.fillStyle=bg;g.fillRect(xx,yy,w,h)}g.strokeStyle=TX;g.lineWidth=lw||0.75;g.strokeRect(xx,yy,w,h)};
+  const co=x.co||{},lg=await slLoadImg(slLogo(co));if(lg){const h=40,w=Math.min(140,lg.width*h/lg.height);g.drawImage(lg,P,P,w,h)}
+  const cx=P+160;t(co.name_th+(co.branch?" ("+co.branch+")":""),cx,P,15,700,"left",TX,520);t([co.address,co.phone?"โทร "+co.phone:""].filter(Boolean).join(" · "),cx,P+24,10,400,"left",MU,560);
+  t(x.run.kind==="bonus"?"ใบแจ้งโบนัส · BONUS SLIP":"ใบแจ้งเงินเดือน · PAY SLIP",W-P,P,16,700,"right");t((x.run.kind==="bonus"?"โบนัส ":"งวด ")+slYm(x.run.ym)+" · จ่าย "+(x.run.pay_date?slD(x.run.pay_date):"—"),W-P,P+24,11,400,"right",MU);
+  g.fillStyle=TX;g.fillRect(P,P+52,W-2*P,1.5);
+  let y=P+64;const gw=(W-2*P)/4,gh=38,grid=[[["รหัสพนักงาน",x.code],["ชื่อ-นามสกุล",x.name],["แผนก",x.dept||"—"],["ตำแหน่ง",x.position||"—"]],[["รอบตัดยอด",slD(x.run.from)+" – "+slD(x.run.to)],["วันทำงาน",x.days+" วัน"],["โอนเข้าบัญชี",x.bank||"—"],["",""]]];
+  grid.forEach((r,ri)=>r.forEach((k,ci)=>{const xx=P+ci*gw,yy=y+ri*gh;bx(xx,yy,gw,gh);if(k[0]){t(k[0],xx+8,yy+5,9,400,"left",MU);t(k[1],xx+8,yy+18,12,600,"left",TX,gw-16)}}));
+  y+=gh*2+12;const tw=W-2*P-230,cl=[[P,tw*.38,"รายได้","left"],[P+tw*.38,tw*.12,"จำนวน","right"],[P+tw*.5,tw*.15,"จำนวนเงิน","right"],[P+tw*.65,tw*.2,"รายการหัก","left"],[P+tw*.85,tw*.15,"จำนวนเงิน","right"]];
+  const inc=x.lines.filter(l=>l.kind==="inc"),ded=x.lines.filter(l=>l.kind==="ded"),rows=Math.max(5,inc.length,ded.length),th=30,tb=Math.min(rows,9)*22+16,tf=30;
+  cl.forEach(k=>{bx(k[0],y,k[1],th,HD);t(k[2],k[3]==="right"?k[0]+k[1]-8:k[0]+8,y+8,11,600,k[3])});cl.forEach(k=>bx(k[0],y+th,k[1],tb));
+  inc.slice(0,9).forEach((l,i)=>{const yy=y+th+10+i*22;t(l.name,cl[0][0]+8,yy,11,400,"left",TX,cl[0][1]-16);if(l.code==="salary"&&x.days)t(x.days+" วัน",cl[1][0]+cl[1][1]-6,yy,11,400,"right");t(slM(l.amount),cl[2][0]+cl[2][1]-6,yy,11,500,"right")});
+  ded.slice(0,9).forEach((l,i)=>{const yy=y+th+10+i*22;t(l.name,cl[3][0]+8,yy,11,400,"left",TX,cl[3][1]-16);t(slM(l.amount),cl[4][0]+cl[4][1]-6,yy,11,500,"right")});
+  const yf=y+th+tb;bx(P,yf,cl[2][0]-P,tf,HD);t("รวมรายได้",P+8,yf+8,11,600);bx(cl[2][0],yf,cl[2][1],tf,HD);t(slM(x.inc),cl[2][0]+cl[2][1]-6,yf+8,12,700,"right");
+  bx(cl[3][0],yf,cl[3][1],tf,HD);t("รวมรายการหัก",cl[3][0]+8,yf+8,11,600);bx(cl[4][0],yf,cl[4][1],tf,HD);t(slM(x.ded),cl[4][0]+cl[4][1]-6,yf+8,12,700,"right");
+  const nx=W-P-218,nh=th+tb+tf;bx(nx,y,218,nh,"#F8F9FA",1.5);t("เงินได้สุทธิ",nx+109,y+nh/2-56,13,600,"center");t(slM(x.net),nx+109,y+nh/2-24,28,700,"center");t("บาท",nx+109,y+nh/2+14,11,400,"center",MU);
+  y=yf+tf+16;const yt=x.ytd||{},yw=(W-2*P-230)/3;[["เงินได้สะสมทั้งปี",yt.inc],["ภาษีสะสมทั้งปี",yt.tax],["ประกันสังคมสะสม",yt.sso]].forEach((k,i)=>{const xx=P+i*yw;bx(xx,y,yw,22,HD);t(k[0],xx+yw/2,y+5,10,600,"center");bx(xx,y+22,yw,28);t(slM(k[1]),xx+yw-8,y+29,12,500,"right")});
+  [["ลงชื่อผู้รับเงิน",y+10],["ลงชื่อผู้จ่ายเงิน",y+40]].forEach(k=>{t(k[0],nx,k[1],10,400,"left",MU);g.fillStyle=TX;g.fillRect(nx+88,k[1]+13,130,0.75)});
+  const fy=H-P-8;g.fillStyle="#D1D5DB";g.fillRect(P,fy-10,W-2*P,1);const now=new Date();
+  t("เอกสารออกจากระบบ Push Media Center · เอกสารนี้เป็นความลับเฉพาะผู้รับ",P,fy,9,400,"left",MU);t("ออกเอกสาร "+now.getDate()+"/"+(now.getMonth()+1)+"/"+(now.getFullYear()+543)+" "+String(now.getHours()).padStart(2,"0")+":"+String(now.getMinutes()).padStart(2,"0")+" น.",W-P,fy,9,400,"right",MU);
+  return c}
+const slName=(x,ext)=>"สลิป-"+x.run.ym+(x.run.kind==="bonus"?"-โบนัส":"")+"."+ext;
+/* PDF หน้าเดียว (A4 แนวนอน) ฝังรูป JPEG ของสลิป · เขียนไฟล์เอง ไม่ใช้ไลบรารี */
+function slPdf(canvas){const jpg=atob(canvas.toDataURL("image/jpeg",0.92).split(",")[1]),iw=canvas.width,ih=canvas.height,PW=842,PH=595,m=24,w=PW-2*m,h=w*ih/iw,yy=PH-m-h;
+  const enc=new TextEncoder(),parts=[],off=[];let len=0;const push=s=>{const b=typeof s==="string"?enc.encode(s):s;parts.push(b);len+=b.length};
+  const img=new Uint8Array(jpg.length);for(let i=0;i<jpg.length;i++)img[i]=jpg.charCodeAt(i);const cs=`q ${w.toFixed(2)} 0 0 ${h.toFixed(2)} ${m} ${yy.toFixed(2)} cm /Im0 Do Q`;
+  push("%PDF-1.4\n");const obj=(n,body)=>{off[n]=len;push(n+" 0 obj\n");body();push("\nendobj\n")};
+  obj(1,()=>push("<< /Type /Catalog /Pages 2 0 R >>"));obj(2,()=>push("<< /Type /Pages /Kids [3 0 R] /Count 1 >>"));
+  obj(3,()=>push(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PW} ${PH}] /Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>`));
+  obj(4,()=>{push(`<< /Type /XObject /Subtype /Image /Width ${iw} /Height ${ih} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${img.length} >>\nstream\n`);push(img);push("\nendstream")});
+  obj(5,()=>push(`<< /Length ${cs.length} >>\nstream\n${cs}\nendstream`));
+  const xr=len;push("xref\n0 6\n0000000000 65535 f \n"+[1,2,3,4,5].map(n=>String(off[n]).padStart(10,"0")+" 00000 n \n").join("")+"trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n"+xr+"\n%%EOF");
+  return new Blob(parts,{type:"application/pdf"})}
+/* ส่งไฟล์ให้ผู้ใช้: มือถือที่แชร์ไฟล์ได้ = เมนูแชร์ (บันทึกลงไฟล์/รูปได้) · ไม่ได้ = ดาวน์โหลดตรง */
+async function slGive(blob,name){try{const f=new File([blob],name,{type:blob.type});if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:name});return}}catch(e){if(e&&e.name==="AbortError")return}
+  const u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),60000)}
+async function slImg(x){const c=await slDraw(x),url=c.toDataURL("image/png"),ov=document.createElement("div");
+  ov.style.cssText="position:fixed;inset:0;z-index:9999;background:rgba(17,24,39,.85);display:flex;flex-direction:column;align-items:center;gap:12px;padding:16px;overflow:auto";
+  ov.innerHTML=`<span style="color:#fff;font-size:15px;text-align:center">กดค้างที่รูปแล้วเลือก "บันทึกรูป" · บนคอมกดปุ่มดาวน์โหลด</span><img src="${url}" alt="สลิปเงินเดือน" style="width:100%;max-width:720px;border-radius:8px;background:#fff"><div style="display:flex;gap:8px"><a class="btn pri" href="${url}" download="${esc(slName(x,"png"))}">ดาวน์โหลด</a><button class="btn" data-slimgx style="background:#fff;color:#111">ปิด</button></div>`;
   ov.addEventListener("click",e=>{if(e.target===ov||e.target.closest("[data-slimgx]"))ov.remove()});document.body.appendChild(ov)}
-document.addEventListener("click",e=>{const t=e.target.closest("[data-slipset],[data-slipgo],[data-slipd],[data-slipout],[data-slipimg]");if(!t)return;
-  if(t.dataset.slipimg!==undefined){const d=SL.det[t.dataset.slipimg];if(d)try{slImg(d)}catch(er){toast("สร้างรูปไม่ได้ · ลองใหม่")}return}
-  if(t.dataset.slipout!==undefined){SL.pin="";SL.list=null;SL.det={};repaint();return}
-  if(t.dataset.slipd){go("slipd:"+t.dataset.slipd);return}
-  if(t.dataset.slipgo!==undefined){const p=($("#spin")||{}).value||"";if(!/^\d{6}$/.test(p))return toast("ใส่ PIN 6 หลัก");t.disabled=true;api("mySlips",p).then(l=>{SL.pin=p;SL.at=Date.now();SL.list=l;repaint()}).catch(er=>{t.disabled=false;api("mySlipInfo").then(i=>{SL.info=i}).catch(()=>{}).finally(()=>slErr(er))});return}
-  const a=($("#sp1")||{}).value||"",b=($("#sp2")||{}).value||"";if(!/^\d{6}$/.test(a))return toast("PIN ต้องเป็นตัวเลข 6 หลัก");if(a!==b)return toast("PIN ทั้งสองช่องไม่ตรงกัน");
-  t.disabled=true;api("mySlipPin",a,"").then(()=>{SL.info.hasPin=true;SL.pin=a;SL.at=Date.now();toast("ตั้ง PIN แล้ว");repaint()}).catch(er=>{t.disabled=false;slErr(er)})});
+document.addEventListener("click",e=>{const t=e.target.closest("[data-slipd],[data-slipimg],[data-slippdf]");if(!t)return;
+  if(t.dataset.slipimg!==undefined){const d=SL.det[t.dataset.slipimg];if(d)slImg(d).catch(()=>toast("สร้างรูปไม่ได้ · ลองใหม่"));return}
+  if(t.dataset.slippdf!==undefined){const d=SL.det[t.dataset.slippdf];if(!d)return;t.disabled=true;toast("กำลังสร้าง PDF…");slDraw(d).then(c=>slGive(slPdf(c),slName(d,"pdf"))).catch(()=>toast("สร้าง PDF ไม่ได้ · ลองใช้ บันทึกเป็นรูป")).finally(()=>{t.disabled=false});return}
+  if(t.dataset.slipd){go("slipd:"+t.dataset.slipd);return}});
 
 start();
