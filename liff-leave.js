@@ -193,6 +193,7 @@ const SL={info:null,home:null,det:{}};
 const slM=n=>(+n||0).toLocaleString("th-TH",{minimumFractionDigits:2,maximumFractionDigits:2});
 const slYm=ym=>TH_M[+ym.slice(5,7)-1]+" "+(+ym.slice(0,4)+543);
 const slPinOk=()=>true;
+const SL_GREEN="#16A34A",SL_RED="#DC2626";
 const slD=v=>{if(!v)return "—";const d=DT(v);return d.getDate()+" "+TH_S[d.getMonth()]+" "+(d.getFullYear()+543)};   // วันที่บนสลิป: 26 ก.ย. 2569 (ไม่มีชื่อวัน)
 const SLI={pdf:'<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 12v6"/><path d="M9 15l3 3 3-3"/>',img:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/>',bank:'<path d="M3 10l9-6 9 6"/><path d="M5 10v8M9 10v8M15 10v8M19 10v8M3 20h18"/>',lock:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>'};
 const slI=(k,s,c)=>`<svg viewBox="0 0 24 24" width="${s||18}" height="${s||18}" fill="none" stroke="${c||"currentColor"}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${SLI[k]}</svg>`;
@@ -219,8 +220,8 @@ V.slipd=id=>{const x=SL.det[id];
     <div style="background:#F5F6F8;border:1px solid #E5E7EB;border-radius:12px;padding:12px 14px;margin-top:10px"><span class="cap">เงินได้สุทธิ (Net Pay)</span><b style="display:block;font-size:26px;color:#111827;font-variant-numeric:tabular-nums">${slM(x.net)} บาท</b>${x.bank?`<span class="cap" style="display:flex;gap:6px;align-items:center;margin-top:4px;color:#374151">${slI("bank",14,"#6B7280")}โอนเข้า ${esc(x.bank)}</span>`:""}</div>`);
   const who=slCard([["รหัสพนักงาน",x.code],["ชื่อ-นามสกุล",x.name],["แผนก / ตำแหน่ง",[x.dept,x.position].filter(Boolean).join(" · ")||"—"],["วันทำงาน",x.days+" วัน"]].map(k=>slRow(k[0],esc(k[1]))).join(""),"padding:6px 16px");
   const sI=slCard(hd("รายได้ (Earnings)")+li(inc)+slRow("รวมรายได้",slM(x.inc),1)),sD=slCard(hd("รายการหัก (Deductions)")+(ded.length?li(ded):'<span class="cap">ไม่มี</span>')+slRow("รวมรายการหัก",slM(x.ded),1));
-  const btn=(k,l,a,pri)=>`<button class="btn" data-${a}="${esc(id)}" style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border-radius:12px;${pri?"background:#1F2937;color:#fff;border:1px solid #1F2937":"background:#fff;color:#1F2937;border:1px solid #D1D5DB"}">${slI(k,18)}<b style="font-weight:600">${l}</b></button>`;
-  return band("สลิปเงินเดือน")+`<div class="pad" style="background:#F5F6F8;display:flex;flex-direction:column;gap:12px">${top}${who}${sI}${sD}<div style="display:flex;gap:10px">${btn("img","บันทึกเป็นรูป","slipimg")}${btn("pdf","ดาวน์โหลด PDF","slippdf",1)}</div><div class="cap" style="display:flex;gap:6px;align-items:center">${slI("lock",14,"#9CA3AF")}เอกสารนี้เป็นความลับเฉพาะผู้รับ</div></div>`};
+  const btn=(k,l,a,col)=>`<button class="btn" data-${a}="${esc(id)}" style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border-radius:12px;background:#fff;color:#1F2937;border:1px solid #D1D5DB">${slI(k,20,col)}<b style="font-weight:600">${l}</b></button>`;   // 17 พ.ย. 2569 ผู้ใช้: ไอคอนรูปสีเขียว · PDF สีแดง
+  return band("สลิปเงินเดือน")+`<div class="pad" style="background:#F5F6F8;display:flex;flex-direction:column;gap:12px">${top}${who}${sI}${sD}<div style="display:flex;gap:10px">${btn("img","บันทึกเป็นรูป","slipimg",SL_GREEN)}${btn("pdf","ดาวน์โหลด PDF","slippdf",SL_RED)}</div><div class="cap" style="display:flex;gap:6px;align-items:center">${slI("lock",14,"#9CA3AF")}เอกสารนี้เป็นความลับเฉพาะผู้รับ</div></div>`};
 /* สลิปแบบเอกสาร (A4 แนวนอนครึ่งหน้า · Figma หน้า 42 D) วาดบน canvas ในเครื่อง ไม่ส่งไปที่ไหน · ใช้ทั้ง "บันทึกเป็นรูป" และ "ดาวน์โหลด PDF" */
 function slLoadImg(src){return new Promise(ok=>{if(!src)return ok(null);const im=new Image();im.onload=()=>ok(im);im.onerror=()=>ok(null);im.src=src})}
 async function slDraw(x){const W=1123,H=600,P=40,S=2,F=getComputedStyle(document.body).fontFamily||"sans-serif",TX="#1F2937",MU="#6B7280",HD="#EEF0F3";
@@ -261,13 +262,19 @@ function slPdf(canvas){const jpg=atob(canvas.toDataURL("image/jpeg",0.92).split(
 /* ส่งไฟล์ให้ผู้ใช้: มือถือที่แชร์ไฟล์ได้ = เมนูแชร์ (บันทึกลงไฟล์/รูปได้) · ไม่ได้ = ดาวน์โหลดตรง */
 async function slGive(blob,name){try{const f=new File([blob],name,{type:blob.type});if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:name});return}}catch(e){if(e&&e.name==="AbortError")return}
   const u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),60000)}
-async function slImg(x){const c=await slDraw(x),url=c.toDataURL("image/png"),ov=document.createElement("div");
-  ov.style.cssText="position:fixed;inset:0;z-index:9999;background:rgba(17,24,39,.85);display:flex;flex-direction:column;align-items:center;gap:12px;padding:16px;overflow:auto";
-  ov.innerHTML=`<span style="color:#fff;font-size:15px;text-align:center">กดค้างที่รูปแล้วเลือก "บันทึกรูป" · บนคอมกดปุ่มดาวน์โหลด</span><img src="${url}" alt="สลิปเงินเดือน" style="width:100%;max-width:720px;border-radius:8px;background:#fff"><div style="display:flex;gap:8px"><a class="btn pri" href="${url}" download="${esc(slName(x,"png"))}">ดาวน์โหลด</a><button class="btn" data-slimgx style="background:#fff;color:#111">ปิด</button></div>`;
-  ov.addEventListener("click",e=>{if(e.target===ov||e.target.closest("[data-slimgx]"))ov.remove()});document.body.appendChild(ov)}
+/* หน้าตัวอย่างก่อนบันทึก (17 พ.ย. 2569 ผู้ใช้: กด PDF ให้ขึ้นหน้าเอกสารก่อน) · pdf = true → ปุ่มดาวน์โหลด PDF · false → บันทึกเป็นรูป */
+async function slPreview(x,pdf){const c=await slDraw(x),url=c.toDataURL("image/png"),ov=document.createElement("div");
+  ov.style.cssText="position:fixed;inset:0;z-index:9999;background:#F5F6F8;display:flex;flex-direction:column;overflow:auto";
+  const act=pdf?`<button class="btn" data-slpv="pdf" style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border-radius:12px;background:#fff;border:1px solid #D1D5DB;color:#1F2937">${slI("pdf",20,SL_RED)}<b style="font-weight:600">ดาวน์โหลด PDF</b></button>`
+    :`<a class="btn" href="${url}" download="${esc(slName(x,"png"))}" style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border-radius:12px;background:#fff;border:1px solid #D1D5DB;color:#1F2937;text-decoration:none">${slI("img",20,SL_GREEN)}<b style="font-weight:600">ดาวน์โหลดรูป</b></a>`;
+  ov.innerHTML=`<div style="position:sticky;top:0;height:52px;background:#fff;border-bottom:1px solid #EEF0F2;display:flex;align-items:center;justify-content:center"><button data-slimgx aria-label="ย้อนกลับ" style="position:absolute;left:8px;top:8px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:none;border:0;padding:0;color:#111827">${ic("chevL","width:22px;height:22px")}</button><b style="font-size:16px;white-space:nowrap">${pdf?"ตัวอย่างเอกสาร PDF":"ตัวอย่างรูปสลิป"}</b></div>
+    <div style="padding:16px;display:flex;flex-direction:column;gap:12px;align-items:center"><img src="${url}" alt="สลิปเงินเดือน" style="width:100%;max-width:760px;border:1px solid #E5E7EB;border-radius:8px;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.06)">
+    <span class="cap" style="text-align:center">${pdf?"ตรวจเอกสารแล้วกดดาวน์โหลด · iPhone เลือก \"บันทึกไปยังไฟล์\"":"กดค้างที่รูปแล้วเลือก \"บันทึกรูป\" หรือกดดาวน์โหลดรูป"}</span>
+    <div style="display:flex;gap:10px;width:100%;max-width:760px">${act}<button class="btn" data-slimgx style="flex:1;padding:12px;border-radius:12px;background:#fff;border:1px solid #D1D5DB;color:#1F2937">ปิด</button></div></div>`;
+  ov.addEventListener("click",e=>{if(e.target.closest("[data-slimgx]")){ov.remove();return}const b=e.target.closest("[data-slpv]");if(b){b.disabled=true;slGive(slPdf(c),slName(x,"pdf")).catch(()=>toast("ดาวน์โหลดไม่ได้ · ลองบันทึกเป็นรูป")).finally(()=>{b.disabled=false})}});document.body.appendChild(ov)}
 document.addEventListener("click",e=>{const t=e.target.closest("[data-slipd],[data-slipimg],[data-slippdf]");if(!t)return;
-  if(t.dataset.slipimg!==undefined){const d=SL.det[t.dataset.slipimg];if(d)slImg(d).catch(()=>toast("สร้างรูปไม่ได้ · ลองใหม่"));return}
-  if(t.dataset.slippdf!==undefined){const d=SL.det[t.dataset.slippdf];if(!d)return;t.disabled=true;toast("กำลังสร้าง PDF…");slDraw(d).then(c=>slGive(slPdf(c),slName(d,"pdf"))).catch(()=>toast("สร้าง PDF ไม่ได้ · ลองใช้ บันทึกเป็นรูป")).finally(()=>{t.disabled=false});return}
+  if(t.dataset.slipimg!==undefined){const d=SL.det[t.dataset.slipimg];if(d)slPreview(d,false).catch(()=>toast("สร้างรูปไม่ได้ · ลองใหม่"));return}
+  if(t.dataset.slippdf!==undefined){const d=SL.det[t.dataset.slippdf];if(d)slPreview(d,true).catch(()=>toast("สร้างเอกสารไม่ได้ · ลองใหม่"));return}
   if(t.dataset.slipd){go("slipd:"+t.dataset.slipd);return}});
 
 start();
