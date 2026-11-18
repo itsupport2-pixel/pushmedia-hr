@@ -1757,3 +1757,8 @@ a.og5-ct:hover span{text-decoration:underline}
 .chip.ap-ch{display:inline-flex;align-items:center}.chip.ap-ch[aria-pressed=true] .ap-ki{stroke:currentColor}
 .bk-lg{width:30px;height:30px;border-radius:9px;background:#F6F6F6;display:grid;place-items:center;flex:none;margin-right:4px}.bk-lg svg{width:20px;height:20px}
 .badge.ap-k::before{display:none!important}
+/* เมนูตั้งค่าที่กดอยู่: พื้นเรียบ ไม่ทึบ (18 พ.ย. 2569 ผู้ใช้: ไม่เอาสีดำ) */
+.snav button[aria-pressed="true"]{background:#F1F3F6;color:var(--fg);box-shadow:inset 3px 0 0 #141414}
+.snav button[aria-pressed="true"] small{color:var(--mut)}.snav button[aria-pressed="true"] .bx{box-shadow:0 0 0 1px rgba(0,0,0,.06)}
+.snav button[aria-pressed="true"][data-stab=company] .bx{background:#EAF1FE}.snav button[aria-pressed="true"][data-stab=leave] .bx{background:#E3F4EA}.snav button[aria-pressed="true"][data-stab=time] .bx{background:#FFF3DC}.snav button[aria-pressed="true"][data-stab=hol] .bx{background:#FCE8E6}.snav button[aria-pressed="true"][data-stab=sched] .bx{background:#F1ECFC}.snav button[aria-pressed="true"][data-stab=roles] .bx{background:#E8EEFB}.snav button[aria-pressed="true"][data-stab=flow] .bx{background:#E1F5F3}.snav button[aria-pressed="true"][data-stab=integ] .bx{background:#EEF1F4}.snav button[aria-pressed="true"][data-stab=line] .bx{background:#E3F7EB}.snav button[aria-pressed="true"][data-stab=backup] .bx{background:#E6F4FA}.snav button[aria-pressed="true"][data-stab=notify] .bx{background:#FFF3DC}
+.bk-tg{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}.bk-tg span{font-size:11.5px;background:#F2F4F7;color:#4A5A6A;border-radius:99px;padding:1px 9px}

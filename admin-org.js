@@ -450,6 +450,8 @@ if(window.trDraw)trDraw=(function(f){return function(){var r=f.apply(this,argume
 if(window.astDraw)astDraw=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(astDraw);   // ทรัพย์สิน
 drawErr=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(drawErr);
 drawSet=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(drawSet);
+if(window.taDraw)taDraw=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(taDraw);   // 18 พ.ย. 2569 ผู้ใช้: แท็บคำขอแก้เวลาไม่มีเอฟเฟ็คเหมือนเมนูอื่น
+if(window.taDrawRp)taDrawRp=(function(f){return function(){var r=f.apply(this,arguments);var el=$('#ta-rp');if(el&&el.animate&&A.fxLast&&A.fxLast.v==='att'&&Date.now()-A.fxLast.t<2500&&!matchMedia('(prefers-reduced-motion: reduce)').matches)[].slice.call(el.querySelectorAll('.card')).forEach(function(x,i){x.animate([{opacity:0,transform:'translateY(22px)'},{opacity:1,transform:'none'}],{duration:520,delay:60+i*70,easing:'cubic-bezier(.2,.8,.2,1)',fill:'backwards'})});return r}})(taDrawRp);   /* รายงานโหลดตามหลัง: เลื่อนขึ้นต่อจากรายการ */
 bOrg=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(bOrg);
 bNone=(function(f){return function(){var arm=A.fx===A.view||A.fx==='*',r=f.apply(this,arguments);pgFx();var fr=$('iframe.plf');if(fr&&arm)fr.addEventListener('load',function(){fxFrame(fr)},{once:true});return r}})(bNone);   // ตารางงาน / Confirmed (iframe) → กรอบเลื่อนขึ้น + ข้อมูลข้างในเล่นเมื่อวาดเสร็จ
 /* Community (1 พ.ย. 2569 · admin-community.js): กดเมนู = กลับหน้ารายการ · ตัวเลขยังไม่อ่านบนเมนู · การ์ดบน Dashboard */
