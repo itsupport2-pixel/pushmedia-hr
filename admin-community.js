@@ -12,7 +12,7 @@ function cbOpts(){return {base:CB_BASE,cats:(A.cbB&&A.cbB.cats)||[],me:cbMe()}}
 /* หน้าเดียวกลางจอ (1 พ.ย. 2569 ผู้ใช้: ตัดกติกาการใช้งาน · จัดหน้าใหม่) · หัวข้อ + ค้นหา → ช่องสร้างโพสต์ → หมวด + มุมมอง → ฟีด */
 function vCb(){if(A.cbId)return vCbPost();var f=A.cbF||(A.cbF={cat:'',filter:'all',q:''}),cats=(A.cbB&&A.cbB.cats)||[],me=cbMe();
   var chip=function(id,l){return '<button class="cba-chip" data-cbcat="'+id+'" aria-pressed="'+(f.cat===id)+'">'+esc(l)+'</button>'};
-  return '<div class="cba-wrap"><div class="cba-head"><div><h1>Community</h1><div class="sub">พูดคุย สอบถาม แจ้งปัญหา · ทุกคนในบริษัทเห็นและช่วยกันตอบได้</div></div>'+
+  return '<div class="cba-wrap"><div class="cba-head"><div><h1>ชุมชน</h1><div class="sub">พูดคุย สอบถาม แจ้งปัญหา · ทุกคนในบริษัทเห็นและช่วยกันตอบได้</div></div>'+
    '<label class="cba-q">'+CB.ic('search')+'<input type="search" id="cb-q" placeholder="ค้นหาโพสต์และความคิดเห็น" value="'+esc(f.q)+'" aria-label="ค้นหา"></label></div>'+
    '<button class="cbcard cba-start" data-cbnew>'+CB.av(CB_BASE,me,40)+'<span>คุณคิดอะไรอยู่ '+esc(CB.who(me))+'</span>'+CB.ic('image','cbg')+'</button>'+   // View as: แสดงเหมือนพนักงานเห็น (กดแล้วแจ้งว่าดูได้อย่างเดียว)
    '<div class="cba-bar"><div class="cba-chips" role="group" aria-label="หมวด">'+chip('','ทั้งหมด')+cats.map(function(c){return chip(c.id,c.name)}).join('')+'</div>'+
@@ -29,7 +29,7 @@ function drawCbFeed(){var L=A.cbL,el=$('#cb-feed');if(!el||!L)return;var o=cbOpt
   el.innerHTML=L.items.map(function(p){return CB.card(p,{base:o.base,cats:o.cats,me:o.me,menuOpen:A.cbMenu===p.id})}).join('')+(L.next?'<button class="cba-more" data-cbmore>แสดงโพสต์เก่ากว่านี้</button>':'')}
 
 /* ───────── อ่านโพสต์ ───────── */
-function vCbPost(){return '<div class="cba-wrap"><div class="cba-head"><div><button class="cba-back" id="cb-back">'+CB.ic('down','cba-bk')+'Community</button><h1 id="cb-h">โพสต์</h1></div></div><div id="cb-post"><div class="loading"><span class="spin"></span></div></div></div>'}
+function vCbPost(){return '<div class="cba-wrap"><div class="cba-head"><div><button class="cba-back" id="cb-back">'+CB.ic('down','cba-bk')+'ชุมชน</button><h1 id="cb-h">โพสต์</h1></div></div><div id="cb-post"><div class="loading"><span class="spin"></span></div></div></div>'}
 function bCbPost(){$('#cb-back').onclick=function(e){e.preventDefault();A.cbId=null;A.cbP=null;A.cbL=null;render();cbBoot(true)};
   cbBoot().catch(function(){});cbOpenPost(A.cbId)}
 function cbOpenPost(id){return aCall('cbGet',{id:id}).then(function(d){A.cbP=d;drawCbPost();cbBoot(true);if(A.cbFocus){A.cbFocus=0;var t=$('#cbct');if(t){t.focus();t.scrollIntoView({block:'center'})}}}).catch(function(e){if($('#cb-post'))$('#cb-post').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})}
@@ -74,7 +74,7 @@ function cbTagPaint(list,q){var p=$('.cba-pop .cbtag');if(!p)return;var tmp=docu
 
 /* ───────── การกดทั้งหมด ───────── */
 function cbAct(k,id){var p=cbFind(id),done=function(m){toast(m);cbReloadPost();cbBoot(true)};
-  if(k==='pin'){drawer('ปักหมุดโพสต์','<label class="f"><span>ปักหมุดถึงวันที่</span><input type="date" id="cb-pin" value="'+dAdd(dIso(new Date()),7)+'" min="'+dAdd(dIso(new Date()),1)+'"></label><div class="faint" style="font-size:12.5px">โพสต์แสดงบนสุดของ Community จนถึงวันนั้น (สูงสุด 1 ปี)</div>','<button class="btn pri" id="cb-pinok">ปักหมุด</button>');
+  if(k==='pin'){drawer('ปักหมุดโพสต์','<label class="f"><span>ปักหมุดถึงวันที่</span><input type="date" id="cb-pin" value="'+dAdd(dIso(new Date()),7)+'" min="'+dAdd(dIso(new Date()),1)+'"></label><div class="faint" style="font-size:12.5px">โพสต์แสดงบนสุดของหน้าชุมชนจนถึงวันนั้น (สูงสุด 1 ปี)</div>','<button class="btn pri" id="cb-pinok">ปักหมุด</button>');
     $('#cb-pinok').onclick=function(){var v=$('#cb-pin').value;if(!v)return;aCall('cbMod',{id:id,action:'pin',until:dObj(v).getTime()+86399000}).then(function(){closeD();done('ปักหมุดแล้ว')}).catch(function(e){toast(e.message,1)})};return}
   if(k==='move'){drawer('ย้ายหมวด','<label class="f"><span>หมวด</span><select id="cb-mv">'+A.cbB.cats.map(function(c){return '<option value="'+c.id+'"'+(p&&c.id===p.cat?' selected':'')+'>'+esc(c.name)+'</option>'}).join('')+'</select></label>','<button class="btn pri" id="cb-mvok">ย้าย</button>');
     $('#cb-mvok').onclick=function(){aCall('cbMod',{id:id,action:'move',cat:$('#cb-mv').value}).then(function(){closeD();done('ย้ายหมวดแล้ว')}).catch(function(e){toast(e.message,1)})};return}
@@ -122,5 +122,5 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){if($('.cba-
   if(e.key==='Enter'&&!e.shiftKey&&e.target.id==='cbct'&&!e.isComposing){e.preventDefault();var s=$('[data-cbsend]');if(s&&!s.disabled)s.click()}});
 
 /* ───────── การ์ด Community บน Dashboard (ปักหมุด + ล่าสุด 5) ───────── */
-function cbDashCard(){var b=A.cbB;if(!b)return '';var cats=b.cats;return '<section class="card cba-dash"><div class="cba-dh"><b>Community</b>'+(b.unread?'<span class="cba-new">'+b.unread+' ใหม่</span>':'')+'<span class="sp"></span><button class="lnk" data-go="cb">ดูทั้งหมด →</button></div>'+
+function cbDashCard(){var b=A.cbB;if(!b)return '';var cats=b.cats;return '<section class="card cba-dash"><div class="cba-dh"><b>ชุมชน</b>'+(b.unread?'<span class="cba-new">'+b.unread+' ใหม่</span>':'')+'<span class="sp"></span><button class="lnk" data-go="cb">ดูทั้งหมด →</button></div>'+
   (b.latest.length?b.latest.map(function(p){return '<button class="cba-dr" data-cbgo="'+esc(p.id)+'">'+CB.av(CB_BASE,p.author,28)+(p.pinned?CB.ic('pin','cba-pin'):'')+CB.chip(cats,p.cat)+'<span class="cba-dt'+(p.unread?' un':'')+'">'+esc(p.body.split('\n')[0])+'</span><span class="cba-dc">'+CB.ic('comment')+p.replies+'</span></button>'}).join(''):'<div class="faint" style="padding:10px 18px 14px">ยังไม่มีโพสต์</div>')+'</section>'}
