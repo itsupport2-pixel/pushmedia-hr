@@ -1740,3 +1740,10 @@ a.og5-ct:hover span{text-decoration:underline}
 .otab [data-pzt] .pz-i{margin-right:2px}.otab [data-pzt][aria-selected=false] .pz-i{opacity:.75}
 .pz-sum div:nth-child(4) b{color:#06A04B}.pz-sbox div:nth-child(4) b{color:#06A04B}
 .pz-tg .pz-i,.pz-si .pz-i{flex:none}
+/* ส่งประกาศ · รูปพนักงาน + รูปกลุ่ม LINE (18 พ.ย. 2569) */
+.pz-pav,img.av.pz-pav{border-radius:50%;flex:none;object-fit:cover;display:inline-grid;place-items:center;background:#EBEBEB;color:#666;font-weight:600}
+.pz-gav{border-radius:50%;overflow:hidden;flex:none;display:inline-grid;place-items:center;background:#E3F7EB}.pz-gav img{width:100%;height:100%;object-fit:cover}.pz-gav svg{width:62%;height:62%}
+.pz-tg img.av,.pz-tg .av,.pz-si img.av,.pz-si .av,.pz-pr img.av,.pz-dr img.av,.pz-row img.av{flex:none;border-radius:50%}
+.pz-row{display:flex;gap:10px;align-items:center;padding:8px 4px;border-bottom:1px solid var(--line)}.pz-row span{display:flex;flex-direction:column}.pz-row small{font-size:12px;color:var(--mut)}
+.pz-tg{padding-left:5px}
+.pz-pkt button .pz-lg,.pz-si .pz-gav,.pz-pr .pz-gav,.pz-dr .pz-gav,.pz-tg .pz-gav{flex:none}.pz-si .pz-gav,.pz-si .pz-pav{display:inline-grid}
