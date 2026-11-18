@@ -1728,3 +1728,15 @@ a.og5-ct:hover span{text-decoration:underline}
 .pz-ph{align-items:center}
 .pz-pkm input[type=search],#pz-root input:not([type=radio]):not([type=checkbox]):not([type=search]),#pz-root select,#pz-root textarea,.pz-mod input:not([type=radio]):not([type=checkbox]),.pz-mod select,.pz-mod textarea{border:1px solid var(--line);border-radius:10px;padding:8px 12px;background:var(--sf);font:inherit;min-height:40px}
 #pz-root textarea,.pz-mod textarea{min-height:0}.pz-pkm input[type=search]:focus,#pz-root textarea:focus,.pz-mod input:focus,.pz-mod textarea:focus{outline:2px solid #141414;outline-offset:-1px}
+/* ส่งประกาศ · สีไอคอน (18 พ.ย. 2569 ผู้ใช้: ไอคอนจริงแต่ละเมนู · ใส่สีเน้นจุดสำคัญ · ดำเกินไป) */
+.pz-k-user{color:#2F6FED}.pz-k-org{color:#7A4FD6}.pz-k-badge{color:#C77700}.pz-k-clock{color:#E8890C}.pz-k-send{color:#2F6FED}.pz-k-tap{color:#2F6FED}.pz-k-up{color:#2F6FED}.pz-k-image{color:#2F6FED}.pz-k-history{color:#7A4FD6}
+.pz-k-check{color:#12703A}.pz-k-alert{color:#B26A00}.pz-k-refresh{color:#2F6FED}.pz-k-phone{color:#06A04B}.pz-k-eye{color:#5F5F5F}.pz-k-all{color:#141414}
+.btn.pri .pz-i,.pz-line .pz-i,.pz-pkt button.on .pz-i:not(.pz-lg),.pz-ki .pz-i,.pz-b .pz-i{color:inherit}
+.pz-lg{display:inline-grid;vertical-align:-3px}.pz-lg svg{width:100%;height:100%}
+.btn.pz-line{background:#06C755;border-color:#06C755;color:#fff}.btn.pz-line:hover{background:#05B24C;border-color:#05B24C}.btn.pz-line:disabled{opacity:.5}
+.pz-ki{width:34px;height:34px;border-radius:10px;display:inline-grid;place-items:center;flex:none;font-style:normal;margin-right:4px}.pz-kil{width:56px;height:56px;border-radius:16px}
+.pz-t-blue{background:#EAF1FE;color:#2F6FED}.pz-t-amber{background:#FFF3DC;color:#C77700}.pz-t-green{background:#E3F7EB;color:#06A04B}.pz-t-line{background:#E3F7EB}
+.pz-k>span{font-weight:500;color:var(--fg)!important}.pz-k b{margin-top:4px}
+.otab [data-pzt] .pz-i{margin-right:2px}.otab [data-pzt][aria-selected=false] .pz-i{opacity:.75}
+.pz-sum div:nth-child(4) b{color:#06A04B}.pz-sbox div:nth-child(4) b{color:#06A04B}
+.pz-tg .pz-i,.pz-si .pz-i{flex:none}
