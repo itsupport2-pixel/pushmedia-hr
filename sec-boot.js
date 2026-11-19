@@ -8,7 +8,9 @@
     var t = e.target; if (!t || t.tagName !== 'IMG' || !t.hasAttribute('data-rmerr')) return;
     if (t.hasAttribute('data-fbtxt')) { var s = document.createElement('span'); s.textContent = t.getAttribute('data-fbtxt'); t.replaceWith(s); } else t.remove();
   }, true);
-  if (!/^\d{12}$/.test(B)) return;
+  // 19 พ.ย. 2569 ผู้ใช้: ช่วงพัฒนาอัปเดตบ่อย พนักงานรำคาญ → ปิดแถบ มีเวอร์ชันใหม่ ทั้งมือถือและคอม (เปิดเวอร์ชันใหม่เองเมื่อเปิดหน้าครั้งถัดไป) · เปิดกลับ = UPD_BAR true
+  var UPD_BAR = false;
+  if (!UPD_BAR || !/^\d{12}$/.test(B)) return;
   var shown = 0;
   function chk() {
     if (shown || document.hidden) return;
