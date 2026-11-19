@@ -500,6 +500,7 @@ function ntTimesCard(fld){return '<section class="card" style="margin-top:14px">
   fld('nt_msg_overdue','เตือนงานเมสเซนเจอร์ค้าง','งานที่เลยวันแล้วยังไม่เสร็จ','time')+
   fld('nt_asset_round','เริ่มรอบตรวจทรัพย์สิน','รอบที่ตั้งวันเริ่มล่วงหน้า แจ้งพนักงานเช้าวันเริ่ม · เปิดรอบวันนี้ = แจ้งทันที','time')+
   fld('nt_license','ใบขับขี่ใกล้หมดอายุ','แจ้งก่อนหมดอายุ 60 และ 30 วัน','time')+
+  fld('nt_leave_weekly','สรุปการลารายสัปดาห์ (ทุกวันจันทร์)','ใบลาของสัปดาห์นี้ทั้งบริษัท (อนุมัติแล้ว + รออนุมัติ) · ส่งเข้ากลุ่ม LINE ที่เลือกใน Workflow','time')+
   fld('nt_out_grace','เตือนยังไม่ได้ลงเวลาออก (นาที)','หลังเวลาเลิกกะกี่นาที · เฉพาะคนที่ลงเวลาเข้าวันนั้น · วันละครั้งต่อคน','number')+
   '<div class="srow wide"><span class="sl"><span class="h">ส่งทันทีเมื่อเกิดเรื่อง (ไม่มีช่องตั้งเวลา): ยื่นลา · ผลอนุมัติ · สรุปเวลา (ลงเวลาครั้งที่ 2) · ประกาศ · ลงงานเมสเซนเจอร์ของวันนี้ · แจ้งทรัพย์สิน · HR แก้เวลาให้ · เตือนผู้อนุมัติซ้ำตั้งชั่วโมงใน Workflow · สรุปประจำเดือนตั้งในแท็บสรุปประจำเดือน</span></span></div></div></section>'}
 function ntBind(){var h=$('[data-sv="notify_matrix"]');if(!h)return;$$('[data-ntm]').forEach(function(b){b.onclick=function(){var p=b.dataset.ntm.split('|'),mx={};try{mx=JSON.parse(h.value||'{}')}catch(e){}
