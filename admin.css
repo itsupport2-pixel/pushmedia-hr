@@ -1719,7 +1719,7 @@ a.og5-ct:hover span{text-decoration:underline}
 .pz-tbl{overflow:auto}.pz-tbl table{width:100%;border-collapse:collapse}.pz-tbl th{background:#F5F5F5;text-align:left;font-size:13px;color:var(--mut);font-weight:600;padding:11px 14px}.pz-tbl td{padding:12px 14px;border-top:1px solid var(--line);font-size:13.5px;vertical-align:middle}
 .pz-tbl td small{display:block;font-size:12px;color:var(--mut)}.pz-tbl tbody tr{cursor:pointer}.pz-tbl tbody tr:hover{background:#FAFAFA}.pz-tc{display:flex;gap:10px;align-items:center}.pz-tc b{display:block}
 .pz-dt{display:flex;gap:14px;align-items:flex-start}.pz-dt>div{display:flex;flex-direction:column;gap:4px;min-width:0}.pz-dt small{font-size:12.5px;color:var(--mut)}.pz-dtx{background:#F7F7F7;border-radius:10px;padding:8px 10px;font-size:13px;margin-top:4px}
-.pz-dk{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0}.pz-dk div{border:1px solid var(--line);border-radius:12px;padding:8px 12px;display:flex;flex-direction:column}.pz-dk small{font-size:12px;color:var(--mut)}.pz-dk b{font-size:18px}
+.pz-dk{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:14px 0}.pz-dk div{border:1px solid var(--line);border-radius:12px;padding:8px 12px;display:flex;flex-direction:column}.pz-dk small{font-size:12px;color:var(--mut)}.pz-dk b{font-size:18px}
 .pz-dac{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.pz-dch{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
 .pz-dl{border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:10px}.pz-dr{display:flex;gap:10px;align-items:center;padding:9px 12px;border-top:1px solid var(--line)}.pz-dr:first-child{border-top:0}
 .pz-av{width:30px;height:30px;border-radius:50%;background:#EBEBEB;color:#666;display:grid;place-items:center;font-size:13px;font-weight:600;flex:none}.pz-drt{flex:1;min-width:0;display:flex;flex-direction:column}.pz-drt b{font-size:13.5px}.pz-drt small{font-size:12px;color:var(--mut)}.pz-ckt{font-size:12px;color:var(--fnt)}
@@ -1833,3 +1833,5 @@ html[lang=en] .bk-th{display:none}html:not([lang=en]) .bk-en{display:none}
 /* ส่งประกาศ: เลือกทั้งหมด (19 พ.ย. 2569) */
 .pz-pr.pz-all{background:#F6F7F9;border:1px dashed #C8C8C8;margin-bottom:8px}.pz-pr.pz-all.on{border-style:solid;border-color:#141414}
 .pz-rl{display:block;margin-top:6px;color:var(--mut);line-height:1.6}
+.pz-op em{font-style:normal;font-size:11px;color:var(--fnt);line-height:1.35;margin-top:2px}
+@media(max-width:700px){.pz-dk{grid-template-columns:repeat(2,1fr)}}
