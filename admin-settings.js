@@ -25,7 +25,7 @@ function bSet(){$$('[data-stab]').forEach(function(b){b.onclick=function(){if(b.
     ask({tone:'warn',title:'ยังไม่ได้บันทึกการแก้ไข',desc:'หมวด “'+cur[1]+'” มีการแก้ไข '+L.length+' รายการที่ยังไม่บันทึก · ถ้าไปหมวด “'+nx[1]+'” ตอนนี้ การแก้ไขจะหาย',list:L,
       buttons:[{k:'discard',label:'ทิ้งการแก้ไข',cls:'bad',left:1},{k:'stay',label:'อยู่หน้านี้'},{k:'save',label:'บันทึกแล้วไปต่อ',cls:'pri'}]}).then(function(k){
       if(k==='discard'){if(A.sc)A.sc.cur=Object.assign({},A.sc.d.colors);if(A.tv)A.tv.cur=JSON.parse(JSON.stringify(A.tv.orig));go2()}else if(k==='save'){A.afterSave=go2;var sb=$('#st-save');if(sb)sb.click();else go2()}})}});
-  if(A.cfg)drawSet();aCall('getSettings').then(function(d){A.cfg=d;drawSet()}).catch(function(e){if($('#st-body'))$('#st-body').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})}
+  if(A.cfg)drawSet();aCall('getSettings').then(function(d){var had=!!A.cfg;if(had&&JSON.stringify(d)===JSON.stringify(A.cfg))return;if(had&&$('#st-body')&&stChanges().length){A.cfg=d;return}A.cfg=d;drawSet()})   /* 19 พ.ย. 2569 ผู้ใช้: กดตั้งค่าระบบแล้วโหลด 2 รอบ → ข้อมูลใหม่เหมือนที่จำไว้ = ไม่วาดซ้ำ · กำลังแก้ค้าง = ไม่วาดทับ */.catch(function(e){if($('#st-body'))$('#st-body').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})}
 function sv(k){var v=(A.cfg.settings[k]||{}).value||'';return /^\d:\d\d$/.test(v)?'0'+v:v}   // ฐานข้อมูลบางค่าเป็น 8:30 · ช่องเวลาแสดงได้เฉพาะ 08:30
 /* ช่องนี้แก้แล้วจริงไหม (ช่องเลือกที่ค่าเดิมไม่อยู่ในตัวเลือก = ยังไม่แก้) */
 function svChg(x){var v=sv(x.dataset.sv);if(x.tagName==='SELECT'&&![].some.call(x.options,function(o){return o.value===v}))return false;return x.value!==v}

@@ -1830,3 +1830,6 @@ html[lang=en] .bk-th{display:none}html:not([lang=en]) .bk-en{display:none}
 .pz-pcards{max-width:260px;gap:8px}.pz-pcd{flex:0 0 190px;border-radius:14px;box-shadow:0 1px 2px rgba(0,0,0,.08)}.pz-pcd .pz-pcdi{display:block;width:100%;overflow:hidden}.pz-pcd .pz-pcdi img{width:100%;height:100%;object-fit:cover;display:block}
 .pz-pcdb{padding:10px 12px 8px;display:flex;flex-direction:column;gap:3px;align-items:flex-start}.pz-pcdb b{padding:0;font-size:13px;color:#111}.pz-pcdb small{padding:0;color:#666;font-size:11.5px;line-height:1.45}
 .pz-pcdf{padding:4px 10px 10px;display:flex;flex-direction:column;gap:4px}.pz-pcdf em{border:0;margin:0;color:var(--cc,#111);font-weight:700;font-size:12px;text-align:center;padding:6px;border-radius:8px}.pz-pcdf em.pz-psolid{background:var(--cc,#111);color:#fff}
+/* ส่งประกาศ: เลือกทั้งหมด (19 พ.ย. 2569) */
+.pz-pr.pz-all{background:#F6F7F9;border:1px dashed #C8C8C8;margin-bottom:8px}.pz-pr.pz-all.on{border-style:solid;border-color:#141414}
+.pz-rl{display:block;margin-top:6px;color:var(--mut);line-height:1.6}

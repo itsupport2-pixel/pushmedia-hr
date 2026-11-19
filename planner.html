@@ -3254,6 +3254,7 @@ document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { va
 
 
 function go(page) {
+  if (window._wfSince && !window._wfOldOk) _wfLoadOld();   // ครั้งแรกโหลดไม่สำเร็จ = ลองใหม่เมื่อเปลี่ยนหน้า
   closeMobileSidebar();
   closeMd(); 
   
@@ -13518,6 +13519,30 @@ function _wfIsMobileEarly() {
 }
 function _wfBootKey() { return _wfIsMobileEarly() ? 'wf_boot_m_v1' : 'wf_boot_v1'; }
 
+var _wfNormT = function (t) { return t; }, _wfOldP = null;
+/* งานเก่ากว่าวันตัด: ขอครั้งเดียวต่อการเปิดหน้า แล้วรวมเข้า DB.tasks · วาดหน้าใหม่เฉพาะหน้าที่ต้องใช้งานเก่า (และผู้ใช้ไม่ได้ทำอะไรค้าง) */
+function _wfLoadOld() {
+  if (!window._wfSince || window._wfOldOk || _wfOldP) return _wfOldP || Promise.resolve();
+  var since = window._wfSince;
+  _wfOldP = apiGet('tasksOld', { before: since }).then(function (r) {
+    if (!r || !Array.isArray(r.tasks)) { _wfOldP = null; return; }
+    var old = r.tasks.map(_wfNormT), ids = {}; (DB.tasks || []).forEach(function (t) { ids[t.id] = 1; });
+    DB.tasks = (DB.tasks || []).concat(old.filter(function (t) { return !ids[t.id]; })); window._wfOldOk = true;
+    try { sessionStorage.setItem('cachedTasks', JSON.stringify(DB.tasks)); } catch (_) {}
+    if (_userBusy()) return;
+    try {
+      if (window.isMobileMode && window.isMobileMode()) { if (typeof window.mTabNow === 'function' && window.mTabNow() === 'tasks' && typeof window.mRerender === 'function') window.mRerender(); return; }
+      var pg = typeof curPage !== 'undefined' ? curPage : '', first = function (y, m) { return y + '-' + String(m + 1).padStart(2, '0') + '-01'; };
+      var wk = function () { var d = new Date(); d.setDate(d.getDate() - d.getDay() + 1 + rpOff * 7); return _localDateStr(d); };
+      var need = ['tasks', 'empkpi', 'confirmed', 'vehicles', 'settings', 'mapzone', 'depts'].indexOf(pg) >= 0
+        || (pg === 'calendar' && first(calYear, calMonth) < since)
+        || (pg === 'planner' && ((rpDateRange && rpDateRange.start < since) || (!rpDateRange && wk() < since)))
+        || (pg === 'dashboard' && _dashDR && _dashDR.start && (function () { var a = new Date(_dashDR.start + 'T00:00:00'), b = new Date((_dashDR.end || _dashDR.start) + 'T00:00:00'); a.setDate(a.getDate() - Math.round((b - a) / 864e5) - 1); return _localDateStr(a) < since; })());
+      if (need) go(pg);
+    } catch (_) {}
+  }).catch(function () { _wfOldP = null; });
+  return _wfOldP;
+}
 async function loadFromGAS(opts) {
   if (!CONFIG.GAS_URL) return false;
   try {
@@ -13562,8 +13587,11 @@ async function loadFromGAS(opts) {
         try { if (typeof applyMenuVisibility === 'function' && document.getElementById('app') && document.getElementById('app').style.display !== 'none') { applyMenuVisibility(); _updateSidebarUser(DB.cu); } } catch(_){}
       }
     }
+    // 19 พ.ย. 2569 ผู้ใช้: ตารางงานโหลดช้า → ก้อนเปิดหน้ามีแค่งานตั้งแต่ data._tasksSince · งานเก่ากว่าโหลดเบื้องหลัง (_wfLoadOld) แล้วรวมไว้ · โหลดซ้ำ = เก็บงานเก่าชุดเดิมในเครื่องไว้ (ที่แก้/ลบในเครื่องคงอยู่)
+    var _prevOld = (data.tasks && data._tasksSince && window._wfOldOk) ? (DB.tasks || []).filter(function (t) { return String(t.end || t.start || '') < data._tasksSince; }) : null;
+    if (data.tasks) window._wfSince = data._tasksSince || '';
     if (data.tasks) {
-      DB.tasks = data.tasks.map(function(t){
+      DB.tasks = data.tasks.map(_wfNormT = function(t){
         if (!t._sheet) t._sheet = '';
         t.start = _normDateStr(t.start) || t.start || '';
         t.end   = _normDateStr(t.end)   || t.end   || '';
@@ -13588,7 +13616,8 @@ async function loadFromGAS(opts) {
         if (!t.shift) t.shift = 'day';
         return t;
       });
-      
+      if (_prevOld && _prevOld.length) { var _ids = {}; DB.tasks.forEach(function (t) { _ids[t.id] = 1; }); DB.tasks = DB.tasks.concat(_prevOld.filter(function (t) { return !_ids[t.id]; })); }
+      if (!opts || !opts.cached) { if (window._wfSince && !window._wfOldOk) setTimeout(_wfLoadOld, _wfIsMobileEarly() ? 2500 : 900); }
       try { sessionStorage.setItem('cachedTasks', JSON.stringify(DB.tasks)); } catch(_){}
     }
     if (data.vehicles)          DB.vehicles  = data.vehicles;
@@ -16260,7 +16289,7 @@ body.m-active{ overflow:hidden; }
   if(typeof window.loadFromGAS === 'function'){
     var _origLoadFromGAS = window.loadFromGAS;
     window.loadFromGAS = async function(){ var ok = await _origLoadFromGAS.apply(this, arguments); try{ if(mActive && ok && !(window._userBusy && window._userBusy())) mRerender(); }catch(_){} return ok; };
-    window.mRerender = mRerender;
+    window.mRerender = mRerender; window.mTabNow = function () { return mTab; };
   }
 
   // สร้างงานจากโหมดมือถือ (ปุ่มลอย) แล้วให้รายการในโหมดมือถือรีเฟรชตาม
