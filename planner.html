@@ -7569,11 +7569,12 @@ function renderPlannerList() {
     var natHol  = DB.holidays.find(function(h){ return h.date===ds; });
     var isHolDay= !!natHol;
 
-    var dayBg    = isToday ? '#F2F2F2' : '#FFFFFF';
+    var dayBg    = isToday ? '#E9F6EE' : '#FFFFFF';   /* 20 พ.ย. 2569 ผู้ใช้: วันนี้ = พื้นช่องวันที่เขียวอ่อน + ป้ายเขียว + คำว่า วันนี้ */
     var dayColor = (isSun || isHolDay) ? '#A3A3A3' : '#141414';
     var dayNum   = d.getDate();
     var dayDow   = DOW_TH[dow];
     var dayMon   = d.toLocaleDateString('th-TH',{month:'short',year:'2-digit'});
+    var dayBadge = isToday ? '#15803D' : dayColor, dayLbl = isToday ? 'วันนี้' : dayMon;
 
     var teamRows = [];
     showDepts.forEach(function(dept) {
@@ -7672,11 +7673,11 @@ function renderPlannerList() {
       if (!dateRendered) {
         dateRendered = true;
         html += '<td rowspan="'+totalRows+'" style="'+H+'background:'+dayBg+';padding:8px 6px;vertical-align:top;border-right:3px solid '+dayColor+';border-top:3px solid '+dayColor+';text-align:center;">' +
-          '<div style="width:50px;height:50px;border-radius:12px;background:'+dayColor+';color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 4px;">' +
+          '<div style="width:50px;height:50px;border-radius:12px;background:'+dayBadge+';color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 4px;">' +
             '<div style="font-size:22px;font-weight:800;line-height:1;">'+dayNum+'</div>' +
             '<div style="font-size:9px;font-weight:700;opacity:.9;">'+dayDow+'</div>' +
           '</div>' +
-          '<div style="font-size:10.5px;color:'+dayColor+';font-weight:700;">'+dayMon+'</div>' +
+          '<div style="font-size:10.5px;color:'+dayBadge+';font-weight:700;">'+dayLbl+'</div>' +
           (natHol?'<div style="font-size:7.5px;color:#7C3AED;margin-top:2px;line-height:1.2;">'+natHol.name.slice(0,10)+'</div>':'') +
         '</td>';
       }
@@ -7816,10 +7817,10 @@ function renderPlannerList() {
     if (!teamRows.length) {
       rowsHTML = '<tr style="border-top:3px solid '+dayColor+';">' +
         '<td style="background:'+dayBg+';padding:8px 6px;text-align:center;border-right:3px solid '+dayColor+';border-top:3px solid '+dayColor+';">' +
-          '<div style="width:50px;height:50px;border-radius:12px;background:'+dayColor+';color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 4px;">' +
+          '<div style="width:50px;height:50px;border-radius:12px;background:'+dayBadge+';color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 4px;">' +
             '<div style="font-size:22px;font-weight:800;line-height:1;">'+dayNum+'</div>' +
             '<div style="font-size:9px;opacity:.9;">'+dayDow+'</div></div>' +
-          '<div style="font-size:10.5px;color:'+dayColor+';font-weight:700;">'+dayMon+'</div>' +
+          '<div style="font-size:10.5px;color:'+dayBadge+';font-weight:700;">'+dayLbl+'</div>' +
         '</td>' +
         '<td colspan="'+((_rpNoDept?2:3)+MAXCOLS+2)+'" style="color:var(--ink-3);font-size:11px;font-style:italic;background:var(--bg);padding:12px;">ไม่มีงาน</td>' +
       '</tr>';
