@@ -1907,10 +1907,3 @@ button.has-tbi{display:inline-flex;align-items:center;gap:8px}
 .sn-ib2{display:inline-flex;align-items:center;gap:7px}.sn-views button{display:inline-flex;align-items:center;gap:6px}
 .sn-t tr.sn-d0>td{border-top:2px solid #E4E4E7}.sn-t thead th:nth-child(n+5){text-align:center}.sn-t thead th:last-child{text-align:right}
 .sn-chip.on{background:#141414}.sn-sum.on{border-color:#141414;box-shadow:none}.sn-t thead th{background:#FAFAFA;color:#6B7280}
-
-/* Phase 1 (20 พ.ย. 2569): วันนี้เขียว · ยุบแถวว่าง · สัปดาห์ว่าง */
-.sn-t tr.sn-today>td{background:#F3FAF5}.sn-t tr.sn-today>td.sn-day{background:#E9F6EE}.sn-t tr.sn-today.sn-night>td:not(.sn-day){background:#EEF3F5}
-.sn-empty1 div{justify-content:flex-start;padding-left:16px}
-.sn-none{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:56px 20px;text-align:center}.sn-none b{font-size:17px}.sn-none span{color:#8A8F98;font-size:13px;margin-bottom:6px}
-.sn-none-ic{width:56px;height:56px;border-radius:16px;background:#F4F4F5;color:#52525B;display:flex;align-items:center;justify-content:center}
-.sn-team{white-space:nowrap;min-width:96px}

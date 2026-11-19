@@ -2,14 +2,13 @@
  * หน้าตา + ขั้นตอนเหมือนหน้าเดิม (planner.html) · ไม่มีมุมมอง "ตาราง" · ใช้คำสั่งหลังบ้านชุดเดิม wtm(bootstrap · tasks · attendance · leaves …)
  * ช่วง 1: มุมมอง "รายการ" · ช่วง 2: เพิ่ม/แก้/ลบงาน (admin-sn-form.js) · รายชื่อทีม · ตามช่าง · Export · รถ · ตั้งค่า = เปิดหน้าเดิม (snOld)
  * ข้อมูลเก็บในหน่วยความจำ → กดเมนูซ้ำขึ้นทันที แล้วเช็กเลขรุ่นข้อมูล (wtm version) เบื้องหลัง · คลาส CSS ใช้ prefix sn- เท่านั้น */
-var SN = { d: null, off: 0, dept: 'all', pm: 'all', att: true, hide: snHideGet(), scrollT: true, ver: '', att2: {}, busy: 0, old: false, oldTasks: false };
-function snHideGet() { try { return localStorage.getItem('sn_hide') !== '0'; } catch (e) { return true; } }   /* Phase 1.3 (20 พ.ย. 2569): ซ่อนทีมที่ไม่มีงาน · ค่าเริ่มต้นเปิด */
+var SN = { d: null, off: 0, dept: 'all', pm: 'all', att: true, ver: '', att2: {}, busy: 0, old: false, oldTasks: false };
 /* ค่าเริ่มต้น (20 พ.ย. 2569 ผู้ใช้): ระบบจริง = หน้าเดิม · dev / เครื่องทดสอบ = หน้าใหม่ · เลือกเองได้ด้วยปุ่ม ลองหน้าใหม่ / หน้าเดิม (sn_on = 1 / 0) */
 function snDef() { var a = String(typeof API === 'string' ? API : ''); return /-dev[.\/]|^\/api$/.test(a); }
 function snOn() { try { var v = localStorage.getItem('sn_on'); return v === '1' ? true : v === '0' ? false : snDef(); } catch (e) { return snDef(); } }
 function snSet(on) { try { localStorage.setItem('sn_on', on ? '1' : '0'); } catch (e) {} SN.old = false; render(); }
 function vSched() { if (snOn() && !SN.old && !SN.d && !(window.ss && ss('hr_va'))) snRestore(); return snOn() && !SN.old ? '<div id="sn-root">' + (SN.d ? '' : snSkel()) + '</div>' : (A.d && A.d.me && (isHR() || A.d.me.role === 'admin') ? snTry() : '') + vPlanner(); }
-function bSched() { if (snOn() && !SN.old && !SN.d && !(window.ss && ss('hr_va'))) snRestore(); var tb = $('#sn-tryb'); if (tb) tb.onclick = function () { if (snOn()) { SN.old = false; render(); } else snSet(1); }; if (!snOn() || SN.old) return; SN.scrollT = true; if (SN.d) { snDraw(); snCheck(); } else snLoad(); }
+function bSched() { if (snOn() && !SN.old && !SN.d && !(window.ss && ss('hr_va'))) snRestore(); var tb = $('#sn-tryb'); if (tb) tb.onclick = function () { if (snOn()) { SN.old = false; render(); } else snSet(1); }; if (!snOn() || SN.old) return; if (SN.d) { snDraw(); snCheck(); } else snLoad(); }
 function snTry() { return '<div class="sn-try"><span>ตารางงานหน้าใหม่ (ทดลอง · เร็วกว่า · ช่วงแรกดูอย่างเดียว)</span><button class="btn sm" id="sn-tryb">' + (snOn() ? 'กลับหน้าใหม่' : 'ลองหน้าใหม่') + '</button></div>'; }
 /* เปิดหน้าเดิมเพื่อทำรายการที่หน้าใหม่ยังไม่มี (ช่วง 1) */
 function snOld(why) { SN.old = true; render(); if (why) toast(why); }
@@ -68,7 +67,7 @@ function snNeedOld(dates) {   // ดูสัปดาห์ก่อนงา�
 
 /* ไอคอนจากหน้าเดิม (planner.html hrLayout · ไฟล์ Excel/PDF · มุมมอง) · 20 พ.ย. 2569 ผู้ใช้: ขาดไอคอน + ดำเกินไป */
 function snFic(k) { var c = k === 'pdf' ? '#DC2626' : '#15803D', l = k === 'pdf' ? 'PDF' : 'XLS'; return '<svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true" style="flex:none"><path d="M4 1.5h8l5 5v12H4z" fill="none" stroke="' + c + '" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 1.5v5h5" fill="none" stroke="' + c + '" stroke-width="1.5" stroke-linejoin="round"/><rect x="1" y="10" width="13" height="7" rx="2" fill="' + c + '"/><text x="7.5" y="15.2" text-anchor="middle" font-size="4.8" font-weight="700" fill="#fff" font-family="Arial,sans-serif">' + l + '</text></svg>'; }
-var SN_IC = { cal: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>', plus: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+var SN_IC = { plus: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
   list: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>',
   team: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
   tech: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 12 0v1"/><path d="M17 11l2 2 4-4"/></svg>',
@@ -97,53 +96,33 @@ function snDraw() {
     '<div class="sn-bar"><div class="sn-chips"><span class="sn-lb">แผนก</span>' + chip('all', 'ทุกแผนก', cnt('all')) + depts.map(function (x) { return chip(x.name, x.name, cnt(x.name)); }).join('') + '</div>' +
     '<div class="sn-wk"><button class="sn-ib" data-snw="-1" aria-label="สัปดาห์ก่อน">‹</button><b>' + fmtR(dates[0], dates[6]) + '</b><button class="sn-ib" data-snw="1" aria-label="สัปดาห์ถัดไป">›</button></div><button class="btn" data-snw="0">สัปดาห์นี้</button>' +
     '<div class="sn-views"><button class="on">' + SN_IC.list + ' รายการ</button><button data-sno="view">' + SN_IC.team + ' รายชื่อทีม</button><button data-sno="view">' + SN_IC.tech + ' ตามช่าง</button></div>' +
-    '<span class="sp"></span><label class="sn-tg" title="ซ่อนแถวของทีมที่ไม่มีงานในวันนั้น · วันที่ไม่มีงานเลยยุบเหลือแถวเดียว"><input type="checkbox" id="sn-hide"' + (SN.hide ? ' checked' : '') + '><i></i>ซ่อนทีมที่ไม่มีงาน</label><label class="sn-tg"><input type="checkbox" id="sn-att"' + (SN.att ? ' checked' : '') + '><i></i>เวลาเข้างาน</label><span class="sn-lg"><i class="n"></i>กะดึก</span><span class="sn-lg"><i class="b"></i>ยืมตัวจากทีมอื่น</span></div>' +
+    '<span class="sp"></span><label class="sn-tg"><input type="checkbox" id="sn-att"' + (SN.att ? ' checked' : '') + '><i></i>เวลาเข้างาน</label><span class="sn-lg"><i class="n"></i>กะดึก</span><span class="sn-lg"><i class="b"></i>ยืมตัวจากทีมอื่น</span></div>' +
     '<div class="sn-sums">' + sum('all', wkShow.length, 'งานทั้งหมด') + sum('yes', pmYes, 'ผูกเลข PM แล้ว') + sum('no', wkShow.length - pmYes, 'ยังไม่ผูก PM', 1) + sum('', noIn, 'คนยังไม่ลงเวลา (วันนี้)', 1) + sum('', lvJob, 'คนลาแต่มีงาน (วันนี้)', 1) + '</div>';
-  var wkF = wkShow.filter(function (t) { var h = !!String(t.pmCode || '').trim(); return SN.pm === 'all' || (SN.pm === 'yes') === h; });
-  if (!wkF.length && show.some(function (x) { return snTeamsOf(x.name).length; })) {   /* Phase 1.4: ทั้งสัปดาห์ไม่มีงาน = การ์ดกลางหน้า */
-    html += '<section class="sn-card sn-none"><div class="sn-none-ic">' + SN_IC.cal + '</div><b>' + (SN.pm === 'all' ? (SN.off === 0 ? 'สัปดาห์นี้ยังไม่มีงาน' : 'สัปดาห์นี้ไม่มีงาน') : SN.pm === 'yes' ? 'ไม่มีงานที่ผูกเลข PM ในสัปดาห์นี้' : 'ทุกงานในสัปดาห์นี้ผูกเลข PM แล้ว') + '</b><span>' + fmtR(dates[0], dates[6]) + (SN.dept !== 'all' ? ' · ' + esc(SN.dept) : '') + '</span>' +
-      (canAdd && SN.pm === 'all' ? '<button class="btn pri sn-ib2" id="sn-add2">' + SN_IC.plus + 'เพิ่มงาน</button>' : SN.pm !== 'all' ? '<button class="btn" data-snp="' + SN.pm + '">ดูงานทั้งหมด</button>' : '') + '</section>';
-    r.innerHTML = html; snBind(); if (window.pgFx) setTimeout(pgFx, 0); SN.scrollT = false; return;
-  }
   var rows = dates.map(function (dt, di) { return snDay(dt, dss[di], show, AT, g, td); }).join('');
   html += '<section class="sn-card"><div class="sn-tw"><table class="sn-t"><thead><tr><th style="width:84px">วันที่</th><th style="width:96px">ทีม</th><th style="min-width:300px">โครงการ / หน้างาน</th><th style="width:116px">รถ</th>' +
     [1, 2, 3, 4, 5].map(function (i) { return '<th style="min-width:150px">คนที่ ' + i + '</th>'; }).join('') + '<th style="width:86px;text-align:right">ต้นทุน</th></tr></thead><tbody>' + (rows || '<tr><td colspan="10" class="muted" style="text-align:center;padding:30px">ไม่มีทีมที่แสดงในตารางงาน · ตั้งได้ที่ ตั้งค่าตารางงาน</td></tr>') + '</tbody></table></div></section>';
   r.innerHTML = html; snBind(); if (window.pgFx) setTimeout(pgFx, 0);   /* เอฟเฟ็กต์เปิดหน้าแบบเมนูอื่น */
-  if (SN.scrollT) { SN.scrollT = false; snToToday(); }
 }
-/* Phase 1.2: เลื่อนตารางไปแถวของวันนี้ (ตอนเข้าเมนู / กดสัปดาห์นี้) · สัปดาห์ที่ไม่มีวันนี้ = ไม่เลื่อน */
-function snToToday() { var tw = $('#sn-root .sn-tw'), tr = $('#sn-root tr[data-snday="' + snDs(new Date()) + '"]'); if (!tw || !tr) return; var hd = tw.querySelector('thead'), top = tr.offsetTop - (hd ? hd.offsetHeight : 0);
-  tw.scrollTop = Math.max(0, top); var cr = tw.getBoundingClientRect(); if (cr.top < 0 || cr.top > innerHeight * .6) { try { tw.scrollIntoView({ block: 'start' }); } catch (e) {} } }   /* ตารางอยู่นอกจอ = เลื่อนหน้าให้ตารางขึ้นมาด้วย */
 function snDay(dt, ds, show, AT, g, td) {
-  var dow = dt.getDay(), hol = SN.d.holidays.filter(function (h) { return h.date === ds; })[0], today = ds === td, dc = today ? '#15803D' : dow === 0 || hol ? '#A3A3A3' : '#141414';   /* Phase 1.1: วันนี้ = สีเขียว #15803D (เหมือนคอลัมน์วันนี้ในมุมมองตามช่างหน้าเดิม) */
-  var R = [], T = [];
+  var dow = dt.getDay(), hol = SN.d.holidays.filter(function (h) { return h.date === ds; })[0], dc = dow === 0 || hol ? '#A3A3A3' : '#141414', today = ds === td;
+  var R = [];
   show.forEach(function (dept) {
     snTeamsOf(dept.name).forEach(function (tn, ti) {
       var L = SN.d.tasks.filter(function (t) { var ts = snNorm(t.start), te = snNorm(t.end || t.start); return String(t.teamName || '').trim().toLowerCase() === tn.trim().toLowerCase() && String(t.deptName || '').trim().toLowerCase() === dept.name.trim().toLowerCase() && ts <= ds && te >= ds; })
         .filter(function (t) { var h = !!String(t.pmCode || '').trim(); return SN.pm === 'all' || (SN.pm === 'yes') === h; }).sort(function (a, b) { return (a.sortIndex || 0) - (b.sortIndex || 0); });
-      T.push({ dept: dept, tn: tn, L: L });
+      var subs = L.map(function (t) { return Math.max(1, Math.ceil((snMembersOn(t, ds).length + (t.dailyWorkers || []).length) / SN_CAP)); }), n = Math.max(1, subs.reduce(function (a, b) { return a + b; }, 0)), k = 0;
+      L.forEach(function (t, i) { for (var s = 0; s < subs[i]; s++) R.push({ dept: dept, tn: tn, t: t, sub: s, subN: subs[i], first: k++ === 0, n: n }); });
+      for (; k < n; k++) R.push({ dept: dept, tn: tn, t: null, sub: 0, subN: 1, first: k === 0, n: n });
     });
   });
-  if (!T.length) return '';
-  var any = T.some(function (x) { return x.L.length; });
-  T.forEach(function (x) {
-    if (any && SN.hide && !x.L.length) return;   /* Phase 1.3: ซ่อนทีมที่ไม่มีงาน */
-    var L = x.L, subs = L.map(function (t) { return Math.max(1, Math.ceil((snMembersOn(t, ds).length + (t.dailyWorkers || []).length) / SN_CAP)); }), n = Math.max(1, subs.reduce(function (a, b) { return a + b; }, 0)), k = 0;
-    L.forEach(function (t, i) { for (var s = 0; s < subs[i]; s++) R.push({ dept: x.dept, tn: x.tn, t: t, sub: s, subN: subs[i], first: k++ === 0, n: n, nj: L.length }); });
-    for (; k < n; k++) R.push({ dept: x.dept, tn: x.tn, t: null, sub: 0, subN: 1, first: k === 0, n: n, nj: L.length });
-  });
-  var dayCell = function (rs) { return '<td rowspan="' + rs + '" class="sn-day"><div class="sn-dn" style="background:' + dc + '"><b>' + dt.getDate() + '</b><span>' + SN_DOW[dow] + '</span></div><div class="sn-dm" style="color:' + dc + '">' + (today ? 'วันนี้' : dt.toLocaleDateString('th-TH', { month: 'short', year: '2-digit' })) + '</div>' + (hol ? '<div class="sn-hol">' + esc(String(hol.name).slice(0, 10)) + '</div>' : '') + '</td>'; };
-  if (!any && SN.hide) {   /* Phase 1.3: ทุกทีมไม่มีงาน = แถวเดียว */
-    var canA = T.some(function (x) { return snCanAdd(x.dept.name, x.tn); });
-    return '<tr class="sn-d0' + (today ? ' sn-today' : '') + '" data-snday="' + ds + '">' + dayCell(1) + '<td colspan="9" class="sn-empty sn-empty1"><div>ไม่มีงานวันนี้' + (canA ? '<button type="button" data-sna="" data-snat="" data-snad="' + ds + '">+ เพิ่มงาน</button>' : '') + '</div></td></tr>';
-  }
+  if (!R.length) return '';
   var seen = {}, span = {}; R.forEach(function (r) { span[r.dept.name] = (span[r.dept.name] || 0) + 1; });
   return R.map(function (r, i) {
     var ac = r.dept.color || '#888', t = r.t, night = t && t.shift === 'night', nb = night ? 'background:#F5F6FA;' : '';
-    var h = '<tr class="' + (night ? 'sn-night' : '') + (i === 0 ? ' sn-d0' : '') + (today ? ' sn-today' : '') + '"' + (i === 0 ? ' data-snday="' + ds + '"' : '') + (t ? ' data-snt="' + t.id + '" data-snds="' + ds + '"' : '') + '>';
-    if (i === 0) h += dayCell(R.length);
+    var h = '<tr class="' + (night ? 'sn-night' : '') + (i === 0 ? ' sn-d0' : '') + '"' + (t ? ' data-snt="' + t.id + '" data-snds="' + ds + '"' : '') + '>';
+    if (i === 0) h += '<td rowspan="' + R.length + '" class="sn-day" style="background:' + (today ? '#F7F7F8' : '#fff') + '"><div class="sn-dn" style="background:' + dc + '"><b>' + dt.getDate() + '</b><span>' + SN_DOW[dow] + '</span></div><div class="sn-dm" style="color:' + dc + '">' + dt.toLocaleDateString('th-TH', { month: 'short', year: '2-digit' }) + '</div>' + (hol ? '<div class="sn-hol">' + esc(String(hol.name).slice(0, 10)) + '</div>' : '') + '</td>';
     if (!seen[r.dept.name]) { seen[r.dept.name] = 1; }
-    if (r.first) h += '<td rowspan="' + r.n + '" class="sn-team" style="color:' + ac + ';border-left:4px solid ' + ac + '"><span>' + esc(r.tn) + '</span>' + (r.nj ? '<em style="background:' + ac + '20;color:' + ac + '" title="' + r.nj + ' งานของทีมนี้ในวันนี้">' + r.nj + '</em>' : '') + '</td>';
+    if (r.first) h += '<td rowspan="' + r.n + '" class="sn-team" style="color:' + ac + ';border-left:4px solid ' + ac + '"><span>' + esc(r.tn) + '</span><em style="background:' + ac + '20;color:' + ac + '">' + r.n + '</em></td>';
     if (!t) return h + '<td colspan="8" class="sn-empty"><div>ไม่มีงาน' + (snCanAdd(r.dept.name, r.tn) ? '<button type="button" data-sna="' + esc(r.dept.name) + '" data-snat="' + esc(r.tn) + '" data-snad="' + ds + '">+ เพิ่มงาน</button>' : '') + '</div></td></tr>';
     var mems = snMembersOn(t, ds).map(snEmp).filter(Boolean), roster = mems.concat((t.dailyWorkers || []).map(function (w) { return { __d: 1, w: w }; })), sl = roster.slice(r.sub * SN_CAP, r.sub * SN_CAP + SN_CAP);
     if (r.sub === 0) {
@@ -170,14 +149,12 @@ function snCanAdd(dn, tn) { var cu = SN.d.cu || {}; if (cu.hr || cu.admin) retur
 function snBind() {
   $$('[data-snd]').forEach(function (b) { b.onclick = function () { SN.dept = b.dataset.snd; snDraw(); }; });
   $$('[data-snp]').forEach(function (b) { b.onclick = function () { SN.pm = SN.pm === b.dataset.snp ? 'all' : b.dataset.snp; snDraw(); }; });
-  $$('[data-snw]').forEach(function (b) { b.onclick = function () { var k = +b.dataset.snw; SN.off = k ? SN.off + k : 0; if (!k) SN.scrollT = true; snDraw(); }; });   /* สัปดาห์นี้ = เลื่อนไปวันนี้ด้วย */
+  $$('[data-snw]').forEach(function (b) { b.onclick = function () { var k = +b.dataset.snw; SN.off = k ? SN.off + k : 0; snDraw(); }; });
   var bk = $('#sn-back'); if (bk) bk.onclick = function () { snSet(0); };
   var a = $('#sn-att'); if (a) a.onchange = function () { SN.att = a.checked; snDraw(); };
-  var hd = $('#sn-hide'); if (hd) hd.onchange = function () { SN.hide = hd.checked; try { localStorage.setItem('sn_hide', SN.hide ? '1' : '0'); } catch (e) {} snDraw(); };
-  var a2 = $('#sn-add2'); if (a2) a2.onclick = function () { snfOpen(null, SN.dept !== 'all' ? { dept: SN.dept } : {}); };
   var st = $('#sn-set'); if (st) st.onclick = function () { hrNav('set', 'sched'); };
   var ad = $('#sn-add'); if (ad) ad.onclick = function () { snfOpen(null, SN.dept !== 'all' ? { dept: SN.dept } : {}); };
-  $$('[data-sna]').forEach(function (b) { b.onclick = function (e) { e.stopPropagation(); snfOpen(null, b.dataset.sna ? { dept: b.dataset.sna, team: b.dataset.snat, date: b.dataset.snad } : { dept: SN.dept !== 'all' ? SN.dept : '', date: b.dataset.snad }); }; });
+  $$('[data-sna]').forEach(function (b) { b.onclick = function (e) { e.stopPropagation(); snfOpen(null, { dept: b.dataset.sna, team: b.dataset.snat, date: b.dataset.snad }); }; });
   var W = { view: 'มุมมองนี้ยังอยู่ในหน้าเดิม', export: 'Export อยู่ในหน้าเดิม', car: 'จัดการรถอยู่ในหน้าเดิม', set: 'ตั้งค่าตารางงานอยู่ในหน้าเดิม' };
   $$('[data-sno]').forEach(function (b) { b.onclick = function (e) { e.stopPropagation(); snOld(W[b.dataset.sno]); }; });
   $$('tr[data-snt]').forEach(function (tr) { tr.onclick = function () { snDetail(+tr.dataset.snt, tr.dataset.snds); }; });
