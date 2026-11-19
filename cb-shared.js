@@ -52,7 +52,7 @@
   /* รูปโปรไฟล์: ตัวอักษรแรก + รูปในระบบ (p.ph → /photo/:id) หรือรูป LINE (p.pic) ทับเมื่อโหลดได้ */
   CB.av = function (base, p, s) { var id = p && p.id;
     return '<span class="cbav" style="width:' + s + 'px;height:' + s + 'px;font-size:' + Math.round(s / 2.5) + 'px">' + E(CB.who(p).slice(0, 1)) +
-      (p && p.ph && id ? '<img src="' + base + '/photo/' + encodeURIComponent(id) + '" alt="" loading="lazy" data-rmerr>' : p && /^https:\/\//.test(p.pic || '') ? '<img src="' + E(p.pic) + '" alt="" loading="lazy" referrerpolicy="no-referrer" data-rmerr>' : '') + '</span>'; };
+      (p && p.ph && id ? '<img src="' + base + '/photo/' + encodeURIComponent(id) + (p.ph !== 1 && p.ph ? '?v=' + encodeURIComponent(p.ph) : '') + '" alt="" loading="lazy" data-rmerr>' : p && /^https:\/\//.test(p.pic || '') ? '<img src="' + E(p.pic) + '" alt="" loading="lazy" referrerpolicy="no-referrer" data-rmerr>' : '') + '</span>'; };
   CB.img = function (base, id) { return base + '/cb/img/' + encodeURIComponent(id); };
   /* รูปแนบ (10 พ.ย. 2569 ผู้ใช้: รูปในโพสต์ใหญ่เกิน → รูปย่อ กดแล้วค่อยดูรูปใหญ่)
    * รูปย่อสี่เหลี่ยมแถวเดียว (สูงสุด 4 · รูปที่ 4 ขึ้น +N) · all = หน้าโพสต์เต็ม แสดงรูปย่อครบทุกรูป · กดรูป = หน้าดูรูป (CB.lb) เลื่อนซ้าย/ขวาได้ */

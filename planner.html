@@ -1322,9 +1322,10 @@ body,button,input,select,textarea{font-family:'IBM Plex Sans Thai',system-ui,san
 .sb,.sb-backdrop,.tb{display:none!important}
 .ca{padding-top:16px!important}
 /* หน้าโหลด: แบบหลังบ้าน (เดิมของ WTM = พื้นเข้ม + โลโก้สายฟ้าเขียว) */
-#loading-screen{background:#fff!important}#loading-logo{display:none!important}
-#loading-screen .spinner{border-color:#E8E8E8!important;border-top-color:#141414!important;width:30px;height:30px}
-#loading-screen .loading-txt{color:#8C8C8C!important;font-size:13.5px}
+/* 19 พ.ย. 2569 ผู้ใช้: ระหว่างโหลดไม่ต้องขึ้นกำลังโหลด · เป็นพื้นเทาของระบบ (สีเดียวกับหลังบ้าน --bg) · โหลดไม่สำเร็จยังแสดงข้อความ + ปุ่มลองใหม่ */
+#loading-screen{background:#F4F4F4!important}#loading-logo{display:none!important}
+#loading-screen .spinner{display:none!important}
+#loading-screen .loading-txt{color:#8C8C8C!important;font-size:13.5px;visibility:hidden}#loading-screen .loading-txt:has(button){visibility:visible}
 #hr-scope{height:34px;border:1px solid #DADADA;border-radius:10px;padding:0 10px;background:#fff;font-size:13px;font-weight:600;color:#141414;max-width:190px}
 .hr-sep{width:1px;height:24px;background:#E2E2E2;flex:none}
 .hr-r{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
@@ -13777,7 +13778,7 @@ async function init() {
       // sync ข้อมูลสดเบื้องหลัง — ไม่บล็อกการเข้าแอป
       // ถ้า user เปิดฟอร์ม (สร้าง/แก้ไขงาน ฯลฯ) ค้างอยู่พอดีตอนที่ sync นี้เสร็จ (มักเกิดตอน backend ช้าเพราะมีคนอื่นบันทึกข้อมูลพร้อมกัน)
       // ห้ามเรียก go() เด็ดขาด — go() จะ closeMd() ปิดฟอร์มทิ้งทันทีโดยไม่ถาม ทำข้อมูลที่พิมพ์ไว้หาย (เหมือน _pollForChanges ป้องกันไว้)
-      var _hrSig = function () { try { return JSON.stringify(DB.tasks || []) + '|' + JSON.stringify(DB.vehicles || []); } catch (e) { return String(Math.random()); } }, _hrSig0 = _hrSig();
+      var _hrSig = function () { try { return JSON.stringify(DB.tasks || []) + '|' + JSON.stringify(DB.vehicles || []) + '|' + (DB.employees || []).map(function (e) { return e.photo || ''; }).join(',');   /* 19 พ.ย. 2569: เปลี่ยนรูปพนักงาน = วาดใหม่ด้วย */ } catch (e) { return String(Math.random()); } }, _hrSig0 = _hrSig();
       loadFromGAS().then(function(ok){
         if (!ok) return;
         if (_hrSig() === _hrSig0) return;   /* 14 พ.ย. 2569 ผู้ใช้: เข้าตารางงานแล้วโหลด 2 รอบ → ข้อมูลสดเหมือนที่จำไว้ = ไม่วาดหน้าใหม่ */
@@ -14569,7 +14570,7 @@ function _hideLineLoading() {
     var q = function (sel) { return bar.querySelector(sel); }, oc = function (re) { return [].slice.call(bar.querySelectorAll('[onclick]')).filter(function (b) { return re.test(b.getAttribute('onclick')); })[0]; };
     var lbl = q('.wpick-label'), pmf = q('.rp-pmfs'), tot = pmf && pmf.querySelector('b');
     var ph = document.createElement('div'); ph.className = 'hr-ph';
-    ph.innerHTML = '<div class="t"><h1>ตารางงาน</h1><div class="s">' + (lbl ? lbl.textContent.trim() : '') + (tot ? ' · ' + tot.textContent + ' งาน' : '') + ' · เวลาเข้างานจากระบบลงเวลา</div></div>';
+    ph.innerHTML = '<div class="t"><div class="s">' + (lbl ? lbl.textContent.trim() : '') + (tot ? ' · ' + tot.textContent + ' งาน' : '') + ' · เวลาเข้างานจากระบบลงเวลา</div></div>';
     var exp = oc(/rpOpenExport/); if (exp) {   // 27 ต.ค. 2569: ปุ่ม Export Excel / Export PDF แบบเดียวกับหลังบ้าน (ไอคอนไฟล์) · กดแล้วเปิดหน้าต่างเดิมโดยเลือกรูปแบบไว้ให้
       var FIC = function (k) { var c = k === 'pdf' ? '#DC2626' : '#15803D', l = k === 'pdf' ? 'PDF' : 'XLS'; return '<svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true" style="flex:none"><path d="M4 1.5h8l5 5v12H4z" fill="none" stroke="' + c + '" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 1.5v5h5" fill="none" stroke="' + c + '" stroke-width="1.5" stroke-linejoin="round"/><rect x="1" y="10" width="13" height="7" rx="2" fill="' + c + '"/><text x="7.5" y="15.2" text-anchor="middle" font-size="4.8" font-weight="700" fill="#fff" font-family="Arial,sans-serif">' + l + '</text></svg>'; };
       [['xlsx', 'xls', 'Export Excel'], ['pdf', 'pdf', 'Export PDF']].forEach(function (f) { var d = document.createElement('button'); d.className = 'hb hb-ex'; d.innerHTML = FIC(f[1]) + f[2];
