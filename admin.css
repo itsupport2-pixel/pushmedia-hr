@@ -1835,3 +1835,8 @@ html[lang=en] .bk-th{display:none}html:not([lang=en]) .bk-en{display:none}
 .pz-rl{display:block;margin-top:6px;color:var(--mut);line-height:1.6}
 .pz-op em{font-style:normal;font-size:11px;color:var(--fnt);line-height:1.35;margin-top:2px}
 @media(max-width:700px){.pz-dk{grid-template-columns:repeat(2,1fr)}}
+/* ไอคอนสีในแถบแท็บ (19 พ.ย. 2569) */
+.tbi{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:7px;background:color-mix(in srgb,var(--tc) 12%,#fff);color:var(--tc);flex:none}.tbi svg{width:15px;height:15px}
+button.has-tbi{display:inline-flex;align-items:center;gap:8px}
+.rp-tabs button.has-tbi:disabled .tbi,.otab button.has-tbi:disabled .tbi{filter:grayscale(1);opacity:.6}
+.cba-tabs button.has-tbi .tbi{width:20px;height:20px;border-radius:6px}.cba-tabs button.has-tbi .tbi svg{width:13px;height:13px}

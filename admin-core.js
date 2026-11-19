@@ -667,3 +667,32 @@ function mpOpen(btn){var old=document.querySelector('.dp');if(old){old._close();
 function mnavSet(on){var sh=$('.shell'),b=$('#tb-menu');if(!sh||(!on&&!sh.classList.contains('mnav')))return;sh.classList.toggle('mnav',on);sh.classList.toggle('wide',on||navWide());if(b){b.setAttribute('aria-expanded',on);b.setAttribute('aria-label',on?'ปิดเมนู':'เปิดเมนู')}}
 document.addEventListener('click',function(e){var t=e.target,sh=$('.shell');if(!sh)return;if(t.closest&&t.closest('#tb-menu')){mnavSet(!sh.classList.contains('mnav'));return}if(sh.classList.contains('mnav')&&t.closest&&!t.closest('.side'))mnavSet(false)});
 document.addEventListener('keydown',function(e){if(e.key==='Escape')mnavSet(false)});
+
+/* ไอคอนสีในแถบแท็บทุกหน้า (19 พ.ย. 2569 ผู้ใช้: แถบเมนูที่ไม่มีไอคอน ให้มีไอคอน + สีเน้นให้มองง่าย)
+ * ใส่ให้อัตโนมัติจาก data-* ของปุ่มแท็บ (ไม่ต้องแก้ทุกหน้า) · ปุ่มที่มีไอคอนอยู่แล้วไม่ใส่ซ้ำ · สี = ชุดเดียวกับเมนูตั้งค่า */
+var TBI_P={grid:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
+ trophy:'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/>',
+ chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+ folder:'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+ list:'<path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/>',
+ book:'<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5M8 7h7"/>',
+ doc:'<path d="M14 3H6v18h12V7z"/><path d="M14 3v4h4M9 13h6M9 17h4"/>',
+ coin:'<circle cx="12" cy="12" r="8.5"/><path d="M14.5 9.5c-.4-.9-1.4-1.5-2.5-1.5-1.5 0-2.5.8-2.5 2s1 1.7 2.5 2 2.5.8 2.5 2-1 2-2.5 2c-1.1 0-2.1-.6-2.5-1.5M12 6.5v11"/>',
+ tree:'<rect x="9" y="3" width="6" height="5" rx="1"/><rect x="3" y="16" width="6" height="5" rx="1"/><rect x="15" y="16" width="6" height="5" rx="1"/><path d="M12 8v4M6 16v-4h12v4"/>',
+ badge:'<rect x="4" y="3" width="16" height="18" rx="2"/><circle cx="12" cy="10" r="2.5"/><path d="M8 16.5a4 4 0 0 1 8 0"/>',
+ user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+ chat:'<path d="M4 5h16v11H9l-5 4z"/>',
+ recent:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'};
+var TBI={'lvt:req':['leave','#2F6FED'],'lvt:adv':['cal','#C77700'],
+ 'attt:day':['clock','#12703A'],'attt:mx':['grid','#7A4FD6'],'attt:ta':['clockx','#D97309'],
+ 'rpt:xd':['dash','#2F6FED'],'rpt:top':['trophy','#C77700'],'rpt:bh':['chart','#7A4FD6'],'rpt:map':['pin','#C0392B'],'rpt:ms':['cal','#0E8A7E'],'rptsoon:pay':['wallet','#12703A'],'rptsoon:ot':['ot','#D97309'],
+ 'srt:team':['org','#7A4FD6'],'srt:emp':['user','#2F6FED'],'srt:proj':['folder','#C77700'],
+ 'pyt:runs':['cal','#2F6FED'],'pyt:sal':['wallet','#12703A'],'pyt:people':['user','#3C5BD8'],'pyt:loans':['coin','#C0392B'],'pyt:items':['list','#4A5A6A'],'pyt:tax':['doc','#C77700'],'pyt:book':['book','#0E8A7E'],'pyt:cfg':['set','#4A5A6A'],
+ 'mst:ov':['dash','#2F6FED'],'mst:list':['list','#12703A'],'mst:map':['pin','#C0392B'],'mst:set':['set','#4A5A6A'],
+ 'ot:list':['org','#7A4FD6'],'ot:chart':['tree','#2F6FED'],'ot:appr':['check','#12703A'],'ot:positions':['badge','#C77700'],'ot:gps_sites':['pin','#C0392B'],
+ 'cbflt:all':['recent','#2F6FED'],'cbflt:noreply':['chat','#D97309'],'cbflt:mine':['user','#12703A']};
+var TBI_ATTR=['lvt','attt','rpt','rptsoon','srt','pyt','mst','ot','cbflt'];
+function tbiSvg(k){var p=TBI_P[k]||(typeof ICON!=='undefined'&&ICON[k])||'';return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p+'</svg>'}
+function tabIcons(root){root=root||document;TBI_ATTR.forEach(function(a){[].forEach.call(root.querySelectorAll('[data-'+a+']'),function(b){if(b.tagName!=='BUTTON'||!b.closest('.rp-tabs,.otab,.cba-tabs')||b.querySelector('svg,.tbi,img'))return;var d=TBI[a+':'+b.getAttribute('data-'+a)];if(!d)return;
+  var s=document.createElement('span');s.className='tbi';s.style.setProperty('--tc',d[1]);s.innerHTML=tbiSvg(d[0]);b.insertBefore(s,b.firstChild);b.classList.add('has-tbi')})})}
+(function(){var q=0,run=function(){q=0;tabIcons()};new MutationObserver(function(){if(!q){q=1;(window.requestAnimationFrame||setTimeout)(run)}}).observe(document.documentElement,{childList:true,subtree:true})})();
