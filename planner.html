@@ -6505,7 +6505,6 @@ function renderPlannerTeamList() {
   var btnHtml =
     '<div style="display:flex;gap:4px;">' +
       '<button class="rp-view-btn'+(_plannerView==='list'?' active':'')+'" onclick="_plannerView=\'list\';renderPlanner()">'+svgList+' รายการ</button>' +
-      '<button class="rp-view-btn'+(_plannerView==='grid'?' active':'')+'" onclick="_plannerView=\'grid\';renderPlanner()">'+svgGrid+' ตาราง</button>' +
       '<button class="rp-view-btn'+(_plannerView==='team'?' active':'')+'" onclick="_plannerView=\'team\';renderPlanner()">'+svgTeam+' รายชื่อทีม</button>' +
       '<button class="rp-view-btn'+(_plannerView==='tech'?' active':'')+'" onclick="_plannerView=\'tech\';renderPlanner()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 12 0v1"/><path d="M17 11l2 2 4-4"/></svg> ตามช่าง</button>' +
       _attTimeToggleBtnHtml() + _rpExportBtnHtml() +
@@ -6757,7 +6756,6 @@ function renderPlannerTech() {
   var svgTeam = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>';
   var btnHtml = '<div style="display:flex;gap:4px;flex-wrap:wrap;">' +
       '<button class="rp-view-btn' + (_plannerView === 'list' ? ' active' : '') + '" onclick="_plannerView=\'list\';renderPlanner()">' + svgList + ' รายการ</button>' +
-      '<button class="rp-view-btn' + (_plannerView === 'grid' ? ' active' : '') + '" onclick="_plannerView=\'grid\';renderPlanner()">' + svgGrid + ' ตาราง</button>' +
       '<button class="rp-view-btn' + (_plannerView === 'team' ? ' active' : '') + '" onclick="_plannerView=\'team\';renderPlanner()">' + svgTeam + ' รายชื่อทีม</button>' +
       '<button class="rp-view-btn active" onclick="_plannerView=\'tech\';renderPlanner()">' + '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 12 0v1"/><path d="M17 11l2 2 4-4"/></svg>' + ' ตามช่าง</button>' +
       _attTimeToggleBtnHtml() + _rpExportBtnHtml() +
@@ -6826,6 +6824,7 @@ function renderPlannerTech() {
 }
 
 function renderPlanner() {
+  if (_plannerView === 'grid') _plannerView = 'list';   /* 19 พ.ย. 2569 ผู้ใช้: ตัดมุมมอง ตาราง ออก */
   if (typeof _rtPosClose === 'function') _rtPosClose();
   if (_plannerView === 'list') { renderPlannerList(); return; }
   if (_plannerView === 'team') { renderPlannerTeamList(); return; }
@@ -7029,7 +7028,6 @@ function renderPlanner() {
       '</div>' +
       '<div style="display:flex;gap:4px;">' +
         '<button class="rp-view-btn'+(_plannerView==='list'?' active':'')+'" onclick="_plannerView=\'list\';renderPlanner()">'+svgList+' รายการ</button>' +
-        '<button class="rp-view-btn'+(_plannerView==='grid'?' active':'')+'" onclick="_plannerView=\'grid\';renderPlanner()">'+svgGrid+' ตาราง</button>' +
         '<button class="rp-view-btn'+(_plannerView==='team'?' active':'')+'" onclick="_plannerView=\'team\';renderPlanner()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> รายชื่อทีม</button>' +
       '<button class="rp-view-btn'+(_plannerView==='tech'?' active':'')+'" onclick="_plannerView=\'tech\';renderPlanner()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 12 0v1"/><path d="M17 11l2 2 4-4"/></svg> ตามช่าง</button>' +
         _attTimeToggleBtnHtml() + _rpExportBtnHtml() +
@@ -7839,7 +7837,6 @@ function renderPlannerList() {
   var _rpListBtnHtml =
     '<div style="display:flex;gap:4px;">' +
       '<button class="rp-view-btn' + (_plannerView==='list' ? ' active' : '') + '" onclick="_plannerView=\'list\';renderPlanner()">' + svgList + ' รายการ</button>' +
-      '<button class="rp-view-btn' + (_plannerView==='grid' ? ' active' : '') + '" onclick="_plannerView=\'grid\';renderPlanner()">' + svgGrid + ' ตาราง</button>' +
       '<button class="rp-view-btn' + (_plannerView==='team' ? ' active' : '') + '" onclick="_plannerView=\'team\';renderPlanner()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> รายชื่อทีม</button>' +
       '<button class="rp-view-btn'+(_plannerView==='tech'?' active':'')+'" onclick="_plannerView=\'tech\';renderPlanner()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 12 0v1"/><path d="M17 11l2 2 4-4"/></svg> ตามช่าง</button>' +
       _attTimeToggleBtnHtml() + _rpExportBtnHtml() +
