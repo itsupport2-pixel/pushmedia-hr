@@ -1907,3 +1907,6 @@ button.has-tbi{display:inline-flex;align-items:center;gap:8px}
 .sn-ib2{display:inline-flex;align-items:center;gap:7px}.sn-views button{display:inline-flex;align-items:center;gap:6px}
 .sn-t tr.sn-d0>td{border-top:2px solid #E4E4E7}.sn-t thead th:nth-child(n+5){text-align:center}.sn-t thead th:last-child{text-align:right}
 .sn-chip.on{background:#141414}.sn-sum.on{border-color:#141414;box-shadow:none}.sn-t thead th{background:#FAFAFA;color:#6B7280}
+
+/* ตารางงาน: กรอบหน้าเดิมที่เก็บไว้ (admin-sched.js plk · 20 พ.ย. 2569) */
+.plf-slot{background:#fff}#plf-host{position:fixed;visibility:hidden;pointer-events:none;z-index:-1}#plf-host iframe.plk{display:block;width:100%!important;height:100%!important;margin:0!important;border:0;background:#fff}

@@ -6,7 +6,51 @@
 var PLANNER_V='dp1119e';   // เลขรุ่นหน้า planner.html (build-planner.mjs ตั้งให้ทุกครั้ง · กันเบราว์เซอร์จำหน้าเก่า)
 function vConf(){return '<iframe class="plf" src="planner.html?desktop=1&page=confirmed'+(A.fx==='conf'||A.fx==='*'?'&fx=1':'')+'&v='+PLANNER_V+'" aria-label="Confirmed"></iframe>'}
 /* 19 พ.ย. 2569 ผู้ใช้: ชี้เมาส์แล้วขึ้นคำว่า ตารางงาน ตลอด (title ของกรอบ) → ใช้ aria-label แทน */
-function vPlanner(){return '<iframe class="plf" src="planner.html?desktop=1'+(A.fx==='sched'||A.fx==='*'?'&fx=1':'')+'&v='+PLANNER_V+'" aria-label="ตารางงาน" allow="geolocation"></iframe>'}
+function vPlanner(){return '<div id="plf-slot" class="plf plf-slot" role="region" aria-label="ตารางงาน"></div>'}   /* กรอบจริงอยู่ที่ #plf-host (plkShow) */
+/* 20 พ.ย. 2569 ผู้ใช้: "หน้าตาเหมือนเดิม แต่ความเร็วและเอฟเฟ็คเป็นแบบใหม่" → ใช้หน้าเดิม (planner.html) ตัวจริง ไม่มีหน้าใหม่/ปุ่มสลับ
+ * โหลดกรอบเตรียมไว้หลังเข้าระบบ (เบื้องหลัง) แล้วเก็บไว้ที่ body ไม่สร้างใหม่ทุกครั้งที่กดเมนู (เดิม render() ล้างหน้า = โหลดหน้าเดิม 1.1 MB ใหม่ทุกครั้ง)
+ * กดเมนู = วางกรอบทับช่อง #plf-slot ในหน้า + เอฟเฟ็กต์ (fxFrame) + เช็กข้อมูลใหม่ทันที (หน้าเดิม _pollForChanges) · ออกจากเมนู = ซ่อน + หยุดเช็กทุก 30 วิ
+ * เปลี่ยนผู้ใช้ / บริษัท / ภาษา = สร้างกรอบใหม่ · ออกจากระบบ = ลบกรอบ */
+var PLK = { fr: null, key: '', shown: false, ro: null };
+function plkKey() { return [A.tok || '', (window.coBr && coBr() ? coBr().id : ''), (window.hrLang ? hrLang() : ''), PLANNER_V].join('|'); }
+function plkHost() { var h = document.getElementById('plf-host'); if (!h) { h = document.createElement('div'); h.id = 'plf-host'; h.setAttribute('aria-hidden', 'true'); document.body.appendChild(h); } return h; }
+function plkMake() {
+  var k = plkKey(); if (PLK.fr && PLK.key === k) return PLK.fr;
+  if (PLK.fr) { PLK.fr.remove(); PLK.fr = null; }
+  var f = document.createElement('iframe'); f.className = 'plf plk'; f.setAttribute('aria-label', 'ตารางงาน'); f.setAttribute('allow', 'geolocation');
+  f.src = 'planner.html?desktop=1&v=' + PLANNER_V; plkHost().appendChild(f); PLK.fr = f; PLK.key = k; PLK.loaded = false;
+  f.addEventListener('load', function () { PLK.loaded = true; plkVer(function (v) { if (v) PLK.ver = v; }); if (!PLK.shown) { plkPoll(false); setTimeout(function () { if (!PLK.shown) plkPoll(false); }, 8000); } else plkFx(); });   /* หน้าเดิมเริ่มเช็กข้อมูลหลังเข้าระบบในกรอบ → หยุดซ้ำอีกรอบ */
+  return f;
+}
+function plkPoll(on) { try { var w = PLK.fr && PLK.fr.contentWindow; if (!w) return; if (on) { plkFresh(); if (typeof w._startRealtimePoll === 'function') w._startRealtimePoll(); } else if (w._pollTimer) { w.clearInterval(w._pollTimer); w._pollTimer = null; } } catch (e) {} }
+/* เลขรุ่นข้อมูลตารางงาน (wtm version) ตอนโหลด/แสดงล่าสุด · แสดงอีกครั้งแล้วเลขเปลี่ยน (มีคนเพิ่ม/แก้งานระหว่างซ่อน) = ให้หน้าเดิมโหลดข้อมูลใหม่ (_applyRemote) */
+function plkVer(cb) { aCall('wtm', 'version', {}).then(function (v) { cb(v && v.version); }).catch(function () {}); }
+function plkFresh() { var w = PLK.fr && PLK.fr.contentWindow; plkVer(function (nv) { try { if (!nv) return; if (PLK.ver && nv !== PLK.ver && w && typeof w._applyRemoteIfIdle === 'function') { w._remotePending = true; w._applyRemoteIfIdle(); } PLK.ver = nv; if (w) w._pollVersion = nv; } catch (e) {} }); }
+function plkFx() { if (PLK.fr && PLK.loaded && window.fxFrame) fxFrame(PLK.fr); }
+function plkPlace() {
+  var s = document.getElementById('plf-slot'), h = document.getElementById('plf-host'); if (!s || !h) return;
+  var r = s.getBoundingClientRect(); h.style.cssText = 'position:fixed;z-index:5;left:' + r.left + 'px;top:' + r.top + 'px;width:' + r.width + 'px;height:' + r.height + 'px;visibility:visible';
+}
+function plkShow() {
+  var s = document.getElementById('plf-slot'); if (!s) return; plkMake(); var was = PLK.shown; PLK.shown = true; plkPlace();
+  if (!PLK.ro && window.ResizeObserver) { PLK.ro = new ResizeObserver(function () { if (PLK.shown) plkPlace(); }); }
+  if (PLK.ro) { PLK.ro.disconnect(); PLK.ro.observe(s); }
+  if (!was) { if (PLK.loaded) { plkFx(); plkPoll(true); } }   /* ยังโหลดไม่เสร็จ = เล่นเอฟเฟ็กต์ตอนโหลดเสร็จ (load) */
+}
+function plkHide() { var h = document.getElementById('plf-host'); if (h) h.style.cssText = 'position:fixed;left:0;top:0;width:' + Math.max(320, innerWidth - 240) + 'px;height:' + innerHeight + 'px;visibility:hidden;pointer-events:none;z-index:-1'; if (PLK.shown) plkPoll(false); PLK.shown = false; if (PLK.ro) PLK.ro.disconnect(); }
+function plkSync() {   /* หลัง render ทุกครั้ง */
+  if (!A.tok || !A.d) { if (PLK.fr) { PLK.fr.remove(); PLK.fr = null; PLK.key = ''; } plkHide(); return; }
+  if (A.view === 'sched' && document.getElementById('plf-slot')) plkShow(); else plkHide();
+}
+addEventListener('resize', function () { if (PLK.shown) plkPlace(); else if (PLK.fr) plkHide(); });
+addEventListener('scroll', function () { if (PLK.shown) plkPlace(); }, true);
+/* โหลดเตรียมไว้หลังเข้าระบบ · เฉพาะคนที่มีเมนูตารางงาน · ไม่ทำในโหมดดูในมุมมอง */
+/* ทุกครั้งที่หน้า render (เปลี่ยนเมนู · ออกจากระบบ) = จัดกรอบตาม (ซ่อนเมื่อไม่ได้อยู่เมนูตารางงาน) */
+(function () { var r0 = render; render = function () { var x = r0.apply(this, arguments); try { plkSync(); } catch (e) {} return x; }; })();
+(function () { var l0 = renderLogin; renderLogin = function () { if (PLK.fr) { PLK.fr.remove(); PLK.fr = null; PLK.key = ''; } plkHide(); return l0.apply(this, arguments); }; })();   /* ออกจากระบบ (logout เรียก renderLogin ตรง) = ลบกรอบ */
+(function plkPre() { if (!window.A || !A.d || !A.d.me || !A.tok) return setTimeout(plkPre, 1500); if (window.ss && ss('hr_va')) return; try { if (navFor(A.d.me).indexOf('sched') < 0) return; } catch (e) { return; }
+  setTimeout(function () { if (A.tok && A.d && !PLK.fr) { plkMake(); if (A.view !== 'sched') plkHide(); } }, 1200); })();
+
 /* (เดิม) ตารางงานช่วง 1 ที่เขียนใหม่ — ไม่ได้ใช้แล้ว เก็บไว้อ้างอิง */
 var THD=['อา.','จ.','อ.','พ.','พฤ.','ศ.','ส.'];
 function isoAdd(d,n){var x=new Date(d+'T12:00:00');x.setDate(x.getDate()+n);return x.getFullYear()+'-'+('0'+(x.getMonth()+1)).slice(-2)+'-'+('0'+x.getDate()).slice(-2)}
