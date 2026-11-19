@@ -29,7 +29,7 @@ function plkFresh() { var w = PLK.fr && PLK.fr.contentWindow; plkVer(function (n
 function plkFx() { if (PLK.fr && PLK.loaded && window.fxFrame) fxFrame(PLK.fr); }
 function plkPlace() {
   var s = document.getElementById('plf-slot'), h = document.getElementById('plf-host'); if (!s || !h) return;
-  var r = s.getBoundingClientRect(); h.style.cssText = 'position:fixed;z-index:5;left:' + r.left + 'px;top:' + r.top + 'px;width:' + r.width + 'px;height:' + r.height + 'px;visibility:visible';
+  var r = s.getBoundingClientRect(); h.style.cssText = 'position:fixed;z-index:5;left:' + r.left + 'px;top:' + r.top + 'px;width:' + r.width + 'px;height:' + r.height + 'px;visibility:visible;pointer-events:auto';   /* 20 พ.ย. 2569: ต้องตั้งรับคลิกเอง (ตอนซ่อนตั้ง none ไว้) */
 }
 function plkShow() {
   var s = document.getElementById('plf-slot'); if (!s) return; plkMake(); var was = PLK.shown; PLK.shown = true; plkPlace();
