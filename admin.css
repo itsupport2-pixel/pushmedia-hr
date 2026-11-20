@@ -1910,3 +1910,6 @@ button.has-tbi{display:inline-flex;align-items:center;gap:8px}
 
 /* ตารางงาน: กรอบหน้าเดิมที่เก็บไว้ (admin-sched.js plk · 20 พ.ย. 2569) */
 .plf-slot{background:#fff}#plf-host{position:fixed;visibility:hidden;pointer-events:none;z-index:-1}#plf-host iframe.plk{display:block;width:100%!important;height:100%!important;margin:0!important;border:0;background:#fff}
+
+/* Codex › รูปลูกค้า (20 พ.ย. 2569) */
+.cx-av{flex:none;width:28px;height:28px;border-radius:50%;background:#EEF0F3;color:#3F3F46;display:grid;place-items:center;font-size:12px;font-weight:700;overflow:hidden}.cx-av img{width:100%;height:100%;object-fit:cover}
