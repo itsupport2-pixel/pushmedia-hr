@@ -22,7 +22,7 @@ const READ_FN=/^(todayInfo|myAttendance|leaveInfo|publicInfo|refreshLine|loginLi
 const NET_ERR="เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ (อินเทอร์เน็ตสะดุด) กรุณาลองใหม่อีกครั้ง";
 function post(fn,a,n){const ac=typeof AbortController!=="undefined"?new AbortController():null,tm=ac&&setTimeout(()=>ac.abort(),20000);
   return fetch(API,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({fn,args:a,_c:{w:(S.me&&S.me.code)||((LS.get("today")||{}).t||{me:{}}).me.code||"",a:"liff",d:LS.get("device")||""}}),signal:ac?ac.signal:undefined})
-    .then(r=>{clearTimeout(tm);return r},e=>{clearTimeout(tm);const retry=READ_FN.test(fn)&&!(fn==="wtm"&&!/^(bootstrap|tasks|version|attendance|leaves)$/.test(a[1]))&&n<2;
+    .then(r=>{clearTimeout(tm);return r},e=>{clearTimeout(tm);const retry=READ_FN.test(fn)&&!(fn==="wtm"&&!/^(mobile|bootstrap|tasks|version|attendance|leaves|confirmedProjects)$/.test(a[1]))&&n<2;
       if(retry)return new Promise(r=>setTimeout(r,n?2500:1000)).then(()=>post(fn,a,n+1));throw new Error(NET_ERR)})}
 function call(fn,...a){return post(fn,a,0)
   .then(r=>r.text()).then(t=>{let j;try{j=JSON.parse(t)}catch(e){throw new Error("เชื่อมต่อเซิร์ฟเวอร์ไม่สำเร็จ ลองใหม่อีกครั้ง")}if(!j.ok)throw new Error(j.error);return j.r})}
