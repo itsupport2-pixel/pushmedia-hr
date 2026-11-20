@@ -3,7 +3,7 @@
  * ทุกไฟล์ admin-*.js ใช้ชื่อร่วมกัน (global) และต้องโหลดตามลำดับใน admin.html */
 'use strict';
 /* ───────── ตารางงาน = หน้าเว็บ Workforce Task Manager เดิมทั้งชุด (planner.html · สร้างด้วย app/tools/build-planner.mjs · หลังบ้าน app/gas/schedule/Wtm.js) ───────── */
-var PLANNER_V='dp1120a';   // เลขรุ่นหน้า planner.html (build-planner.mjs ตั้งให้ทุกครั้ง · กันเบราว์เซอร์จำหน้าเก่า)
+var PLANNER_V='dp1120b';   // เลขรุ่นหน้า planner.html (build-planner.mjs ตั้งให้ทุกครั้ง · กันเบราว์เซอร์จำหน้าเก่า)
 function vConf(){return '<iframe class="plf" src="planner.html?desktop=1&page=confirmed'+(A.fx==='conf'||A.fx==='*'?'&fx=1':'')+'&v='+PLANNER_V+'" aria-label="Confirmed"></iframe>'}
 /* 19 พ.ย. 2569 ผู้ใช้: ชี้เมาส์แล้วขึ้นคำว่า ตารางงาน ตลอด (title ของกรอบ) → ใช้ aria-label แทน */
 function vPlanner(){return '<div id="plf-slot" class="plf plf-slot" role="region" aria-label="ตารางงาน"></div>'}   /* กรอบจริงอยู่ที่ #plf-host (plkShow) */
@@ -25,7 +25,7 @@ function plkMake() {
 function plkPoll(on) { try { var w = PLK.fr && PLK.fr.contentWindow; if (!w) return; if (on) { plkFresh(); if (typeof w._startRealtimePoll === 'function') w._startRealtimePoll(); } else if (w._pollTimer) { w.clearInterval(w._pollTimer); w._pollTimer = null; } } catch (e) {} }
 /* เลขรุ่นข้อมูลตารางงาน (wtm version) ตอนโหลด/แสดงล่าสุด · แสดงอีกครั้งแล้วเลขเปลี่ยน (มีคนเพิ่ม/แก้งานระหว่างซ่อน) = ให้หน้าเดิมโหลดข้อมูลใหม่ (_applyRemote) */
 function plkVer(cb) { aCall('wtm', 'version', {}).then(function (v) { cb(v && v.version); }).catch(function () {}); }
-function plkFresh() { var w = PLK.fr && PLK.fr.contentWindow; plkVer(function (nv) { try { if (!nv) return; if (PLK.ver && nv !== PLK.ver && w && typeof w._applyRemoteIfIdle === 'function') { w._remotePending = true; w._applyRemoteIfIdle(); } PLK.ver = nv; if (w) w._pollVersion = nv; } catch (e) {} }); }
+function plkFresh() { var w = PLK.fr && PLK.fr.contentWindow; plkVer(function (nv) { try { if (!nv) return; if (PLK.ver && nv !== PLK.ver && w) { w._remotePending = true; if (typeof w._applyRemoteOnShow === 'function') w._applyRemoteOnShow(); else if (typeof w._applyRemoteIfIdle === 'function') w._applyRemoteIfIdle(); } PLK.ver = nv; if (w) w._pollVersion = nv; } catch (e) {} }); }
 function plkFx() { if (PLK.fr && PLK.loaded && window.fxFrame) fxFrame(PLK.fr); }
 function plkPlace() {
   var s = document.getElementById('plf-slot'), h = document.getElementById('plf-host'); if (!s || !h) return;

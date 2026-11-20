@@ -13499,7 +13499,7 @@ function _remoteBar(show) {
 }
 async function _applyRemote(force) {
   if (_remoteLoading) return;
-  if (!force && _userBusy()) { _remoteBar(true); return; }
+  if (!force && _userBusy()) return;   /* 20 พ.ย. 2569 ผู้ใช้: ไม่ต้องมีแถบ มีข้อมูลใหม่ · รอจนว่างแล้วอัปเดตเอง (setInterval 5 วิ) */
   _remoteLoading = true;
   try {
     var ok = await loadFromGAS();
@@ -13508,12 +13508,14 @@ async function _applyRemote(force) {
       if (force || !_userBusy()) {   // ระหว่างโหลดอาจเพิ่งเปิดฟอร์ม → ไม่วาดหน้าใหม่ (ข้อมูลใหม่อยู่ในระบบแล้ว · หน้าอัปเดตครั้งหน้าที่สลับเมนู)
         if (window.isMobileMode && window.isMobileMode()) { if (typeof window.mRerender === 'function') window.mRerender(); }
         else go(curPage || 'dashboard');
-        toast('อัปเดตข้อมูลล่าสุดแล้ว', 'ok');
-      } else { _remotePending = true; _remoteBar(true); }
+      } else { _remotePending = true; }   /* อัปเดตเงียบ ๆ (ไม่มีข้อความ/แถบ) */
     }
   } finally { _remoteLoading = false; }
 }
 function _applyRemoteIfIdle() { if (_remotePending) _applyRemote(false); }
+/* กลับเข้าเมนูตารางงาน (หลังบ้านเรียก · admin-sched.js plkFresh): อัปเดตทันที ไม่นับเวลากดล่าสุด 20 วิ · ยกเว้นฟอร์มเปิดค้าง / กำลังพิมพ์ / มีที่แก้ค้าง = รอจนว่าง */
+function _userBusyHard() { var t = _lastInteract; _lastInteract = 0; try { return _userBusy(); } finally { _lastInteract = t; } }
+window._applyRemoteOnShow = function () { if (!_remotePending) return; if (_userBusyHard()) return; _applyRemote(true); };
 setInterval(function () { if (_remotePending && !document.hidden) _applyRemoteIfIdle(); }, 5000);
 
 // ตรวจโหมดมือถือแบบ sync (ใช้ได้ก่อน mobile IIFE จะรัน — isMobileMode() ตัวจริงอยู่ใน IIFE ท้ายไฟล์)
@@ -13794,7 +13796,7 @@ async function init() {
       loadFromGAS().then(function(ok){
         if (!ok) return;
         if (_hrSig() === _hrSig0) return;   /* 14 พ.ย. 2569 ผู้ใช้: เข้าตารางงานแล้วโหลด 2 รอบ → ข้อมูลสดเหมือนที่จำไว้ = ไม่วาดหน้าใหม่ */
-        if (_userBusy()) { _remotePending = true; _remoteBar(true); return; }
+        if (_userBusy()) { _remotePending = true; return; }   /* 20 พ.ย. 2569: ไม่ขึ้นแถบ · รอว่างแล้วอัปเดตเอง */
         try { if (typeof curPage !== 'undefined') go(curPage || 'dashboard'); } catch(_){}
       });
     } else {
