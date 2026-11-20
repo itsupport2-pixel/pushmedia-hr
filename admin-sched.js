@@ -3,7 +3,7 @@
  * ทุกไฟล์ admin-*.js ใช้ชื่อร่วมกัน (global) และต้องโหลดตามลำดับใน admin.html */
 'use strict';
 /* ───────── ตารางงาน = หน้าเว็บ Workforce Task Manager เดิมทั้งชุด (planner.html · สร้างด้วย app/tools/build-planner.mjs · หลังบ้าน app/gas/schedule/Wtm.js) ───────── */
-var PLANNER_V='dp1120b';   // เลขรุ่นหน้า planner.html (build-planner.mjs ตั้งให้ทุกครั้ง · กันเบราว์เซอร์จำหน้าเก่า)
+var PLANNER_V='dp1120d';   // เลขรุ่นหน้า planner.html (build-planner.mjs ตั้งให้ทุกครั้ง · กันเบราว์เซอร์จำหน้าเก่า)
 function vConf(){return '<iframe class="plf" src="planner.html?desktop=1&page=confirmed'+(A.fx==='conf'||A.fx==='*'?'&fx=1':'')+'&v='+PLANNER_V+'" aria-label="Confirmed"></iframe>'}
 /* 19 พ.ย. 2569 ผู้ใช้: ชี้เมาส์แล้วขึ้นคำว่า ตารางงาน ตลอด (title ของกรอบ) → ใช้ aria-label แทน */
 function vPlanner(){return '<div id="plf-slot" class="plf plf-slot" role="region" aria-label="ตารางงาน"></div>'}   /* กรอบจริงอยู่ที่ #plf-host (plkShow) */

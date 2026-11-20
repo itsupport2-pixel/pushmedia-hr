@@ -1416,6 +1416,7 @@ body,button,input,select,textarea{font-family:'IBM Plex Sans Thai',system-ui,san
 .hr-md[data-hr="e"] .fl{color:#3A3A3A!important;font-size:13px!important}
 .hr-grp{font-size:12px;font-weight:700;color:#8C8C8C;margin:6px 0 10px;letter-spacing:.02em}.hr-grp:not(:first-child){margin-top:20px;padding-top:16px;border-top:1px solid #F0F0F0}
 .hr-md .fc{min-height:44px;border-radius:10px!important;border:1px solid #DADADA!important;font-size:14.5px!important;padding:0 14px!important}
+.hr-md #f-veh-search,.hr-md #f-ext-search,.hr-md #car-search,.hr-md #rl-ext-q,#f-veh-search,#f-ext-search,#car-search,#rl-ext-q{padding-left:36px!important}   /* 20 พ.ย. 2569: ช่องค้นหาที่มีไอคอนแว่นขยาย · กฎ .fc ข้างบนบังคับ 14px จนไอคอนทับตัวหนังสือ */
 .hr-md textarea.fc{padding:11px 14px!important}.hr-md .fc:focus{border-color:#141414!important;box-shadow:0 0 0 1px #141414!important;outline:0}
 .hr-md label[id$="-shift-day-lbl"],.hr-md label[id$="-shift-night-lbl"],.hr-md label[id$="-shift-allday-lbl"]{border:1px solid #DADADA!important;border-radius:12px!important;padding:12px 16px!important;background:#fff}
 .hr-md label[id$="-lbl"]:has(input:checked){background:#141414!important;border-color:#141414!important;color:#fff}
@@ -1424,7 +1425,7 @@ body,button,input,select,textarea{font-family:'IBM Plex Sans Thai',system-ui,san
 .hr-prov label{display:flex;flex-direction:column;gap:1px;flex:1}.hr-prov label b{font-size:14px;color:#141414}.hr-prov label small{font-size:12px;color:#8C8C8C}
 .hr-sw{appearance:none;-webkit-appearance:none;width:40px!important;height:22px!important;border-radius:99px;background:#DADADA;position:relative;cursor:pointer;flex:0 0 40px;transition:.15s}
 .hr-sw:after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.15s}.hr-sw:checked{background:#141414}.hr-sw:checked:after{left:21px}
-.hr-up{display:none!important}
+/* 20 พ.ย. 2569: เปิดกล่องเพิ่มรูปหน้างาน (เดิมซ่อน .hr-up{display:none} ตอนระบบใหม่ยังไม่รองรับรูป) */
 .hr-up-x{background:#FAFAFA!important;border:1.5px dashed #CFCFCF!important;border-radius:14px!important;padding:14px!important}
 .hr-up>div:first-of-type button{height:64px;border:0!important;background:transparent!important;font-size:14px!important;color:#141414!important}
 .hr-up>div:nth-of-type(2) button{border:0!important;background:transparent!important;justify-content:flex-start!important;color:#141414!important;font-size:13.5px!important;padding:4px 2px!important}
@@ -9669,7 +9670,6 @@ var WTMPhoto = (function(){
     var s = _stg(taskId);
     if(!s.files.length){ toast('ยังไม่ได้เลือกรูป', 'er'); return; }
     var canMng = _isManage(taskId);
-    if(!s.gps && !canMng){ toast('ต้องกด "ระบุตำแหน่งหน้างาน" ก่อน', 'er'); return; }
     _setBusy(taskId, 'กำลังเตรียมรูป ' + s.files.length + ' รูป…');
     _uploadFiles(taskId, s.files, s.gps, canMng, function(r){
       _setBusy(taskId, '');
@@ -9746,7 +9746,7 @@ var WTMPhoto = (function(){
       if(pending){
         box += '<div style="margin-top:8px;font-size:' + (m?'0.72em':'11px') + ';color:var(--ink-3);">รูปจะอัปโหลดให้อัตโนมัติหลังกด "บันทึก" งาน</div>';
       } else {
-        var ready = canManage || !!s.gps;
+        var ready = true;   /* 20 พ.ย. 2569 ผู้ใช้: ไม่บังคับ GPS · กดระบุตำแหน่งได้ถ้าต้องการ */
         box += '<div style="display:flex;gap:6px;margin-top:9px;">' +
           _btn('อัปโหลด ' + s.files.length + ' รูป', ready ? ('WTMPhoto._send(' + q + ')') : 'return false', true, !ready, m) + '</div>';
         if(!ready) box += '<div style="margin-top:5px;font-size:' + (m?'0.72em':'10.5px') + ';color:var(--ink-3);">* ต้องกด "ระบุตำแหน่งหน้างาน" ก่อนถึงจะอัปโหลดได้</div>';
@@ -9773,7 +9773,7 @@ var WTMPhoto = (function(){
       if(photos === undefined){
         body = '<div style="font-size:12px;color:var(--ink-3);padding:6px 0;">กำลังโหลดรูป…</div>';
       } else if(!photos.length){
-        body = '<div class="hr-nophoto" style="font-size:12px;color:var(--ink-3);padding:8px 10px;background:var(--bg-2,var(--bg));border-radius:8px;">ยังไม่มีรูปหน้างาน · การแนบรูปยังไม่เปิดใช้ในระบบใหม่</div>';
+        body = '<div class="hr-nophoto" style="font-size:12px;color:var(--ink-3);padding:8px 10px;background:var(--bg-2,var(--bg));border-radius:8px;">ยังไม่มีรูปหน้างาน</div>';
       } else {
         var cellMin = m ? '96px' : '108px';
         body = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(' + cellMin + ',1fr));gap:6px;">' +
@@ -14409,6 +14409,8 @@ function _hideLineLoading() {
 (function () {
   var HR = window.HR_CONFIG || {}, API = HR.api || '/api', H = window.__HR;
   var photo = function (p) { return /^hrphoto:/.test(p || '') ? (HR.backend === 'cf' ? String(API).replace(/\/+$/, '') + '/photo/' + p.slice(8) : '') : (p || ''); };
+  /* รูปหน้างาน (20 พ.ย. 2569): หลังบ้านส่ง tpimg:tp/<uuid>.jpg → ไฟล์ใน R2 ของ Worker นี้ */
+  var tpimg = function (r) { ((r && r.photos) || []).forEach(function (x) { if (/^tpimg:/.test(x.thumbUrl || '')) x.thumbUrl = (HR.backend === 'cf' ? String(API).replace(/\/+$/, '') : '') + '/' + x.thumbUrl.slice(6); }); return r; };
   function hrCall(action, params) {
     if (!H.tok) return Promise.resolve({ ok: false, error: 'ยังไม่ได้เข้าสู่ระบบ' });
     return fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ fn: 'wtm', args: [H.tok, action, params || {}], _c: { a: 'planner' } }) })
@@ -14420,6 +14422,7 @@ function _hideLineLoading() {
   }
   apiGet = function (action, params) {
     return hrCall(action, params).then(function (r) {
+      if (action === 'taskPhotos') tpimg(r);
       if (action === 'bootstrap' && r && !r.error) { if (r.cu) H.cu = r.cu; if (r.config) { if (+r.config.holBonus) HOL_BONUS = +r.config.holBonus; if (+r.config.provBonus) PROV_BONUS = +r.config.provBonus; } (r.employees || []).forEach(function (e) { e.photo = photo(e.photo); }); }
       return r;
     });
@@ -14427,6 +14430,7 @@ function _hideLineLoading() {
   apiPost = function (action, data) { var d = Object.assign({}, data || {}); delete d._userCode; delete d._userName;
     return hrCall(action, d).then(function (r) {
       // บันทึกของตัวเอง → จำเลขรุ่นข้อมูลล่าสุด (WTM เดิมไม่จำ → 30 วิถัดไปขึ้น "มีข้อมูลใหม่จากผู้ใช้คนอื่น" ทั้งที่เป็นของเราเอง)
+      if (action === 'addTaskPhotos') tpimg(r);
       if (r && r.ok !== false && typeof _pollVersion !== 'undefined') hrCall('version').then(function (v) { if (v && v.version) _pollVersion = v.version; });
       return r; }); };
   var _lf = loadFromGAS;

@@ -5,7 +5,7 @@
  * สวิตช์ ตั้งค่า › ตารางงาน (liff_sched2): ปิด = หน้าเดิม (V.sched เดิม) ทุกอย่างเหมือนก่อน · ไฟล์นี้ไม่แก้หน้าอื่น
  * โหลดหลัง liff-v2.js · คลาส CSS ขึ้นต้น ts- (liff-sched.css) */
 (function(){
-const TSI={users2:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6"/>',tag:'<path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.3"/>',
+const TSI={cam:'<path d="M3 8h4l2-3h6l2 3h4v12H3z"/><circle cx="12" cy="13" r="3.5"/>',users2:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6"/>',tag:'<path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.3"/>',
   car:'<path d="M5 17h14M5 17a2 2 0 1 0 4 0M15 17a2 2 0 1 0 4 0M3 17v-6l2-5h11l3 5h2v6"/>',plus:'<path d="M12 5v14M5 12h14"/>',trash:'<path d="M4 7h16M9.5 7V4.5h5V7M6.5 7l1 13h9l1-13"/>',
   save:'<path d="M5 3h11l3 3v15H5z"/><path d="M8 3v5h7V3M8 21v-7h8v7"/>',eye:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
   note:'<path d="M5 4h14v16H5z"/><path d="M8.5 9h7M8.5 13h7M8.5 17h4"/>',brief:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8.5 7V5a1.5 1.5 0 0 1 1.5-1.5h4A1.5 1.5 0 0 1 15.5 5v2M3 12.5h18"/>',
@@ -65,7 +65,7 @@ function chips(d){if(TS.mode!=="all"||d.me.see==="self")return"";const day=TS.se
   return h}
 function card(t,day){const ppl=memOn(t,day),mine=mineOn(t,day),c=dcol(t.dept),dw=(t.daily||[]).length,nm=ppl.map(x=>(E(x)||{}).n||x).concat((t.daily||[]).map(w=>w.name||"รายวัน"));
   const veh=(t.veh||[]).map(v=>{const x=(TS.d.vehicles||[]).find(y=>y.id===v);return x?x.plate+(x.model?" · "+x.model:""):""}).filter(Boolean),vt=t.vplate||veh.join(", ");
-  return `<button type="button" class="ts-card" data-ts="open:${t.id}" style="--dc:${c}"><span class="ts-top">${t.pm?`<span class="ts-p ts-pm">${ti("tag")}${esc(t.pm)}</span>`:`<span class="ts-p ts-nopm">ไม่มีเลข PM</span>`}${t.shift==="night"?`<span class="ts-p ts-nt">${ti("moon")}กะกลางคืน</span>`:`<span class="ts-p ts-dy">${ti("sun")}กะกลางวัน</span>`}${mine&&TS.mode==="all"?`<span class="ts-p ts-me">${ti("chk")}งานของฉัน</span>`:""}<i class="ts-sp"></i>${ti("chevR")}</span>
+  return `<button type="button" class="ts-card" data-ts="open:${t.id}" style="--dc:${c}"><span class="ts-top">${t.pm?`<span class="ts-p ts-pm">${ti("tag")}${esc(t.pm)}</span>`:`<span class="ts-p ts-nopm">ไม่มีเลข PM</span>`}${t.shift==="night"?`<span class="ts-p ts-nt">${ti("moon")}กะกลางคืน</span>`:`<span class="ts-p ts-dy">${ti("sun")}กะกลางวัน</span>`}${mine&&TS.mode==="all"?`<span class="ts-p ts-me">${ti("chk")}งานของฉัน</span>`:""}${t.ph?`<span class="ts-p ts-phc">${ti("cam")}${t.ph}</span>`:""}<i class="ts-sp"></i>${ti("chevR")}</span>
   <b class="ts-tt">${esc(cleanTitle(t))}</b><span class="ts-dp"><i></i>${esc(t.dept||"")}${t.team?"  ·  ทีม "+esc(t.team):""}</span>
   <span class="ts-box"><span class="ts-r">${ti("cal","c-cal")}<small>วันที่</small><b>${rangeT(t)}</b></span>${vt?`<span class="ts-r">${ti("car","c-car")}<small>รถ</small><b>${esc(vt)}</b></span>`:""}${t.site?`<span class="ts-r">${ti("pin","c-pin")}<small>สถานที่</small><b>${esc(t.site)}</b></span>`:""}</span>
   ${ppl.length+dw?`<span class="ts-pp"><span class="ts-avs">${ppl.slice(0,4).map(x=>avH(x)).join("")}</span><span class="ts-nm">${esc(nm.join(", "))}</span><b>${ppl.length+dw} คน</b></span>`:`<span class="ts-pp"><span class="ts-nm">ยังไม่ได้จัดคน</span></span>`}</button>`}
@@ -87,7 +87,7 @@ function canAdd(){return TS.d&&TS.d.on&&!ro()&&(TS.d.canAdd||[]).length}
 function paintFab(){const box=$("#screen");if(!box)return;let f=$("#ts-fab");const want=cur()==="sched"&&on()&&canAdd()&&!(S.today&&S.today.me&&S.today.me.msg);
   if(!want){if(f)f.remove();return}if(!f){f=document.createElement("button");f.type="button";f.id="ts-fab";f.className="ts-fab";f.dataset.ts="new";f.innerHTML=ti("plus")+"เพิ่มงาน";box.appendChild(f)}const tb=$("#tabbar");f.style.bottom=((tb&&!tb.hidden?tb.offsetHeight:0)+18)+"px"}
 const PC0=paintChrome;paintChrome=function(){PC0.apply(this,arguments);paintFab()};
-const OE0=onEnter;onEnter=function(){OE0.apply(this,arguments);const n=cur().split(":")[0];if(n==="sched"){load(TS.d&&TS.d.on?1:0);startPoll()}};
+const OE0=onEnter;onEnter=function(){OE0.apply(this,arguments);const [n,a]=cur().split(":");if(n==="sched"){load(TS.d&&TS.d.on?1:0);startPoll()}if(n==="tsd")phLoad(a)};
 
 /* ---------- รายละเอียดงาน ---------- */
 TITLE.tsd="รายละเอียดงาน";NOTAB.push("tsd");
@@ -99,14 +99,38 @@ V.tsd=id=>{const t=task(id);if(!t)return band("รายละเอียดง
    ${t.site?`<button type="button" class="ts-nav" data-ts="map:${t.id}">${ti("nav")}นำทางไปสถานที่</button>`:""}</div>
   <div class="pad ts-pad"><span class="ts-sec">ข้อมูลงาน</span><div class="ts-info">${rows.map(r=>`<div class="ts-ir"><span class="ts-ic ${r[1]}">${ti(r[0])}</span><span><small>${r[2]}</small><b>${esc(r[3])}</b></span></div>`).join("")}</div>
   <span class="ts-sec">ผู้เข้างาน<em>${ppl.length+(t.daily||[]).length} คน${t.start!==t.end?" · วัน"+TH_D[DT(day).getDay()]+" "+DT(day).getDate():""}</em></span><div class="ts-info">${ppl.length?ppl.map(x=>{const e=E(x),lv=leaveOf(x,day);return `<div class="ts-ir">${avH(x,"lg")}<span><b>${esc(e?e.n:x)}</b><small>${esc(e?(e.p||e.t||""):"")}</small></span>${t.bor.indexOf(x)>=0?`<span class="ts-p ts-bor">ยืมตัว</span>`:""}${lv?`<span class="ts-p ts-lv">ลา</span>`:""}</div>`}).join(""):`<div class="ts-ir"><span><small>ยังไม่ได้จัดคน</small></span></div>`}${(t.daily||[]).map(w=>`<div class="ts-ir"><span class="ts-av lg">${esc(String(w.name||"?").slice(0,2))}</span><span><b>${esc(w.name||"ไม่ระบุ")}</b><small>จ้างรายวัน${w.days?" · "+w.days+" วัน":""}</small></span></div>`).join("")}</div>
+  ${phSec(t)}
   ${t.ed&&!ro()?`<div class="ts-dft"><button type="button" class="ts-del" data-ts="del:${t.id}">${ti("trash")}ลบ</button><button type="button" class="ts-edit" data-ts="edit:${t.id}">${ti("edit")}แก้ไขงาน</button></div>`:`<span class="cap" style="text-align:center">${ro()?"โหมดดูในมุมมอง · ดูอย่างเดียว":"แก้ไขงานนี้ได้เฉพาะคนที่มีสิทธิ์จัดตารางงานของทีมนี้"}</span>`}</div>`};
+
+/* ---------- รูปหน้างาน (20 พ.ย. 2569 · ไม่บังคับ GPS: มีพิกัดก็แนบ) ---------- */
+const PH_MAX=8;TS.ph={};
+const phUrl=u=>/^tpimg:/.test(u||"")?(/^https?:\/\//.test(API)?API.replace(/\/+$/,""):"")+"/"+u.slice(6):(u||"");
+function phLoad(id){if(!id||!TS.d||!TS.d.on)return;const P=TS.ph[id]=TS.ph[id]||{list:null};api("wtm","taskPhotos",{taskId:+id}).then(r=>{P.list=(r&&r.photos)||[];P.up=!!(r&&r.canUpload);P.mng=!!(r&&r.canManage);phCount(id);if(cur()==="tsd:"+id)repaint()}).catch(e=>{P.list=P.list||[];P.err=e.message;if(cur()==="tsd:"+id)repaint()})}
+function phCount(id){const t=task(id),P=TS.ph[id];if(t&&P&&P.list)t.ph=P.list.length}
+function phSec(t){const P=TS.ph[t.id]||{},L=P.list,can=P.up&&!ro()&&(!L||L.length<PH_MAX);
+  return `<span class="ts-sec">รูปหน้างาน<em>${L?L.length+" รูป":""}</em></span><div class="ts-info ts-phbox">${!L?`<div class="ts-phg"><span class="skel ts-phi"></span><span class="skel ts-phi"></span></div>`:`<div class="ts-phg">${L.map(x=>`<span class="ts-phi"><img src="${esc(phUrl(x.thumbUrl))}" alt="" loading="lazy" data-ts="phview:${t.id}:${esc(x.id)}">${(x.byMe||P.mng)&&!ro()?`<button type="button" data-ts="phdel:${t.id}:${esc(x.id)}" aria-label="ลบรูป">${ti("x")}</button>`:""}${x.lat!=null?`<i title="มีพิกัด">${ti("pin")}</i>`:""}</span>`).join("")}${can?`<button type="button" class="ts-phadd" data-ts="phadd:${t.id}"${P.busy?" disabled":""}>${P.busy?'<span class="spin dk"></span><span>'+esc(P.busy)+"</span>":ti("cam")+"<span>เพิ่มรูป / ถ่ายรูป</span>"}</button>`:""}</div>${!L.length&&!can?`<span class="cap">ยังไม่มีรูปหน้างาน</span>`:""}`}</div>`}
+/* ย่อรูปในเครื่องก่อนส่ง (ด้านยาว 1600 px · JPG 0.82 · แบบเดียวกับหน้าตารางงานหลังบ้าน) */
+function shrink(file){return new Promise((res,rej)=>{if(!file||!/^image\//.test(file.type||""))return rej(new Error("ไฟล์ไม่ใช่รูปภาพ"));const u=URL.createObjectURL(file),im=new Image();
+  im.onload=()=>{let w=im.naturalWidth,h=im.naturalHeight;const M=1600;if(w>M||h>M){if(w>=h){h=Math.round(h*M/w);w=M}else{w=Math.round(w*M/h);h=M}}const c=document.createElement("canvas");c.width=w;c.height=h;c.getContext("2d").drawImage(im,0,0,w,h);URL.revokeObjectURL(u);
+    const b=c.toDataURL("image/jpeg",.82);res({base64:b,mimeType:"image/jpeg",filename:String(file.name||"photo").replace(/\.[^.]+$/,"")+".jpg",url:b})};im.onerror=()=>{URL.revokeObjectURL(u);rej(new Error("เปิดรูปไม่สำเร็จ"))};im.src=u})}
+function pickPhotos(cb){let el=$("#ts-file");if(!el){el=document.createElement("input");el.type="file";el.id="ts-file";el.accept="image/*";el.multiple=true;el.hidden=true;document.body.appendChild(el)}
+  el.value="";el.onchange=()=>{const f=[...(el.files||[])];if(f.length)cb(f)};el.click()}
+/* พิกัดไม่บังคับ: ขอแบบเร็ว (ไม่เกิน 4 วิ) ได้ก็แนบ ไม่ได้ก็อัปต่อ */
+const quickGps=()=>new Promise(r=>{if(!navigator.geolocation)return r(null);let done=0;const end=v=>{if(!done){done=1;r(v)}};setTimeout(()=>end(null),4000);
+  try{navigator.geolocation.getCurrentPosition(p=>end({lat:p.coords.latitude,lng:p.coords.longitude,accuracy:p.coords.accuracy}),()=>end(null),{enableHighAccuracy:false,timeout:3500,maximumAge:120000})}catch(_){end(null)}});
+function phUpload(id,list){return quickGps().then(g=>api("wtm","addTaskPhotos",Object.assign({taskId:+id,files:list.map(x=>({base64:x.base64,mimeType:x.mimeType,filename:x.filename}))},g||{}))).then(r=>{if(!r||r.ok===false)throw new Error((r&&r.error)||"อัปโหลดไม่สำเร็จ");
+  const P=TS.ph[id]=TS.ph[id]||{list:[]};P.list=(P.list||[]).concat(r.photos||[]);phCount(id);return(r.photos||[]).length})}
+function phAddTo(id,files){const P=TS.ph[id]=TS.ph[id]||{list:[]},room=PH_MAX-(P.list||[]).length;if(room<=0)return toast("งานหนึ่งแนบรูปได้ไม่เกิน "+PH_MAX+" รูป");
+  if(files.length>room)toast("แนบได้อีก "+room+" รูป · เลือก "+room+" รูปแรก");P.busy="กำลังเตรียมรูป…";repaint();
+  Promise.all(files.slice(0,room).map(f=>shrink(f))).then(l=>{P.busy="กำลังอัปโหลด "+l.length+" รูป…";repaint();return phUpload(id,l)}).then(n=>{P.busy="";toast("อัปโหลดรูปแล้ว "+n+" รูป");if(cur()==="tsd:"+id)repaint()})
+  .catch(e=>{P.busy="";toast(e.message);if(cur()==="tsd:"+id)repaint()})}
 
 /* ---------- ฟอร์มสร้าง / แก้งาน ---------- */
 const F={};
 function openForm(t){const d=TS.d,ca=d.canAdd;let dept=t?t.dept:"",team=t?t.team:"";
   if(!t){const mine=ca.find(x=>x.d===d.me.dept&&x.t===d.me.team);const f0=mine||ca.find(x=>(!TS.dept||x.d===TS.dept)&&(!TS.team||x.t===TS.team))||ca[0];dept=f0.d;team=f0.t}
   Object.assign(F,{id:t?t.id:0,dept,team,start:t?t.start:TS.sel,end:t?t.end:TS.sel,shift:t?t.shift:"day",pm:t?t.pm:"",pmf:t?t.pmf:"",nopm:t?!t.pm:false,title:t&&!t.pm?t.title:"",site:t?t.site:"",
-    mem:t?t.mem.filter(c=>t.bor.indexOf(c)<0):[],bor:t?t.bor.slice():[],daily:t?(t.daily||[]).map(w=>Object.assign({},w)):[],veh:t?(t.veh||[]).slice():[],prov:t?t.prov:false,notes:t?t.notes:"",q:"",bq:"",err:""});
+    mem:t?t.mem.filter(c=>t.bor.indexOf(c)<0):[],bor:t?t.bor.slice():[],daily:t?(t.daily||[]).map(w=>Object.assign({},w)):[],veh:t?(t.veh||[]).slice():[],prov:t?t.prov:false,notes:t?t.notes:"",q:"",bq:"",err:"",ph:[]});
   if(d.me.pm&&!TS.pm&&!TS.pmErr)api("wtm","confirmedProjects").then(r=>{if(r&&r.ok!==false){TS.pm=r.rows||[]}else TS.pmErr=(r&&r.error)||"โหลดรายการ PM ไม่สำเร็จ"}).catch(e=>{TS.pmErr=e.message});
   $("#ov").innerHTML=`<div class="scrim ts-scrim" style="inset:0"></div><div class="ts-sh" id="ts-form" role="dialog" aria-modal="true" aria-label="${t?"แก้ไขงาน":"สร้างงานใหม่"}"><div class="ts-shh"><div class="grab"></div><div class="ts-shr"><div><h3>${t?"แก้ไขงาน":"สร้างงานใหม่"}</h3><small>ช่องที่มี * ต้องกรอก · บันทึกแล้วขึ้นในตารางงานของทุกคนทันที</small></div><button type="button" class="ts-x" data-ts="close" aria-label="ปิด">${ti("x")}</button></div>
    <div class="ts-stp">${[["1","งาน"],["2","ทีม & วัน"],["3","คน"],["4","อื่น ๆ"]].map((x,i)=>`<button type="button" data-ts="step:${i}" class="${i===0?"on":""}"><i></i>${x[0]} ${x[1]}</button>`).join("")}</div></div>
@@ -142,7 +166,8 @@ function paintForm(){const b=$("#ts-shb");if(!b)return;const st=b.scrollTop,d=TS
    <span class="ts-lb">รถ <small>(เลือกได้มากกว่า 1 คัน)</small></span><div class="ts-bw">${F.veh.map(v=>{const x=(d.vehicles||[]).find(y=>y.id===v);return `<span class="ts-vc">${ti("car")}${esc(x?x.plate+(x.model?" · "+x.model:""):v)}<button type="button" data-ts="unveh:${esc(v)}" aria-label="เอาออก">${ti("x")}</button></span>`}).join("")}
     <span class="ts-in sel sm">${ti("plus")}<select id="ts-veh"><option value="">เพิ่มรถ…</option>${(d.vehicles||[]).filter(v=>F.veh.indexOf(v.id)<0).map(v=>`<option value="${esc(v.id)}">${esc(v.plate+(v.model?" · "+v.model:""))}</option>`).join("")}</select></span></div>
    <label class="ts-pv"><span class="ts-ic c-car">${ti("route")}</span><span><b>งานต่างจังหวัด</b><small>ค่าเบี้ยตาม ตั้งค่า › ตารางงาน</small></span><input type="checkbox" id="ts-prov" ${F.prov?"checked":""}><i class="ts-sw"></i></label>
-   <label class="ts-f"><span>หมายเหตุ</span><span class="ts-in ta">${ti("note")}<textarea id="ts-notes" rows="2" placeholder="เช่น นัดเข้าพื้นที่ 19:00">${esc(F.notes)}</textarea></span></label></section>`;
+   <label class="ts-f"><span>หมายเหตุ</span><span class="ts-in ta">${ti("note")}<textarea id="ts-notes" rows="2" placeholder="เช่น นัดเข้าพื้นที่ 19:00">${esc(F.notes)}</textarea></span></label>
+   <span class="ts-lb">รูปหน้างาน <small>(ไม่เกิน ${PH_MAX} รูป)</small></span>${F.id?`<span class="cap">เพิ่ม / ลบรูปของงานนี้ได้ที่หน้ารายละเอียดงาน</span>`:`<div class="ts-phg">${F.ph.map((x,i)=>`<span class="ts-phi"><img src="${x.url}" alt=""><button type="button" data-ts="unph:${i}" aria-label="เอารูปออก">${ti("x")}</button></span>`).join("")}${F.ph.length<PH_MAX?`<button type="button" class="ts-phadd" data-ts="pickf">${ti("cam")}<span>เพิ่มรูป / ถ่ายรูป</span></button>`:""}</div>${F.ph.length?`<span class="cap">อัปโหลดให้หลังกดบันทึกงาน</span>`:""}`}</section>`;
   b.scrollTop=st;sumSync()}
 function pmSearch(q){if(TS.pmErr)return `<span class="cap" style="padding:10px 12px">${esc(TS.pmErr)} · พิมพ์เลข PM และ File Name เองได้</span>`;if(!TS.pm)return TS.d.me.pm?`<span class="cap" style="padding:10px 12px">กำลังโหลดรายการ PM…</span>`:"";
   q=q.trim().toLowerCase();if(!q)return"";const L=TS.pm.filter(r=>(r[0]+" "+r[1]).toLowerCase().indexOf(q)>=0).slice(0,8);
@@ -162,7 +187,8 @@ function save(btn){F.err="";const title=F.nopm?F.title.trim():(F.pm.trim()+" - "
   if(!t0){data.otHours=0;data.customer="";data.status="pending"}else data.id=t0.id;
   btn.disabled=true;const old=btn.innerHTML;btn.innerHTML='<span class="spin"></span>กำลังบันทึก…';
   api("wtm",t0?"updateTask":"createTask",data).then(r=>{if(!r||r.ok===false)throw new Error((r&&(r.error||r.msg))||"บันทึกไม่สำเร็จ");
-    closeForm();toast(t0?"บันทึกการแก้ไขแล้ว":"สร้างงานแล้ว");TS.sel=F.start;const m=monOf(F.start);if(m!==TS.from){TS.from=m}return load(1)})
+    const pend=!t0&&r.id&&F.ph.length?F.ph.slice():null;closeForm();toast(t0?"บันทึกการแก้ไขแล้ว":"สร้างงานแล้ว"+(pend?" · กำลังอัปโหลดรูป…":""));TS.sel=F.start;const m=monOf(F.start);if(m!==TS.from){TS.from=m}
+    if(pend)phUpload(r.id,pend).then(n=>{toast("อัปโหลดรูปแล้ว "+n+" รูป");load(1)}).catch(e=>toast("สร้างงานแล้ว แต่อัปโหลดรูปไม่สำเร็จ: "+e.message+" · เพิ่มรูปได้ที่หน้ารายละเอียดงาน"));return load(1)})
   .catch(e=>{btn.disabled=false;btn.innerHTML=old;F.err=e.message;paintForm();const b=$("#ts-shb");if(b)b.scrollTop=0})}
 
 /* ---------- ปุ่ม / ช่องกรอก ---------- */
@@ -177,6 +203,11 @@ document.addEventListener("click",e=>{const t=e.target.closest("[data-ts]");if(!
   if(k==="open"){go("tsd:"+v);return}
   if(k==="map"){const x=task(v);if(!x)return;const u="https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(x.site);try{if(window.liff&&liff.openWindow)liff.openWindow({url:u,external:true});else window.open(u,"_blank")}catch(_){window.open(u,"_blank")}return}
   if(k==="new"){if(canAdd())openForm(null);return}
+  if(k==="phadd"){pickPhotos(files=>phAddTo(+v,files));return}
+  if(k==="phview"){const P=TS.ph[r[0]];const x=P&&P.list.find(p=>p.id===r[1]);if(x)$("#ov").innerHTML=`<div class="ts-view" data-ts="phclose"><img src="${esc(phUrl(x.thumbUrl))}" alt=""><span>${esc(x.uploadedByName||"")} · ${esc(String(x.uploadedAt||"").slice(0,16).replace("T"," "))}</span><button type="button" data-ts="phclose" aria-label="ปิด">${ti("x")}</button></div>`;return}
+  if(k==="phclose"){$("#ov").innerHTML="";return}
+  if(k==="phdel"){const [tid,pid]=r;sheet(`<h3>ลบรูปนี้?</h3><span class="cap" style="text-align:center">ลบแล้วรูปหายจากงานนี้ทุกหน้า</span><button type="button" class="btn ts-delok" data-ts="phdelok:${tid}:${pid}">ลบรูป</button><button type="button" class="btn out" data-dclose>ยกเลิก</button>`);return}
+  if(k==="phdelok"){const [tid,pid]=r;t.disabled=true;api("wtm","deleteTaskPhoto",{id:pid}).then(x=>{if(!x||x.ok===false)throw new Error((x&&x.error)||"ลบไม่สำเร็จ");$("#ov").innerHTML="";const P=TS.ph[tid];if(P)P.list=P.list.filter(p=>p.id!==pid);phCount(tid);toast("ลบรูปแล้ว");if(cur()==="tsd:"+tid)repaint()}).catch(e=>{$("#ov").innerHTML="";toast(e.message)});return}
   if(k==="edit"){const x=task(v);if(x&&x.ed&&!ro())openForm(x);return}
   if(k==="del"){const x=task(v);if(!x)return;sheet(`<h3>ลบงานนี้?</h3><span class="cap" style="text-align:center">${esc(cleanTitle(x))}<br>${rangeT(x)} · ลบแล้วหายจากตารางงานของทุกคน</span><button type="button" class="btn ts-delok" data-ts="delok:${x.id}">ลบงาน</button><button type="button" class="btn out" data-dclose>ยกเลิก</button>`);return}
   if(k==="delok"){t.disabled=true;t.innerHTML='<span class="spin"></span>กำลังลบ…';api("wtm","deleteTask",{id:+v}).then(r=>{if(!r||r.ok===false)throw new Error((r&&r.error)||"ลบไม่สำเร็จ");$("#ov").innerHTML="";toast("ลบงานแล้ว");if(cur().split(":")[0]==="tsd"){back();if(history.state&&history.state.pm){S.skipPop=1;history.back()}}return load(1)}).catch(er=>{$("#ov").innerHTML="";toast(er.message)});return}
@@ -191,6 +222,8 @@ document.addEventListener("click",e=>{const t=e.target.closest("[data-ts]");if(!
   if(k==="addw"){F.daily.push({name:"",days:1,wage:""});paintForm();return}
   if(k==="delw"){F.daily.splice(+v,1);paintForm();return}
   if(k==="unveh"){F.veh=F.veh.filter(x=>x!==v);paintForm();return}
+  if(k==="pickf"){pickPhotos(files=>{Promise.all(files.slice(0,PH_MAX-F.ph.length).map(f=>shrink(f).catch(()=>null))).then(l=>{l.filter(Boolean).forEach(x=>F.ph.push(x));paintForm()})});return}
+  if(k==="unph"){F.ph.splice(+v,1);paintForm();return}
   if(k==="pmpick"){const row=(TS.pm||[]).find(x=>x[0]===v);if(row){F.pm=row[0];F.pmf=row[1]}F._pmq=null;paintForm();return}
 });
 /* ช่องพิมพ์: เก็บค่าลง F · ช่องค้นหาวาดรายการใหม่โดยคงเคอร์เซอร์ */
