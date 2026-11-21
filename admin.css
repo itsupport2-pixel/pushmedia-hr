@@ -2053,3 +2053,15 @@ button.svx-more{border:0;background:none;padding:0;font:inherit;font-size:13px;f
 .svx-ppt{font-size:11px;font-weight:700;fill:#fff}.svx-gz{font-size:12px;font-weight:700}.svx-pp{transform-box:fill-box}
 .svx-pin{font-size:13px;font-weight:700;fill:#fff}.svx-pin.d{fill:#334155}
 .svx-avt{font-size:11.5px;font-weight:700;fill:#B42318}.svx-avn{font-size:11.5px;font-weight:700;fill:#D46A6A}
+/* เคส Service ขั้น 2 · ลงตารางงานจากเคส (21 พ.ย. 2569 · Figma หน้า 59) */
+.svc-t th.svc-tc,.svc-t td.svc-tc{text-align:right;white-space:nowrap}
+.svc-lnk{background:#EAF1FE;color:#1D4ED8;font-weight:600}
+.svc-add{white-space:nowrap}
+.svc-job{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px;cursor:pointer;transition:background .15s}
+.svc-job:hover{background:#F8FAFC}
+.svc-ji{flex:none;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:#EAF1FE;color:#2563EB}
+.svc-jt{flex:1;min-width:0}.svc-jt b{display:block;font-size:13.5px}.svc-jt small{display:block;font-size:12.5px;color:var(--mut)}
+.svp-l{display:flex;flex-direction:column;gap:8px}
+.svp-r{display:grid;grid-template-columns:minmax(90px,1fr) auto;gap:4px 10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:12px}
+.svp-r select{grid-column:1/-1;height:38px;border-radius:10px;border:1px solid var(--line);padding:0 10px;background:#fff;font:inherit}
+.svp-x{display:inline-flex;justify-self:start;padding:3px 10px;border-radius:99px;background:#EEF2FF;color:#3730A3;font-weight:600;font-size:13px}
