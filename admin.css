@@ -2079,3 +2079,10 @@ button.svx-more{border:0;background:none;padding:0;font:inherit;font-size:13px;f
 .svp-q{width:100%!important;max-width:none!important;margin-bottom:6px}.svp-ls{max-height:300px;overflow:auto;display:flex;flex-direction:column;gap:2px}
 .svp-it{display:flex;align-items:center;gap:10px;width:100%;padding:7px 8px;border:0;border-radius:10px;background:none;font:inherit;text-align:left;cursor:pointer}
 .svp-it:hover{background:#F4F6FA}.svp-it.on{background:#EAF1FE}.svp-it .av{flex:none}.svp-em{padding:10px;font-size:13px}
+/* ตรวจข้อมูลเคสจาก Codex (21 พ.ย. 2569) */
+.cx-pb{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.cx-prb{margin-top:10px;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:13px;display:flex;flex-direction:column;gap:8px}
+.cx-prt{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.cx-prg{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}.cx-prg a{position:relative;width:96px;height:96px;border-radius:10px;overflow:hidden;background:#F4F4F5;display:grid;place-items:center}.cx-prg img{width:100%;height:100%;object-fit:cover}
+.cx-pv{position:absolute;left:6px;bottom:6px;font-size:11px;font-weight:600;color:#fff;background:rgba(0,0,0,.6);border-radius:6px;padding:1px 6px}
+.cx-prs pre{max-height:260px;overflow:auto;background:#F8FAFC;border-radius:8px;padding:10px;font-size:12px;white-space:pre-wrap}
