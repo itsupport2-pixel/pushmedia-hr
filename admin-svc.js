@@ -14,17 +14,17 @@ function svcF(){return A.svF||(A.svF={q:'',month:svcThisMon(),onsite:'',resp:'',
 function svcPh(){var D=A.svD,L=D&&D.last;return '<div class="ph" id="svc-ph"><div><h1>เคส Service</h1><div class="sub svc-sub"><img src="codex-logo.png" alt="">จาก Codex Assist'+(L?' · อัปเดตล่าสุด '+esc(fdt(L.at)):'')+(D?(D.auto?' · ดึงอัตโนมัติทุก 30 นาที (08:00–20:00)':' · ดึงอัตโนมัติปิดอยู่'):'')+'</div></div><span class="sp"></span>'+(D&&D.hr&&D.set?'<button class="btn pri" id="svc-pull">'+svcI('ref',16)+' ดึงเคสตอนนี้</button>':'')+'</div>'}
 function vSvc(){A.svPlay=1;var f=svcF(),D=A.svD,need=D?D.kpi.need:(A.d.me.sv&&A.d.me.sv.n)||0;
   return svcPh()+
-   '<div class="otab" role="tablist"><button role="tab" data-svt="all" aria-selected="'+(f.card!=='need')+'">เคสทั้งหมด</button><button role="tab" data-svt="need" aria-selected="'+(f.card==='need')+'">ต้องลงพื้นที่'+(need?' <span class="badge b-warn svc-tn">'+need+'</span>':'')+'</button></div>'+
+   '<div class="svx-tabs svx-tl" role="tablist" id="svc-tabs">'+svxTab('data-svt','all','เคสทั้งหมด',null,f.card!=='need')+svxTab('data-svt','need','ต้องลงพื้นที่',need,f.card==='need')+'</div>'+
    '<div id="svc-body"><div class="loading"><span class="spin"></span>กำลังโหลด…</div></div>'}
-function bSvc(){$$('[data-svt]').forEach(function(b){b.onclick=function(){var f=svcF(),c=b.dataset.svt==='need'?'need':'';if(f.card===c)return;f.card=c;f.page=1;svcSet()}});
+function bSvc(){$$('[data-svt]').forEach(function(b){b.onclick=function(){var f=svcF(),c=b.dataset.svt==='need'?'need':'';if(f.card===c)return;f.card=c;f.page=1;A.svTabFx=1;svcHead(1);svcLoad()}});
   svcPhBind();svcLoad()}
 function svcPhBind(){if($('#svc-pull'))$('#svc-pull').onclick=function(){var bt=this;ask({title:'ดึงเคสจาก Codex ตอนนี้?',desc:'ระบบจะเรียก Codex Assist (ระบบจริง) · เคสเดิมอัปเดตตาม Case ID ไม่เพิ่มซ้ำ',tone:'warn',buttons:[{k:'no',label:'ยกเลิก'},{k:'ok',label:'ดึงเคส',cls:'pri'}]}).then(function(k){if(k!=='ok')return;busy(bt,1);
     aCall('codexClaim').then(function(x){busy(bt,0);toast(x.ok?'ดึงแล้ว '+Number(x.n||0).toLocaleString('th-TH')+' เคส · เปลี่ยน '+Number(x.chg||0).toLocaleString('th-TH')+' เคส':'Codex ตอบ '+x.code+(x.msg?' · '+x.msg:''),!x.ok);svcLoad(1)}).catch(function(e){busy(bt,0);toast(e.message,1)})})}}
 /* ส่งตัวกรองไปหลังบ้าน · กันผลเก่าทับผลใหม่ (พิมพ์ค้นหาเร็ว) */
 function svcLoad(redraw){var f=svcF(),n=A.svN=(A.svN||0)+1;var b=$('#svc-body');if(b&&A.svD)b.classList.add('svc-busy');
   aCall('svList',{q:f.q,month:f.card==='need'?'':f.month,onsite:f.onsite,resp:f.resp,status:f.status,card:f.card,page:f.page}).then(function(d){if(n!==A.svN||A.view!=='svc')return;A.svD=d;if(A.d.me.sv)A.d.me.sv.n=d.kpi.need;if(redraw)return render();var ph=$('#svc-ph');if(ph){ph.outerHTML=svcPh();svcPhBind()}svcHead();svcDraw()}).catch(function(e){if(n!==A.svN)return;var x=$('#svc-body');if(x)x.innerHTML='<div class="alert">'+esc(e.message)+'</div>'})}
-function svcSet(){svcHead();svcLoad()}
-function svcHead(){var f=svcF();$$('[data-svt]').forEach(function(b){b.setAttribute('aria-selected',String((b.dataset.svt==='need')===(f.card==='need')))});var D=A.svD,t=$('.svc-tn');if(D&&t)t.textContent=D.kpi.need;var s=$('.side a[data-nav="svc"] .cnt');if(D&&s)s.textContent=D.kpi.need}
+function svcSet(){svcHead(1);svcLoad()}
+function svcHead(anim){var f=svcF();$$('[data-svt]').forEach(function(b){var on=(b.dataset.svt==='need')===(f.card==='need');b.setAttribute('aria-selected',String(on));b.classList.toggle('on',on)});svxInd($('#svc-tabs'),anim);var D=A.svD,t=$('[data-svt="need"] .svx-tc');if(D&&t)t.textContent=Number(D.kpi.need).toLocaleString('th-TH');var s=$('.side a[data-nav="svc"] .cnt');if(D&&s)s.textContent=D.kpi.need}
 function svcKpi(k,ic,cls,v,l,on){return '<button type="button" class="svc-k'+(cls?' '+cls:'')+(on?' on':'')+'" data-svk="'+k+'" aria-pressed="'+!!on+'"><span class="svc-ki">'+svcI(ic,21)+'</span><span class="svc-kt"><b>'+svxN(Number(v||0))+'</b><small>'+l+'</small></span></button>'}
 function svcDraw(){var b=$('#svc-body'),D=A.svD,f=svcF();if(!b||!D)return;b.classList.remove('svc-busy');var qa=document.activeElement&&document.activeElement.id==='svc-q'?[document.activeElement.selectionStart,document.activeElement.selectionEnd]:null;
   if(!D.count)return b.innerHTML='<section class="card state"><b>ยังไม่มีเคส</b><span>'+(D.set?'กด ดึงเคสตอนนี้ หรือรอดึงอัตโนมัติ':'ยังไม่ได้เชื่อม Codex Assist · ตั้งค่าที่ ตั้งค่า › Integration')+'</span></section>';
@@ -47,7 +47,7 @@ function svcDraw(){var b=$('#svc-body'),D=A.svD,f=svcF();if(!b||!D)return;b.clas
   if($('#svc-pv'))$('#svc-pv').onclick=function(){f.page--;svcLoad();scrollTo(0,0)};if($('#svc-nx'))$('#svc-nx').onclick=function(){f.page++;svcLoad();scrollTo(0,0)};
   $$('[data-svc]').forEach(function(tr){tr.onclick=function(){svcOpen(tr.dataset.svc)};tr.onkeydown=function(e){if(e.key==='Enter')svcOpen(tr.dataset.svc)}});
   if(qa){var qi=$('#svc-q');qi.focus();try{qi.setSelectionRange(qa[0],qa[1])}catch(e){}}
-  if(A.svPlay){A.svPlay=0;svcFx(b);svxCount(b)}}   // พิมพ์ค้นหาต่อได้ระหว่างผลมาถึง
+  if(A.svPlay||A.svTabFx){A.svPlay=0;A.svTabFx=0;svcFx(b);svxCount(b)}svxInd($('#svc-tabs'))}   // พิมพ์ค้นหาต่อได้ระหว่างผลมาถึง
 function svcRow(ic,cls,l,v){return '<div class="svc-dr"><span class="svc-di '+cls+'">'+svcI(ic,17)+'</span><span><small>'+l+'</small><b>'+v+'</b></span></div>'}
 function svcOpen(id){drawer('รายละเอียดเคส','<div class="loading"><span class="spin"></span>กำลังโหลด…</div>');
   aCall('svDetail',id).then(function(x){if(!$('#ov .drw'))return;var media=x.media||[],skip=/^(ticket_no|case_id|created_at|customer|subject|location|status|time_resolution|assign_id)$/i;
@@ -82,6 +82,12 @@ function svcFx(root){if(!root||!Element.prototype.animate||matchMedia('(prefers-
   q('.svr-ch .svr-vl').forEach(function(e){e.animate([{opacity:0},{opacity:1}],{duration:400,delay:1300,fill:'backwards'})});
   q('.svr-bar i').forEach(function(e,i){e.style.transformOrigin='left';e.animate([{transform:'scaleX(0)'},{transform:'none'}],{duration:1100,delay:700+40*i,easing:E,fill:'backwards'})})}
 
+/* แท็บ 2 เมนู (21 พ.ย. 2569 ผู้ใช้: ใส่ไอคอน · เน้นสีให้เห็นง่าย · กดเปลี่ยนต้องมีเอฟเฟ็กต์) · ไอคอนแบบเดียวกับแท็บหน้าอื่น (tbi · tbiSvg) · เส้นใต้เลื่อนตามแท็บ (สีของแท็บนั้น) */
+var SVX_TABI={all:['list','#2F6FED'],need:['pin','#D97309'],people:['user','#2F6FED'],cust:['chart','#7A4FD6'],cancel:['x','#C0392B'],open:['clockx','#D97309']};
+function svxTab(attr,k,label,n,on){var c=SVX_TABI[k]||['list','#52525B'];return '<button role="tab" '+attr+'="'+k+'" class="svx-tb2'+(on?' on':'')+'" aria-selected="'+!!on+'" style="--tc:'+c[1]+'"><span class="tbi">'+(typeof tbiSvg==='function'?tbiSvg(c[0]):'')+'</span><span>'+label+'</span>'+(n==null?'':'<em class="svx-tc">'+svxN(n)+'</em>')+'</button>'}
+function svxInd(box,anim){if(!box)return;var on=box.querySelector('.svx-tb2.on'),ind=box.querySelector('.svx-ind');if(!ind){ind=document.createElement('span');ind.className='svx-ind';box.appendChild(ind)}if(!on){ind.style.opacity=0;return}
+  if(!anim)ind.style.transition='none';ind.style.opacity=1;ind.style.width=on.offsetWidth+'px';ind.style.transform='translateX('+on.offsetLeft+'px)';ind.style.background=getComputedStyle(on).getPropertyValue('--tc');if(!anim){ind.offsetWidth;ind.style.transition=''}
+  var ic=on.querySelector('.tbi');if(anim&&ic&&ic.animate&&!matchMedia('(prefers-reduced-motion: reduce)').matches)ic.animate([{transform:'scale(.6) rotate(-12deg)'},{transform:'scale(1.12)'},{transform:'none'}],{duration:420,easing:'cubic-bezier(.2,.8,.2,1)'})}
 /* ตัวเลขไล่จาก 0 (21 พ.ย. 2569 ผู้ใช้: เอฟเฟ็กต์ทั้ง 2 เมนู ตัวเลขค่อย ๆ ไล่ระดับ) · ใช้ <span class="svx-n" data-n data-d> · เล่นเฉพาะตอนเข้าหน้า/เปลี่ยนแท็บ */
 function svxN(v,d,suf){if(v==null||v==='')return '—';d=d||0;var t=Number(v).toLocaleString('th-TH',{minimumFractionDigits:d,maximumFractionDigits:d});return '<span class="svx-n" data-n="'+v+'" data-d="'+d+'">'+t+'</span>'+(suf||'')}
 function svxCount(root){if(!root||matchMedia('(prefers-reduced-motion: reduce)').matches||!window.requestAnimationFrame)return;var L=[].slice.call(root.querySelectorAll('.svx-n'));
@@ -153,10 +159,10 @@ function svcrDraw(){var d=A.svrD,b=$('#svr-body');if(!b||!d)return;b.classList.r
    '<section class="svx-c"><div class="svx-ch"><h3>Weekly Trend · 26 สัปดาห์</h3>'+svxTip('เส้นเทา = เคสเข้าต่อสัปดาห์ · เส้นฟ้า = เคสที่ยังไม่ปิด ณ ปลายสัปดาห์ · เวลาปิด = เวลาแจ้ง + Time to Resolution จาก Codex')+'</div><div class="svx-lg"><span><i class="ln" style="background:#A1A1AA"></i>Cases in</span><span><i class="ln" style="background:#2563EB"></i>Backlog</span></div>'+svxTrend(d.trend)+'</section></div>';
   h+='<div class="svx-ins" id="svx-ins">'+(d.insights.length?d.insights.map(function(x){return '<div class="svx-ir"><i'+(x.tone==='bad'?'':' class="n"')+'></i><span>'+esc(x.text)+'</span><a href="javascript:void 0" role="button" data-svxgo="'+x.go+'">'+esc(x.label)+'</a></div>'}).join(''):'<div class="svx-ir"><i class="n"></i><span>ไม่มีประเด็นที่ต้องจับตาในช่วงนี้</span></div>')+'</div>';
   var T=[['people','ผู้รับผิดชอบ',d.people.length],['cust','ลูกค้า (Pareto)',d.cust.length],['cancel','เคสยกเลิก',d.cancel.n],['open','เคสค้างเกิน 2 วัน',d.openN]];
-  h+='<div class="svx-t" id="svx-tabs"><div class="svx-tabs" role="tablist">'+T.map(function(x){return '<button role="tab" data-svxt="'+x[0]+'" class="'+(tab===x[0]?'on':'')+'" aria-selected="'+(tab===x[0])+'">'+x[1]+' <em>'+svxN(x[2])+'</em></button>'}).join('')+'</div><div class="svx-pn" id="svx-pn"></div></div>';
+  h+='<div class="svx-t" id="svx-tabs"><div class="svx-tabs svx-tl" role="tablist" id="svx-tl">'+T.map(function(x){return svxTab('data-svxt',x[0],x[1],x[2],tab===x[0])}).join('')+'</div><div class="svx-pn" id="svx-pn"></div></div>';
   b.innerHTML=h;svxPanel();
   var go2=function(m){A.svrM=m;svcrLoad()};$('#svr-ms').onchange=function(){go2(this.value)};$('#svr-pv').onclick=function(){go2(ms[mi+1])};$('#svr-nx').onclick=function(){go2(ms[mi-1])};
-  $$('[data-svxt]',b).forEach(function(x){x.onclick=function(){A.svxTab=x.dataset.svxt;$$('[data-svxt]',b).forEach(function(y){var on=y===x;y.classList.toggle('on',on);y.setAttribute('aria-selected',on)});svxPanel(1)}});
+  $$('[data-svxt]',b).forEach(function(x){x.onclick=function(){A.svxTab=x.dataset.svxt;$$('[data-svxt]',b).forEach(function(y){var on=y===x;y.classList.toggle('on',on);y.setAttribute('aria-selected',on)});svxInd($('#svx-tl'),1);svxPanel(1)}});svxInd($('#svx-tl'));
   $$('[data-svxgo]',b).forEach(function(x){x.onclick=function(){var g=x.dataset.svxgo;if(g==='aging'){svxScroll($('#svx-aging'));return}A.svxTab=g;var t=$('[data-svxt="'+g+'"]');if(t)t.click();svxScroll($('#svx-tabs'))}});
   if(A.svrPlay){A.svrPlay=0;svxFx(b);svxCount(b)}}
 function svxScroll(el){if(!el)return;el.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});if(el.animate)el.animate([{boxShadow:'0 0 0 3px rgba(37,99,235,.35)'},{boxShadow:'0 0 0 0 rgba(37,99,235,0)'}],{duration:1400,delay:350,easing:'ease-out'})}

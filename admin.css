@@ -2037,3 +2037,14 @@ button.svx-more{border:0;background:none;padding:0;font:inherit;font-size:13px;f
 .svx-pv{font-size:14px;font-weight:700;fill:#27272A;paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round}
 .svx-psvg .svx-vl{paint-order:stroke;stroke:#fff;stroke-width:4px}
 .svx-n{font-variant-numeric:tabular-nums}
+
+/* แท็บเคส Service / รายงาน (21 พ.ย. 2569): ไอคอนสี · ตัวเลขสีตามแท็บ · เส้นใต้เลื่อนตาม */
+.svx-tl{position:relative;display:flex;gap:4px;border-bottom:1px solid var(--line)}#svc-tabs{margin-bottom:14px;padding:0 2px}
+.svx-tl .svx-tb2{position:relative;border:0;background:none;padding:12px 14px 11px;font:inherit;font-size:14px;font-weight:500;color:var(--mut);display:inline-flex;align-items:center;gap:8px;border-bottom:0;cursor:pointer;transition:color .2s}
+.svx-tl .svx-tb2:hover{color:#27272A}.svx-tl .svx-tb2.on{color:#18181B;font-weight:600}
+.svx-tl .svx-tb2 .tbi{width:22px;height:22px;border-radius:7px;transition:filter .2s,opacity .2s}.svx-tl .svx-tb2 .tbi svg{width:14px;height:14px}.svx-tl .svx-tb2:not(.on) .tbi{filter:saturate(.55);opacity:.85}
+.svx-tl .svx-tc{font-style:normal;font-size:12px;font-weight:700;min-width:22px;padding:1px 8px;border-radius:99px;text-align:center;background:color-mix(in srgb,var(--tc) 12%,#fff);color:var(--tc);transition:background .2s,color .2s}
+.svx-tl .svx-tb2.on .svx-tc{background:var(--tc);color:#fff}
+.svx-tl .svx-tb2,.svx-tl .svx-tb2.on{border-bottom:0}
+.svx-ind{position:absolute;left:0;bottom:-1px;height:2.5px;border-radius:2px 2px 0 0;width:0;transition:transform .38s cubic-bezier(.2,.8,.2,1),width .38s cubic-bezier(.2,.8,.2,1),background .3s;pointer-events:none}
+.svx-t .svx-tabs.svx-tl{padding:0 16px}
