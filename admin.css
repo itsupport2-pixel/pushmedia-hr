@@ -2070,3 +2070,12 @@ button.svx-more{border:0;background:none;padding:0;font:inherit;font-size:13px;f
 .svx-sci{display:grid;place-items:center;width:22px;height:22px;border-radius:99px;background:var(--sb);color:var(--sc);flex:none}
 .svx-scn{min-width:24px;height:22px;padding:0 7px;border-radius:99px;background:#fff;color:var(--sc);font-weight:700;font-size:12px;display:inline-grid;place-items:center}
 .svx-stc.on{background:#18181B;color:#fff}.svx-stc.on .svx-sci{background:var(--sb)}.svx-stc.on .svx-scn{background:var(--sb);color:var(--sc)}
+/* จับคู่พนักงาน: ช่องค้นหา + รูป (21 พ.ย. 2569) */
+.svp-cur{grid-column:1/-1;display:flex;align-items:center;gap:10px;width:100%;min-height:48px;padding:6px 12px 6px 8px;border:1px solid var(--line);border-radius:12px;background:#fff;font:inherit;text-align:left;cursor:pointer;color:var(--mut)}
+.svp-cur:hover{border-color:#93B4F8;background:#F8FAFF}.svp-cur .sp{flex:1}
+.svp-nm{display:flex;flex-direction:column;min-width:0;line-height:1.3}.svp-nm b{font-weight:600;color:var(--tx,#141414);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.svp-nm small{font-size:12px;color:var(--mut)}
+.svp-ph{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#F4F4F5;color:#A1A1AA;font-weight:700;flex:none}
+.svp-pk{grid-column:1/-1;border:1px solid var(--line);border-radius:12px;padding:8px;background:#fff;box-shadow:0 10px 24px rgba(15,23,42,.08)}
+.svp-q{width:100%!important;max-width:none!important;margin-bottom:6px}.svp-ls{max-height:300px;overflow:auto;display:flex;flex-direction:column;gap:2px}
+.svp-it{display:flex;align-items:center;gap:10px;width:100%;padding:7px 8px;border:0;border-radius:10px;background:none;font:inherit;text-align:left;cursor:pointer}
+.svp-it:hover{background:#F4F6FA}.svp-it.on{background:#EAF1FE}.svp-it .av{flex:none}.svp-em{padding:10px;font-size:13px}

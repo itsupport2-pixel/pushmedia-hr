@@ -87,12 +87,24 @@ function svcToSched(x){var c={id:x.case_id,s:x.subject||'',cu:x.customer||'',loc
 /* ตั้งค่า › ตารางงาน › จับคู่พนักงาน Codex ↔ HR (ผู้ดูแลจับคู่เอง · ใช้แสดงชื่อผู้รับเคสเท่านั้น) */
 function svcPeopleOpen(){drawer('จับคู่พนักงาน Codex ↔ HR','<div class="loading"><span class="spin"></span>กำลังโหลด…</div>','<button class="btn" id="svp-x">ยกเลิก</button><button class="btn pri" id="svp-s">บันทึกการจับคู่</button>');
   $('#svp-x').onclick=closeD;
-  aCall('svPeople').then(function(r){var dv=$('#ov .drw .cb');if(!dv)return;var E=r.emps||[],cur={};(r.names||[]).forEach(function(x){cur[x.x]=x.c});
-    var opts=function(sel){return '<option value="">— ยังไม่จับคู่ (แสดงชื่อตาม Codex) —</option>'+E.map(function(e){return '<option value="'+esc(e.c)+'"'+(e.c===sel?' selected':'')+'>'+esc(e.n)+(e.k?' ('+esc(e.k)+')':'')+' · '+esc(e.c)+'</option>'}).join('')};
-    var done=(r.names||[]).filter(function(x){return x.c}).length;
-    dv.innerHTML='<p class="muted" style="margin-top:0">ชื่อผู้รับเคสใน Codex ทั้งหมดจากเคสที่ดึงมา · เลือกว่าเป็นพนักงานคนไหน · ใช้แสดงชื่อ "ผู้รับเคส" ในหน้าเคสและตารางงาน · <b>ไม่ใช้เลือกคนไปหน้างาน</b> · จับคู่แล้ว '+done+' / '+(r.names||[]).length+'</p>'+
-     ((r.names||[]).length?'<div class="svp-l">'+r.names.map(function(x,i){return '<div class="svp-r"><span class="svp-x">'+esc(x.x)+'</span><small class="faint">'+x.mon+' เคสเดือนนี้ · ทั้งหมด '+x.all+'</small><select data-svp="'+i+'" aria-label="พนักงานของ '+esc(x.x)+'">'+opts(x.c)+'</select></div>'}).join('')+'</div>':'<div class="svc-nj faint">ยังไม่มีชื่อผู้รับเคสจาก Codex</div>');
-    $('#svp-s').onclick=function(){var m={},n=0;$$('[data-svp]').forEach(function(s){var x=r.names[+s.dataset.svp];if((cur[x.x]||'')!==s.value){m[x.x]=s.value;n++}});if(!n){closeD();return}
+  aCall('svPeople').then(function(r){var dv=$('#ov .drw .cb');if(!dv)return;var E=r.emps||[],N=r.names||[],EC={},cur={},sel={};E.forEach(function(e){EC[e.c]=e});N.forEach(function(x){cur[x.x]=x.c;sel[x.x]=x.c});
+    /* 21 พ.ย. 2569 ผู้ใช้: พิมพ์ค้นหาชื่อได้ + มีรูปพนักงาน (แทนช่องเลือกยาว) */
+    var avH=function(e,s){return e?(PH[e.i]?'<img class="av" data-av="'+esc(e.i)+'" src="'+esc(PH[e.i])+'" alt="" style="width:'+s+'px;height:'+s+'px;object-fit:cover">':'<span class="av" data-av="'+esc(e.i)+'" style="width:'+s+'px;height:'+s+'px;font-size:'+Math.round(s/2.6)+'px">'+esc(String(e.k||e.n).replace(/^[^0-9A-Za-z฀-๿]+/,'').slice(0,2))+'</span>'):'<span class="svp-ph">?</span>'};
+    var curH=function(i){var x=N[i],e=EC[sel[x.x]];return e?avH(e,30)+'<span class="svp-nm"><b>'+esc(e.n)+(e.k?' ('+esc(e.k)+')':'')+'</b><small>รหัส '+esc(e.c)+'</small></span>':avH(null)+'<span class="svp-nm"><b class="faint">ยังไม่จับคู่</b><small>แสดงชื่อตาม Codex</small></span>'};
+    var done=function(){return N.filter(function(x){return sel[x.x]}).length};
+    dv.innerHTML='<p class="muted" style="margin-top:0">ชื่อผู้รับเคสใน Codex ทั้งหมดจากเคสที่ดึงมา · เลือกว่าเป็นพนักงานคนไหน · ใช้แสดงชื่อ "ผู้รับเคส" ในหน้าเคสและตารางงาน · <b>ไม่ใช้เลือกคนไปหน้างาน</b> · จับคู่แล้ว <b id="svp-n">'+done()+'</b> / '+N.length+'</p>'+
+     (N.length?'<div class="svp-l">'+N.map(function(x,i){return '<div class="svp-r"><span class="svp-x">'+esc(x.x)+'</span><small class="faint">'+x.mon+' เคสเดือนนี้ · ทั้งหมด '+x.all+'</small><button type="button" class="svp-cur" data-svp="'+i+'" aria-label="เลือกพนักงานของ '+esc(x.x)+'">'+curH(i)+'<span class="sp"></span>'+svcI('search',16)+'</button><div class="svp-pk" id="svp-pk'+i+'" hidden></div></div>'}).join('')+'</div>':'<div class="svc-nj faint">ยังไม่มีชื่อผู้รับเคสจาก Codex</div>');
+    var close=function(){$$('.svp-pk').forEach(function(p){p.hidden=true;p.innerHTML=''})};
+    var open=function(i){close();var pk=$('#svp-pk'+i),x=N[i];pk.hidden=false;pk.innerHTML='<label class="svc-q svp-q">'+svcI('search',16)+'<input type="search" placeholder="พิมพ์ชื่อ ชื่อเล่น หรือรหัสพนักงาน…" aria-label="ค้นหาพนักงาน"></label><div class="svp-ls"></div>';
+      var q=pk.querySelector('input'),ls=pk.querySelector('.svp-ls');
+      var draw=function(){var t=q.value.trim().toLowerCase(),L=E.filter(function(e){return !t||(e.n+' '+e.k+' '+e.c).toLowerCase().indexOf(t)>=0}).slice(0,40);
+        ls.innerHTML='<button type="button" class="svp-it'+(!sel[x.x]?' on':'')+'" data-c="">'+avH(null)+'<span class="svp-nm"><b>ยังไม่จับคู่</b><small>แสดงชื่อตาม Codex</small></span></button>'+L.map(function(e){return '<button type="button" class="svp-it'+(sel[x.x]===e.c?' on':'')+'" data-c="'+esc(e.c)+'">'+avH(e,32)+'<span class="svp-nm"><b>'+esc(e.n)+(e.k?' ('+esc(e.k)+')':'')+'</b><small>รหัส '+esc(e.c)+'</small></span></button>'}).join('')+(L.length?'':'<div class="faint svp-em">ไม่พบพนักงาน</div>');
+        $$('.svp-it',ls).forEach(function(b){b.onclick=function(){sel[x.x]=b.dataset.c;$('[data-svp="'+i+'"]').innerHTML=curH(i)+'<span class="sp"></span>'+svcI('search',16);$('#svp-n').textContent=done();close();if(typeof loadPhotos==='function')loadPhotos()}});
+        if(typeof loadPhotos==='function')loadPhotos()};
+      q.oninput=draw;q.onkeydown=function(e){if(e.key==='Escape')close()};draw();q.focus()};
+    $$('[data-svp]').forEach(function(b){b.onclick=function(){var pk=$('#svp-pk'+b.dataset.svp);if(pk&&!pk.hidden){close();return}open(+b.dataset.svp)}});
+    if(typeof loadPhotos==='function')loadPhotos();
+    $('#svp-s').onclick=function(){var m={},n=0;N.forEach(function(x){if((cur[x.x]||'')!==(sel[x.x]||'')){m[x.x]=sel[x.x]||'';n++}});if(!n){closeD();return}
       var bt=this;bt.disabled=true;aCall('svPeopleSave',m).then(function(o){closeD();toast('บันทึกการจับคู่แล้ว '+o.changed+' ชื่อ');if(A.view==='svc')svcLoad()}).catch(function(e){bt.disabled=false;toast(e.message,'er')})}
   }).catch(function(e){var dv=$('#ov .drw .cb');if(dv)dv.innerHTML='<div class="alert">'+esc(e.message)+'</div>'})}
 

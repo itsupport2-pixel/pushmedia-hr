@@ -1426,6 +1426,18 @@ body,button,input,select,textarea{font-family:'IBM Plex Sans Thai',system-ui,san
 .hr-md label[id$="-lbl"]:has(input:checked){background:#141414!important;border-color:#141414!important;color:#fff}
 .hr-md label[id$="-lbl"]:has(input:checked) *{color:#fff!important}.hr-md label[id$="-lbl"] input{accent-color:#fff!important;order:2;margin-left:auto}
 .hr-prov{height:auto!important;padding:12px 16px!important;border:1px solid #E8E8E8!important;border-radius:12px!important}
+/* 21 พ.ย. 2569 ผู้ใช้: กะการทำงานดำเกินไป → กลางวัน = เหลืองอ่อน · กลางคืน = ม่วงครามอ่อน */
+.hr-md label[id$="-shift-day-lbl"]:has(input:checked){background:#FFF8E6!important;border-color:#F2C35B!important;box-shadow:0 0 0 3px rgba(242,195,91,.18)}
+.hr-md label[id$="-shift-day-lbl"]:has(input:checked) *{color:#7A4B00!important}
+.hr-md label[id$="-shift-night-lbl"]:has(input:checked){background:#EEF0FB!important;border-color:#8E97D6!important;box-shadow:0 0 0 3px rgba(142,151,214,.18)}
+.hr-md label[id$="-shift-night-lbl"]:has(input:checked) *{color:#2E3A87!important}
+.hr-md label[id$="-shift-day-lbl"] input{accent-color:#D97706!important}.hr-md label[id$="-shift-night-lbl"] input{accent-color:#4F46E5!important}
+.hr-md label[id$="-shift-day-lbl"]:not(:has(input:checked)):hover,.hr-md label[id$="-shift-night-lbl"]:not(:has(input:checked)):hover{background:#FAFAFA!important}
+/* กล่องเพิ่มรูปหน้างาน: เส้นประ + ไอคอนในวงกลม (21 พ.ย. 2569 ผู้ใช้ขอให้สวยขึ้น) */
+.hr-md .hr-up{background:#fff!important;border:1.5px dashed #D4D4D8!important;border-radius:14px!important;padding:6px!important;transition:background .15s,border-color .15s}
+.hr-md .hr-up:hover{background:#F8FAFF!important;border-color:#93B4F8!important}
+.hr-md .hr-up>div:first-of-type button{height:72px!important;gap:12px!important;font-size:14px!important;font-weight:600!important;color:#141414!important}
+.hr-md .hr-up>div:first-of-type button svg{width:20px;height:20px;padding:10px;box-sizing:content-box;border-radius:12px;background:#EAF1FE;color:#2563EB;flex:none}
 .hr-prov label{display:flex;flex-direction:column;gap:1px;flex:1}.hr-prov label b{font-size:14px;color:#141414}.hr-prov label small{font-size:12px;color:#8C8C8C}
 .hr-sw{appearance:none;-webkit-appearance:none;width:40px!important;height:22px!important;border-radius:99px;background:#DADADA;position:relative;cursor:pointer;flex:0 0 40px;transition:.15s}
 .hr-sw:after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.15s}.hr-sw:checked{background:#141414}.hr-sw:checked:after{left:21px}
@@ -8033,6 +8045,7 @@ function _rlSearchExt(q, taskId, slotIdx) {
     if (!(e.status==1||e.status==null||e.status===undefined)) return false;
     if (teamCodes.indexOf(e.code)>=0) return false;
     if (window._rlExtPicked && window._rlExtPicked[e.code]) return false;
+    if (!_schedTeamOk(e)) return false;
     var hay = (e.name+' '+e.nickname+' '+e.position+' '+e.team+' '+e.dept).toLowerCase();
     return hay.indexOf(q)>=0;
   }).slice(0,8);
@@ -10321,6 +10334,12 @@ function crSetLead(code) {
 
 var _crExtSelected = {}; 
 
+/* 21 พ.ย. 2569 ผู้ใช้: รายชื่อยืมตัวแสดงเฉพาะพนักงานในทีมที่เปิดแสดงในตารางงาน (ตั้งค่า › ทีมที่แสดงในตารางงาน) · ยังไม่ตั้งค่าเลย = แสดงทุกคนเหมือนเดิม */
+function _schedTeamOk(e) {
+  var S = DB.schedTeams || {}, ks = Object.keys(S).filter(function (k) { return S[k] && S[k].length; }); if (!ks.length) return true;
+  var d = String(e.dept || '').trim().toLowerCase(), t = String(e.team || '').trim().toLowerCase();
+  return ks.some(function (k) { return String(k).trim().toLowerCase() === d && S[k].some(function (x) { return String(x).trim().toLowerCase() === t; }); });
+}
 function crSearchExt(q) {
   var tname = document.getElementById('f-tm')?.value || '';
   var dname = document.getElementById('f-dep')?.value || '';
@@ -10337,6 +10356,7 @@ function crSearchExt(q) {
     if (!(e.status==1||e.status==null||e.status===undefined)) return false;
     if (teamCodes.indexOf(e.code)>=0) return false;
     if (_crExtSelected[e.code]) return false;
+    if (!_schedTeamOk(e)) return false;
     var haystack = (e.name+' '+e.nickname+' '+e.position+' '+e.team+' '+e.dept).toLowerCase();
     return haystack.indexOf(q)>=0;
   }).slice(0,10);
