@@ -2027,3 +2027,13 @@ button.svx-more{border:0;background:none;padding:0;font:inherit;font-size:13px;f
 .svx-ir a:focus-visible{outline:2px solid #2563EB;outline-offset:2px}
 @media (max-width:1100px){.svx-ks{grid-template-columns:repeat(3,minmax(0,1fr))}.svx-g2{grid-template-columns:1fr}.svx-ph{flex-wrap:wrap}}
 @media (max-width:640px){.svx-ks{grid-template-columns:1fr 1fr}.svx-hl{font-size:19px}.svx-kv{font-size:24px}.svx-ir{flex-wrap:wrap}.svx-cg{grid-template-columns:1fr}.svx-cr{grid-template-columns:1fr 1fr 40px}.svx-cr small{display:none}.svx-tabs{overflow-x:auto}.svx-tabs button{white-space:nowrap}}
+
+/* รายงาน Service รอบ 2 (21 พ.ย. 2569 ผู้ใช้: ตัวเลขไล่ระดับ · กราฟชี้แล้วมีข้อมูล · Pareto 3 มิติ) */
+.svx-tt{position:fixed;left:0;top:0;z-index:9999;pointer-events:none;background:#18181B;color:#fff;font-size:13px;line-height:1.55;padding:10px 12px;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.22);min-width:160px;max-width:280px;opacity:0;transition:opacity .12s ease;will-change:transform}
+.svx-tt.on{opacity:1}.svx-tt b{font-weight:600}.svx-tt>b:first-child{display:block;margin-bottom:4px;font-size:13.5px}.svx-tt div{display:flex;align-items:center;gap:6px;color:#E4E4E7}.svx-tt i{display:inline-block;width:8px;height:8px;border-radius:2px}
+.svx-hv{cursor:pointer}.svx-gl{stroke:#2563EB;stroke-width:1;stroke-dasharray:3 3;opacity:0}.svx-gd{fill:#2563EB;stroke:#fff;stroke-width:2;opacity:0}.svx-gd.g{fill:#71717A}.svx-hv:hover .svx-gl,.svx-hv:hover .svx-gd{opacity:1}
+.svx-hb{fill:#2563EB;opacity:0;transition:opacity .15s}.svx-hv:hover .svx-hb{opacity:.06}
+.svx-psvg .svx-ax.b{fill:#2563EB;opacity:.8}.svx-ax.u{font-size:12px;font-weight:500}.svx-ax.n{font-size:12.5px;fill:#52525B}.svx-ax.r,.svx-pv.r{fill:#DC2626}
+.svx-pv{font-size:14px;font-weight:700;fill:#27272A;paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round}
+.svx-psvg .svx-vl{paint-order:stroke;stroke:#fff;stroke-width:4px}
+.svx-n{font-variant-numeric:tabular-nums}
