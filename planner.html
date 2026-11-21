@@ -517,6 +517,9 @@ tr:last-child td { border-bottom: none; }
 .rp-view-btn { padding:5px 12px;border:1.5px solid var(--line);border-radius:8px;background:var(--surface);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;color:var(--ink-2);transition:all .12s;display:flex;align-items:center;gap:5px; }
 .rp-view-btn.active { background:var(--teal);color:#fff;border-color:var(--teal); }
 .rp-view-btn:hover:not(.active) { border-color:var(--teal);color:var(--teal); }
+.rp-view-btn { transition-property:background-color,color,border-color,box-shadow; }
+/* 21 พ.ย. 2569 ผู้ใช้: วันนี้ = กรอบเขียวรอบทั้งกลุ่มแถว · หนา 3px เท่าเส้นคั่นวันเดิม (_rpTodayFrame ใส่คลาสให้ช่องที่อยู่ขอบ) */
+.rp-list td.tdf-t{border-top:3px solid #15803D!important}.rp-list td.tdf-b{border-bottom:3px solid #15803D!important}.rp-list td.tdf-l{border-left:3px solid #15803D!important}.rp-list td.tdf-r{border-right:3px solid #15803D!important}   /* 21 พ.ย. 2569: เดิม transition:all รวม visibility → ตอนหน้าเพิ่งเผย (hr-wait) ปุ่มยังซ่อนช่วงสั้น ๆ คลิกทะลุไปกรอบ (เทสต์ sched-keep-ui สะดุด) */
 
  
 .wpick-overlay { position:fixed;inset:0;z-index:2000; }
@@ -7385,6 +7388,14 @@ async function _rpExportPdf(data, fname, from, to, scopeLbl, withAtt) {
 
 var _rpPmF = 'all';
 var _rpNoDept = true;   // 22 ต.ค. 2569: ตัดคอลัมน์ Dept — แผนกแสดงเป็นแถบสีซ้ายช่อง Team + เส้นคั่นแผนก (false = แบบเดิม)   // ตัวกรองเลข PM ในมุมมองรายการ: all | yes (ผูกแล้ว) | no (ยังไม่ผูก) · 22 ต.ค. 2569
+/* กรอบเขียวรอบแถวของวันนี้ (มุมมองรายการ) · ช่องที่มี rowspan คิดตำแหน่งจริงจาก rowIndex */
+function _rpTodayFrame() {
+  var rows = [].slice.call(document.querySelectorAll('table.rp-list tr.rp-tday')); if (!rows.length) return;
+  var first = rows[0].rowIndex, last = rows[rows.length - 1].rowIndex;
+  rows.forEach(function (tr) { var cs = tr.cells; for (var i = 0; i < cs.length; i++) { var td = cs[i], end = tr.rowIndex + (td.rowSpan || 1) - 1;
+    if (tr.rowIndex === first) td.classList.add('tdf-t'); if (end >= last) td.classList.add('tdf-b'); if (i === 0 && tr.rowIndex === first) td.classList.add('tdf-l'); if (i === cs.length - 1) td.classList.add('tdf-r'); } });
+}
+(function () { var _o = renderPlannerList; renderPlannerList = function () { var r = _o.apply(this, arguments); try { _rpTodayFrame(); } catch (e) {} return r; }; })();
 function renderPlannerList() {
   var today = new Date();
   var _pmSeen = {}, _pmYes = {};
@@ -7668,7 +7679,7 @@ function renderPlannerList() {
       var _shiftCls = _isNight ? 'shift-night' : _isDay ? 'shift-day' : '';
       var _deptFirst = !deptSeen[r.dept.name];
       var _borderSt = isFirstDay ? 'border-top:3px solid '+dayColor+';' : (_rpNoDept && _deptFirst ? 'border-top:2px solid '+ac+'66;' : '');
-      var html = '<tr class="'+_shiftCls+'" style="'+_borderSt+(r.task?'cursor:pointer;':'')+'"' +
+      var html = '<tr class="'+_shiftCls+(isToday?' rp-tday':'')+'" style="'+_borderSt+(r.task?'cursor:pointer;':'')+'"' +
         (r.task ? ' onclick="openDetail('+r.task.id+',\''+ds+'\')"' : '') + '>';
 
       
@@ -7817,7 +7828,7 @@ function renderPlannerList() {
     }).join('');
 
     if (!teamRows.length) {
-      rowsHTML = '<tr style="border-top:3px solid '+dayColor+';">' +
+      rowsHTML = '<tr class="'+(isToday?'rp-tday':'')+'" style="border-top:3px solid '+dayColor+';">' +
         '<td style="background:'+dayBg+';padding:8px 6px;text-align:center;border-right:3px solid '+dayColor+';border-top:3px solid '+dayColor+';">' +
           '<div style="width:50px;height:50px;border-radius:12px;background:'+dayBadge+';color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 4px;">' +
             '<div style="font-size:22px;font-weight:800;line-height:1;">'+dayNum+'</div>' +

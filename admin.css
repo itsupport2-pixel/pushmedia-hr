@@ -2065,3 +2065,8 @@ button.svx-more{border:0;background:none;padding:0;font:inherit;font-size:13px;f
 .svp-r{display:grid;grid-template-columns:minmax(90px,1fr) auto;gap:4px 10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:12px}
 .svp-r select{grid-column:1/-1;height:38px;border-radius:10px;border:1px solid var(--line);padding:0 10px;background:#fff;font:inherit}
 .svp-x{display:inline-flex;justify-self:start;padding:3px 10px;border-radius:99px;background:#EEF2FF;color:#3730A3;font-weight:600;font-size:13px}
+/* ชิปสถานะ (รายงาน Service · แท็บเคสที่ยังไม่ปิด) · ไอคอน + สีตามสถานะ (21 พ.ย. 2569) */
+.svx-stc{display:inline-flex;align-items:center;gap:7px;padding:0 6px 0 7px}
+.svx-sci{display:grid;place-items:center;width:22px;height:22px;border-radius:99px;background:var(--sb);color:var(--sc);flex:none}
+.svx-scn{min-width:24px;height:22px;padding:0 7px;border-radius:99px;background:#fff;color:var(--sc);font-weight:700;font-size:12px;display:inline-grid;place-items:center}
+.svx-stc.on{background:#18181B;color:#fff}.svx-stc.on .svx-sci{background:var(--sb)}.svx-stc.on .svx-scn{background:var(--sb);color:var(--sc)}
