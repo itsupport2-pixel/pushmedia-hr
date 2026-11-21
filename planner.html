@@ -518,8 +518,8 @@ tr:last-child td { border-bottom: none; }
 .rp-view-btn.active { background:var(--teal);color:#fff;border-color:var(--teal); }
 .rp-view-btn:hover:not(.active) { border-color:var(--teal);color:var(--teal); }
 .rp-view-btn { transition-property:background-color,color,border-color,box-shadow; }
-/* 21 พ.ย. 2569 ผู้ใช้: วันนี้ = กรอบเขียวรอบทั้งกลุ่มแถว · หนา 3px เท่าเส้นคั่นวันเดิม (_rpTodayFrame ใส่คลาสให้ช่องที่อยู่ขอบ) */
-.rp-list td.tdf-t{border-top:3px solid #15803D!important}.rp-list td.tdf-b{border-bottom:3px solid #15803D!important}.rp-list td.tdf-l{border-left:3px solid #15803D!important}.rp-list td.tdf-r{border-right:3px solid #15803D!important}   /* 21 พ.ย. 2569: เดิม transition:all รวม visibility → ตอนหน้าเพิ่งเผย (hr-wait) ปุ่มยังซ่อนช่วงสั้น ๆ คลิกทะลุไปกรอบ (เทสต์ sched-keep-ui สะดุด) */
+/* 21 พ.ย. 2569 ผู้ใช้: วันนี้ = กรอบเขียวอ่อนรอบทั้งกลุ่มแถว · เส้น 1px เท่าเส้นปกติ (_rpTodayFrame ใส่คลาสให้ช่องที่อยู่ขอบ · เส้นคั่นวัน 3px ที่ติดขอบบน/ล่างของวันนี้ลดเป็นเส้นเดียวกัน) */
+.rp-list td.tdf-t,.rp-list tr.tdf-ft,.rp-list tr.tdf-nx,.rp-list tr.tdf-nx>td{border-top:1px solid #8FD3A8!important}.rp-list td.tdf-b,.rp-list td.tdf-pb{border-bottom:1px solid #8FD3A8!important}.rp-list td.tdf-l{border-left:1px solid #8FD3A8!important}.rp-list td.tdf-r{border-right:1px solid #8FD3A8!important}   /* 21 พ.ย. 2569: เดิม transition:all รวม visibility → ตอนหน้าเพิ่งเผย (hr-wait) ปุ่มยังซ่อนช่วงสั้น ๆ คลิกทะลุไปกรอบ (เทสต์ sched-keep-ui สะดุด) */
 
  
 .wpick-overlay { position:fixed;inset:0;z-index:2000; }
@@ -7391,7 +7391,9 @@ var _rpNoDept = true;   // 22 ต.ค. 2569: ตัดคอลัมน์ Dept
 /* กรอบเขียวรอบแถวของวันนี้ (มุมมองรายการ) · ช่องที่มี rowspan คิดตำแหน่งจริงจาก rowIndex */
 function _rpTodayFrame() {
   var rows = [].slice.call(document.querySelectorAll('table.rp-list tr.rp-tday')); if (!rows.length) return;
-  var first = rows[0].rowIndex, last = rows[rows.length - 1].rowIndex;
+  var first = rows[0].rowIndex, last = rows[rows.length - 1].rowIndex, nx = rows[rows.length - 1].nextElementSibling;
+  rows[0].classList.add('tdf-ft'); if (nx) nx.classList.add('tdf-nx');
+  var T = rows[0].closest('table'); if (T) for (var k = Math.max(0, first - 40); k < first; k++) { var pr = T.rows[k]; if (!pr) continue; for (var j = 0; j < pr.cells.length; j++) { var pc = pr.cells[j]; if (k + (pc.rowSpan || 1) - 1 === first - 1) pc.classList.add('tdf-pb'); } }   // เส้นล่างของแถวก่อนหน้า (ชนกับขอบบน)
   rows.forEach(function (tr) { var cs = tr.cells; for (var i = 0; i < cs.length; i++) { var td = cs[i], end = tr.rowIndex + (td.rowSpan || 1) - 1;
     if (tr.rowIndex === first) td.classList.add('tdf-t'); if (end >= last) td.classList.add('tdf-b'); if (i === 0 && tr.rowIndex === first) td.classList.add('tdf-l'); if (i === cs.length - 1) td.classList.add('tdf-r'); } });
 }
