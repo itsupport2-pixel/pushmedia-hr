@@ -2086,3 +2086,11 @@ button.svx-more{border:0;background:none;padding:0;font:inherit;font-size:13px;f
 .cx-prg{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}.cx-prg a{position:relative;width:96px;height:96px;border-radius:10px;overflow:hidden;background:#F4F4F5;display:grid;place-items:center}.cx-prg img{width:100%;height:100%;object-fit:cover}
 .cx-pv{position:absolute;left:6px;bottom:6px;font-size:11px;font-weight:600;color:#fff;background:rgba(0,0,0,.6);border-radius:6px;padding:1px 6px}
 .cx-prs pre{max-height:260px;overflow:auto;background:#F8FAFC;border-radius:8px;padding:10px;font-size:12px;white-space:pre-wrap}
+
+/* PEAK Account (22 พ.ย. 2569 · admin-peak.js · คำนำหน้า pka-) */
+.pka-ic{background:#111;color:#fff}
+.pka-sel{height:42px;border:1px solid var(--line);border-radius:10px;background:var(--sf);padding:0 10px;font:inherit;font-size:14px;color:var(--fg);width:100%}
+.pka-sec{margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
+.pka-sec h4{margin:0 0 6px;font-size:15px}
+.pka-only{display:inline-flex;align-items:center;gap:6px;font-size:13px;margin-left:auto;cursor:pointer}
+.pka-void td{opacity:.55;text-decoration:line-through}
