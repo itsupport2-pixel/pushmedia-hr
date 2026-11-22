@@ -4,15 +4,15 @@
 var PKA={i:null,exp:null,only:false};
 var PKA_ST={1:'ร่าง',2:'รออนุมัติ',3:'รอชำระ',4:'เกินกำหนด',5:'ชำระแล้ว',6:'รอใบเสร็จ',7:'ได้ใบเสร็จแล้ว',8:'ยกเลิก'};
 function peakMount(){var anchor=$('#cx-card')||($('#od-st')&&$('#od-st').closest('section'));if(!anchor||$('#pka-card'))return;
-  anchor.insertAdjacentHTML('afterend','<section class="card ig" id="pka-card"><div class="ig-h"><span class="ig-ic ig-lg"><img src="peak-logo.png" alt="PEAK"></span><div class="ig-t"><h3>PEAK Account (บัญชี)</h3><small>อ่านผลทางบัญชีของรอบเงินเดือนจาก PEAK · ระยะ 1 อ่านอย่างเดียว</small></div><span class="sp"></span><span id="pka-st"></span></div><div class="ig-b" id="pka-b"><div class="loading"><span class="spin"></span>กำลังโหลด…</div></div></section>');
+  anchor.insertAdjacentHTML('afterend','<section class="card ig" id="pka-card"><div class="ig-h"><span class="ig-ic ig-lg"><img src="peak-logo.png" alt="PEAK"></span><div class="ig-t"><h3>PEAK Account</h3><small>อ่านผลทางบัญชีของรอบเงินเดือนจาก PEAK · ระยะ 1 อ่านอย่างเดียว</small></div><span class="sp"></span><span id="pka-st"></span></div><div class="ig-b" id="pka-b"><div class="loading"><span class="spin"></span>กำลังโหลด…</div></div></section>');
   aCall('peakInfo').then(function(r){peakDraw(r)}).catch(function(e){$('#pka-b').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})}
 function peakDraw(r,edit){PKA.i=r;var b=$('#pka-b');if(!b)return;
   if(!r.allowed){$('#pka-st').innerHTML='';b.innerHTML='<p class="ig-d" style="margin:0">เฉพาะบัญชีผู้ดูแลระบบและผู้มีสิทธิ์เงินเดือน (ตั้งค่า › สิทธิ์การใช้งาน) เท่านั้น</p>';return}
   $('#pka-st').innerHTML=igPill(r.set,r.set?'เชื่อมแล้ว · '+(r.env==='prod'?'Production':'UAT'):'ยังไม่เชื่อม');
   var envOpt=function(v,t){return '<option value="'+v+'"'+(r.env===v?' selected':'')+'>'+t+'</option>'};
   var form='<div class="pka-help"><b>ต้องใช้ค่า 3 อย่าง (ห้ามส่งทางแชต)</b><ol>'+
-      '<li><b>connectId</b> และ <b>connectKey</b> — ทีม PEAK API ออกให้ผู้เชื่อมต่อ (ขอที่ support.api@peakengine.com) · ไม่ใช่ชื่อบริษัท และไม่ใช่อีเมล/รหัสผ่านที่ใช้เข้า PEAK</li>'+
-      '<li><b>User-Token</b> — เจ้าของกิจการเข้า PEAK › ตั้งค่า › ตั้งค่าเชื่อมต่อระบบภายนอก › กรอก <b>Application Code</b> (ได้จากทีม PEAK พร้อม connectId) › กดสร้าง User-Token</li>'+
+      '<li><b>connectId</b> และ <b>connectKey</b> — รหัสของผู้พัฒนาแอป ทีม PEAK ออกให้ตอนลงทะเบียนแอป (ขอที่ support.api@peakengine.com หรือผู้ที่ตั้งแอปไว้) · <u>ไม่แสดง</u>ในหน้า PEAK และไม่ใช่ชื่อคน ชื่อบริษัท หรือรหัสผ่านเข้า PEAK</li>'+
+      '<li><b>User-Token</b> — ใน PEAK › เชื่อมต่อแอปพลิเคชันภายนอก › ชื่อแอป › รายการเชื่อมต่อ: ค่า #### ท้ายแถวของคุณ (ช่องบนสุดคือ Application Code ใช้สร้าง User-Token ไม่ต้องกรอกที่นี่)</li>'+
       '<li><b>ระบบ</b> — ค่าที่ได้สำหรับ UAT (ทดสอบ) ใช้ได้กับ UAT เท่านั้น · ค่า Production ใช้กับ Production เท่านั้น</li></ol></div>'+
     '<div class="ig-row"><label class="ig-f" style="flex:0 1 170px"><span>ระบบ</span><select id="pka-env" class="pka-sel">'+envOpt('uat','UAT (ทดสอบ)')+envOpt('prod','Production (จริง)')+'</select></label>'+
     '<label class="ig-f" style="flex:1"><span>connectId</span><input id="pka-cid" autocomplete="off" spellcheck="false" placeholder="'+(r.cid?'ตั้งแล้ว '+esc(r.cid)+' · ว่าง = ใช้ค่าเดิม':'connectId จาก PEAK')+'"></label>'+
