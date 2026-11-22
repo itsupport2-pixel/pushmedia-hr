@@ -1,0 +1,25 @@
+/* ฟอร์มมือถือแบบใหม่ 6 หลัก (ผู้ใช้อนุมัติ Figma หน้า 60 · 22 พ.ย. 2569)
+ * มีผลเฉพาะเมื่อ html มีคลาส m6 (สวิตช์ ตั้งค่า › ตารางงาน › ui_m6) · ปิด = หน้าตาเดิมทุกอย่าง
+ * ขอบเขต: ฟอร์มขอใช้เมสเซนเจอร์ (.mq-*) + ฟอร์มสร้าง/แก้งานในตารางงาน LINE (#ts-form) · เปลี่ยนหน้าตาอย่างเดียว */
+/* ขอใช้เมสเซนเจอร์ */
+html.m6 .mq-g2{grid-template-columns:1fr!important}
+html.m6 .mq-req{display:none!important}
+html.m6 .m6-opt{font-weight:400;color:#80868B;font-size:13px}
+html.m6 .mq-h{color:#111;font-size:14px;letter-spacing:0;border-left-width:3px}
+html.m6 .mq-l{color:#111;font-size:14.5px}
+html.m6 .mq-sec{border-radius:20px;padding:18px 16px}
+html.m6 .mq-sec .inp,html.m6 .mq-sec .ta,html.m6 .mq-sec input.inp{border-radius:12px!important}
+html.m6 .mq-tc,html.m6 .mq-gm,html.m6 .mq-urg{border-radius:12px}
+html.m6 .mq-chip{padding:9px 22px;min-height:42px}
+/* สร้างงานในตารางงาน (แอป LINE) */
+html.m6 #ts-form div:has(> .ts-f + .ts-f){display:flex!important;flex-direction:column!important;gap:14px!important}
+html.m6 #ts-form .ts-f em{display:none!important}
+html.m6 #ts-form .ts-f>span:first-child,html.m6 #ts-form .ts-lb{font-size:13.5px;color:#111}
+html.m6 #ts-form .ts-lb small{color:#80868B}
+html.m6 #ts-form input:not([type=checkbox]):not([type=radio]),html.m6 #ts-form select,html.m6 #ts-form textarea{border-radius:12px!important}
+html.m6 #ts-form .ts-shc{border-radius:14px}
+html.m6 #ts-form .ts-shc small{white-space:nowrap}
+html.m6 #ts-form .ts-addw{padding:8px 18px!important;min-height:40px}
+/* กล่องเพิ่มรูป: เต็มความกว้าง · ไอคอนกล้องในวงกลมฟ้าอ่อน · 2 ฟอร์มแบบเดียวกัน */
+html.m6 .mq-up,html.m6 #ts-form .ts-phadd{display:flex!important;flex-direction:row!important;align-items:center;justify-content:center;gap:12px;width:100%!important;min-height:72px;height:auto!important;aspect-ratio:auto!important;max-width:none!important;padding:12px 16px!important;border:1.5px dashed #D4D4D8!important;border-radius:12px!important;background:#fff!important;color:#141414!important;font-size:14.5px!important;font-weight:600!important;grid-column:1/-1}
+html.m6 .mq-up svg,html.m6 #ts-form .ts-phadd svg{flex:none;width:20px!important;height:20px!important;padding:10px;box-sizing:content-box;border-radius:12px;background:#EAF1FE;color:#2563EB;stroke:#2563EB}
