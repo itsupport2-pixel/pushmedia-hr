@@ -14,6 +14,8 @@ const fD=s=>{const d=DT(s);return `${TH_DS[d.getDay()]} ${d.getDate()} ${TH_S[d.
 const fDY=s=>{const d=DT(s);return `${d.getDate()} ${TH_S[d.getMonth()]} ${d.getFullYear()+543}`};
 const nd=n=>(n%1?n.toFixed(1):n)+" วัน";
 const rangeTxt=(a,b)=>!a?"—":a===b||!b?fDY(a):(a.slice(0,7)===b.slice(0,7)?`${DT(a).getDate()}–${fDY(b)}`:`${fDY(a)} – ${fDY(b)}`);
+/* โลโก้ LINE (สีทางการ #06C755 · ไม่ใช่อีโมจิ) · 22 พ.ย. 2569 ผู้ใช้ขอใส่ไอคอน LINE */
+const LINE_IC='<svg class="lv-lic" viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="6" fill="#06C755"/><path fill="#fff" d="M12 5.2c-4.1 0-7.4 2.7-7.4 6 0 3 2.6 5.4 6.2 5.9.2 0 .6.2.7.4.1.2 0 .6 0 .8l-.1.7c0 .2-.2.8.7.4s4.7-2.8 6.4-4.7c1.2-1.3 1.7-2.5 1.7-3.6 0-3.3-3.3-6-7.4-6z"/></svg>';
 const tl=steps=>steps.map((s,i,a)=>`<div class="tli"><span class="tlr"><i style="background:${s[3]?s[0]:"#fff"};border-color:${s[0]}"></i>${i<a.length-1?"<em></em>":""}</span><span><span style="display:block">${s[1]}</span><span class="cap">${s[2]}</span></span></div>`).join("");
 const ACT={ok:"อนุมัติ",partial:"อนุมัติบางวัน",no:"ไม่อนุมัติ",back:"ส่งกลับแก้ไข",ack:"HR รับทราบ"};
 function stepsOf(r){const A=[["var(--green)","ยื่นคำขอ",esc(r.employee||"คุณ")+" · "+fAt(r.created_at),true]];
@@ -57,11 +59,11 @@ V.leave=()=>{const i=L.info;if(!i)return band("ขอลางาน")+loadingV(
   ${ds.length?`<div class="dl">${ds.map(x=>{const j=i.jobDays.find(z=>z.date===x.date);return `<div class="dr"><div class="t"><b>${fD(x.date)}</b>${j?`<span class="chip c-blue mini">${ic("cal","width:13px;height:13px")}งาน ${esc(j.site||j.job)}</span>`:`<span class="chip c-grey mini">ทำงานปกติ</span>`}</div>${t.half_day?`<div class="seg" role="group" aria-label="ช่วงเวลา ${fD(x.date)}">${Object.keys(PART).map(p=>`<button type="button" data-lvpart="${x.date}|${p}" aria-pressed="${x.part===p}">${PART[p]}</button>`).join("")}</div>`:""}</div>`}).join("")}</div>`:""}
   <div id="lvchk"></div>
   <div class="lv-step"><span class="n">${ds.length?4:3}</span><b>รายละเอียด</b></div>
-  <div class="fcard">${fl("lr","เหตุผลการลา *",`<textarea class="ta" id="lr" placeholder="ระบุเหตุผลการลา">${esc(f.reason)}</textarea>`)}
+  <div class="fcard lv-dcard">${fl("lr","เหตุผลการลา *",`<textarea class="ta" id="lr" placeholder="ระบุเหตุผลการลา">${esc(f.reason)}</textarea>`)}
   ${lvAttForm(f)}
   ${jobs.length?fl("lsub","เสนอผู้รับงานแทน (หัวหน้าทีมเป็นผู้ตัดสิน)",`<select class="sel" id="lsub"><option value="">ให้หัวหน้าทีมเลือก</option>${i.team.map(x=>`<option value="${x.id}" ${f.substitute_id===x.id?"selected":""}>${esc(x.name)}${x.nickname?" ("+esc(x.nickname)+")":""}</option>`).join("")}</select>`):""}</div>
   <div class="lv-step"><span class="n">${ds.length?5:4}</span><b>ผู้อนุมัติ</b></div>
-  <div class="fcard" style="gap:0;padding-bottom:4px" id="lvappr">${tl([["var(--orange)","หัวหน้าทีม"+(i.lead?" · "+esc(i.lead):""),"อนุมัติ / ส่งกลับแก้ไข / ไม่อนุมัติ",false],["#C5CCD6","แจ้งผลทาง LINE + อัปเดตตารางงานและการลงเวลา","อัตโนมัติเมื่ออนุมัติ",false]])}</div>
+  <div class="fcard" style="gap:0;padding-bottom:4px" id="lvappr">${tl([["var(--orange)","หัวหน้าทีม"+(i.lead?" · "+esc(i.lead):""),"อนุมัติ / ส่งกลับแก้ไข / ไม่อนุมัติ",false],["#06C755",`<span class="lv-ln">${LINE_IC}แจ้งผลทาง LINE</span> + อัปเดตตารางงานและการลงเวลา`,"อัตโนมัติเมื่ออนุมัติ",false]])}</div>
   </form><span class="spacer"></span><div class="foot"><button class="btn pri" data-lvnext>ตรวจสอบก่อนส่ง</button></div>`};
 function paintLeaveChecks(){const box=$("#lvchk"),p=L.pv,f=L.f,i=L.info;if(!box)return;const t=i.types.find(x=>x.id===f.type_id)||{};
   if(!p||!f.a){box.innerHTML="";return}
@@ -70,7 +72,7 @@ function paintLeaveChecks(){const box=$("#lvchk"),p=L.pv,f=L.f,i=L.info;if(!box)
    ${q?`<div class="qb"><i style="width:${used/q*100}%;background:#fff"></i><i style="width:${res/q*100}%;background:rgba(255,255,255,.55)"></i><i style="width:${Math.min(p.total,Math.max(0,q-used-res))/q*100}%;background:#FFC48F"></i></div>`:""}
    <div style="display:flex;justify-content:space-between;font-size:12.5px;gap:8px"><span>ใช้แล้ว ${nd(used)}${res?` · รออนุมัติ ${nd(res)}`:""}</span><span style="white-space:nowrap">คงเหลือหลังลา <b>${p.left_after==null?"ไม่จำกัด":nd(p.left_after)}</b></span></div></div>`:"")+
    (p.errors||[]).map(x=>nt("c-red","alert",esc(x))).join("")+(p.warns||[]).map(x=>nt("c-orange","alert",esc(x))).join("");
-  const ap=$("#lvappr");if(ap&&p.approvers)ap.innerHTML=tl(p.approvers.map((a,k)=>[k?"#C5CCD6":"var(--orange)",esc(a),k?"อนุมัติ/รับทราบหลังหัวหน้าอนุมัติ":"อนุมัติ / ส่งกลับแก้ไข / ไม่อนุมัติ",false]).concat([["#C5CCD6","แจ้งผลทาง LINE + อัปเดตตารางงานและการลงเวลา","อัตโนมัติเมื่ออนุมัติ",false]]));
+  const ap=$("#lvappr");if(ap&&p.approvers)ap.innerHTML=tl(p.approvers.map((a,k)=>[k?"#C5CCD6":"var(--orange)",esc(a),k?"อนุมัติ/รับทราบหลังหัวหน้าอนุมัติ":"อนุมัติ / ส่งกลับแก้ไข / ไม่อนุมัติ",false]).concat([["#06C755",`<span class="lv-ln">${LINE_IC}แจ้งผลทาง LINE</span> + อัปเดตตารางงานและการลงเวลา`,"อัตโนมัติเมื่ออนุมัติ",false]]));
 }
 V.lvsum=()=>{const p=L.pv,f=L.f;if(!p)return band("ตรวจสอบคำขอ")+`<div class="pad"><div class="empty">ไม่มีข้อมูล</div></div>`;
   const sub=f.substitute_id&&L.info.team.find(x=>x.id===f.substitute_id);
@@ -177,7 +179,7 @@ document.addEventListener("input",e=>{if(e.target.id==="lr"&&L.f)L.f.reason=e.ta
 
 /* ── เอกสารแนบใบลา (3 พ.ย. 2569 ผู้ใช้ขอ: ทุกประเภทแนบเลขเอกสาร / รูปได้ · ไม่บังคับ) ── */
 function lvAttForm(f){const P=f.photos||[];return `${fl("ldoc","เลขที่เอกสาร (ไม่บังคับ)",`<input class="inp" id="ldoc" maxlength="100" placeholder="เช่น เลขใบรับรองแพทย์" value="${esc(f.doc_no||"")}">`)}
-  <div class="fl"><span>แนบรูปเอกสาร (ไม่บังคับ · ไม่เกิน 3 รูป)</span><div class="lv-att">${P.map((d,k)=>`<div class="lv-th"><img src="${d}" alt="รูปแนบ ${k+1}"><button type="button" data-lvphx="${k}" aria-label="เอารูปออก">${ic("x","width:14px;height:14px")}</button></div>`).join("")}${P.length<3?`<label class="lv-add">${ic("clip","width:22px;height:22px")}<span>เพิ่มรูป</span><input type="file" id="lvfile" accept="image/*" hidden></label>`:""}</div>${!f.ph&&f.oldFiles?`<span class="cap">มีรูปเดิม ${f.oldFiles} รูป · เพิ่มรูปใหม่จะแทนที่รูปเดิม</span>`:""}</div>`}
+  <div class="fl"><span>แนบรูปเอกสาร (ไม่บังคับ · ไม่เกิน 3 รูป)</span><div class="lv-att">${P.map((d,k)=>`<div class="lv-th"><img src="${d}" alt="รูปแนบ ${k+1}"><button type="button" data-lvphx="${k}" aria-label="เอารูปออก">${ic("x","width:14px;height:14px")}</button></div>`).join("")}${P.length<3?`<label class="lv-add"><i class="up-ic">${ic("cam")}</i><span class="up-t"><b>ถ่ายรูป หรือเลือกรูปเอกสาร</b><span>เหลืออีก ${3-P.length} รูป</span></span><input type="file" id="lvfile" accept="image/*" hidden></label>`:""}</div>${!f.ph&&f.oldFiles?`<span class="cap">มีรูปเดิม ${f.oldFiles} รูป · เพิ่มรูปใหม่จะแทนที่รูปเดิม</span>`:""}</div>`}
 const LVF={};
 function lvAttView(r){if(!r.doc_no&&!r.files)return "";if(r.files&&!LVF[r.id]){LVF[r.id]="…";api("leaveFiles",r.id).then(a=>{LVF[r.id]=a;repaint()}).catch(()=>{LVF[r.id]=[]})}
   const F=Array.isArray(LVF[r.id])?LVF[r.id]:[];return `<div class="fcard" style="gap:8px"><b>เอกสารแนบ</b>${r.doc_no?`<div class="r" style="display:flex;justify-content:space-between;gap:12px"><span class="cap">เลขที่เอกสาร</span><span>${esc(r.doc_no)}</span></div>`:""}${r.files?`<div class="lv-att">${F.length?F.map(x=>`<button type="button" class="lv-th" data-lvview="${x.id}"><img src="${x.data}" alt="รูปแนบ"></button>`).join(""):`<span class="cap">กำลังโหลดรูป ${r.files} รูป…</span>`}</div>`:""}</div>`}

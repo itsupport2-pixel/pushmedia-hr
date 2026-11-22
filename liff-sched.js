@@ -2,7 +2,7 @@
 /* แอปพนักงาน › ตารางงาน แบบใหม่ (20 พ.ย. 2569 · ผู้ใช้อนุมัติ Figma หน้า 52 ฉบับ 4 "ใช้แบบนี้ เริ่มทำบน dev")
  * โครงเดิม Workforce Task Manager: งานของฉัน | ทั้งหมด → วันในสัปดาห์ → แผนก → ทีม → การ์ด → ปุ่มเพิ่มงาน · รายละเอียดงาน · ฟอร์มสร้าง/แก้งาน
  * ข้อมูล: wtm('mobile') อ่านอย่างเดียว · บันทึก: wtm createTask / updateTask / deleteTask ตัวเดียวกับหลังบ้าน (ตรวจสิทธิ์ซ้ำที่เซิร์ฟเวอร์)
- * สวิตช์ ตั้งค่า › ตารางงาน (liff_sched2): ปิด = หน้าเดิม (V.sched เดิม) ทุกอย่างเหมือนก่อน · ไฟล์นี้ไม่แก้หน้าอื่น
+ * 22 พ.ย. 2569: เอาสวิตช์ liff_sched2 ออกแล้ว (ผู้ใช้สั่ง) · หน้าใหม่ใช้กับทุกคน · ไฟล์นี้ไม่แก้หน้าอื่น
  * โหลดหลัง liff-v2.js · คลาส CSS ขึ้นต้น ts- (liff-sched.css) */
 (function(){
 const TSI={cam:'<path d="M3 8h4l2-3h6l2 3h4v12H3z"/><circle cx="12" cy="13" r="3.5"/>',users2:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6"/>',tag:'<path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.3"/>',
@@ -22,7 +22,7 @@ const dShort=s=>{const d=DT(s);return `${TH_DS[d.getDay()]} ${d.getDate()} ${TH_
 const dLong=s=>{const d=DT(s);return `วัน${TH_D[d.getDay()]} ${d.getDate()} ${TH_M[d.getMonth()]} ${d.getFullYear()+543}`};
 const nDays=(a,b)=>Math.round((DT(b)-DT(a))/864e5)+1;
 const rangeT=t=>t.start===t.end?dShort(t.start):`${dShort(t.start)} – ${dShort(t.end)} (${nDays(t.start,t.end)} วัน)`;
-const on=()=>TS.d?!!TS.d.on:LS.get("ts2")===1;
+const on=()=>true;   /* 22 พ.ย. 2569: เอาสวิตช์ liff_sched2 ออก · หน้าใหม่ถาวร */
 const E=c=>(TS.d&&TS.d._e||{})[c]||null;
 const dcol=n=>{const i=(TS.d&&TS.d.depts||[]).indexOf(n);return i>=0&&i<DCOL.length?DCOL[i]:DFB};
 const memOn=(t,day)=>{const o=t.dov&&t.dov[day];return o&&Array.isArray(o.members)?o.members:t.mem};
