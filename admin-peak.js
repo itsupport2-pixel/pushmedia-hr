@@ -4,19 +4,22 @@
 var PKA={i:null,exp:null,only:false};
 var PKA_ST={1:'ร่าง',2:'รออนุมัติ',3:'รอชำระ',4:'เกินกำหนด',5:'ชำระแล้ว',6:'รอใบเสร็จ',7:'ได้ใบเสร็จแล้ว',8:'ยกเลิก'};
 function peakMount(){var anchor=$('#cx-card')||($('#od-st')&&$('#od-st').closest('section'));if(!anchor||$('#pka-card'))return;
-  anchor.insertAdjacentHTML('afterend','<section class="card ig" id="pka-card"><div class="ig-h"><span class="ig-ic pka-ic" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8M8 17h5"/></svg></span><div class="ig-t"><h3>PEAK Account (บัญชี)</h3><small>อ่านผลทางบัญชีของรอบเงินเดือนจาก PEAK · ระยะ 1 อ่านอย่างเดียว</small></div><span class="sp"></span><span id="pka-st"></span></div><div class="ig-b" id="pka-b"><div class="loading"><span class="spin"></span>กำลังโหลด…</div></div></section>');
+  anchor.insertAdjacentHTML('afterend','<section class="card ig" id="pka-card"><div class="ig-h"><span class="ig-ic ig-lg"><img src="peak-logo.png" alt="PEAK"></span><div class="ig-t"><h3>PEAK Account (บัญชี)</h3><small>อ่านผลทางบัญชีของรอบเงินเดือนจาก PEAK · ระยะ 1 อ่านอย่างเดียว</small></div><span class="sp"></span><span id="pka-st"></span></div><div class="ig-b" id="pka-b"><div class="loading"><span class="spin"></span>กำลังโหลด…</div></div></section>');
   aCall('peakInfo').then(function(r){peakDraw(r)}).catch(function(e){$('#pka-b').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})}
 function peakDraw(r,edit){PKA.i=r;var b=$('#pka-b');if(!b)return;
   if(!r.allowed){$('#pka-st').innerHTML='';b.innerHTML='<p class="ig-d" style="margin:0">เฉพาะบัญชีผู้ดูแลระบบและผู้มีสิทธิ์เงินเดือน (ตั้งค่า › สิทธิ์การใช้งาน) เท่านั้น</p>';return}
   $('#pka-st').innerHTML=igPill(r.set,r.set?'เชื่อมแล้ว · '+(r.env==='prod'?'Production':'UAT'):'ยังไม่เชื่อม');
   var envOpt=function(v,t){return '<option value="'+v+'"'+(r.env===v?' selected':'')+'>'+t+'</option>'};
-  var form='<p class="ig-d">ค่าเชื่อมต่อได้จากทีม PEAK (connectId · connectKey) และเจ้าของกิจการสร้าง User-Token ใน PEAK: ตั้งค่า › ตั้งค่าเชื่อมต่อระบบภายนอก · เก็บที่เซิร์ฟเวอร์เท่านั้น หน้าเว็บเห็นแค่ 4 ตัวท้าย · <b>ห้ามส่งค่าเหล่านี้ทางแชต</b></p>'+
+  var form='<div class="pka-help"><b>ต้องใช้ค่า 3 อย่าง (ห้ามส่งทางแชต)</b><ol>'+
+      '<li><b>connectId</b> และ <b>connectKey</b> — ทีม PEAK API ออกให้ผู้เชื่อมต่อ (ขอที่ support.api@peakengine.com) · ไม่ใช่ชื่อบริษัท และไม่ใช่อีเมล/รหัสผ่านที่ใช้เข้า PEAK</li>'+
+      '<li><b>User-Token</b> — เจ้าของกิจการเข้า PEAK › ตั้งค่า › ตั้งค่าเชื่อมต่อระบบภายนอก › กรอก <b>Application Code</b> (ได้จากทีม PEAK พร้อม connectId) › กดสร้าง User-Token</li>'+
+      '<li><b>ระบบ</b> — ค่าที่ได้สำหรับ UAT (ทดสอบ) ใช้ได้กับ UAT เท่านั้น · ค่า Production ใช้กับ Production เท่านั้น</li></ol></div>'+
     '<div class="ig-row"><label class="ig-f" style="flex:0 1 170px"><span>ระบบ</span><select id="pka-env" class="pka-sel">'+envOpt('uat','UAT (ทดสอบ)')+envOpt('prod','Production (จริง)')+'</select></label>'+
     '<label class="ig-f" style="flex:1"><span>connectId</span><input id="pka-cid" autocomplete="off" spellcheck="false" placeholder="'+(r.cid?'ตั้งแล้ว '+esc(r.cid)+' · ว่าง = ใช้ค่าเดิม':'connectId จาก PEAK')+'"></label>'+
     '<label class="ig-f" style="flex:1"><span>connectKey (รหัส)</span><input id="pka-key" type="password" autocomplete="off" spellcheck="false" placeholder="'+(r.keySet?'ตั้งแล้ว · ว่าง = ใช้ค่าเดิม':'รหัสที่ได้จาก PEAK')+'"></label></div>'+
     '<div class="ig-row" style="margin-top:10px"><label class="ig-f" style="flex:1"><span>User-Token</span><input id="pka-ut" type="password" autocomplete="off" spellcheck="false" placeholder="'+(r.utSet?'ตั้งแล้ว …'+esc(r.utLast4)+' · ว่าง = ใช้ค่าเดิม':'User-Token ที่สร้างใน PEAK')+'"></label>'+
     '<div class="ig-act"><button class="btn pri" id="pka-save">ทดสอบและบันทึก</button>'+(r.set?'<button class="btn" id="pka-cancel">ยกเลิก</button>':'')+'</div></div>'+
-    '<div class="faint" style="font-size:12px;margin-top:8px">เปลี่ยน UAT ↔ Production ต้องกรอกใหม่ทั้ง 3 ช่อง · ระบบทดสอบขอ Client Token และอ่านผังบัญชีก่อนบันทึก ไม่ผ่าน = ไม่บันทึก</div>';
+    '<div class="faint" style="font-size:12px;margin-top:8px">เปลี่ยน UAT ↔ Production ต้องกรอกใหม่ทั้ง 3 ช่อง · ระบบทดสอบขอ Client Token และอ่านผังบัญชีก่อนบันทึก ไม่ผ่าน = ไม่บันทึก</div><div id="pka-err"></div>';
   var kv=function(l,v){return '<div><small>'+l+'</small><b>'+v+'</b></div>'};
   var con='<div class="ig-kv">'+kv('ระบบ',r.env==='prod'?'Production':'UAT')+kv('connectId',esc(r.cid))+kv('User-Token','••••'+esc(r.utLast4))+kv('ทดสอบล่าสุด',r.at?esc(fdt(r.at)):'—')+kv('แบบที่ PEAK รับ',esc([r.sig==='b64'?'ลายเซ็น base64':r.sig?'ลายเซ็น hex':'',r.bodyf,r.datef?'วันที่ '+r.datef:''].filter(Boolean).join(' · ')||'—'))+'</div>'+
     '<div class="ig-act"><button class="btn pri" id="pka-test">ทดสอบการเชื่อมต่อ</button><button class="btn" id="pka-edit">เปลี่ยนค่า</button><button class="btn ig-dz" id="pka-del">ยกเลิกการเชื่อม</button></div><div id="pka-tr"></div>'+
@@ -25,7 +28,7 @@ function peakDraw(r,edit){PKA.i=r;var b=$('#pka-b');if(!b)return;
   b.innerHTML=r.set&&!edit?con:form;peakBind()}
 function peakMonths(){var o='',d=new Date();for(var i=0;i<18;i++){var x=new Date(d.getFullYear(),d.getMonth()-i,1),v=x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0');o+='<option value="'+v+'">'+x.toLocaleDateString('th-TH',{month:'long',year:'numeric'})+'</option>'}return o}
 function peakBind(){var r=PKA.i,q=function(id){return $('#'+id)};
-  if(q('pka-save'))q('pka-save').onclick=function(){var b=this;busy(b,1);aCall('peakSave',{env:q('pka-env').value,cid:q('pka-cid').value,ckey:q('pka-key').value,ut:q('pka-ut').value}).then(function(x){busy(b,0);toast('เชื่อม PEAK แล้ว · อ่านผังบัญชีได้ '+(x.accounts||0)+' บัญชี');peakDraw(x)}).catch(function(e){busy(b,0);toast(e.message,1)})};
+  if(q('pka-save'))q('pka-save').onclick=function(){var b=this;busy(b,1);aCall('peakSave',{env:q('pka-env').value,cid:q('pka-cid').value,ckey:q('pka-key').value,ut:q('pka-ut').value}).then(function(x){busy(b,0);toast('เชื่อม PEAK แล้ว · อ่านผังบัญชีได้ '+(x.accounts||0)+' บัญชี');peakDraw(x)}).catch(function(e){busy(b,0);toast('เชื่อม PEAK ไม่สำเร็จ',1);var o=q('pka-err');if(o)o.innerHTML='<div class="alert pka-alert"><b>เชื่อมไม่สำเร็จ</b><div>'+esc(e.message)+'</div></div>'})};
   if(q('pka-cancel'))q('pka-cancel').onclick=function(){peakDraw(r)};
   if(q('pka-edit'))q('pka-edit').onclick=function(){peakDraw(r,1)};
   if(q('pka-del'))q('pka-del').onclick=function(){if(!confirm('ยกเลิกการเชื่อม PEAK? (ลบค่าเชื่อมต่อทั้งหมดที่ตั้งไว้)'))return;aCall('peakSave',{clear:1}).then(function(x){toast('ยกเลิกการเชื่อม PEAK แล้ว');peakDraw(x)}).catch(function(e){toast(e.message,1)})};
