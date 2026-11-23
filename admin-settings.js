@@ -100,7 +100,9 @@ function cxDraw(r,res,edit){A.cxI=r;$('#cx-st').innerHTML=igPill(r.set,r.set?'�
   var act=r.set?'<div class="ig-act" style="margin-top:14px"><button class="btn pri" id="cx-claim">ดึงเคสลงพื้นที่จาก Codex</button><span class="faint" style="font-size:12.5px;margin-left:8px">เก็บแล้ว '+nf(r.count)+' เคส</span></div>'+
     /* 21 พ.ย. 2569: ตรวจข้อมูลเคสเดียว (อ่านอย่างเดียว) หาช่องลิงก์รูป/วิดีโอจากแชต */
     '<div class="ig-act cx-pb" style="margin-top:10px"><label class="ig-f" style="flex:0 1 260px"><input id="cx-pq" placeholder="เลขเคส SV-… หรือเลข Codex" autocomplete="off" spellcheck="false" aria-label="เลขเคส"></label><button class="btn" id="cx-probe">ตรวจข้อมูลเคสจาก Codex</button><span class="faint" style="font-size:12.5px">อ่านอย่างเดียว · ไม่บันทึก · หาลิงก์รูป/วิดีโอจากแชต</span></div><div id="cx-pr"></div>':'';
-  b.innerHTML=con+out;   /* 22 พ.ย. 2569 ผู้ใช้: การ์ดในตั้งค่าแสดงแค่การเชื่อมต่อ · ดึงเคส/ตารางเคสอยู่ที่เมนูเคส Service */
+  /* 22 พ.ย. 2569 ผู้ใช้: การ์ดในตั้งค่าแสดงแค่การเชื่อมต่อ · ดึงเคส/ตารางเคสอยู่ที่เมนูเคส Service · 23 พ.ย. ผู้ใช้ขอปุ่มดึงรายเคสจาก id กลับมา */
+  var pb=r.set&&!edit?'<div class="ig-act cx-pb" style="margin-top:12px"><label class="ig-f" style="flex:0 1 260px"><input id="cx-pq" placeholder="เลขเคส SV-… หรือเลข Codex" autocomplete="off" spellcheck="false" aria-label="เลขเคส"></label><button class="btn" id="cx-probe">ดึงข้อมูลรายเคส (id)</button><span class="faint" style="font-size:12.5px">อ่านอย่างเดียว · ไม่บันทึก · ส่ง id ไป Codex แล้วหาลิงก์รูป/วิดีโอจากแชต</span></div><div id="cx-pr"></div>':'';
+  b.innerHTML=con+pb+out;
   $$('[data-cxraw]').forEach(function(bt){bt.onclick=function(){var r0=$('[data-cxr="'+bt.dataset.cxraw+'"]');if(r0)r0.hidden=!r0.hidden}});
   if($('#cx-save'))$('#cx-save').onclick=function(){var bt=this;busy(bt,1);aCall('codexSave',{url:$('#cx-url').value,key:$('#cx-key').value}).then(function(x){busy(bt,0);toast('เชื่อมต่อแล้ว');cxDraw(x)}).catch(function(e){busy(bt,0);toast(e.message,1)})};
   if($('#cx-cancel'))$('#cx-cancel').onclick=function(){cxDraw(r)};
