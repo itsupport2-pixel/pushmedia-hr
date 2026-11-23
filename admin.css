@@ -2105,3 +2105,16 @@ button.svx-more{border:0;background:none;padding:0;font:inherit;font-size:13px;f
 .svm-lb{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.82);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px}
 .svm-in{max-width:min(1100px,94vw);max-height:80vh;display:grid;place-items:center}.svm-in img,.svm-in video{max-width:100%;max-height:80vh;border-radius:12px;background:#000}
 .svm-bar{display:flex;gap:8px;align-items:center;color:#fff;width:min(1100px,94vw)}.svm-bar .sp{flex:1}
+
+/* ผู้เห็นเมนูเคส Service (23 พ.ย. 2569 · sva-) */
+.sva{padding:16px 20px 18px;border-top:1px solid var(--line)}
+.sva-h{display:flex;gap:12px;align-items:flex-start;justify-content:space-between}.sva-h b{display:block;font-size:14.5px}.sva-h small{display:block;color:var(--mut);font-size:12.5px;margin-top:2px;line-height:1.5}
+.sva-note{font-size:12.5px;margin-top:8px}
+.sva-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.sva-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 6px 4px 4px;border:1px solid var(--line);border-radius:999px;background:var(--sf);font-size:13px}
+.sva-chip .av{border-radius:50%}.sva-chip button{border:0;background:none;color:var(--mut);font-size:16px;line-height:1;cursor:pointer;padding:0 4px}.sva-chip button:hover{color:#C53030}
+.sva-add{position:relative;margin-top:12px}.sva-q{max-width:460px}
+.sva-ls{position:absolute;left:0;top:calc(100% + 4px);z-index:30;width:min(460px,100%);max-height:320px;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 10px 28px rgba(0,0,0,.12)}
+.sva-o{display:flex;align-items:center;gap:10px;width:100%;padding:8px 12px;border:0;border-bottom:1px solid #F2F2F2;background:#fff;text-align:left;font:inherit;cursor:pointer}.sva-o:hover{background:#F7F7F8}
+.sva-o .av{border-radius:50%;flex:none}.sva-on{flex:1;min-width:0;display:flex;flex-direction:column}.sva-on b{font-size:13.5px;font-weight:600}.sva-on small{color:var(--mut);font-size:12px}.sva-plus{font-size:12.5px;color:#2563EB;font-weight:600;flex:none}
+.sva-act{display:flex;align-items:center;gap:8px;margin-top:12px}.sva-act .sp{flex:1}
