@@ -458,6 +458,7 @@ drawErr=(function(f){return function(){var r=f.apply(this,arguments);pgFx();retu
 drawSet=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(drawSet);
 if(window.drawLva)drawLva=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(drawLva);   // 19 พ.ย. 2569 ผู้ใช้: การลา › ลาล่วงหน้า ไม่มีเอฟเฟ็ค
 if(window.lgDraw)lgDraw=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(lgDraw);   // 19 พ.ย. 2569 ผู้ใช้: กลุ่ม LINE กดแล้วไม่มีเอฟเฟ็ค
+if(window.paCfgDraw)paCfgDraw=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(paCfgDraw);if(window.paLogDraw)paLogDraw=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(paLogDraw);   // LINE Photo Archive ตั้งค่า/บันทึก
 if(window.lpaDraw)lpaDraw=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(lpaDraw);   // LINE Photo Archive
 if(window.pzDraw)pzDraw=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(pzDraw);   // 23 พ.ย. 2569 ผู้ใช้: เมนู Announcements ไม่มีเอฟเฟ็คเหมือนเมนูอื่น
 if(window.lfDraw)lfDraw=(function(f){return function(){var r=f.apply(this,arguments);pgFx();return r}})(lfDraw);

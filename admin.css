@@ -2186,3 +2186,17 @@ button.svx-more{border:0;background:none;padding:0;font:inherit;font-size:13px;f
 }
 /* LINE Photo Archive (23 พ.ย. 2569): ไอคอน Google Drive ในเมนูซ้าย · สีเทาตอนปกติ มีสีเมื่อเลือก/ชี้ (เหมือนไอคอน Codex) · ตาราง 4 คอลัมน์ */
 .side svg.lpa-nic{width:20px;height:20px;flex:none}.lpa-t{min-width:640px}
+/* LINE Photo Archive · ตั้งค่า + บันทึก (23 พ.ย. 2569 ขั้นที่ 1 · Figma หน้า 61) */
+.pa-hr{font-size:11px;color:var(--mut);background:var(--sf2);border-radius:99px;padding:1px 8px;margin-left:4px;font-weight:500}
+.pa-g{margin-bottom:14px}.pa-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;padding:0 16px 16px}
+.pa-tile{background:var(--sf2);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:3px;min-width:0}.pa-tile small{font-size:12px;color:var(--mut)}.pa-tile b{font-size:15px}.pa-tile span{font-size:12px;color:var(--mut)}
+.pa-seg{display:inline-flex;gap:2px;padding:3px;border-radius:9px;background:#E9E9E9;margin-top:6px;align-self:flex-start}.pa-seg button{border:0;background:none;font:inherit;font-size:12.5px;padding:4px 12px;border-radius:7px;cursor:pointer;color:#555}.pa-seg button[aria-pressed="true"]{background:#fff;color:#141414;font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.pa-new{background:#FFF8EC;border:1px solid #F5C77E;color:#8A5300;border-radius:12px;padding:11px 16px;font-size:13px;margin-bottom:14px}.pa-new b{margin-right:8px}
+.pa-t{min-width:980px}.pa-t tr.pa-nw td{background:#FFFCF5}.pa-ty{display:inline-flex;gap:4px}.pa-ty i{font-style:normal;font-size:12px;padding:2px 9px;border-radius:99px;background:#F3F3F3;color:#B0B0B0}.pa-ty i.on{background:#141414;color:#fff}
+.pa-dw .pa-on{display:flex;align-items:center;gap:12px;background:var(--sf2);border-radius:12px;padding:12px 14px;margin-bottom:16px}.pa-dw .pa-on span{flex:1;display:flex;flex-direction:column}.pa-dw .pa-on small{font-size:12px;color:var(--mut)}
+.pa-h{font-size:13px;font-weight:600;color:#6B6B6B;margin:6px 0 8px}.pa-row{display:flex;gap:22px;flex-wrap:wrap}
+.pa-ck{display:flex;gap:10px;align-items:flex-start;margin:0 0 10px;cursor:pointer}.pa-ck input{width:18px;height:18px;margin-top:2px;accent-color:#141414}.pa-ck span{display:flex;flex-direction:column}.pa-ck small{font-size:12px;color:var(--mut)}
+.pa-json{width:100%;font:12.5px ui-monospace,SFMono-Regular,Menlo,monospace;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--sf2);box-sizing:border-box;resize:vertical}
+.pa-lt{min-width:900px}.pa-fn{font:12px ui-monospace,SFMono-Regular,Menlo,monospace;word-break:break-all;max-width:420px}.pa-er{font-size:11.5px;color:#B42318;margin-top:2px;max-width:220px}.pa-er-r td{background:#FFFAFA}.lgp-kc.pa-bad b{color:#B42318}
+.pa-t .sw,.pa-dw .sw{display:inline-block;vertical-align:middle;width:38px;height:22px;border-radius:999px;background:#D4D4D4;position:relative;padding:0}.pa-t .sw.on,.pa-dw .sw.on{background:#111}.pa-t .sw[disabled]{opacity:.5;cursor:not-allowed}
+.pa-t .sw:after,.pa-dw .sw:after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2);transition:left .15s}.pa-t .sw.on:after,.pa-dw .sw.on:after{left:19px}
