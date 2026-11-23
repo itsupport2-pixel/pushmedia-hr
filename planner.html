@@ -1674,6 +1674,22 @@ function fi(name, size=16, cls='', style='') {
   <div class="spinner"></div>
   <div class="loading-txt">กำลังโหลดตารางงาน…</div>
 </div>
+<style>/* 23 พ.ย. 2569 ผู้ใช้: ทุกจุดที่ขึ้นกำลังโหลดใช้ Skeleton · _SK(kind,text) · ใช้จังหวะ lskP เดียวกับหน้าโหลด */
+.psk{padding:12px 4px}.psk i{display:block;flex:none;background:#E6E6E6;border-radius:6px;max-width:100%;animation:lskP 1.4s ease-in-out infinite}
+.psk i.rd{border-radius:50%}.psk-r{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line-2,#F2F2F2)}.psk-r:last-child{border-bottom:0}
+.psk-c{flex:1;display:flex;flex-direction:column;gap:7px;min-width:0}.psk-g{display:flex;flex-direction:column;gap:10px}
+.psk-ph{display:flex;gap:8px;flex-wrap:wrap}.psk-ph i{width:72px;height:72px;border-radius:10px}
+.psk-t{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+@media (prefers-reduced-motion:reduce){.psk i{animation:none}}
+</style>
+<script>
+function _SK(k,t){var b=function(w,h,c){return '<i'+(c?' class="'+c+'"':'')+' style="width:'+w+';height:'+h+'px"></i>'},n=function(c,f){var s='';for(var i=0;i<c;i++)s+=f(i);return s},h;
+  if(k==='rows'||k==='rows3')h=n(k==='rows3'?3:6,function(i){return '<div class="psk-r">'+b('30px',30,'rd')+'<div class="psk-c">'+b([46,38,52,34,44,40][i%6]+'%',10)+b([26,30,22,28,24,20][i%6]+'%',8)+'</div></div>'});
+  else if(k==='ph')h='<div class="psk-ph">'+n(3,function(){return b('72px',72)})+'</div>';
+  else if(k==='mini')h='<div class="psk-g">'+b('56%',11)+b('36%',9)+'</div>';
+  else h='<div class="psk-g">'+b('38%',13)+b('92%',10)+b('84%',10)+b('70%',10)+b('52%',10)+'</div>';
+  return '<div class="psk psk-'+k+'" aria-busy="true"><span class="psk-t">'+(t||'กำลังโหลด…')+'</span>'+h+'</div>'}
+</script>
 <script>
 
 (function() {
@@ -2992,7 +3008,7 @@ window.pgConfirmed = function () {
   var c = document.getElementById('content');
   if (!_cfpIsAdmin() && allowedMenus().indexOf('confirmed') < 0) { c.innerHTML = '<div class="pn"><h3>คุณไม่มีสิทธิ์ดูเมนู Confirmed</h3><p style="color:var(--ink-3)">ขอสิทธิ์ได้ที่ผู้ดูแลระบบ (System Settings › สิทธิ์การเข้าถึง)</p></div>'; return; }
   if (!document.getElementById('cfp-tip')) { var tp = document.createElement('div'); tp.id = 'cfp-tip'; tp.hidden = true; document.body.appendChild(tp); }
-  c.innerHTML = '<div id="cfp"><div class="cfp-load">กำลังโหลดรายการโปรเจกต์ Confirmed...</div></div>';
+  c.innerHTML = '<div id="cfp">' + _SK('rows', 'กำลังโหลดรายการโปรเจกต์ Confirmed…') + '</div>';
   _pmLoad().then(function (rows) { _cfp.data = _cfpCompute(rows || []); if (curPage === 'confirmed') _cfpRender(); })
     .catch(function (e) { var el = document.getElementById('cfp'); if (el) el.innerHTML = '<div class="cfp-load" style="color:#B91C1C">' + escapeHtml(e.message || 'โหลดรายการโปรเจกต์ไม่สำเร็จ') + ' · <a href="#" onclick="pgConfirmed();return false;">ลองใหม่</a></div>'; });
 };
@@ -5739,7 +5755,7 @@ function renderCal() {
         </div>
       </div>
     </div>
-    <div id="cal-right"><div class="rpanel">กำลังโหลด...</div></div>
+    <div id="cal-right"><div class="rpanel">${_SK('rows')}</div></div>
   </div>`;
 
   renderCalRight(dayMap);
@@ -8846,7 +8862,7 @@ async function renderEmpKPI() {
   document.getElementById('content').innerHTML =
     '<div id="empkpi-filter-wrap">' + _empKpiFilterBarHTML() + '</div>' +
     toggleHtml +
-    '<div id="empkpi-content"><div style="text-align:center;padding:40px;color:var(--ink-3);font-size:12px;">กำลังโหลดข้อมูลการเข้างาน...</div></div>';
+    '<div id="empkpi-content">' + _SK('rows', 'กำลังโหลดข้อมูลการเข้างาน…') + '</div>';
 
   
   var res = await Promise.all([
@@ -9798,7 +9814,7 @@ var WTMPhoto = (function(){
     var body = '';
     if(!pending){
       if(photos === undefined){
-        body = '<div style="font-size:12px;color:var(--ink-3);padding:6px 0;">กำลังโหลดรูป…</div>';
+        body = _SK('ph', 'กำลังโหลดรูป…');
       } else if(!photos.length){
         body = '<div class="hr-nophoto" style="font-size:12px;color:var(--ink-3);padding:8px 10px;background:var(--bg-2,var(--bg));border-radius:8px;">ยังไม่มีรูปหน้างาน</div>';
       } else {
@@ -10686,7 +10702,7 @@ function pmPickSearch(p, k) {
   if (!res || !qEl) return;
   res.style.display = 'block';
   if (!_pmRows) {
-    res.innerHTML = '<div style="padding:10px 14px;font-size:11.5px;color:var(--ink-3);">กำลังโหลดรายการ PM...</div>';
+    res.innerHTML = '<div style="padding:0 14px">' + _SK('rows3', 'กำลังโหลดรายการ PM…') + '</div>';
     _pmLoad().then(function () { if (document.activeElement === qEl) pmPickSearch(p, k); }).catch(function (e) {
       res.innerHTML = '<div style="padding:10px 14px;font-size:11.5px;color:var(--red,#c0392b);">' + escapeHtml(e.message || 'โหลดรายการ PM ไม่สำเร็จ') + '</div>';
     });
@@ -11598,7 +11614,7 @@ function renderStaffDir() {
   var titleEl = document.getElementById('pg-title'); titleEl.innerHTML = ''; titleEl.textContent = 'รายชื่อพนักงานบริษัท';
   document.getElementById('tb-actions').innerHTML = _dirTabsHtml();
   var c = document.getElementById('content');
-  c.innerHTML = '<div id="sd"><div class="sd-empty">กำลังโหลดรายชื่อพนักงาน...</div></div>';
+  c.innerHTML = '<div id="sd">' + _SK('rows', 'กำลังโหลดรายชื่อพนักงาน…') + '</div>';
   _sdLoad().then(function () { if (curPage === 'depts' && _dirTab === 'cards') _sdRender(); _sdPrefetch(); })
     .catch(function (e) { var el = document.getElementById('sd'); if (el) el.innerHTML = '<div class="sd-empty" style="color:#B91C1C">' + escapeHtml(e.message || 'โหลดรายชื่อพนักงานไม่สำเร็จ') + ' · <a href="#" onclick="renderStaffDir();return false;">ลองใหม่</a></div>'; });
 }
@@ -11707,7 +11723,7 @@ function _sdOpen(code) {
   var f = function (id, lbl, val, ph, full) { return '<div class="fg"' + (full ? ' style="grid-column:1/-1"' : '') + '><label class="fl" for="sde-' + id + '">' + lbl + '</label><input class="fc" id="sde-' + id + '" value="' + escapeHtml(val || '') + '"' + (ph ? ' placeholder="' + ph + '"' : '') + '></div>'; };
   var depts = {}; _sdPeople().forEach(function (x) { if (x.dept && x.dept !== 'ไม่ระบุแผนก') depts[x.dept] = 1; });
   openMd('<div class="md md-lg"><div class="mh"><h3>แก้ไขข้อมูลพนักงาน · ' + escapeHtml(code) + '</h3><button class="mc" onclick="closeMd()">✕</button></div><div class="mb">' +
-    '<div id="sde-alert"><div class="al al-i">กำลังโหลดข้อมูล...</div></div>' +
+    '<div id="sde-alert">' + _SK('mini', 'กำลังโหลดข้อมูล…') + '</div>' +
     '<div class="sde-top"><div class="sde-ph" id="sde-ph">' + (p.photo ? '<img src="' + escapeHtml(p.photo) + '" alt="" referrerpolicy="no-referrer">' : '<span>' + escapeHtml(String(p.nick || p.name || '?').slice(0, 2)) + '</span>') + '</div>' +
       '<div><label class="btn btn-sm" for="sde-file" style="cursor:pointer">เปลี่ยนรูป</label><input type="file" id="sde-file" accept="image/*" style="display:none"><div style="font-size:11px;color:var(--ink-3);margin-top:6px">รูปจะถูกครอปเป็นแนวตั้ง 3:4 และย่อให้อัตโนมัติ</div></div></div>' +
     '<div class="sde-grid">' + f('name', 'ชื่อ-นามสกุล', p.name) + f('nickname', 'ชื่อเล่น', p.nick) +
@@ -13150,7 +13166,7 @@ async function renderMonthlySheetsList() {
   var el = document.getElementById('monthly-sheets-list');
   if (!el) return;
   if (!CONFIG.GAS_URL) { el.innerHTML = '<div style="color:var(--ink-3);font-size:11px;">ต้องเชื่อมต่อ GAS ก่อน</div>'; return; }
-  el.innerHTML = '<div style="color:var(--ink-3);font-size:11px;">กำลังโหลด...</div>';
+  el.innerHTML = _SK('mini');
   try {
     var res = await apiGet('monthlySheets');
     if (!res || !res.length) { el.innerHTML = '<div style="color:var(--ink-3);font-size:11px;text-align:center;padding:8px;">ยังไม่มีชีตรายเดือน</div>'; return; }
@@ -15817,7 +15833,7 @@ body.m-active{ overflow:hidden; }
     document.getElementById('m-body').innerHTML = (prefix||'') +
       '<div class="m-month"><button onclick="mAttMonth(-1)">'+svg(IC.chevL)+'</button><b>'+mMonthLabel(mMonth)+'</b><button onclick="mAttMonth(1)">'+svg(IC.chevR)+'</button></div><div id="m-att-body"></div>';
     mEnsureMonth(mMonth, function(){ if(mActive && (mTab==='att' || mTab==='home')) mAttBody(); });
-    if(DB._attMonth===mMonth) mAttBody(); else document.getElementById('m-att-body').innerHTML = '<div class="m-empty"><p>กำลังโหลด...</p></div>';
+    if(DB._attMonth===mMonth) mAttBody(); else document.getElementById('m-att-body').innerHTML = _SK('rows');
   }
   function mAttBody(){
     var el = document.getElementById('m-att-body'); if(!el) return;
@@ -15860,7 +15876,7 @@ body.m-active{ overflow:hidden; }
     document.getElementById('m-body').innerHTML =
       '<div class="m-month"><button onclick="mLeaveYr(-1)">'+svg(IC.chevL)+'</button><b>'+(mLeaveYear+543)+'</b><button onclick="mLeaveYr(1)">'+svg(IC.chevR)+'</button></div><div id="m-lv-body"></div>';
     mEnsureLeaveYear(mLeaveYear, function(){ if(mActive && mTab==='leave') mLeaveBody(); });
-    if(DB._lvYear===mLeaveYear) mLeaveBody(); else document.getElementById('m-lv-body').innerHTML = '<div class="m-empty"><p>กำลังโหลด...</p></div>';
+    if(DB._lvYear===mLeaveYear) mLeaveBody(); else document.getElementById('m-lv-body').innerHTML = _SK('rows');
   }
   function mEnsureLeaveYear(yr, cb){
     if(DB._lvYear === yr){ cb(); return; }
@@ -16164,7 +16180,7 @@ body.m-active{ overflow:hidden; }
   // ── รายชื่อพนักงานบริษัท (มือถือ · เพิ่ม 2026-10-06) — ใช้ _sdLoad/_sdRender/_sdOpen ตัวเดียวกับหน้าคอม · โหลดเมื่อเปิดหน้านี้เท่านั้น ──
   function mRenderStaff(){
     var b=document.getElementById('m-body'); if(!b) return;
-    b.innerHTML='<button class="m-btn" style="margin-bottom:0.8em" onclick="mGo(\'profile\')">‹ กลับไปหน้าโปรไฟล์</button><div id="sd" class="sd-m"><div class="sd-empty">กำลังโหลดรายชื่อพนักงาน...</div></div>';
+    b.innerHTML='<button class="m-btn" style="margin-bottom:0.8em" onclick="mGo(\'profile\')">‹ กลับไปหน้าโปรไฟล์</button><div id="sd" class="sd-m">'+_SK('rows','กำลังโหลดรายชื่อพนักงาน…')+'</div>';
     _sdLoad().then(function(){ if(mTab==='staff') _sdRender(); _sdPrefetch(); }).catch(function(e){ var el=document.getElementById('sd'); if(el) el.innerHTML='<div class="sd-empty" style="color:#B91C1C">'+escapeHtml((e&&e.message)||'โหลดรายชื่อพนักงานไม่สำเร็จ')+'</div>'; });
   }
   window._mIsStaffOpen = function(){ return mActive && mTab==='staff'; };

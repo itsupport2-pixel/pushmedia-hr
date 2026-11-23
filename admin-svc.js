@@ -17,7 +17,7 @@ function svcPh(){var D=A.svD,L=D&&D.last;return '<div class="ph" id="svc-ph"><di
 function vSvc(){A.svPlay=1;var f=svcF(),D=A.svD,need=D?D.kpi.need:(A.d.me.sv&&A.d.me.sv.n)||0;
   return svcPh()+
    '<div class="svx-tabs svx-tl" role="tablist" id="svc-tabs">'+svxTab('data-svt','all','เคสทั้งหมด',null,f.card!=='need')+svxTab('data-svt','need','ต้องลงพื้นที่',need,f.card==='need')+'</div>'+
-   '<div id="svc-body"><div class="loading"><span class="spin"></span>กำลังโหลด…</div></div>'}
+   '<div id="svc-body">'+SK('rows','กำลังโหลด…')+'</div>'}
 function bSvc(){$$('[data-svt]').forEach(function(b){b.onclick=function(){var f=svcF(),c=b.dataset.svt==='need'?'need':'';if(f.card===c)return;f.card=c;f.page=1;A.svTabFx=1;svcHead(1);svcLoad()}});
   svcPhBind();svcLoad()}
 function svcPhBind(){if($('#svc-pull'))$('#svc-pull').onclick=function(){var bt=this;ask({title:'ดึงเคสจาก Codex ตอนนี้?',desc:'ระบบจะเรียก Codex Assist (ระบบจริง) · เคสเดิมอัปเดตตาม Case ID ไม่เพิ่มซ้ำ',tone:'warn',buttons:[{k:'no',label:'ยกเลิก'},{k:'ok',label:'ดึงเคส',cls:'pri'}]}).then(function(k){if(k!=='ok')return;busy(bt,1);
@@ -52,7 +52,7 @@ function svcDraw(){var b=$('#svc-body'),D=A.svD,f=svcF();if(!b||!D)return;b.clas
   if(qa){var qi=$('#svc-q');qi.focus();try{qi.setSelectionRange(qa[0],qa[1])}catch(e){}}
   if(A.svPlay||A.svTabFx){A.svPlay=0;A.svTabFx=0;svcFx(b);svxCount(b)}svxInd($('#svc-tabs'));if(typeof loadPhotos==='function')loadPhotos()}   // พิมพ์ค้นหาต่อได้ระหว่างผลมาถึง
 function svcRow(ic,cls,l,v){return '<div class="svc-dr"><span class="svc-di '+cls+'">'+svcI(ic,17)+'</span><span><small>'+l+'</small><b>'+v+'</b></span></div>'}
-function svcOpen(id){drawer('รายละเอียดเคส','<div class="loading"><span class="spin"></span>กำลังโหลด…</div>');
+function svcOpen(id){drawer('รายละเอียดเคส',''+SK('g','กำลังโหลด…')+'');
   aCall('svDetail',id).then(function(x){if(!$('#ov .drw'))return;var media=x.media||[],skip=/^(ticket_no|case_id|created_at|customer|subject|location|status|time_resolution|assign_id)$/i;
     var props=(x.props||[]).filter(function(p){return !skip.test(String(p.k))&&!/onsite|ลงพื้นที่|^location$/i.test(String(p.l||p.k))});
     var body='<div class="svc-d"><div class="svc-dh"><b class="mono svc-id">'+esc(x.case_id)+'</b>'+svcSt(x.status)+'<span class="sp"></span><button class="btn sm" id="svc-cx">'+svcI('ext',14)+' เปิดใน Codex</button></div>'+
@@ -85,7 +85,7 @@ function svcToSched(x){var c={id:x.case_id,s:x.subject||'',cu:x.customer||'',loc
     if(ok){try{w.svOpenFromCase(c)}catch(e){toast('เปิดฟอร์มไม่สำเร็จ: '+e.message,'er')}return}
     if(Date.now()-t0>20000){toast('ตารางงานยังโหลดไม่เสร็จ ลองกดอีกครั้ง','er');return}setTimeout(tick,250)})()}
 /* ตั้งค่า › ตารางงาน › จับคู่พนักงาน Codex ↔ HR (ผู้ดูแลจับคู่เอง · ใช้แสดงชื่อผู้รับเคสเท่านั้น) */
-function svcPeopleOpen(){drawer('จับคู่พนักงาน Codex ↔ HR','<div class="loading"><span class="spin"></span>กำลังโหลด…</div>','<button class="btn" id="svp-x">ยกเลิก</button><button class="btn pri" id="svp-s">บันทึกการจับคู่</button>');
+function svcPeopleOpen(){drawer('จับคู่พนักงาน Codex ↔ HR',''+SK('g','กำลังโหลด…')+'','<button class="btn" id="svp-x">ยกเลิก</button><button class="btn pri" id="svp-s">บันทึกการจับคู่</button>');
   $('#svp-x').onclick=closeD;
   aCall('svPeople').then(function(r){var dv=$('#ov .drw .cb');if(!dv)return;var E=r.emps||[],N=r.names||[],EC={},cur={},sel={};E.forEach(function(e){EC[e.c]=e});N.forEach(function(x){cur[x.x]=x.c;sel[x.x]=x.c});
     /* 21 พ.ย. 2569 ผู้ใช้: พิมพ์ค้นหาชื่อได้ + มีรูปพนักงาน (แทนช่องเลือกยาว) */
@@ -153,7 +153,7 @@ var SVX_MS=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ
 function svxD(d){var p=String(d||'').split('-');return p.length===3?(+p[2])+' '+SVX_MS[+p[1]-1]:d}
 function svxMom(a,b,mode,fmt){if(a==null||b==null)return '<span class="svx-km">— ไม่มีข้อมูลช่วงก่อน</span>';var d=a-b;if(Math.abs(d)<1e-9)return '<span class="svx-km">เท่าช่วงเดียวกันเดือนก่อน</span>';var up=d>0,cls=mode==='n'?'svx-nt':(mode==='hi'?up:!up)?'svx-up':'svx-bd';
   return '<span class="svx-km"><b class="'+cls+'">'+(up?'▲':'▼')+'</b> '+fmt(Math.abs(d))+' จาก '+fmt(b,1)+'</span>'}
-function vSvcr(){A.svrPlay=1;A.svxTab='open';A.svxF=null;return '<div id="svr-body" class="svx"><div class="loading"><span class="spin"></span>กำลังโหลด…</div></div>'}
+function vSvcr(){A.svrPlay=1;A.svxTab='open';A.svxF=null;return '<div id="svr-body" class="svx">'+SK('kpi','กำลังโหลด…')+'</div>'}
 function bSvcr(){svcrLoad()}
 function svcrLoad(){var n=A.svrN=(A.svrN||0)+1,b=$('#svr-body');if(b&&A.svrD)b.classList.add('svc-busy');
   aCall('svReport',{month:A.svrM||''}).then(function(d){if(n!==A.svrN||A.view!=='svcr')return;A.svrD=d;svcrDraw()}).catch(function(e){var x=$('#svr-body');if(x)x.innerHTML='<div class="alert">'+esc(e.message)+'</div>'})}
@@ -244,7 +244,7 @@ function svxFx(root,panel){if(!root||!Element.prototype.animate||matchMedia('(pr
 
 /* ── รูปจากแชตของเคส (23 พ.ย. 2569 · แบบ ค. · หลังบ้าน svMedia) · คำนำหน้า svm- ── */
 function svcMediaHtml(L,state,err){L=(L||[]).filter(function(m){return m&&m.url&&!m.isThumb});
-  var badge=state==='load'?'<span class="badge b-mute"><span class="spin" style="width:10px;height:10px"></span> กำลังโหลดจาก Codex…</span>':L.length?'<span class="badge b-info">'+L.length+' ไฟล์</span>':err?'<span class="badge b-warn">'+esc(err)+'</span>':'<span class="badge b-mute">ไม่มีรูปในแชต</span>';
+  var badge=state==='load'?'<span class="badge b-mute">'+SKi('120px','กำลังโหลดจาก Codex…')+'</span>':L.length?'<span class="badge b-info">'+L.length+' ไฟล์</span>':err?'<span class="badge b-warn">'+esc(err)+'</span>':'<span class="badge b-mute">ไม่มีรูปในแชต</span>';
   var grid=L.length?'<div class="svc-mg">'+L.slice(0,30).map(function(m,i){var v=m.type==='video';return '<button type="button" class="svm-t'+(v?' v':'')+'" data-svm="'+i+'" aria-label="'+(v?'วิดีโอ':'รูป')+' '+(i+1)+'">'+(v?(m.thumb?'<img src="'+esc(m.thumb)+'" alt="" loading="lazy" data-rmerr>':'')+'<span class="svm-play" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="#fff"><path d="M8 5v14l11-7z"/></svg></span>':'<img src="'+esc(m.url)+'" alt="" loading="lazy" data-rmerr>')+'</button>'}).join('')+'</div>'
     :'<div class="svc-mg">'+[1,2,3].map(function(){return '<span class="svc-mx'+(state==='load'?' skel':'')+'">'+svcI('img',24)+'</span>'}).join('')+'</div>';
   return '<div class="svc-mh">'+svcI('img',16)+'<b class="svc-h">รูปจากแชต (Chat Media)</b><span class="sp"></span>'+badge+'</div>'+grid+(err&&L.length?'<div class="faint" style="font-size:12px;margin-top:6px">'+esc(err)+' · แสดงรูปที่จำไว้</div>':'')}
@@ -253,10 +253,15 @@ function svcMediaLoad(x){var box=$('#svm-box');if(!box)return;svcMediaBind(x.med
   var age=x.mediaAt?(Date.now()-new Date(x.mediaAt).getTime()):1e12;if(x.mediaAt&&age<10*60e3)return;   /* จำไว้ไม่ถึง 10 นาที = ไม่ถาม Codex ซ้ำ */
   aCall('svMedia',x.case_id).then(function(r){var b=$('#svm-box');if(!b||!$('#ov .drw'))return;b.innerHTML=svcMediaHtml(r.media,'',r.err);svcMediaBind(r.media)})
     .catch(function(e){var b=$('#svm-box');if(b){b.innerHTML=svcMediaHtml(x.media,'',e.message);svcMediaBind(x.media)}})}
+var SVM_I=(function(){var g=function(d,w){return '<svg width="'+(w||20)+'" height="'+(w||20)+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+d+'</svg>'};
+  return {l:g('<path d="M15 18l-6-6 6-6"/>',24),r:g('<path d="M9 18l6-6-6-6"/>',24),x:g('<path d="M18 6L6 18M6 6l12 12"/>'),o:g('<path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',18)}})();
 function svcMediaView(L,i){var old=$('#svm-lb');if(old)old.remove();var m=L[i];if(!m)return;
   var el=document.createElement('div');el.id='svm-lb';el.className='svm-lb';el.setAttribute('role','dialog');el.setAttribute('aria-label','ดูรูปจากแชต');
   el.innerHTML='<div class="svm-in">'+(m.type==='video'?'<video src="'+esc(m.url)+'" controls autoplay playsinline'+(m.thumb?' poster="'+esc(m.thumb)+'"':'')+'></video>':'<img src="'+esc(m.url)+'" alt="">')+'</div>'+
-    '<div class="svm-bar"><span>'+(i+1)+' / '+L.length+'</span><span class="sp"></span><a class="btn sm" href="'+esc(m.url)+'" target="_blank" rel="noopener">เปิดแท็บใหม่</a>'+(L.length>1?'<button class="btn sm" data-svmn="-1" aria-label="ก่อนหน้า">‹</button><button class="btn sm" data-svmn="1" aria-label="ถัดไป">›</button>':'')+'<button class="btn sm" id="svm-x">ปิด</button></div>';
+    /* 23 พ.ย. 2569 ผู้ใช้: ออกแบบปุ่มใหม่ · ลูกศรกลมซ้าย-ขวาข้างรูป · มุมขวาบน = เปิดแท็บใหม่ + ปิด · ตัวนับเป็นป้ายด้านล่าง */
+    (L.length>1?'<button type="button" class="svm-nav svm-prev" data-svmn="-1" aria-label="รูปก่อนหน้า" title="ก่อนหน้า (←)">'+SVM_I.l+'</button><button type="button" class="svm-nav svm-next" data-svmn="1" aria-label="รูปถัดไป" title="ถัดไป (→)">'+SVM_I.r+'</button>':'')+
+    '<div class="svm-top"><a class="svm-ib" href="'+esc(m.url)+'" target="_blank" rel="noopener" aria-label="เปิดในแท็บใหม่" title="เปิดในแท็บใหม่">'+SVM_I.o+'<span>เปิดแท็บใหม่</span></a><button type="button" class="svm-ib svm-x" id="svm-x" aria-label="ปิด" title="ปิด (Esc)">'+SVM_I.x+'</button></div>'+
+    (L.length>1?'<div class="svm-cnt">'+(i+1)+' / '+L.length+'</div>':'');
   document.body.appendChild(el);var close=function(){el.remove();window.removeEventListener('keydown',kd,true)},kd=function(e){if(['Escape','ArrowRight','ArrowLeft'].indexOf(e.key)>=0){e.stopImmediatePropagation();e.preventDefault()}if(e.key==='Escape')close();if(e.key==='ArrowRight'&&L.length>1){close();svcMediaView(L,(i+1)%L.length)}if(e.key==='ArrowLeft'&&L.length>1){close();svcMediaView(L,(i-1+L.length)%L.length)}};
   window.addEventListener('keydown',kd,true);el.onclick=function(e){if(e.target===el)close()};$('#svm-x').onclick=close;
   $$('#svm-lb [data-svmn]').forEach(function(b){b.onclick=function(){close();svcMediaView(L,(i+ +b.dataset.svmn+L.length)%L.length)}})}
@@ -266,7 +271,7 @@ function svcMediaView(L,i){var old=$('#svm-lb');if(old)old.remove();var m=L[i];i
  * menu → svAccessSave (sv_access) · rep → saveSettings {sv_rep_access} (ช่องรหัสเดิม) */
 var SVA={emps:[],g:{}};
 var SVA_G={menu:{t:'ผู้เห็นเมนูเคส Service',d:'เห็นเมนูเคสและแผงรายละเอียดเคสเท่านั้น · ไม่รวมรายงาน · ผู้ดูแลระบบเห็นเสมอ',btn:'บันทึกผู้เห็นเมนู'},rep:{t:'ผู้เห็นรายงาน Service',d:'เห็นเมนู รายงาน › Service · ผู้ดูแลระบบเห็นเสมอ · คนอื่นไม่เห็นเมนูรายงาน',btn:'บันทึกผู้เห็นรายงาน'}};
-function svaMount(){var b=$('#sva-box');if(!b)return;b.innerHTML='<div class="loading" style="padding:16px 20px"><span class="spin"></span>กำลังโหลด…</div>';
+function svaMount(){var b=$('#sva-box');if(!b)return;b.innerHTML=''+SK('form','กำลังโหลด…')+'';
   aCall('svAccessInfo').then(function(r){SVA.emps=r.emps||[];SVA.g={menu:{sel:(r.codes||[]).slice(),saved:!!r.saved,dirty:false},rep:{sel:(r.rep||[]).slice(),saved:true,dirty:false}};
     b.innerHTML='<div id="sva-menu" class="sva"></div><div id="sva-rep" class="sva"></div>';svaDraw('menu');svaDraw('rep')}).catch(function(e){b.innerHTML='<div class="alert">'+esc(e.message)+'</div>'})}
 function svaAv(e,s){return e.i&&PH[e.i]?'<img class="av" data-av="'+esc(e.i)+'" src="'+esc(PH[e.i])+'" alt="" style="width:'+s+'px;height:'+s+'px;object-fit:cover">':'<span class="av"'+(e.i?' data-av="'+esc(e.i)+'"':'')+' style="width:'+s+'px;height:'+s+'px;font-size:'+Math.round(s/2.6)+'px">'+esc(String(e.k||e.n).replace(/^[^0-9A-Za-z\u0E00-\u0E7F]+/,'').slice(0,2))+'</span>'}

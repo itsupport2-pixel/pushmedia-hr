@@ -64,7 +64,7 @@ function closeD(){var pn=document.querySelector('#ov .og2-drw');$('#ov').innerHT
 function ogRe(){if(A.view==='org'&&A.otab==='chart'&&A.opanel&&document.querySelector('#ov .og2-drw'))ogPanel(A.opanel.k,A.opanel.id)}
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeD()});
 function invite(ids){
-  drawer('ส่งลิงก์เชื่อม LINE','<div class="loading"><span class="spin"></span>กำลังสร้างลิงก์…</div>');
+  drawer('ส่งลิงก์เชื่อม LINE',''+SK('g','กำลังสร้างลิงก์…')+'');
   aCall('createInvites',ids).then(function(list){
     var okL=list.filter(function(x){return x.url}),bad=list.filter(function(x){return x.error});
     var one=okL.length===1?okL[0]:null,qrSvg='';

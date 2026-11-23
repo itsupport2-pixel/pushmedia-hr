@@ -17,19 +17,19 @@ function vCb(){if(A.cbId)return vCbPost();var f=A.cbF||(A.cbF={cat:'',filter:'al
    '<button class="cbcard cba-start" data-cbnew>'+CB.av(CB_BASE,me,40)+'<span>คุณคิดอะไรอยู่ '+esc(CB.who(me))+'</span>'+CB.ic('image','cbg')+'</button>'+   // View as: แสดงเหมือนพนักงานเห็น (กดแล้วแจ้งว่าดูได้อย่างเดียว)
    '<div class="cba-bar"><div class="cba-chips" role="group" aria-label="หมวด">'+chip('','ทั้งหมด')+cats.map(function(c){return chip(c.id,c.name)}).join('')+'</div>'+
    '<div class="cba-tabs" role="group" aria-label="มุมมอง">'+[['all','ล่าสุด'],['noreply','ยังไม่มีคนตอบ'],['mine','ของฉัน']].map(function(x){return '<button data-cbflt="'+x[0]+'" aria-pressed="'+(f.filter===x[0])+'">'+x[1]+'</button>'}).join('')+'</div></div>'+
-   '<div id="cb-feed"><div class="loading"><span class="spin"></span></div></div></div>'}
+   '<div id="cb-feed">'+SK('rows')+'</div></div>'}
 function bCb(){if(A.cbId)return bCbPost();var f=A.cbF;
   cbBoot().then(function(){if(A.view==='cb'&&!A.cbId&&!$('[data-cbcat="c_qa"]'))render()}).catch(function(){});
   var qt;$('#cb-q').oninput=function(){var v=this.value;clearTimeout(qt);qt=setTimeout(function(){f.q=v.trim();cbLoad()},300)};
   cbLoad()}
-function cbLoad(more){var f=A.cbF,q={cat:f.cat,filter:f.filter,q:f.q};if(more)q.cursor=A.cbL.next;else if($('#cb-feed')&&!A.cbL)$('#cb-feed').innerHTML='<div class="loading"><span class="spin"></span></div>';
+function cbLoad(more){var f=A.cbF,q={cat:f.cat,filter:f.filter,q:f.q};if(more)q.cursor=A.cbL.next;else if($('#cb-feed')&&!A.cbL)$('#cb-feed').innerHTML=''+SK('rows')+'';
   return aCall('cbList',q).then(function(r){if(more){A.cbL.items=A.cbL.items.concat(r.items);A.cbL.next=r.next}else A.cbL=r;drawCbFeed()}).catch(function(e){if($('#cb-feed'))$('#cb-feed').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})}
 function drawCbFeed(){var L=A.cbL,el=$('#cb-feed');if(!el||!L)return;var o=cbOpts();
   if(!L.items.length){el.innerHTML='<div class="cbcard cba-empty">'+(A.cbF.q?'ไม่พบโพสต์ที่ตรงกับ “'+esc(A.cbF.q)+'”':'ยังไม่มีโพสต์ · เริ่มโพสต์แรกได้เลย')+'</div>';return}
   el.innerHTML=L.items.map(function(p){return CB.card(p,{base:o.base,cats:o.cats,me:o.me,menuOpen:A.cbMenu===p.id})}).join('')+(L.next?'<button class="cba-more" data-cbmore>แสดงโพสต์เก่ากว่านี้</button>':'')}
 
 /* ───────── อ่านโพสต์ ───────── */
-function vCbPost(){return '<div class="cba-wrap"><div class="cba-head"><div><button class="cba-back" id="cb-back">'+CB.ic('down','cba-bk')+'ชุมชน</button><h1 id="cb-h">โพสต์</h1></div></div><div id="cb-post"><div class="loading"><span class="spin"></span></div></div></div>'}
+function vCbPost(){return '<div class="cba-wrap"><div class="cba-head"><div><button class="cba-back" id="cb-back">'+CB.ic('down','cba-bk')+'ชุมชน</button><h1 id="cb-h">โพสต์</h1></div></div><div id="cb-post">'+SK('rows')+'</div></div>'}
 function bCbPost(){$('#cb-back').onclick=function(e){e.preventDefault();A.cbId=null;A.cbP=null;A.cbL=null;render();cbBoot(true)};
   cbBoot().catch(function(){});cbOpenPost(A.cbId)}
 function cbOpenPost(id){return aCall('cbGet',{id:id}).then(function(d){A.cbP=d;drawCbPost();cbBoot(true);if(A.cbFocus){A.cbFocus=0;var t=$('#cbct');if(t){t.focus();t.scrollIntoView({block:'center'})}}}).catch(function(e){if($('#cb-post'))$('#cb-post').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})}

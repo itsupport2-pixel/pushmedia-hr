@@ -29,7 +29,7 @@ var PZST={scheduled:['ตั้งเวลาไว้','k'],queued:['กำล
 function pzBadge(s,test){var x=test&&s!=='scheduled'?['ทดสอบ','g']:PZST[s]||[s,'g'];return '<span class="pz-b pz-b-'+x[1]+'">'+esc(x[0])+'</span>'}
 
 /* ── หน้าเมนู ── */
-function vPz(){return '<div id="pz-root"><div class="loading"><span class="spin"></span>กำลังโหลด…</div></div>'}
+function vPz(){return '<div id="pz-root">'+SK('rows','กำลังโหลด…')+'</div>'}
 function bPz(){if(PZ.d)return pzDraw();pzLoad()}
 function pzLoad(){return aCall('lmBoot').then(function(d){PZ.d=d;pzDraw();pzQuota()}).catch(function(e){var r=$('#pz-root');if(r)r.innerHTML='<div class="alert">'+esc(e.message)+'</div>'})}
 function pzQuota(){var n=new Date(Date.now()+7*3600e3),ym=n.toISOString().slice(0,7);if(!PZ.d.token||PZ.d.dev)return;aCall('lineQuota').then(function(u){PZ.q2=u;var el=$('#pz-quota');if(el)el.outerHTML=pzQuotaK()}).catch(function(e){PZ.q2={err:e.message};var el=$('#pz-quota');if(el)el.outerHTML=pzQuotaK()})}
@@ -328,7 +328,7 @@ function pzHist(plan){var q=PZ.hq.trim().toLowerCase(),F=[['all','ทั้ง�
   $$('[data-pzhf]').forEach(function(b){b.onclick=function(){PZ.hf=b.dataset.pzhf;pzHist(plan)}});$$('[data-pzd]').forEach(function(tr){tr.onclick=function(){pzDetail(tr.dataset.pzd)}})}
 
 /* ── N7 รายละเอียดการส่ง ── */
-function pzDetail(id){drawer('รายละเอียดการส่ง','<div class="loading"><span class="spin"></span>กำลังโหลด…</div>');aCall('lmDetail',id).then(function(s){pzDetDraw(s,'all')}).catch(function(e){$('.drw .cb').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})}
+function pzDetail(id){drawer('รายละเอียดการส่ง',''+SK('g','กำลังโหลด…')+'');aCall('lmDetail',id).then(function(s){pzDetDraw(s,'all')}).catch(function(e){$('.drw .cb').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})}
 function pzDetDraw(s,f){var R=s.recips||[],ST={sent:['ส่งแล้ว','ok'],dev:['ระบบทดสอบ','g'],fail:['ไม่สำเร็จ','bad'],nolink:['ยังไม่เชื่อม LINE · ไม่ได้ส่ง','warn'],wait:['รอส่ง','g'],click:['ได้รับผ่านกลุ่ม','g']};
   var bad=R.filter(function(r){return r.s==='fail'||r.s==='nolink'}),grp=R.filter(function(r){return r.k==='g'}),ck=R.filter(function(r){return r.c}),L=f==='bad'?bad:f==='grp'?grp:f==='ck'?ck:R;
   var cb=$('.drw .cb');if(!cb)return;$('.drw h3').textContent=s.image?s.image.title:'ข้อความ';

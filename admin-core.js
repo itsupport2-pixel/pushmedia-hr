@@ -357,7 +357,7 @@ function coEdit(i){var L=(A.d.companies||[]).map(function(c){return Object.assig
   var close0=closeD;closeD=function(){closeD=close0;coThemeApply();close0()};   // ปิดโดยไม่บันทึก = คืนสีเดิม
   $('#co-x').onclick=closeD;$('#co-ok').onclick=function(){F.forEach(function(x){c[x[0]]=$('#co-'+x[0]).value.trim()});c.cutoff_day=$('#co-cutoff_day').value;c.theme=$('#co-theme').value;c.theme_nav=$('#co-thx-nav').value.trim().toUpperCase();c.theme_acc=$('#co-thx-acc').value.trim().toUpperCase();if(i<0)L.push(c);save(L,this)};
   var dl=$('#co-del');if(dl)dl.onclick=function(){var b=this;ask({title:'ลบ '+c.short+'?',desc:'ลบได้เมื่อไม่มีพนักงานในบริษัทนี้แล้ว',tone:'warn',buttons:[{k:'no',label:'ยกเลิก'},{k:'yes',label:'ลบ',cls:'pri'}]}).then(function(k){if(k==='yes')save(L.filter(function(x,j){return j!==i}),b)})}}
-function vaPick(){drawer('ดูในมุมมองของพนักงาน','<div class="loading"><span class="spin"></span>กำลังโหลด…</div>');aCall('mapAccess').then(function(d){
+function vaPick(){drawer('ดูในมุมมองของพนักงาน',''+SK('g','กำลังโหลด…')+'');aCall('mapAccess').then(function(d){
   var row=function(p){return '<div class="ma-r va-r" data-maq="'+esc((p.code+' '+p.name+' '+p.nickname+' '+p.dept+' '+(ROLE[p.role]||p.role)).toLowerCase())+'">'+av(p,28)+'<span style="flex:1;min-width:0"><b>'+esc(p.code)+' '+esc(p.name)+(p.nickname?' ('+esc(p.nickname)+')':'')+'</b><small>'+esc(p.dept||'—')+' · '+esc(ROLE[p.role]||p.role)+'</small></span><button class="btn sm" data-va="'+p.id+'|web">หลังบ้าน</button><button class="btn sm" data-va="'+p.id+'|app">แอป LINE</button></div>'};
   $('#ov .cb').innerHTML='<p class="muted" style="margin-top:0">เปิดหน้าเว็บ / แอป LINE แบบที่พนักงานคนนั้นเห็น เพื่อตรวจเมนูและสิทธิ์ · <b>ดูได้อย่างเดียว</b> (บันทึก อนุมัติ ลงเวลาไม่ได้) · 30 นาที · บันทึกใน Audit Log</p><input type="search" id="va-q" class="amp-in" placeholder="ค้นหา ชื่อ / รหัส / แผนก / บทบาท" style="width:100%;margin-bottom:8px"><div>'+d.people.map(row).join('')+'</div>';loadPhotos();
   $('#va-q').oninput=function(){var q=this.value.trim().toLowerCase();$$('[data-maq]').forEach(function(r){r.hidden=!!q&&r.dataset.maq.indexOf(q)<0})};$('#va-q').focus();
@@ -696,3 +696,21 @@ function tbiSvg(k){var p=TBI_P[k]||(typeof ICON!=='undefined'&&ICON[k])||'';retu
 function tabIcons(root){root=root||document;TBI_ATTR.forEach(function(a){[].forEach.call(root.querySelectorAll('[data-'+a+']'),function(b){if(b.tagName!=='BUTTON'||!b.closest('.rp-tabs,.otab,.cba-tabs')||b.querySelector('svg,.tbi,img'))return;var d=TBI[a+':'+b.getAttribute('data-'+a)];if(!d)return;
   var s=document.createElement('span');s.className='tbi';s.style.setProperty('--tc',d[1]);s.innerHTML=tbiSvg(d[0]);b.insertBefore(s,b.firstChild);b.classList.add('has-tbi')})})}
 (function(){var q=0,run=function(){q=0;tabIcons()};new MutationObserver(function(){if(!q){q=1;(window.requestAnimationFrame||setTimeout)(run)}}).observe(document.documentElement,{childList:true,subtree:true})})();
+
+/* 23 พ.ย. 2569 ผู้ใช้: ทุกจุดที่ขึ้น "กำลังโหลด" ใช้ Skeleton Loading (โครงหน้าเทาไล่จาง · แบบเดียวกับหน้าเปิดระบบ boot-sk.js)
+ * SK(kind,text) · kind: g ทั่วไป · rows รายการมีรูป · table ตาราง · kpi การ์ดตัวเลข+รายการ · form ช่องตั้งค่า
+ * คงคลาส loading + .spin (ซ่อน) ไว้ โค้ด/เทสต์ที่รอโหลดเสร็จจึงทำงานเหมือนเดิม · ข้อความอยู่ใน .sk-t ให้โปรแกรมอ่านหน้าจอ */
+/* SKi(w): แถบ Skeleton ในบรรทัด (หัวข้อย่อย/สถานะ) · ข้อความอยู่ใน .sk-t */
+function SKi(w,t){return '<span class="skl-i" aria-busy="true"><span class="bsk" style="width:'+(w||'180px')+';height:10px"></span><span class="sk-t">'+(t||'กำลังโหลด…')+'</span></span>'}
+function SK(k,t){var b=function(w,h,c){return '<span class="bsk'+(c?' '+c:'')+'" style="width:'+w+';height:'+h+'px"></span>'},n=function(c,f){var s='';for(var i=0;i<c;i++)s+=f(i);return s},
+  row=function(i){return '<div class="skl-r">'+b('34px',34,'rd')+'<div class="skl-c">'+b([46,38,52,34,44,40][i%6]+'%',11)+b([26,30,22,28,24,20][i%6]+'%',9)+'</div>'+b('68px',22,'pl')+'</div>'},h;
+  if(k==='rows')h=n(6,row);
+  else if(k==='table')h='<div class="skl-th">'+n(6,function(i){return b(i?'64%':'28px',10)})+'</div>'+n(8,function(r){return '<div class="skl-tr">'+b('28px',28,'rd')+n(5,function(i){return b((44+(r*7+i*13)%40)+'%',10)})+'</div>'});
+  else if(k==='kpi')h='<div class="skl-k">'+n(4,function(){return '<div class="skl-kc">'+b('48%',10)+b('62%',24)+b('34%',9)+'</div>'})+'</div>'+n(4,row);
+  else if(k==='form')h=n(4,function(i){return '<div class="skl-f"><div class="skl-c">'+b([34,42,28,38][i]+'%',12)+b([62,54,70,48][i]+'%',9)+'</div>'+b('min(260px,34%)',38,'pl')+'</div>'});
+  else if(k==='mini')h='<div class="skl-g">'+b('56%',12)+b('36%',10)+'</div>';
+  else if(k==='card')h='<div class="skl-cd">'+b('100%',120,'cd')+b('70%',12)+b('46%',10)+'</div>';
+  else h='<div class="skl-g">'+b('38%',14)+b('92%',11)+b('84%',11)+b('70%',11)+b('52%',11)+'</div>';
+  return '<div class="loading skl skl-'+(k||'g')+'" aria-busy="true"><span class="spin"></span><span class="sk-t">'+(t||'กำลังโหลด…')+'</span>'+h+'</div>'}
+
+function n_(c){var a=[];for(var i=0;i<Math.min(+c||0,12);i++)a.push(i);return a}

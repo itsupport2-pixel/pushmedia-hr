@@ -9,7 +9,7 @@ function lfPic0(src,n,sz){return src?'<img src="'+esc(src)+'" alt="" style="widt
 function lfGone(t){return /\b410\b|content is gone/i.test(String(t||''))}
 function lfErrH(t){return '<span title="'+esc(t)+'">'+esc(lfGone(t)?'ไฟล์ถูกยกเลิกหรือลบจาก LINE แล้ว (ผู้ส่งกดยกเลิกข้อความ) · ดึงไฟล์ไม่ได้อีก ถ้าต้องเก็บให้ผู้ส่งส่งใหม่':t)+'</span>'}
 function lfName(g){return g.name||('กลุ่ม '+(g.group_id?g.group_id.slice(0,7)+'…':'(ไม่ทราบ)'))}
-function vLfile(){A.lfT=A.lfT||'grp';return '<div class="ph"><div><h1>คลังไฟล์กลุ่ม LINE</h1><div class="sub">สถานะการเก็บรูป · ไฟล์ · วิดีโอ จากกลุ่ม LINE ลง Google Drive (ระบบ LINE Photo Archive) · อ่านอย่างเดียว ไฟล์อยู่ที่ Drive เดิม</div></div></div><div id="lf-body"><div class="loading"><span class="spin"></span>กำลังโหลด…</div></div>'}
+function vLfile(){A.lfT=A.lfT||'grp';return '<div class="ph"><div><h1>คลังไฟล์กลุ่ม LINE</h1><div class="sub">สถานะการเก็บรูป · ไฟล์ · วิดีโอ จากกลุ่ม LINE ลง Google Drive (ระบบ LINE Photo Archive) · อ่านอย่างเดียว ไฟล์อยู่ที่ Drive เดิม</div></div></div><div id="lf-body">'+SK('rows','กำลังโหลด…')+'</div>'}
 function bLfile(){var load=function(){aCall('paOverview').then(function(d){A.lfD=d;A.lfD.t=Date.now();lfDraw()}).catch(function(e){var b=$('#lf-body');if(b)b.innerHTML='<div class="alert">'+esc(e.message)+'</div>'})};
   if(A.lfG)return lfGroup(A.lfG);if(A.lfD&&Date.now()-A.lfD.t<60000)return lfDraw();load()}
 function lfDraw(){var b=$('#lf-body'),d=A.lfD;if(!b||!d)return;var G=d.groups||[],T=A.lfT,bad=G.filter(function(g){return g.err7>0}),sum=function(k){return G.reduce(function(s,g){return s+(g.today[k]||0)},0)},err7=G.reduce(function(s,g){return s+g.err7},0);
@@ -26,7 +26,7 @@ function lfDraw(){var b=$('#lf-body'),d=A.lfD;if(!b||!d)return;var G=d.groups||[
   $$('[data-lft]').forEach(function(x){x.onclick=function(){A.lfT=x.dataset.lft;lfDraw()}});
   $$('[data-lfg]').forEach(function(x){x.onclick=function(e){if(e.target.closest('[data-stop]'))return;A.lfG=x.dataset.lfg;A.lfF={k:'all',q:'',day:''};lfGroup(A.lfG)}});
   $('#lf-re').onclick=function(){var t=this;busy(t,1);aCall('paOverview').then(function(dd){A.lfD=dd;A.lfD.t=Date.now();lfDraw()}).catch(function(e){busy(t,0);toast(e.message,1)})}}
-function lfGroup(sheet){var b=$('#lf-body');if(!b)return;b.innerHTML='<div class="loading"><span class="spin"></span>กำลังโหลด…</div>';
+function lfGroup(sheet){var b=$('#lf-body');if(!b)return;b.innerHTML=''+SK('rows','กำลังโหลด…')+'';
   aCall('paGroup',sheet).then(function(d){A.lfGD=d;lfGroupDraw()}).catch(function(e){b.innerHTML='<div class="alert">'+esc(e.message)+'</div><button class="btn" id="lf-back">‹ ภาพรวมกลุ่ม</button>';$('#lf-back').onclick=function(){A.lfG=null;lfDraw()}})}
 function lfGroupDraw(){var b=$('#lf-body'),d=A.lfGD;if(!b||!d)return;var g=d.group,F=A.lfF||(A.lfF={k:'all',q:'',day:''}),s=LF_ST[g.status]||LF_ST.ok;
   var days=[];d.files.forEach(function(f){var k=dIso(new Date(f.at));if(days.indexOf(k)<0)days.push(k)});if(F.day&&days.indexOf(F.day)<0)F.day='';

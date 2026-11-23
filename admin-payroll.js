@@ -59,7 +59,7 @@ function pyHsOpen(ym0){var S={ym:ym0||'',kind:'',aoa:null,file:'',res:null};
 function pyBadge(s){var x=PYST[s]||[s,'b-mute'];return '<span class="badge '+x[1]+'">'+x[0]+'</span>'}
 function vPay(){var T=[['runs','งวดเงินเดือน'],['sal','ข้อมูลเงินเดือน'],['people','ข้อมูลรายคน'],['loans','หนี้สินพนักงาน'],['items','รายการรายรับ–รายจ่าย'],['tax','ภาษีประจำปี'],['book','คู่มือเงื่อนไข'],['cfg','ตั้งค่า']];
   return '<div class="ph"><div><h1>เงินเดือน</h1><div class="sub">ตัดยอดทุกวันที่ '+esc(PY.bs?PY.bs.cfg.pay_cutoff_day:'25')+pyCos().filter(function(c){return c.cutoff_day}).map(function(c){return ' · '+esc(c.short)+' '+esc(pyCut(c))}).join('')+' · เห็นเฉพาะบัญชีผู้ดูแลระบบและรายชื่อที่ได้รับสิทธิ์ · ทุกการแก้บันทึกใน Audit Log</div></div></div>'+
-   '<div class="rp-tabs" role="tablist">'+T.map(function(t){return '<button data-pyt="'+t[0]+'" aria-pressed="'+(PY.tab===t[0])+'">'+t[1]+'</button>'}).join('')+'</div><div id="py-body"><div class="loading"><span class="spin"></span>กำลังโหลด…</div></div>'}
+   '<div class="rp-tabs" role="tablist">'+T.map(function(t){return '<button data-pyt="'+t[0]+'" aria-pressed="'+(PY.tab===t[0])+'">'+t[1]+'</button>'}).join('')+'</div><div id="py-body">'+SK('table','กำลังโหลด…')+'</div>'}
 function bPay(){$$('[data-pyt]').forEach(function(b){b.onclick=function(){PY.tab=b.dataset.pyt;PY.runId=null;render()}});
   var go2=function(){({runs:PY.runId?pyRun:pyRuns,sal:pySal,people:pyPeople,loans:pyLoans,items:pyItems,tax:pyTax,book:pyBook,cfg:pyCfg})[PY.tab]()};
   if(PY.bs&&Date.now()-PY.bsAt<60000)return go2();
@@ -97,7 +97,7 @@ function pyScope(title,sel,okLabel,onOk){var E=(A.d.employees||[]).filter(functi
 
 /* ── รายละเอียดงวด ── */
 function pyRun(force){if(!force&&PY.run&&PY.run.run.id===PY.runId)return pyRunDraw();
-  pyBody('<div class="loading"><span class="spin"></span>กำลังโหลดงวด…</div>');
+  pyBody(''+SK('g','กำลังโหลดงวด…')+'');
   aCall('payRun',PY.runId).then(function(r){PY.run=r;if(!PY.rv)PY.rv=r.canEdit?'grid':'sum';pyRunDraw()}).catch(pyErr)}
 function pyRunDraw(){var R=PY.run,r=R.run,t=r.totals||{},st=r.status,STEP=['draft','review','approved','closed','paid'],si=STEP.indexOf(st);
   var deps={};R.rows.forEach(function(x){if(x.dept)deps[x.dept]=1});
@@ -149,7 +149,7 @@ function pyRunDraw(){var R=PY.run,r=R.run,t=r.totals||{},st=r.status,STEP=['draf
     $('#ux').onclick=closeD;$('#uok').onclick=function(){var v=$('#py-up').value.trim(),b=this;if(!v){$('#w-up').classList.add('bad');return}busy(b,1);aCall('payUnpublish',rr.id,v).then(function(){closeD();toast('ยกเลิกเผยแพร่แล้ว');PY.bsAt=0;pyRefreshRun()}).catch(function(e){busy(b,0);toast(e.message,1)})}};
   /* ทำไมไม่อยู่ในงวด (9 พ.ย. 2569 ผู้ใช้ขอ): ค้นชื่อ/รหัส → ระบบไล่เงื่อนไขทีละด่าน */
   if($('#py-why'))$('#py-why').onclick=function(){var rr=PY.run.run;drawer('ทำไมไม่อยู่ในงวด? · '+ymTh(rr.ym),'<div class="muted" style="font-size:13px;margin:-4px 0 10px">พิมพ์ชื่อ ชื่อเล่น หรือรหัสพนักงาน · ระบบไล่เงื่อนไขเดียวกับตอนคำนวณงวด</div><input id="pw-q" class="inp" placeholder="เช่น 0155 หรือ ญาดา" style="width:100%"><div id="pw-r" style="margin-top:12px"></div>');
-    var t0=0,q=$('#pw-q');q.focus();q.oninput=function(){clearTimeout(t0);var v=q.value.trim();if(v.length<2){$('#pw-r').innerHTML='';return}t0=setTimeout(function(){$('#pw-r').innerHTML='<div class="loading"><span class="spin"></span>กำลังตรวจ…</div>';aCall('payWhyNot',rr.id,v).then(function(o){var b=$('#pw-r');if(!b||q.value.trim()!==v)return;
+    var t0=0,q=$('#pw-q');q.focus();q.oninput=function(){clearTimeout(t0);var v=q.value.trim();if(v.length<2){$('#pw-r').innerHTML='';return}t0=setTimeout(function(){$('#pw-r').innerHTML=''+SK('g','กำลังตรวจ…')+'';aCall('payWhyNot',rr.id,v).then(function(o){var b=$('#pw-r');if(!b||q.value.trim()!==v)return;
       b.innerHTML=o.rows.length?o.rows.map(function(x){return '<div class="card" style="padding:12px 14px;margin-bottom:10px"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><b>'+esc(x.name)+'</b><span class="faint">'+esc(x.code)+(x.nickname?' · '+esc(x.nickname):'')+' · '+esc(x.co)+'</span><span class="sp"></span><span class="badge '+(x.inRun?'b-ok':'b-bad')+'">'+(x.inRun?'อยู่ในงวด':'ไม่อยู่ในงวด')+'</span></div>'+
         '<ul style="list-style:none;margin:8px 0 0;padding:0;font-size:13px">'+x.checks.map(function(c){return '<li style="display:flex;gap:8px;padding:4px 0;border-top:1px solid var(--line)"><span style="color:var('+(c.ok?'--ok':'--bad')+');font-weight:700;width:14px">'+(c.ok?'✓':'✕')+'</span><span style="flex:1">'+esc(c.t)+'</span><span class="faint" style="text-align:right">'+esc(c.d)+'</span></li>'}).join('')+'</ul></div>'}).join(''):'<div class="faint">ไม่พบพนักงาน</div>'}).catch(function(e){var b=$('#pw-r');if(b)b.innerHTML='<div class="er">'+esc(e.message)+'</div>'})},300)}};
   var sc=$('#py-scope');if(sc)sc.onclick=function(){var rr=PY.run.run;pyScope('คนในงวด '+ymTh(rr.ym),rr.only||[],'บันทึกและคำนวณใหม่',function(ids){busy(sc,1);aCall('paySetOnly',rr.id,ids).then(function(){toast(ids.length?'ทำเฉพาะ '+ids.length+' คน':'ทำทั้งบริษัท');PY.bsAt=0;pyRefreshRun()}).catch(function(e){busy(sc,0);toast(e.message,1)})})};
@@ -195,7 +195,7 @@ function pyPerson(id){var R=PY.run,x=R.rows.filter(function(r){return r.employee
 /* ── ข้อมูลเงินเดือน (28 ต.ค. 2569 · แบบ HumanSoft "ข้อมูลเงินเดือน"): ตารางแก้ได้ทุกคนในหน้าเดียว
  * ฐานเงินเดือน · ประเภทการจ้าง · ภาษี (วิธี + จำนวนคงที่ต่อเดือน / %) → หัก ณ ที่จ่ายอัตโนมัติในงวด · บันทึกทีเดียว · เหตุผลไม่บังคับ */
 var PSL={ch:{},q:'',none:false};
-function pySal(force){if(!force&&PY.prof)return pySalDraw();pyBody('<div class="loading"><span class="spin"></span>กำลังโหลด…</div>');aCall('payProfiles').then(function(r){PY.prof=r;pySalDraw()}).catch(pyErr)}
+function pySal(force){if(!force&&PY.prof)return pySalDraw();pyBody(''+SK('g','กำลังโหลด…')+'');aCall('payProfiles').then(function(r){PY.prof=r;pySalDraw()}).catch(pyErr)}
 /* ภ.ง.ด.1 อัตโนมัติ (4 พ.ย. 2569 · สูตรเดียวกับ payTaxAuto_ ใน Payroll.js): (ฐาน + รายการประจำที่คิดภาษี) × 12 + โบนัส + คอม − ค่าใช้จ่าย 50% (≤100,000) − ลดหย่อน 60,000 − ประกันสังคม × 12 − ลดหย่อนเพิ่ม → ขั้นบันได ÷ 12 */
 var PY_TAX_STEPS=[[150000,0],[300000,5],[500000,10],[750000,15],[1000000,20],[2000000,25],[5000000,30],[Infinity,35]];
 function pyR2(x){return Math.round(x*100+1e-9)/100}
@@ -273,7 +273,7 @@ function pySalDraw(){var ed=PY.bs.canEdit,T=PY.bs.types,TM=PY.bs.taxModes,ch=PSL
   if($('#ps-stale-x'))$('#ps-stale-x').onclick=function(){PSL.stale=[];pySalDraw()};$$('#ps-stale [data-pyt2]').forEach(function(b){b.onclick=function(){PY.tab=b.dataset.pyt2;PY.runId=null;render()}});
   $('#ps-ok').onclick=function(){var b=this;busy(b,1);aCall('paySaveProfilesBulk',ch,$('#ps-rs').value).then(function(r){busy(b,0);if(!r.ok){var k=Object.keys(r.errors||{});k.forEach(function(z){var el=$('[data-ps="'+z+'"]');if(el)el.classList.add('bad')});toast((r.errors[k[0]]||'ตรวจข้อมูล')+(k.length>1?' (+'+(k.length-1)+')':''),1);return}
     PSL.ch={};PSL.stale=r.stale||[];toast('บันทึก '+r.changed+' คน · คำนวณงวดร่างใหม่แล้ว'+(PSL.stale.length?' · มีงวดที่ปิดแล้วต้องย้อนงวด':''),PSL.stale.length?1:0);PY.run=null;pySal(true)}).catch(function(e){busy(b,0);toast(e.message,1)})}}
-function pyPeople(force){if(!force&&PY.prof)return pyPeopleDraw();pyBody('<div class="loading"><span class="spin"></span>กำลังโหลด…</div>');aCall('payProfiles').then(function(r){PY.prof=r;pyPeopleDraw()}).catch(pyErr)}
+function pyPeople(force){if(!force&&PY.prof)return pyPeopleDraw();pyBody(''+SK('g','กำลังโหลด…')+'');aCall('payProfiles').then(function(r){PY.prof=r;pyPeopleDraw()}).catch(pyErr)}
 function pyPeopleDraw(){var q=PY.pq.trim().toLowerCase(),all=PY.prof.slice().sort(function(a,b){return a.code<b.code?-1:1}),ed=PY.bs.canEdit,items={};PY.bs.items.forEach(function(i){items[i.code]=i});
   var rows=all.filter(function(p){return (!q||(p.code+' '+p.name+' '+p.nickname+' '+p.dept).toLowerCase().indexOf(q)>=0)&&ofOk('pp',p.dept,p.team)&&(!PY.pnone||!p.base_salary)}),none=all.filter(function(p){return !p.base_salary}).length;
   pyBody('<section class="card"><div class="ch" style="gap:8px;flex-wrap:wrap">'+pySearch('pp-q',PY.pq,'ค้นหาชื่อ ชื่อเล่น รหัส')+ofSel('pp',1)+'<label class="chk"><input type="checkbox" id="pp-n"'+(PY.pnone?' checked':'')+'> ยังไม่มีฐานเงินเดือน ('+none+')</label><span class="sp"></span><span class="faint" style="font-size:12.5px">'+(ed?'กดแถวเพื่อแก้ไข':'ดูอย่างเดียว')+'</span></div>'+
@@ -310,7 +310,7 @@ function pyProfile(id){var p=PY.prof.filter(function(x){return x.employee_id===i
   $$('[data-rdel]').forEach(function(b){b.onclick=function(){ask({title:'ลบรายการประจำนี้?',tone:'bad',icon:'del',buttons:[{k:'no',label:'ยกเลิก'},{k:'yes',label:'ลบ',cls:'pri'}]}).then(function(k){if(k!=='yes')return;aCall('payDeleteRecurring',b.dataset.rdel).then(function(r){PY.run=null;after('ลบแล้ว'+(r&&r.recalc?' · คำนวณงวดร่างใหม่แล้ว':''))}).catch(function(e){toast(e.message,1)})})}})}
 
 /* ── หนี้สินพนักงาน ── */
-function pyLoans(force){if(!force&&PY.loans)return pyLoansDraw();pyBody('<div class="loading"><span class="spin"></span>กำลังโหลด…</div>');
+function pyLoans(force){if(!force&&PY.loans)return pyLoansDraw();pyBody(''+SK('g','กำลังโหลด…')+'');
   Promise.all([aCall('payLoans'),PY.prof?Promise.resolve(PY.prof):aCall('payProfiles')]).then(function(r){PY.loans=r[0];PY.prof=r[1];pyLoansDraw()}).catch(pyErr)}
 var LNST={active:['กำลังผ่อน','b-ok'],paused:['พักหนี้','b-warn'],closed:['ปิดแล้ว','b-mute'],cancelled:['ยกเลิก','b-mute']};
 function pyLoansDraw(){var lq=(PY.lq||'').trim().toLowerCase(),L=PY.loans.filter(function(l){return (!lq||(l.code+' '+l.name+' '+(l.title||'')).toLowerCase().indexOf(lq)>=0)&&ofOk('pl',l.dept,l.team)}),K=PY.bs.loanKinds,ed=PY.bs.canEdit,left=L.filter(function(l){return l.status==='active'||l.status==='paused'}).reduce(function(s,l){return s+l.left},0);
@@ -452,7 +452,7 @@ function pyCfg(){var c=PY.bs.cfg,ed=PY.bs.canEdit,adm=isAdm()||!!PY.bs.payAdm,di
       if(adm)[['pay_access','#pc-acc'],['pay_approvers','#pc-apv'],['pay_reopen','#pc-reo']].forEach(function(k){var ids=$(k[1]).value;if(ids!==c[k[0]])d[k[0]]=ids});
       if(bad.length)return toast('ไม่พบรหัสพนักงาน: '+bad.join(', '),1);if(!Object.keys(d).length)return toast('ไม่มีอะไรเปลี่ยน');busy(b,1);
       aCall('paySaveCfg',d).then(function(r){busy(b,0);if(!r.ok){Object.keys(r.errors).forEach(function(k){var l=$('#w-'+k);if(l){l.classList.add('bad');l.insertAdjacentHTML('beforeend','<span class="er">'+esc(r.errors[k])+'</span>')}});return}PY.bs.cfg=r.cfg;c=r.cfg;toast('บันทึกแล้ว · มีผลกับงวดที่คำนวณหลังจากนี้');draw()}).catch(function(e){busy(b,0);toast(e.message,1)})}};
-  if(PY.prof)draw();else{pyBody('<div class="loading"><span class="spin"></span>กำลังโหลด…</div>');aCall('payProfiles').then(function(r){PY.prof=r;draw()}).catch(pyErr)}}
+  if(PY.prof)draw();else{pyBody(''+SK('g','กำลังโหลด…')+'');aCall('payProfiles').then(function(r){PY.prof=r;draw()}).catch(pyErr)}}
 
 /* ── ตารางกรอกรายรับ–รายจ่ายทั้งงวด (แบบ HumanSoft "รายรับรายจ่าย") ──
  * แถว = พนักงาน · คอลัมน์ = รายการที่ HR กรอก (กรอกในงวด / ประจำรายคน) + วันขาดงาน · คอลัมน์ขวา = ระบบคำนวณเอง (ประกันสังคม หนี้สิน ฯลฯ ไม่ต้องกรอก)

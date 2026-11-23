@@ -11,7 +11,7 @@ function taD(s){var d=dObj(s),W=['อา.','จ.','อ.','พ.','พฤ.','ศ.'
 function taBadge(s){var x=TA_S[s]||[s,'b-mute'];return '<span class="badge '+x[1]+'">'+esc(x[0])+'</span>'}
 function vTa(){if(A.taNewOn)return vTaNew()+attTabs('ta').replace(/^/,'<div hidden>')+'</div>';return '<div class="ph"><div><h1>คำขอแก้เวลา</h1><div class="sub">ใช้เมื่อพนักงานลืมลงเวลาจริง ๆ เท่านั้น · HR บันทึกแล้วเวลาลงระบบทันที · ทุกครั้งมีเลขที่เอกสารและประวัติ · ผู้บริหารเห็นทุกรายการ</div></div><span class="sp"></span>'+
   '<input type="month" id="ta-ym" class="amp-in" value="'+esc(taYm())+'" aria-label="เดือน">'+
-  (taCanNew()?'<button class="btn pri" id="ta-new">+ สร้างคำขอแก้เวลา</button>':'')+'</div>'+attTabs('ta')+'<div id="ta-body"><div class="loading"><span class="spin"></span></div></div>'}
+  (taCanNew()?'<button class="btn pri" id="ta-new">+ สร้างคำขอแก้เวลา</button>':'')+'</div>'+attTabs('ta')+'<div id="ta-body">'+SK('rows')+'</div>'}
 function bTa(){attTabBind();if(A.taNewOn)return bTaNew();if($('#ta-new'))$('#ta-new').onclick=function(){taNew()};$('#ta-ym').onchange=function(){A.taYm=this.value||taYm();taLoad()};
   $$('[data-tast]').forEach(function(b){b.onclick=function(){A.taSt=b.dataset.tast;$$('[data-tast]').forEach(function(x){x.setAttribute('aria-pressed',String(x===b))});taLoad()}});taLoad()}
 function taLoad(){var o={ym:taYm()};
@@ -41,7 +41,7 @@ function vTaNew(){var st=['เลือกพนักงาน','เลือ�
    '<div class="ta-foot"><span class="faint">บันทึกแล้วเวลาลงระบบทันที · ถ้าผิดให้ยกเลิกในหน้ารายละเอียด (เวลาที่ลงจะถูกยกเลิกด้วย) แล้วสร้างใหม่</span><span class="sp"></span><button class="btn" id="taf-cancel">ยกเลิก</button><button class="btn pri" id="taf-go" disabled>บันทึกการแก้เวลา</button></div>'}
 function bTaNew(){var back=function(e){if(e)e.preventDefault();A.taNewOn=false;render()};$('#taf-back').onclick=back;$('#taf-cancel').onclick=back;$('#taf-go').onclick=taSubmit;
   var ld=function(){var e=$('#taf-emp').value,y=$('#taf-ym').value;A.taF.emp=e;A.taF.ym=y;A.taF.rows={};A.taF.data=null;if(!e||!y){$('#taf-b').innerHTML='<section class="card" style="padding:28px;text-align:center"><span class="faint">เลือกพนักงานเพื่อดูวันที่ระบบพบว่าไม่ได้ลงเวลา</span></section>';$('#taf-q').innerHTML='';taChk();return}
-    $('#taf-b').innerHTML='<div class="loading"><span class="spin"></span></div>';aCall('taMissing',e,y).then(function(r){A.taF.data=r;taFormDraw()}).catch(function(x){$('#taf-b').innerHTML='<div class="alert">'+esc(x.message)+'</div>'})};
+    $('#taf-b').innerHTML=''+SK('rows')+'';aCall('taMissing',e,y).then(function(r){A.taF.data=r;taFormDraw()}).catch(function(x){$('#taf-b').innerHTML='<div class="alert">'+esc(x.message)+'</div>'})};
   tfpBind(ld);$('#taf-ym').onchange=ld;if(A.taF.emp)ld()}
 /* ช่องเลือกพนักงานแบบพิมพ์ค้นหา + รูป (17 พ.ย. 2569 ผู้ใช้ขอ) · ค้นรหัส ชื่อ นามสกุล ชื่อเล่น แผนก · ลูกศรขึ้น/ลง + Enter เลือก · Esc ปิด */
 function tfpName(e){return (e.first_name||'')+' '+(e.last_name||'')+(e.nickname?' ('+e.nickname+')':'')}
@@ -89,7 +89,7 @@ function taSubmit(){var c=taCollect(),g=$('#taf-go');if(c.er.length)return toast
 function taShrink(file,max){return new Promise(function(ok,no){var u=URL.createObjectURL(file),im=new Image();im.onload=function(){URL.revokeObjectURL(u);var s=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);var g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height);g.drawImage(im,0,0,c.width,c.height);
   var q=.82,d=c.toDataURL('image/jpeg',q);while(d.length>380000&&q>.3){q-=.1;d=c.toDataURL('image/jpeg',q)}if(d.length>380000){c.width=Math.round(c.width*.7);c.height=Math.round(c.height*.7);g=c.getContext('2d');g.drawImage(im,0,0,c.width,c.height);d=c.toDataURL('image/jpeg',.6)}ok(d)};im.onerror=function(){URL.revokeObjectURL(u);no(new Error('เปิดรูปไม่ได้'))};im.src=u})}
 /* ── รายละเอียด (ไม่มีขั้นอนุมัติ · 11 พ.ย. 2569) ── */
-function taOpen(id,justMade){drawer('คำขอแก้เวลา','<div class="loading"><span class="spin"></span></div>');var dw=$('.drw');if(dw)dw.classList.add('wide');
+function taOpen(id,justMade){drawer('คำขอแก้เวลา',''+SK('g')+'');var dw=$('.drw');if(dw)dw.classList.add('wide');
   aCall('taGet',id).then(function(v){A.taV=v;var c=v.can,K=function(k){var x=TA_K[k]||[k,'b-mute'];return '<span class="badge '+x[1]+'">'+esc(x[0])+'</span>'};
    var st=[['บันทึกการแก้เวลา · เวลาลงระบบ',v.created_by+' · '+fdt(v.created_at),true],['ใบที่พนักงานเซ็นรับทราบ (ไม่บังคับ)',v.signed?'อัปโหลดแล้ว':'ยังไม่อัปโหลด',v.signed]].concat(v.hr_by?[['อนุมัติ (แบบเก่า)',v.hr_by+' · '+fdt(v.hr_at),true]]:[]).concat(v.status==='cancel'?[['ยกเลิก · เวลาที่ลงไว้ถูกยกเลิก','',true]]:[]);
    var body='<div style="display:flex;align-items:center;gap:10px"><h2 style="margin:0;font-size:20px">'+esc(v.req_no)+'</h2>'+taBadge(v.status)+(v.over?'<span class="badge b-warn">เกินเกณฑ์</span>':'')+'</div>'+

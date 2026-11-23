@@ -3,7 +3,7 @@
  * ทุกไฟล์ admin-*.js ใช้ชื่อร่วมกัน (global) และต้องโหลดตามลำดับใน admin.html */
 'use strict';
 /* ───────── ตารางงาน = หน้าเว็บ Workforce Task Manager เดิมทั้งชุด (planner.html · สร้างด้วย app/tools/build-planner.mjs · หลังบ้าน app/gas/schedule/Wtm.js) ───────── */
-var PLANNER_V='dp1121g';   // เลขรุ่นหน้า planner.html (build-planner.mjs ตั้งให้ทุกครั้ง · กันเบราว์เซอร์จำหน้าเก่า)
+var PLANNER_V='dp1123s';   // เลขรุ่นหน้า planner.html (build-planner.mjs ตั้งให้ทุกครั้ง · กันเบราว์เซอร์จำหน้าเก่า)
 function vConf(){return '<iframe class="plf" src="planner.html?desktop=1&page=confirmed'+(A.fx==='conf'||A.fx==='*'?'&fx=1':'')+'&v='+PLANNER_V+'" aria-label="Confirmed"></iframe>'}
 /* 19 พ.ย. 2569 ผู้ใช้: ชี้เมาส์แล้วขึ้นคำว่า ตารางงาน ตลอด (title ของกรอบ) → ใช้ aria-label แทน */
 function vPlanner(){return '<div id="plf-slot" class="plf plf-slot" role="region" aria-label="ตารางงาน"></div>'}   /* กรอบจริงอยู่ที่ #plf-host (plkShow) */
@@ -96,7 +96,7 @@ function drawSched(){var b=$('#sc-body'),d=A.sd;if(!b||!d)return;
           '<td class="cc"'+(cst.total?' title="'+esc([cst.hol?'วันหยุด '+cst.hol.toLocaleString():'',cst.prov?'ต่างจังหวัด '+cst.prov.toLocaleString():'',cst.hire?'จ้างรายวัน '+cst.hire.toLocaleString():'',cst.extra?'อื่น ๆ '+cst.extra.toLocaleString():''].filter(String).join(' + '))+'"':'')+'>'+(cst.total?'<b>'+cst.total.toLocaleString()+'฿</b><small>'+esc([cst.hol?'วันหยุด':'',cst.prov?'ต่างจังหวัด':'',cst.hire?'จ้าง':'',cst.extra?'อื่น ๆ':''].filter(String).join(' + '))+'</small>':'<span class="faint">—</span>')+'</td></tr>';first=false})})});
   h+='</tbody></table></div><div class="sclg"><span><i class="ok"></i>เข้างานแล้ว (เวลา)</span><span><i class="late"></i>สาย</span><span><i class="no"></i>ยังไม่ลงเวลา (วันนี้)</span><span><i class="lv"></i>ลา</span></div>';
   b.innerHTML=h;
-  $$('[data-sw]').forEach(function(x){x.onclick=function(){var n=+x.dataset.sw;A.sw=n?isoAdd(A.sw,n):wkStart();b.innerHTML='<div class="loading"><span class="spin"></span>กำลังโหลด…</div>';loadSched()}});
+  $$('[data-sw]').forEach(function(x){x.onclick=function(){var n=+x.dataset.sw;A.sw=n?isoAdd(A.sw,n):wkStart();b.innerHTML=''+SK('g','กำลังโหลด…')+'';loadSched()}});
   $$('[data-sf]').forEach(function(x){x.onclick=function(){A.sf=x.dataset.sf;drawSched()}});
   if($('#sc-dp'))$('#sc-dp').onchange=function(){A.sdp=this.value;A.stm='all';drawSched()};if($('#sc-tm'))$('#sc-tm').onchange=function(){A.stm=this.value;drawSched()};
   $('#sc-att').onclick=function(){A.satt=!A.satt;drawSched()};
@@ -167,7 +167,7 @@ function jobForm(j,day){var d=A.sd,ed=!j||j.can_edit,v=j||{title:'',pm_code:'',s
 function vehDrawer(){var d=A.sd,draw=function(list){$('#vh-list').innerHTML=list.length?'<ul class="tl">'+list.map(function(v){return '<li style="display:flex;gap:8px;align-items:center"><span style="flex:1"><b>'+esc(v.plate)+'</b> <span class="faint">'+esc(v.model||'')+(v.dept_id?' · '+esc(org('departments',v.dept_id)):'')+'</span>'+(v.status==='inactive'?' <span class="badge b-mute">ไม่ใช้งาน</span>':'')+'</span><button class="btn sm" data-vh="'+esc(v.id)+'">แก้ไข</button></li>'}).join('')+'</ul>':'<span class="faint">ยังไม่มีรถ</span>';
     $$('[data-vh]').forEach(function(x){x.onclick=function(){fill(list.filter(function(v){return v.id===x.dataset.vh})[0])}})},
    fill=function(v){v=v||{};$('#vh-id').value=v.id||'';$('#vh-plate').value=v.plate||'';$('#vh-model').value=v.model||'';$('#vh-dept').value=v.dept_id||'';$('#vh-st').checked=v.status==='inactive';$('#vh-ok').textContent=v.id?'บันทึกการแก้ไข':'เพิ่มรถ'};
-  drawer('รถบริษัท','<div id="vh-list"><span class="spin"></span></div><div class="dfs" style="margin-top:14px"><h4>เพิ่ม / แก้ไขรถ</h4><div class="dfg"><input type="hidden" id="vh-id"><label class="f s3"><span>ทะเบียน *</span><input id="vh-plate" placeholder="เช่น 2ฒศ1467"></label><label class="f s3"><span>รุ่น / ประเภท</span><input id="vh-model" placeholder="เช่น Toyota Hilux"></label>'+
+  drawer('รถบริษัท','<div id="vh-list">'+SK('rows')+'</div><div class="dfs" style="margin-top:14px"><h4>เพิ่ม / แก้ไขรถ</h4><div class="dfg"><input type="hidden" id="vh-id"><label class="f s3"><span>ทะเบียน *</span><input id="vh-plate" placeholder="เช่น 2ฒศ1467"></label><label class="f s3"><span>รุ่น / ประเภท</span><input id="vh-model" placeholder="เช่น Toyota Hilux"></label>'+
     '<label class="f s3"><span>แผนกที่ใช้</span><select id="vh-dept"><option value="">— ส่วนกลาง —</option>'+A.d.org.departments.filter(function(x){return x.active!=='FALSE'}).map(function(x){return '<option value="'+x.id+'">'+esc(x.name)+'</option>'}).join('')+'</select></label><label class="f s3" style="flex-direction:row;align-items:center;gap:8px"><input type="checkbox" id="vh-st" style="width:16px;height:16px"> <span>ไม่ใช้งานแล้ว</span></label></div></div>','<button class="btn" id="vh-new">ล้างฟอร์ม</button><button class="btn pri" id="vh-ok">เพิ่มรถ</button>');
   $('.drw').classList.add('wide');aCall('listVehicles').then(draw).catch(function(e){toast(e.message,1)});
   $('#vh-new').onclick=function(){fill(null)};
@@ -179,7 +179,7 @@ function sd(s){var d=new Date(s+'T12:00:00');return THW[d.getDay()]+' '+d.getDat
 function ovSt(d){var s=AST[d.status]||[d.status,'b-mute'];return '<span class="badge '+s[1]+'">'+(d.late_min?'สาย '+d.late_min+' นาที':s[0])+'</span>'}
 function ovCards(e){var o=OV&&OV.id===e.id?OV.d:null;
   var hd=function(k,t,r){return '<div class="oh"><span class="ob">'+ic(k)+'</span><b>'+t+'</b><small>'+(r||'')+'</small></div>'};
-  if(!o)return '<div class="ovg">'+['ลงเวลาวันนี้','เวลาผิดปกติ','ใบลา','โควตาการลา'].map(function(t,i){return '<section class="ovc">'+hd(['clock','alarm','check','leave'][i],t)+'<span class="spin"></span></section>'}).join('')+'</div>';
+  if(!o)return '<div class="ovg">'+['ลงเวลาวันนี้','เวลาผิดปกติ','ใบลา','โควตาการลา'].map(function(t,i){return '<section class="ovc">'+hd(['clock','alarm','check','leave'][i],t)+SK('mini')+'</section>'}).join('')+'</div>';
   var t=o.today||{},now=new Date(),ym=THM[now.getMonth()]+' '+(now.getFullYear()+543),m=o.month,last=o.issues[0],na=function(k,ti){return '<section class="ovc">'+hd(k,ti)+'<span class="faint" style="font-size:13px">ไม่มีสิทธิ์ดูข้อมูลนี้</span></section>'};
   var c1='<section class="ovc">'+hd('clock','ลงเวลาวันนี้',sd(t.date||new Date().toISOString().slice(0,10)))+'<div class="ot"><div><small>เข้างาน</small><b>'+esc(t.first_in||'—')+'</b></div><div><small>ออกงาน</small><b>'+esc(t.last_out||'—')+'</b></div></div><div>'+(t.status?ovSt(t):'')+(t.note?' <span class="faint" style="font-size:12.5px">'+esc(t.note)+'</span>':'')+'</div><span class="faint" style="font-size:12.5px">เวลาทำงาน '+esc(o.expect.start)+'–'+esc(o.expect.end)+'</span></section>';
   var c2=!m?'':'<section class="ovc">'+hd('alarm','เวลาผิดปกติ',ym)+'<div class="otl"><div class="w"><b>'+m.late+'</b><small>สาย</small></div><div class="b"><b>'+m.absent+'</b><small>ขาดงาน</small></div><div class="i"><b>'+m.missing+'</b><small>ลงเวลาไม่ครบ</small></div></div>'+
@@ -214,7 +214,7 @@ function trExpBadge(x){if(!x)return '';var t=dIso(new Date()),s=new Date(t+'T12:
 function empFileShrink(file){return new Promise(function(ok,no){var u=URL.createObjectURL(file),im=new Image();im.onload=function(){URL.revokeObjectURL(u);var z=Math.min(1,1280/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*z);c.height=Math.round(im.height*z);var g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height);g.drawImage(im,0,0,c.width,c.height);var q=.85,d=c.toDataURL('image/jpeg',q);while(d.length>390000&&q>.3){q-=.1;d=c.toDataURL('image/jpeg',q)}if(d.length>390000)return no(new Error('รูปใหญ่เกินไป'));ok(d)};im.onerror=function(){URL.revokeObjectURL(u);no(new Error('อ่านรูปไม่ได้ ใช้ได้เฉพาะไฟล์รูปภาพ'))};im.src=u})}
 var EXTF=[['#','ชื่อภาษาอังกฤษ'],['first_name_en','ชื่อ',0,2],['last_name_en','นามสกุล',0,2],['nickname_en','ชื่อเล่น',0,2],['#','ข้อมูลส่วนตัว'],['birth_date','วันเกิด','date',2],['gender','เพศ',GEN,4],['marital_status','สถานภาพ',MAR],['#','ที่อยู่'],['addr_idcard','ที่อยู่ตามทะเบียนบ้าน','ta',3],['addr_current','ที่อยู่ปัจจุบัน','ta',3]];
 function extCards(p,edit){
-  if(!p)return '<section class="card"><div class="ch"><h3>ข้อมูลเพิ่มเติมและที่อยู่</h3></div><div class="cb"><span class="spin"></span></div></section>';
+  if(!p)return '<section class="card"><div class="ch"><h3>ข้อมูลเพิ่มเติมและที่อยู่</h3></div><div class="cb">'+SK('form')+'</div></section>';
   var x=p.ext||{},v=function(k){return esc(x[k]||'—')};
   var item=function(k,it){if(k!=='training'&&k!=='assets')return itemNew(k,it);return k==='training'?'<b>'+esc(it.course)+'</b>'+(it.provider?' <span class="faint">'+esc(it.provider)+'</span>':'')+(it.file_id?' <button class="btn sm" data-itfv="'+esc(it.file_id)+'">ดูไฟล์</button>':'')+'<br><span class="faint">'+(it.date_from||it.date_to?thd(it.date_from||it.date_to)+(it.date_to&&it.date_to!==it.date_from&&it.date_from?' – '+thd(it.date_to):''):'ไม่ระบุวันที่')+(it.hours?' · '+esc(it.hours)+' ชม.':'')+(it.expiry_date?' · หมดอายุ '+thd(it.expiry_date):'')+'</span>'+trExpBadge(it.expiry_date)
     :'<b>'+esc(it.name)+'</b>'+(it.serial?' <span class="mono faint">'+esc(it.serial)+'</span>':'')+' <span class="badge '+(it.returned_date?'b-mute">คืนแล้ว':'b-ok">ถือครอง')+'</span><br><span class="faint">รับ '+thd(it.received_date)+(it.returned_date?' · คืน '+thd(it.returned_date):'')+'</span>'};
@@ -368,9 +368,9 @@ function vSrep(){A.srYm=A.srYm||locISO().slice(0,7);A.srTab=A.srTab||'team';A.sr
    '<section class="card rp-tools" style="padding:14px 16px"><div class="rp-f"><label>เดือน<select id="sr-ym">'+srYms().map(function(y){return '<option value="'+y+'"'+(A.srYm===y?' selected':'')+'>'+srYmTxt(y)+'</option>'}).join('')+'</select></label>'+
     (sc==='all'?'<label>แผนก<select id="sr-dep"></select></label>':'')+(sc==='all'||sc==='dept'?'<label>ทีม<select id="sr-team"></select></label>':'')+
     '<label>ตำแหน่ง<select id="sr-pos"></select></label><label>ค้นหา<input type="search" id="sr-q" placeholder="ชื่อ รหัส หรือโปรเจกต์" value="'+esc(A.srQ)+'"></label></div></section>'+
-   '<div id="sr-body"><div class="loading"><span class="spin"></span></div></div>'}
+   '<div id="sr-body">'+SK('kpi')+'</div>'}
 function bSrep(){
-  var load=function(){$('#sr-body').innerHTML='<div class="loading"><span class="spin"></span>กำลังรวมข้อมูล '+esc(srYmTxt(A.srYm))+'…</div>';var y=A.srYm;
+  var load=function(){$('#sr-body').innerHTML=''+SK('kpi','กำลังรวมข้อมูล '+esc(srYmTxt(A.srYm))+'…')+'';var y=A.srYm;
     aCall('schedReport',y).then(function(d){if(A.srYm!==y)return;d.pjm={};d.projects.forEach(function(p){d.pjm[p.k]=p});A.sr=d;drawSrep()}).catch(function(e){if($('#sr-body'))$('#sr-body').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})};
   $$('[data-srt]').forEach(function(b){b.onclick=function(){A.srTab=b.dataset.srt;$$('[data-srt]').forEach(function(x){x.setAttribute('aria-pressed',x===b)});drawSrep()}});
   $('#sr-ym').onchange=function(){A.srYm=this.value;load()};

@@ -2104,8 +2104,7 @@ button.svx-more{border:0;background:none;padding:0;font:inherit;font-size:13px;f
 .svm-t.v{background:#111;cursor:pointer}.svm-play{position:absolute;inset:0;display:grid;place-items:center}.svm-play svg{background:rgba(0,0,0,.45);border-radius:50%;padding:8px;box-sizing:content-box}
 .svm-lb{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.82);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px}
 .svm-in{max-width:min(1100px,94vw);max-height:80vh;display:grid;place-items:center}.svm-in img,.svm-in video{max-width:100%;max-height:80vh;border-radius:12px;background:#000}
-.svm-bar{display:flex;gap:8px;align-items:center;color:#fff;width:min(1100px,94vw)}.svm-bar .sp{flex:1}
-
+.svm-bar{display:flex;gap:8px;align-items:center;color:#fff;width:min(1100px,94vw)}
 /* ผู้เห็นเมนูเคส Service (23 พ.ย. 2569 · sva-) */
 .sva{padding:16px 20px 18px;border-top:1px solid var(--line)}
 .sva-h{display:flex;gap:12px;align-items:flex-start;justify-content:space-between}.sva-h b{display:block;font-size:14.5px}.sva-h small{display:block;color:var(--mut);font-size:12.5px;margin-top:2px;line-height:1.5}
@@ -2118,3 +2117,32 @@ button.svx-more{border:0;background:none;padding:0;font:inherit;font-size:13px;f
 .sva-o{display:flex;align-items:center;gap:10px;width:100%;padding:8px 12px;border:0;border-bottom:1px solid #F2F2F2;background:#fff;text-align:left;font:inherit;cursor:pointer}.sva-o:hover{background:#F7F7F8}
 .sva-o .av{border-radius:50%;flex:none}.sva-on{flex:1;min-width:0;display:flex;flex-direction:column}.sva-on b{font-size:13.5px;font-weight:600}.sva-on small{color:var(--mut);font-size:12px}.sva-plus{font-size:12.5px;color:#2563EB;font-weight:600;flex:none}
 .sva-act{display:flex;align-items:center;gap:8px;margin-top:12px}.sva-act .sp{flex:1}
+
+/* Skeleton Loading ทั้งระบบ (23 พ.ย. 2569 · SK() ใน admin-core.js · ใช้ .bsk + skP ของหน้าเปิดระบบ) */
+.loading.skl{display:block;padding:18px 20px;color:inherit;text-align:left}
+.loading.skl>.spin{display:none}
+.skl .bsk.pl{border-radius:999px}.skl-form .bsk.pl{border-radius:10px}
+.skl-g{display:flex;flex-direction:column;gap:12px;padding:4px 0}
+.skl-r{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #F2F2F2}.skl-r:last-child{border-bottom:0}
+.skl-c{flex:1;display:flex;flex-direction:column;gap:8px;min-width:0}
+.skl-k{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:10px}
+.skl-kc{border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.skl-th,.skl-tr{display:grid;grid-template-columns:36px repeat(5,minmax(0,1fr));gap:16px;align-items:center;padding:12px 0;border-bottom:1px solid #F2F2F2}
+.skl-th{padding-top:4px}.skl-tr:last-child{border-bottom:0}
+.skl-f{display:flex;align-items:center;gap:20px;padding:14px 0;border-bottom:1px solid #F2F2F2}.skl-f:last-child{border-bottom:0}
+@media(max-width:700px){.loading.skl{padding:14px 16px}.skl-k{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .skl-th,.skl-tr{grid-template-columns:28px repeat(3,minmax(0,1fr))}.skl-th>.bsk:nth-child(n+5),.skl-tr>.bsk:nth-child(n+5){display:none}}
+.skl-i{display:inline-flex;vertical-align:middle;padding:3px 0}
+.skl-mini.loading.skl{padding:6px 0}.skl-cd{display:flex;flex-direction:column;gap:10px;max-width:300px}.skl .bsk.cd{border-radius:14px}
+.skl-ph{display:inline-block;width:64px;height:64px;border-radius:10px;margin:0 6px 6px 0}
+/* ตัวดูรูปเคส Service: ปุ่มแบบใหม่ (23 พ.ย. 2569) */
+.svm-lb{background:rgba(10,10,10,.9)}
+.svm-ib,.svm-nav{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.1);color:#fff;cursor:pointer;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:background .15s,transform .15s;font:inherit;text-decoration:none}
+.svm-ib:hover,.svm-nav:hover{background:rgba(255,255,255,.22)}.svm-ib:focus-visible,.svm-nav:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.svm-top{position:absolute;top:16px;right:16px;display:flex;gap:8px}
+.svm-ib{height:40px;min-width:40px;padding:0 10px;border-radius:999px;font-size:13.5px;font-weight:500}.svm-ib span{padding-right:4px}
+.svm-x{width:40px;padding:0}
+.svm-nav{position:absolute;top:50%;transform:translateY(-50%);width:52px;height:52px;border-radius:50%;padding:0}
+.svm-nav:active{transform:translateY(-50%) scale(.94)}.svm-prev{left:20px}.svm-next{right:20px}
+.svm-cnt{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);padding:6px 14px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);color:#fff;font-size:13px;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+@media(max-width:700px){.svm-ib span{display:none}.svm-ib{padding:0}.svm-nav{width:44px;height:44px}.svm-prev{left:10px}.svm-next{right:10px}.svm-top{top:12px;right:12px}}

@@ -8,10 +8,10 @@ function tpHead(tab,title,sub){var cur=dIso(new Date()).slice(0,7);A.tpYm=A.tpYm
   for(var k=0;k<12;k++){var d=new Date(+cur.slice(0,4),+cur.slice(5,7)-1-k,1);ms.push(d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2))}
   return '<div class="ph"><div><h1>'+title+'</h1><div class="sub">'+sub+' · ขอบเขต: '+esc(scopeTxt('att'))+'</div></div><span class="sp"></span>'+
    '<label class="xd-l">เดือน<select id="tp-ym">'+ms.map(function(m){return '<option value="'+m+'"'+(m===A.tpYm?' selected':'')+'>'+xdYmTxt(m)+(m===cur?' (ถึงวันนี้)':'')+'</option>'}).join('')+'</select></label><button class="btn" id="tp-rl">โหลดใหม่</button></div>'+
-   rpTabs(tab)+'<div id="tp-body"><div class="loading"><span class="spin"></span>กำลังรวมข้อมูล 6 เดือน…</div></div>'}
+   rpTabs(tab)+'<div id="tp-body">'+SK('kpi','กำลังรวมข้อมูล 6 เดือน…')+'</div>'}
 function vTop(){return tpHead('top','Top 10 รายเดือน','อันดับพนักงานที่ลา ขาดงาน และแก้ไขเวลามากที่สุดในเดือน · เท่ากันเรียงตามยอด 6 เดือน')}
 function vBh(){return tpHead('bh','วิเคราะห์พฤติกรรม','เทียบเดือนที่เลือกกับค่าเฉลี่ย 3 เดือนก่อนหน้าของพนักงานแต่ละคน')}
-function tpBind(draw){var load=function(){$('#tp-body').innerHTML='<div class="loading"><span class="spin"></span>กำลังรวมข้อมูล 6 เดือน…</div>';
+function tpBind(draw){var load=function(){$('#tp-body').innerHTML=''+SK('kpi','กำลังรวมข้อมูล 6 เดือน…')+'';
     aCall('execDashboard',A.tpYm).then(function(d){A.tp=d;draw()}).catch(function(e){if($('#tp-body'))$('#tp-body').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})};
   $('#tp-ym').onchange=function(){A.tpYm=this.value;load()};$('#tp-rl').onclick=function(){fxArm('rep');load()};
   if(A.tp&&A.tp.ym===A.tpYm)draw();else load()}
@@ -40,7 +40,7 @@ var TP_C={lv:['#7C3AED','#F5F3FF'],abs:['#DC2626','#FEF2F2'],adj:['#EA580C','#FF
  * โทนขาว–ดำสำหรับผู้บริหาร (5 พ.ย. 2569 ผู้ใช้: "ไม่เอาแถบสี มันดูเด็กน้อยไป") · สีเหลือเฉพาะ ▲ แดง / ▼ เขียว ที่บอกทิศทาง
  * ด้านล่าง: ตารางแผนกรวม 3 หมวด (กดเพื่อกรอง) + ข้อสังเกตรวมทุกหมวด ── */
 function tpLvShort(t){return String(t).replace(/^ลา(?=\S)/,'')}
-function drawTop(){var d=A.tp;if(!d||!$('#tp-body'))return;var ym=d.ym,i=d.months.indexOf(ym),pm=i>0?d.months[i-1]:null,ps=tpPs(),h=(isHR()?'<section class="card tp-ms" id="tp-ms"><span class="faint">กำลังโหลดสถานะการส่ง…</span></section>':'')+tpChips(),R={},H={},in10={};
+function drawTop(){var d=A.tp;if(!d||!$('#tp-body'))return;var ym=d.ym,i=d.months.indexOf(ym),pm=i>0?d.months[i-1]:null,ps=tpPs(),h=(isHR()?'<section class="card tp-ms" id="tp-ms">'+SKi('300px','กำลังโหลดสถานะการส่ง…')+'</section>':'')+tpChips(),R={},H={},in10={};
   TP_K.forEach(function(k){var f=k[0];R[f]=tpRank(d,ps,f);R[f].slice(0,10).forEach(function(x){(in10[x.p.id]=in10[x.p.id]||[]).push(k[1])});
     H[f]={};d.months.slice(0,i).forEach(function(m){var o=H[f][m]={};tpRank(d,ps,f,m).slice(0,10).forEach(function(x){o[x.p.id]=1})})});
   var streak=function(f,id){var n=1;for(var j=i-1;j>=0&&H[f][d.months[j]][id];j--)n++;return n};

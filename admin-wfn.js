@@ -59,7 +59,7 @@ function wfnInsp(n,c,trig){var b=wfnBase(trig),br=(b==='leave'||b==='messenger'|
   h+='<div class="f">เงื่อนไข <small class="faint">ทุกข้อต้องตรง · แผนกของผู้รับ = กรองผู้รับ</small>'+c.conds.map(function(x,i){var f=fd(x.field);
     return '<div class="wfn-cond"><select data-ncf="'+i+'">'+opt(F.map(function(f){return [f[0],f[1]]}),x.field)+'</select><select data-nco="'+i+'">'+opt((f[2]==='num'?['gte','gt','eq','ne','lte','lt']:['eq','ne']).map(function(o){return [o,WF_OPN[o]]}),x.op||'eq')+'</select>'+
      (f[2]==='num'?'<input type="number" min="0" data-ncv="'+i+'" value="'+esc(x.value==null?'':x.value)+'">':'<select data-ncv="'+i+'">'+opt([['','— เลือก —']].concat(f[3]||[]),x.value)+'</select>')+'<button class="btn sm" data-ncdel="'+i+'" aria-label="ลบเงื่อนไข">✕</button></div>'}).join('')+'<button class="btn sm" id="wfn-cadd">+ เพิ่มเงื่อนไข</button></div>';
-  return h+'<div class="f">ตัวอย่างที่จะส่ง<div class="wfe-pv" id="wfe-pv"><span class="spin"></span></div></div>'}
+  return h+'<div class="f">ตัวอย่างที่จะส่ง<div class="wfe-pv" id="wfe-pv">'+SK('card')+'</div></div>'}
 function wfnBind(n,c,upd){var re=function(){upd();wfInsp()};
   $$('#wfe-i [data-nch]').forEach(function(x){x.onclick=function(){var k=x.dataset.nch;c.ch[k]=!c.ch[k];re()}});
   $$('#wfe-i [data-nto]').forEach(function(x){x.onchange=function(){var r=x.dataset.nto,i=c.to.indexOf(r);if(x.checked&&i<0)c.to.push(r);if(!x.checked&&i>=0)c.to.splice(i,1);re()}});
@@ -85,7 +85,7 @@ function wfnBind(n,c,upd){var re=function(){upd();wfInsp()};
   var ca=$('#wfn-cadd');if(ca)ca.onclick=function(){var F=wfnFields(wfTrig(),wfBranch(n.id));c.conds.push({field:F[F.length-1][0],op:'eq',value:''});re()}}
 
 /* ── กล่อง "เริ่มเมื่อ" ของสรุปประจำเดือน: กำหนดการ / หมวด / ข้อความท้ายการ์ด / เส้นทางคำชี้แจง (เดิมอยู่แท็บสรุปประจำเดือน · บันทึกพร้อม flow ผ่าน msSaveCfg) ── */
-function wfnMsTrig(){var c=A.wfMs;if(!c)return '<div class="loading"><span class="spin"></span>กำลังโหลดค่าสรุปประจำเดือน…</div>';
+function wfnMsTrig(){var c=A.wfMs;if(!c)return ''+SK('g','กำลังโหลดค่าสรุปประจำเดือน…')+'';
   var cats=String(c.cats).split(','),ck=function(k,l,s){return '<label class="fl-c"><input type="checkbox" data-msk="'+k+'"'+(c[k]==='on'?' checked':'')+'><span>'+l+(s?'<br><small class="faint">'+s+'</small>':'')+'</span></label>'};
   return '<div class="wfe-row3"><label class="f">วันที่<input type="number" min="1" max="28" data-msn="day" value="'+esc(c.day)+'"></label><label class="f">เวลา (ชม.)<input type="number" min="0" max="23" data-msn="hour" value="'+esc(c.hour)+'"></label><label class="f">ชี้แจงภายใน (วัน)<input type="number" min="1" max="30" data-msn="due" value="'+esc(c.due)+'"></label></div>'+
    '<div class="faint" style="font-size:12px">ทุกเดือน ระบบเตรียมรายชื่อของเดือนที่แล้ว ตามวันที่/เวลานี้</div>'+

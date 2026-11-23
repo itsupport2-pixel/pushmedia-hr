@@ -4,7 +4,7 @@
 var PKA={i:null,exp:null,only:false};
 var PKA_ST={1:'ร่าง',2:'รออนุมัติ',3:'รอชำระ',4:'เกินกำหนด',5:'ชำระแล้ว',6:'รอใบเสร็จ',7:'ได้ใบเสร็จแล้ว',8:'ยกเลิก'};
 function peakMount(){var anchor=$('#cx-card')||($('#od-st')&&$('#od-st').closest('section'));if(!anchor||$('#pka-card'))return;
-  anchor.insertAdjacentHTML('afterend','<section class="card ig" id="pka-card"><div class="ig-h"><span class="ig-ic ig-lg"><img src="peak-logo.png" alt="PEAK"></span><div class="ig-t"><h3>PEAK Account</h3><small>อ่านผลทางบัญชีของรอบเงินเดือนจาก PEAK · ระยะ 1 อ่านอย่างเดียว</small></div><span class="sp"></span><span id="pka-st"></span></div><div class="ig-b" id="pka-b"><div class="loading"><span class="spin"></span>กำลังโหลด…</div></div></section>');
+  anchor.insertAdjacentHTML('afterend','<section class="card ig" id="pka-card"><div class="ig-h"><span class="ig-ic ig-lg"><img src="peak-logo.png" alt="PEAK"></span><div class="ig-t"><h3>PEAK Account</h3><small>อ่านผลทางบัญชีของรอบเงินเดือนจาก PEAK · ระยะ 1 อ่านอย่างเดียว</small></div><span class="sp"></span><span id="pka-st"></span></div><div class="ig-b" id="pka-b">'+SK('form','กำลังโหลด…')+'</div></section>');
   aCall('peakInfo').then(function(r){peakDraw(r)}).catch(function(e){$('#pka-b').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})}
 function peakDraw(r,edit){PKA.i=r;var b=$('#pka-b');if(!b)return;
   if(!r.allowed){$('#pka-st').innerHTML='';b.innerHTML='<p class="ig-d" style="margin:0">เฉพาะบัญชีผู้ดูแลระบบและผู้มีสิทธิ์เงินเดือน (ตั้งค่า › สิทธิ์การใช้งาน) เท่านั้น</p>';return}
@@ -32,11 +32,11 @@ function peakBind(){var r=PKA.i,q=function(id){return $('#'+id)};
   if(q('pka-cancel'))q('pka-cancel').onclick=function(){peakDraw(r)};
   if(q('pka-edit'))q('pka-edit').onclick=function(){peakDraw(r,1)};
   if(q('pka-del'))q('pka-del').onclick=function(){if(!confirm('ยกเลิกการเชื่อม PEAK? (ลบค่าเชื่อมต่อทั้งหมดที่ตั้งไว้)'))return;aCall('peakSave',{clear:1}).then(function(x){toast('ยกเลิกการเชื่อม PEAK แล้ว');peakDraw(x)}).catch(function(e){toast(e.message,1)})};
-  if(q('pka-test'))q('pka-test').onclick=function(){var b=this;busy(b,1);q('pka-tr').innerHTML='<div class="loading"><span class="spin"></span>กำลังเชื่อม PEAK…</div>';
+  if(q('pka-test'))q('pka-test').onclick=function(){var b=this;busy(b,1);q('pka-tr').innerHTML=''+SK('g','กำลังเชื่อม PEAK…')+'';
     aCall('peakTest').then(function(t){busy(b,0);q('pka-tr').innerHTML='<div class="od-info" style="margin-top:12px"><span><b>เชื่อมต่อสำเร็จ</b> · '+(t.env==='prod'?'Production':'UAT')+' · อ่านผังบัญชีได้ '+t.accounts+' บัญชี · '+t.ms+' ms</span></div>'+
       (t.pay.length?'<div class="tw" style="margin-top:8px"><table><thead><tr><th>รหัสบัญชี</th><th>ชื่อบัญชีที่เกี่ยวกับเงินเดือน</th><th>English</th></tr></thead><tbody>'+t.pay.map(function(a){return '<tr><td class="mono">'+esc(a.code)+'</td><td>'+esc(a.name)+'</td><td class="faint">'+esc(a.nameEn)+'</td></tr>'}).join('')+'</tbody></table></div>':'<div class="faint" style="font-size:12.5px">ไม่พบบัญชีที่มีคำว่าเงินเดือน / ค่าจ้าง / ประกันสังคม ในผังบัญชี</div>');
       aCall('peakInfo').then(function(x){PKA.i=x})}).catch(function(e){busy(b,0);q('pka-tr').innerHTML='<div class="alert" style="margin-top:12px">'+esc(e.message)+'</div>'})};
-  if(q('pka-go'))q('pka-go').onclick=function(){var b=this;busy(b,1);q('pka-out').innerHTML='<div class="loading"><span class="spin"></span>กำลังอ่านเอกสารจาก PEAK…</div>';
+  if(q('pka-go'))q('pka-go').onclick=function(){var b=this;busy(b,1);q('pka-out').innerHTML=''+SK('g','กำลังอ่านเอกสารจาก PEAK…')+'';
     aCall('peakExpenses',q('pka-ym').value).then(function(x){busy(b,0);PKA.exp=x;peakTable()}).catch(function(e){busy(b,0);q('pka-out').innerHTML='<div class="alert" style="margin-top:12px">'+esc(e.message)+'</div>'})}}
 function peakTable(){var x=PKA.exp,o=$('#pka-out');if(!o||!x)return;var nf=function(n){return Number(n||0).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2})};
   var rows=PKA.only?x.rows.filter(function(r){return r.payHint.length}):x.rows,np=x.rows.filter(function(r){return r.payHint.length}).length;

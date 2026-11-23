@@ -8,7 +8,7 @@ var TX_MON = ['', 'มกราคม', 'กุมภาพันธ์', 'ม�
 function pyTax() {
   if (!TX.year) TX.year = String(new Date().getFullYear());
   if (!TX.co) TX.co = ((pyCos()[0]) || {}).id || '';
-  pyBody('<div class="loading"><span class="spin"></span>กำลังรวมข้อมูลทั้งปี…</div>');
+  pyBody(''+SK('g','กำลังรวมข้อมูลทั้งปี…')+'');
   aCall('payAnnual', TX.year, TX.co).then(function (d) { TX.d = d; txDraw(); }).catch(function (e) { pyBody('<div class="alert">' + esc(e.message) + '</div>'); });
 }
 function txDraw() {
@@ -87,7 +87,7 @@ function txImport() {
   var d = TX.d;
   drawer('นำเข้ายอดภาษีจากระบบอื่น · ปี ' + txBE(TX.year), '<p class="muted" style="margin-top:0">ใช้กับปีที่จ่ายเงินเดือนด้วยระบบอื่น (เช่น HumanSoft) เพื่อออก ภ.ง.ด.1ก / 50 ทวิ จากระบบนี้ · <b>ไม่สร้างงวดเงินเดือน</b> · ถ้าเดือนเดียวกันมีทั้งงวดในระบบและยอดนำเข้า ระบบจะแจ้งว่าซ้ำ</p>' +
     '<p style="font-size:13px">คอลัมน์: ' + TX_IMP_COLS.join(' · ') + ' · month 1–12 หรือเว้นว่าง = ยอดทั้งปี · tax_type ใช้รหัส ' + Object.keys(d.types).map(esc).join(' / ') + '</p>' +
-    '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="ti-tpl">ไฟล์ตัวอย่าง (Excel)</button><label class="btn pri" style="position:relative">เลือกไฟล์ Excel<input type="file" id="ti-f" accept=".xlsx,.xls,.csv" class="vh"></label><input id="ti-src" value="HumanSoft" maxlength="40" style="width:140px" aria-label="ระบบต้นทาง"></div><div id="ti-res" style="margin-top:12px"></div><h4 style="margin:16px 0 6px">ชุดที่นำเข้าแล้ว</h4><div id="ti-list" class="faint">กำลังโหลด…</div>',
+    '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="ti-tpl">ไฟล์ตัวอย่าง (Excel)</button><label class="btn pri" style="position:relative">เลือกไฟล์ Excel<input type="file" id="ti-f" accept=".xlsx,.xls,.csv" class="vh"></label><input id="ti-src" value="HumanSoft" maxlength="40" style="width:140px" aria-label="ระบบต้นทาง"></div><div id="ti-res" style="margin-top:12px"></div><h4 style="margin:16px 0 6px">ชุดที่นำเข้าแล้ว</h4><div id="ti-list" class="faint">'+SK('rows')+'</div>',
     '<button class="btn" id="px">ปิด</button>');
   $('#px').onclick = function () { closeD(); pyTax(); };
   var list = function () { aCall('payTaxImportList', TX.year, d.company.id).then(function (L) { $('#ti-list').innerHTML = L.length ? L.map(function (b) { return '<div class="lbox" style="margin-bottom:6px"><b style="flex:1">' + esc(b.source) + ' · ' + b.rows + ' แถว · เงินได้ ' + txN(b.income) + ' · ภาษี ' + txN(b.tax) + '<small class="faint" style="display:block">' + esc(fdt(b.at)) + '</small></b><button class="btn sm" data-tidel="' + esc(b.batch) + '" style="color:var(--bad)">ลบชุดนี้</button></div>'; }).join('') : 'ยังไม่มี';

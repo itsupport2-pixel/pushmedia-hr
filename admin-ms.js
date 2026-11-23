@@ -15,12 +15,12 @@ function msWho(x){return '<div class="who"><span class="a">'+esc(String(x.name||
 function vMs(){A.msYm=A.msYm||msPrev();var ms=[],c=msPrev();for(var k=0;k<12;k++){var d=new Date(+c.slice(0,4),+c.slice(5,7)-1-k,1);ms.push(d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2))}
   return '<div class="ph"><div><h1>รายงาน</h1><div class="sub">สรุปประจำเดือน · อีเมล Top 10 ถึงผู้บริหาร · LINE ถึงพนักงานที่ติดอันดับ · ตรวจก่อนส่ง</div></div><span class="sp"></span>'+
    '<label class="xd-l">เดือน<select id="ms-ym">'+ms.map(function(m){return '<option value="'+m+'"'+(m===A.msYm?' selected':'')+'>'+smYm(m)+'</option>'}).join('')+'</select></label><button class="btn" id="ms-tst">รอบทดสอบ</button><button class="btn" id="ms-gal2">ดูตัวอย่างทุกรูปแบบ</button><button class="btn" id="ms-prep" hidden>คำนวณใหม่</button></div>'+
-   rpTabs('ms')+'<div id="ms-body" class="mx"><div class="loading"><span class="spin"></span>กำลังโหลด…</div></div>'}
+   rpTabs('ms')+'<div id="ms-body" class="mx">'+SK('rows','กำลังโหลด…')+'</div>'}
 function bMs(){var g2=$('#ms-gal2');if(g2)g2.onclick=msGal;var tt=$('#ms-tst');if(tt)tt.onclick=msTestDlg;var load=function(){aCall('msGet',A.msYm).then(function(d){A.ms=d;drawMs()}).catch(function(e){if($('#ms-body'))$('#ms-body').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})};
-  $('#ms-ym').onchange=function(){A.msYm=this.value;A.msSel=null;A.ms=null;$('#ms-body').innerHTML='<div class="loading"><span class="spin"></span>กำลังโหลด…</div>';load()};
+  $('#ms-ym').onchange=function(){A.msYm=this.value;A.msSel=null;A.ms=null;$('#ms-body').innerHTML=''+SK('rows','กำลังโหลด…')+'';load()};
   $('#ms-prep').onclick=function(){msPrep(this)};
   if(A.ms&&A.ms.ym===A.msYm)drawMs();else load()}
-function msPrep(b){busy(b,1);$('#ms-body').innerHTML='<div class="loading"><span class="spin"></span>กำลังรวมข้อมูลทั้งปี…</div>';
+function msPrep(b){busy(b,1);$('#ms-body').innerHTML=''+SK('rows','กำลังรวมข้อมูลทั้งปี…')+'';
   aCall('msPrepare',A.msYm).then(function(d){busy(b,0);A.ms=d;toast('เตรียมข้อมูลแล้ว');drawMs()}).catch(function(e){busy(b,0);toast(e.message,1);drawMs()})}
 function msStep(run){var st=!run?0:run.status==='sent'?3:1,due=run&&run.due,items=run?run.items:[],sent=items.filter(function(x){return !x.excluded}),ex=sent.filter(function(x){return x.exp_status}).length;
   var S=[['ระบบเตรียมข้อมูล',run?smD(run.prepared_at):'วันที่ '+A.ms.cfg.day+' เวลา '+A.ms.cfg.hour+':00'],['HR ตรวจรายชื่อ',st>1?'ตรวจแล้ว':'รอตรวจ'],['ส่งอีเมล + LINE',st>1?smD(run.sent_at)+' · '+esc(run.sent_by):'ยังไม่ส่ง'],['ติดตามคำชี้แจง',st>1?'ชี้แจงแล้ว '+ex+' จาก '+sent.length+(due?' · ครบกำหนด '+smD(due):''):'']];
@@ -46,7 +46,7 @@ function drawMs(){var b=$('#ms-body');if(!b||!A.ms)return;var d=A.ms,run=d.run,c
     :'<div class="cd" style="flex:1;min-width:0"><div class="hd">'+seg+'<span class="sp"></span><span class="tiny">จัดอันดับจากเดือน '+smYm(run.ym)+' · ยอดสะสม ม.ค.–'+MS_M[+run.ym.slice(5,7)-1]+' · เท่ากันเรียงตามยอดสะสม · กดช่องซ้ายเพื่อไม่ส่ง</span></div>'+tbl+
       '<div class="bar"><span class="mut" style="font-size:13px"><b style="color:#111">LINE '+go+' คน</b> · ไม่ส่ง '+exN+' คน · ไม่ได้เชื่อม LINE '+noL+' คน · <b style="color:#111">อีเมล '+(cfg.mail==='on'?mails.length:0)+' ฉบับ</b></span><span class="sp"></span><button class="btn" id="ms-test">ทดลองส่งหาฉัน</button><button class="btn pri" id="ms-send">ส่งอีเมล + LINE</button></div></div>';
   var sel=it.filter(function(x){return x.id===A.msSel})[0]||it[0];
-  var right='<div class="col" style="width:356px;flex:0 0 356px"><div class="cd"><div class="hd"><h3>'+LINE_IC+'ตัวอย่างการ์ด LINE'+(sel?' · '+esc(sel.name.split(' (')[0]):'')+'</h3></div><div class="bd"><div class="fxw"><div class="fxp" id="ms-fx"><div class="loading"><span class="spin"></span></div></div></div><div class="tiny" style="margin-top:10px">กดแถวในตารางเพื่อดูการ์ดของแต่ละคน</div></div></div>'+
+  var right='<div class="col" style="width:356px;flex:0 0 356px"><div class="cd"><div class="hd"><h3>'+LINE_IC+'ตัวอย่างการ์ด LINE'+(sel?' · '+esc(sel.name.split(' (')[0]):'')+'</h3></div><div class="bd"><div class="fxw"><div class="fxp" id="ms-fx">'+SK('g')+'</div></div><div class="tiny" style="margin-top:10px">กดแถวในตารางเพื่อดูการ์ดของแต่ละคน</div></div></div>'+
     '<div class="cd"><div class="hd"><h3>'+GMAIL_IC+'อีเมลผู้บริหาร</h3><span class="sp"></span><span class="tiny">'+(cfg.mail==='on'?mails.length+' ฉบับ'+(cfg.pdf==='on'?' · แนบ PDF':''):'ปิดอยู่')+'</span></div><div class="bd" style="display:flex;flex-direction:column;gap:6px">'+
       (mails.length?mails.map(function(m){var s=run.mails.filter(function(x){return x.to===m.email&&!x.test})[0];return '<div class="li" style="padding:4px 0"><div class="t"><b>'+esc(m.label||m.email)+'</b><small>'+esc(m.email)+'</small></div>'+(s?msTag(s.status==='sent'?'g':s.status==='error'?'r':'m',{sent:'ส่งแล้ว',pending:'รอ Apps Script ส่ง',error:'ส่งไม่สำเร็จ',dev:'dev ไม่ส่งจริง'}[s.status]||s.status):'')+'</div>'}).join(''):'<div class="tiny">ยังไม่มีรายชื่อ · ตั้งค่า › Notification › สรุปประจำเดือน</div>')+
       '<div style="display:flex;gap:8px;margin-top:6px"><button class="btn" style="flex:1" id="ms-mv">ดูตัวอย่างอีเมล</button><button class="btn" style="flex:1" id="ms-mt">ส่งอีเมลทดสอบหาฉัน</button></div></div></div>'+
@@ -72,7 +72,7 @@ function drawMs(){var b=$('#ms-body');if(!b||!A.ms)return;var d=A.ms,run=d.run,c
 }
 
 /* ── ตั้งค่า › Notification › สรุปประจำเดือน ── */
-function msSetView(){setTimeout(msSetLoad,0);return '<div id="ms-set" class="mx"><div class="loading"><span class="spin"></span>กำลังโหลด…</div></div>'}
+function msSetView(){setTimeout(msSetLoad,0);return '<div id="ms-set" class="mx">'+SK('form','กำลังโหลด…')+'</div>'}
 function msSetLoad(){if(!A.wfd||A.wfd.loading)aCall('wfList').then(function(w){A.wfd=w;msSetDraw()}).catch(function(){});aCall('msGet','').then(function(d){A.msCfg=JSON.parse(JSON.stringify(d.cfg));msSetDraw()}).catch(function(e){var b=$('#ms-set');if(b)b.innerHTML='<div class="alert">'+esc(e.message)+'</div>'})}
 function msSetDraw(){var b=$('#ms-set'),c=A.msCfg;if(!b||!c)return;
   var sw=function(k){return '<button type="button" class="sw'+(c[k]==='on'?' on':'')+'" data-mssw="'+k+'" role="switch" aria-checked="'+(c[k]==='on')+'" style="border:0;cursor:pointer"></button>'};
@@ -124,7 +124,7 @@ function msApDetail(x){var ex=x.explain||{},ACT={ack:'รับทราบ',inf
 /* ── ตัวอย่างทุกรูปแบบก่อนส่ง (1 พ.ย. 2569 ผู้ใช้ขอ) · ข้อมูลจริงของรอบล่าสุด หรือคำนวณเดือนที่แล้วให้ดู (ไม่บันทึก) ── */
 var MSG_GRP=['ผู้บริหาร','HR','หัวหน้า','พนักงาน'];
 function msGal(){var ov=document.createElement('div');ov.className='msg-ov';ov.id='msg-ov';
-  ov.innerHTML='<div class="msg-box" role="dialog" aria-modal="true" aria-label="ตัวอย่างการแจ้งเตือนสรุปประจำเดือน"><div class="msg-hd"><b>ตัวอย่างการแจ้งเตือน · สรุปประจำเดือน</b><span class="sp"></span><button class="btn sm" id="msg-x">ปิด</button></div><div class="msg-bd" id="msg-bd"><div class="loading"><span class="spin"></span>กำลังเตรียมตัวอย่างจากข้อมูลจริง…</div></div></div>';
+  ov.innerHTML='<div class="msg-box" role="dialog" aria-modal="true" aria-label="ตัวอย่างการแจ้งเตือนสรุปประจำเดือน"><div class="msg-hd"><b>ตัวอย่างการแจ้งเตือน · สรุปประจำเดือน</b><span class="sp"></span><button class="btn sm" id="msg-x">ปิด</button></div><div class="msg-bd" id="msg-bd">'+SK('g','กำลังเตรียมตัวอย่างจากข้อมูลจริง…')+'</div></div>';
   document.body.appendChild(ov);document.body.style.overflow='hidden';
   var close=function(){ov.remove();document.body.style.overflow='';document.removeEventListener('keydown',esc1)},esc1=function(e){if(e.key==='Escape')close()};
   $('#msg-x').onclick=close;ov.onclick=function(e){if(e.target===ov)close()};document.addEventListener('keydown',esc1);
@@ -142,7 +142,7 @@ function msGalDraw(){var d=A.msGal,b=$('#msg-bd');if(!d||!b)return;var cur=d.lis
 
 /* ── ศูนย์อนุมัติ: รอบสรุปประจำเดือนรอ HR อนุมัติส่ง (2 พ.ย. 2569 ผู้ใช้: "HR ตรวจสอบในระบบหลังบ้าน · กดอนุมัติแล้วส่ง mail ให้ผู้บริหาร/หัวหน้าแผนก/ตามที่กำหนด และส่งไลน์หาพนักงานรายคน") ── */
 function msRunDetail(x){
-  drawer('สรุปประจำเดือน · '+x.no,'<div id="msr-b"><div class="loading"><span class="spin"></span>กำลังโหลดรายชื่อ…</div></div>',(x.test?'<button class="btn bad" id="msr-del">ลบรอบทดสอบ</button>':'')+(x.mine&&!x.test?'<button class="btn" id="msr-skip">ไม่ส่งรอบนี้</button>':'')+(x.mine?'<button class="btn" id="msr-gal">ดูตัวอย่างทุกรูปแบบ</button><button class="btn ok" id="msr-ok" disabled>'+(x.test?'อนุมัติและส่ง (ทดสอบ)':'อนุมัติและส่ง')+'</button>':'<button class="btn" id="msr-gal">ดูตัวอย่างทุกรูปแบบ</button>'));
+  drawer('สรุปประจำเดือน · '+x.no,'<div id="msr-b">'+SK('rows','กำลังโหลดรายชื่อ…')+'</div>',(x.test?'<button class="btn bad" id="msr-del">ลบรอบทดสอบ</button>':'')+(x.mine&&!x.test?'<button class="btn" id="msr-skip">ไม่ส่งรอบนี้</button>':'')+(x.mine?'<button class="btn" id="msr-gal">ดูตัวอย่างทุกรูปแบบ</button><button class="btn ok" id="msr-ok" disabled>'+(x.test?'อนุมัติและส่ง (ทดสอบ)':'อนุมัติและส่ง')+'</button>':'<button class="btn" id="msr-gal">ดูตัวอย่างทุกรูปแบบ</button>'));
   var dl=$('#msr-del');if(dl)dl.onclick=function(){ask({title:'ลบรอบทดสอบ?',desc:'ลบรอบทดสอบและคำชี้แจงทดสอบทั้งหมด · ไม่กระทบรอบจริง',tone:'warn',icon:'del',buttons:[{k:'no',label:'ยกเลิก'},{k:'yes',label:'ลบ',cls:'pri'}]}).then(function(k){if(k!=='yes')return;busy(dl,1);aCall('msTestDelete',x.id).then(function(){closeD();toast('ลบรอบทดสอบแล้ว');reload(false).then(function(){render()})}).catch(function(e){busy(dl,0);toast(e.message,1)})})};
   $('#msr-gal').onclick=msGal;
   var run=null,load=function(){aCall('msGet',x.ym).then(function(d){run=d.run;draw()}).catch(function(e){var b=$('#msr-b');if(b)b.innerHTML='<div class="alert">'+esc(e.message)+'</div>'})};
