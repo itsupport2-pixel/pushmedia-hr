@@ -2157,7 +2157,9 @@ button.svx-more{border:0;background:none;padding:0;font:inherit;font-size:13px;f
  body.fo .shell.hov>.side{top:36px}
  .shell.hov>.side.xp{width:240px;box-shadow:10px 0 32px rgba(0,0,0,.24)}
  .shell.hov .side .rl-tg{display:none}
- .shell.hov .side .rl-logo{justify-content:flex-start;padding:2px 0 12px 4px}.shell.hov .side .rl-logo .mk{display:block;flex:none}.shell.hov .side .rl-full{display:none}
+ .shell.hov .side .rl-logo{position:relative;justify-content:flex-start;padding:2px 0 12px 4px;min-height:54px;box-sizing:border-box}.shell.hov .side .rl-logo .mk{display:block;flex:none;transition:opacity .15s}
+ .shell.hov .side .rl-full{display:block;position:absolute;left:4px;top:0;height:44px;width:auto;max-width:200px;opacity:0;pointer-events:none;transition:opacity .15s}.shell.hov .side .rl-full.rl-co{display:flex;align-items:center;height:40px;white-space:nowrap}
+ .shell.hov .side.xp .rl-full{opacity:1;transition:opacity .2s .06s}.shell.hov .side.xp .rl-logo .mk{opacity:0}   /* 23 พ.ย. 2569 ผู้ใช้: ชี้แล้วกาง = โลโก้เต็ม (ซ้อนตำแหน่งเดียวกับไอคอน ไม่กระโดด) */
  .shell.hov .side .rl-logo .mk:has(.mk-w){width:40px}.shell.hov .side .rl-logo .mk img.mk-w{width:40px}
  .shell.hov .side a{flex-direction:row;justify-content:flex-start;align-items:center;width:auto;flex:none;gap:12px;height:40px;padding:0 12px;font-size:14px;line-height:1.2;text-align:left;border-radius:10px;white-space:nowrap}
  .shell.hov .side a svg{width:20px;height:20px;flex:none}
@@ -2174,7 +2176,7 @@ button.svx-more{border:0;background:none;padding:0;font:inherit;font-size:13px;f
  .shell.hov .side .subi a{flex-direction:row;height:38px;font-size:14px;color:inherit;opacity:.82}.shell.hov .side .subi a:hover,.shell.hov .side .subi a.on{opacity:1}
  .shell.hov .side .subi a>span{opacity:1}
  .shell.hov .rl-sc{margin:0 -8px;padding:0 8px;scrollbar-width:thin}.shell.hov .rl-sc::-webkit-scrollbar{width:4px}
- .shell.hov:not(:has(.side.xp)) .rl-sc{scrollbar-color:transparent transparent}.shell.hov .side:not(.xp) .rl-sc::-webkit-scrollbar-thumb{background:transparent}
+ .shell.hov .side:not(.xp) .rl-sc{scrollbar-width:none}.shell.hov .side:not(.xp) .rl-sc::-webkit-scrollbar{display:none}   /* 23 พ.ย. 2569: ตอนยุบซ่อนแถบเลื่อน (เครื่องที่แสดงแถบเลื่อนตลอด แถบกิน 11px → ไฮไลต์เมนูเหลือครึ่ง) · ยังเลื่อนด้วยล้อเมาส์ได้ */
  .shell.hov .side .cosw{flex-direction:row;justify-content:flex-start;gap:12px;width:auto;padding:6px 6px;margin:6px 0 2px;border:0;background:none;white-space:nowrap;overflow:hidden}
  .shell.hov .side .cosw .co-av{flex:none}.shell.hov .side .cosw .co-tx{min-width:0;opacity:0;transition:opacity .12s}.shell.hov .side.xp .cosw .co-tx{opacity:1}
  .shell.hov .side .cosw .co-tx b{font-size:13px;text-align:left}.shell.hov .side .cosw .co-tx small{display:block;font-size:11px;overflow:hidden;text-overflow:ellipsis}

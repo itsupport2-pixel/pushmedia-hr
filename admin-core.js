@@ -500,13 +500,13 @@ function render(){
    coSw()+'<a id="out2">'+ic('out')+'<span>ออกจากระบบ</span></a><div class="ver">'+(CFG.failover||foManual()?'Safe Mode':'Online')+'</div>'+
    '</nav>';
   if(navOnly){$('.shell').className=shCls;$('.shell > .side').outerHTML=sideH}
-  else $('#app').innerHTML='<div class="'+shCls+'">'+sideH+
+  else navPut('<div class="'+shCls+'">'+sideH+
    '<main class="main"><header class="tb"><button type="button" class="ib tb-menu" id="tb-menu" aria-label="เปิดเมนู" aria-expanded="false"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>'+(coBrand()?'<span class="tb-logo tb-co">'+coBrand('top')+'</span>':'<img class="tb-logo" src="push-media-logo-black.svg" alt="Push Media">')+'<span class="dv l"></span><div class="tt"><small>'+esc(app)+' / '+esc(navTitle(A.view))+'</small><b>'+esc(navTitle(A.view))+'</b></div>'+(isHR()||me.id==='admin'?'':'<span class="scp" title="ขอบเขตข้อมูลที่คุณเห็น"><i></i>ขอบเขต: '+esc(scopeTxt(selfOnly()?'emp':{att:'att',lv:'leave',appr:'approve'}[A.view]||'emp'))+'</span>')+'<span class="grow"></span>'+
    '<div class="srch"><label>'+ic('search')+'<input id="tb-q" type="search" placeholder="ค้นหาพนักงาน หรือเมนู…" aria-label="ค้นหา" autocomplete="off"></label><div class="srch-r" id="tb-r" hidden></div></div>'+
    '<div class="lang" role="group" aria-label="ภาษา / Language" data-noi18n><button type="button" data-lang="th" aria-pressed="'+(window.hrLang&&hrLang()==='th')+'">TH</button><button type="button" data-lang="en" aria-pressed="'+(window.hrLang&&hrLang()==='en')+'">EN</button></div>'+
     '<button class="ib" id="tb-bell" aria-label="คำขอรออนุมัติ '+pend+' รายการ" title="คำขอรออนุมัติ">'+ic('bell')+(pend?'<span class="dot"></span>':'')+'</button><button class="ib help" id="tb-help" aria-label="ช่วยเหลือ" title="ช่วยเหลือ">'+ic('help')+'</button><span class="dv"></span>'+
    '<button class="usr" id="tb-me" aria-haspopup="menu"><span class="av"'+(me.id!=='admin'?' data-av="'+esc(me.id)+'" style="width:38px;height:38px"':'')+'>'+esc((me.nickname||me.name||'?').slice(0,1))+'</span><span><b>'+esc(me.name)+'</b><small>'+esc(ROLE[me.role]||me.role)+(me.code?' · รหัส '+esc(me.code):'')+'</small></span>'+ic('caret')+'</button></header>'+
-   '<div class="content">'+V[0]()+'</div></main></div>';
+   '<div class="content">'+V[0]()+'</div></main></div>');
   $$('[data-nav]').forEach(function(a){a.onclick=function(){if(A.peek)return peekClose(function(){go(a.dataset.nav)});var w=a.closest('.nsub');if(w)(A.subOpen||(A.subOpen={}))[w.querySelector('[data-navpar]').dataset.navpar]=true;go(a.dataset.nav)}});
   var rs=$('#rl-sc');if(rs){rs.scrollTop=A.navSc||0;rs.onscroll=function(){A.navSc=rs.scrollTop};var a0=rs.querySelector('a.on');if(a0){var ar=a0.getBoundingClientRect(),sr=rs.getBoundingClientRect();if(ar.bottom>sr.bottom||ar.top<sr.top)rs.scrollTop+=ar.top-sr.top-sr.height/2}}   // เมนูเลื่อนได้ (2 พ.ย. 2569): จำตำแหน่งเลื่อน · เมนูที่เปิดอยู่เลื่อนให้เห็นเสมอ
   $$('[data-navpar]').forEach(function(a){a.onclick=function(e){e.stopPropagation();var sd=a.closest('.side'),w=a.parentNode,o=!w.classList.contains('open');if(navHovOn()&&sd&&!sd.classList.contains('xp')){sd.classList.add('xp');o=true}   /* แถบยุบอยู่: กดเมนูแม่ = กางแถบ + เปิดเมนูย่อย */
@@ -529,8 +529,23 @@ function render(){
 function peekClose(then){var sh=$('.shell.peek');A.peek=null;if(!sh)return then();sh.classList.add('peek-out');setTimeout(then,matchMedia('(prefers-reduced-motion: reduce)').matches?0:190)}
 function navWide(){return false}   /* 23 พ.ย. 2569: เอาปุ่มปักเมนูเต็มออก (ผู้ใช้สั่ง) · ค่าเดิม hr_nav ในเครื่องไม่ใช้แล้ว · มือถือใช้ .mnav */
 /* เมนูซ้ายแบบชี้แล้วกาง (23 พ.ย. 2569 · แบบ Cloudflare): ชี้ค้าง 120ms → .side.xp (240px ลอยทับ) · ออก 150ms → ยุบ · โฟกัสคีย์บอร์ดกางด้วย · มือถือไม่ใช้ */
+/* เปลี่ยนหน้า (23 พ.ย. 2569 ผู้ใช้: กดเมนูแล้วแถบกระพริบ/โหลดใหม่ดูแปลก): มีแถบเมนูอยู่แล้ว → คงแถบเดิมไว้ ปรับเฉพาะส่วนที่ต่าง (ไฮไลต์ · ตัวเลข · เมนูย่อย) · เปลี่ยนเฉพาะฝั่งขวา
+ * แถบกางค้าง (.xp) · ตำแหน่งเลื่อน · รูปโลโก้ ไม่หาย · ครั้งแรก / เปลี่ยนโครงทั้งหมด = วาดใหม่ตามเดิม */
+function navMorph(a,b){if(a.nodeType!==b.nodeType||a.nodeName!==b.nodeName){a.replaceWith(b);return}
+  if(a.nodeType===3){if(a.nodeValue!==b.nodeValue)a.nodeValue=b.nodeValue;return}if(a.nodeType!==1)return;
+  var keep=a.classList&&a.classList.contains('side')&&a.classList.contains('xp');
+  for(var i=a.attributes.length-1;i>=0;i--){var n=a.attributes[i].name;if(!b.hasAttribute(n))a.removeAttribute(n)}
+  for(var j=0;j<b.attributes.length;j++){var x=b.attributes[j];if(a.getAttribute(x.name)!==x.value)a.setAttribute(x.name,x.value)}
+  if(keep)a.classList.add('xp');
+  var ac=a.childNodes,bc=Array.prototype.slice.call(b.childNodes);if(ac.length!==bc.length){a.innerHTML=b.innerHTML;return}
+  for(var k=0;k<bc.length;k++)navMorph(ac[k],bc[k])}
+function navPut(h){var app=$('#app'),sh=$('.shell'),os=sh&&$('.shell > .side'),om=sh&&$('.shell > .main');
+  if(!os||!om){app.innerHTML=h;return}
+  var t=document.createElement('div');t.innerHTML=h;var ns=t.querySelector('.shell > .side'),nm=t.querySelector('.shell > .main'),nsh=t.firstElementChild;
+  if(!ns||!nm||!nsh){app.innerHTML=h;return}
+  var sc=$('#rl-sc'),st=sc?sc.scrollTop:0;sh.className=nsh.className;if(os.outerHTML!==ns.outerHTML)navMorph(os,ns);om.replaceWith(nm);var sc2=$('#rl-sc');if(sc2)sc2.scrollTop=st}
 function navHovOn(){return !!(window.matchMedia&&matchMedia('(min-width:821px)').matches)&&!$('.shell.mnav')}
-function navHov(){var sd=$('.shell.hov > .side');if(!sd)return;var t=0,set=function(on,ms){clearTimeout(t);t=setTimeout(function(){if(on&&!navHovOn())return;sd.classList.toggle('xp',on)},ms)};
+function navHov(){var sd=$('.shell.hov > .side');if(!sd||sd._hv)return;sd._hv=1;var t=0,set=function(on,ms){clearTimeout(t);t=setTimeout(function(){if(on&&!navHovOn())return;sd.classList.toggle('xp',on)},ms)};
   sd.addEventListener('mouseenter',function(){set(true,120)});sd.addEventListener('mouseleave',function(){set(false,150)});
   sd.addEventListener('focusin',function(){set(true,0)});sd.addEventListener('focusout',function(e){if(!sd.contains(e.relatedTarget))set(false,0)});
   try{if((sd.matches(':hover')||(NAVMX>=0&&NAVMX<240))&&navHovOn())sd.classList.add('xp')}catch(e){}}
