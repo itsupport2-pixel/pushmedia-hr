@@ -30,3 +30,20 @@ function lgDraw(){var b=$('#lgp-body'),d=A.lgD;if(!b||!d)return;var S=d.sum,F=[[
   $$('[data-lgf]').forEach(function(x){x.onclick=function(){A.lgF=x.dataset.lgf;$$('[data-lgf]').forEach(function(y){y.setAttribute('aria-selected',y===x)});rows()}});
   $('#lgp-q').oninput=function(){A.lgQ=this.value;rows()};rows();
   document.getElementById('lgp-tb').addEventListener('click',function(e){var x=e.target.closest('[data-lgarc]');if(!x)return;A.lgT='arc';A.lfG=x.dataset.lgarc;render()})}
+/* ── เมนู LINE Photo Archive (23 พ.ย. 2569 ผู้ใช้: พนักงานทุกคนเห็น · เฉพาะกลุ่มที่เก็บลง Drive · คอลัมน์ กลุ่ม / Google Drive / ใช้งานล่าสุด / สถานะ)
+ * ข้อมูล lineArchivePub (อ่านอย่างเดียว · ไม่มี Group ID) · ลิงก์เปิดโฟลเดอร์ใช้สิทธิ์ Google Drive ของแต่ละคน (ระบบไม่เปลี่ยนสิทธิ์) */
+var GDRIVE_NIC=LGP_IC.drive.replace('class="lgp-ic"','class="svc-nic lpa-nic"');
+function vLpa(){return '<div class="ph"><div><h1>LINE Photo Archive</h1><div class="sub">บอทเก็บรูปและไฟล์ในกลุ่ม LINE ลง Google Drive อัตโนมัติ · กดเปิดโฟลเดอร์เพื่อดูรูป (ใช้สิทธิ์ Google Drive ของคุณ)</div></div><span class="sp"></span><button class="btn" id="lpa-re">รีเฟรช</button></div><div id="lpa-body">'+SK('rows','กำลังโหลด…')+'</div>'}
+function bLpa(){var load=function(){aCall('lineArchivePub').then(function(d){A.lpaD=d;lpaDraw()}).catch(function(e){var b=$('#lpa-body');if(b)b.innerHTML='<div class="alert">'+esc(e.message)+'</div>'})};
+  $('#lpa-re').onclick=function(){$('#lpa-body').innerHTML=SK('rows','กำลังโหลด…');load()};if(A.lpaD)lpaDraw();else load()}
+function lpaDraw(){var b=$('#lpa-body'),d=A.lpaD;if(!b||!d)return;var S=d.sum,q=(A.lpaQ||'').trim().toLowerCase();
+  b.innerHTML='<div class="lgp-k">'+[['กลุ่มที่เก็บรูป',S.all,'บอทอยู่ในกลุ่ม '+S.bot],['ใช้งาน 7 วันล่าสุด',S.active7,'มีข้อความหรือไฟล์'],['ไฟล์ 7 วันล่าสุด',S.d7,'ทุกกลุ่มรวมกัน'],['ไฟล์ 30 วันล่าสุด',S.d30,'ทุกกลุ่มรวมกัน']].map(function(k){return '<div class="lgp-kc"><small>'+k[0]+'</small><b>'+Number(k[1]).toLocaleString('th-TH')+'</b><span>'+esc(k[2])+'</span></div>'}).join('')+'</div>'+
+   '<div class="lgp-bar"><span class="sp"></span><div class="og2-qw lgp-q"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20.5 20.5L16 16"/></svg><input class="og2-q" id="lpa-q" type="search" placeholder="ค้นหาชื่อกลุ่ม" value="'+esc(A.lpaQ||'')+'"></div></div>'+
+   '<section class="card"><div class="tw"><table class="lgp-t lpa-t"><thead><tr><th>กลุ่ม</th><th>Google Drive</th><th>ใช้งานล่าสุด</th><th>สถานะ</th></tr></thead><tbody id="lpa-tb"></tbody></table></div><div class="faint lgp-ft" id="lpa-ft"></div></section>'+
+   '<div class="og3-help"><b>วิธีทำงาน</b> เชิญบอท Push Media Center เข้ากลุ่ม LINE ที่ตั้งค่าเก็บไฟล์ไว้ → รูปและไฟล์ที่ส่งในกลุ่มถูกเก็บลงโฟลเดอร์ Google Drive ของกลุ่มอัตโนมัติ · ตัวเลขอัปเดตทุก 15 นาที · เปิดโฟลเดอร์ไม่ได้ = ขอสิทธิ์ใน Google Drive หรือติดต่อ HR</div>';
+  var rows=function(){var L=d.groups.filter(function(g){return !q||String(g.name).toLowerCase().indexOf(q)>=0});
+    $('#lpa-tb').innerHTML=L.length?L.map(function(g){return '<tr><td><div class="lgp-g">'+lgPic(g)+'<span><b>'+esc(g.name||'(ไม่ทราบชื่อ)')+'</b></span></div></td>'+
+      '<td><span class="lgp-dc">'+LGP_IC.drive+'เชื่อมต่อแล้ว</span><div class="faint" style="font-size:12px;margin-top:3px">7 วัน '+g.d7+' · 30 วัน '+g.d30+'</div>'+(g.folder?'<div class="lgp-al"><a class="lnk" href="'+esc(g.folder)+'" target="_blank" rel="noopener">เปิดโฟลเดอร์</a></div>':'')+'</td>'+
+      '<td>'+lgAgo(g.last_at)+'</td><td>'+(g.st==='bot'?'<span class="badge b-ok">บอทอยู่</span>':g.st==='left'?'<span class="badge b-mute">ออกแล้ว</span>':'<span class="badge b-warn">ไม่พบบอท</span>')+'</td></tr>'}).join(''):'<tr><td colspan="4" class="muted" style="text-align:center;padding:24px">'+(d.groups.length?'ไม่พบกลุ่ม':'ยังไม่มีกลุ่มที่เก็บรูปลง Google Drive')+'</td></tr>';
+    $('#lpa-ft').textContent=L.length+' กลุ่ม'+(L.length!==d.groups.length?' จาก '+d.groups.length:'')};
+  rows();$('#lpa-q').oninput=function(){A.lpaQ=this.value;q=this.value.trim().toLowerCase();rows()}}
