@@ -261,24 +261,29 @@ function svcMediaView(L,i){var old=$('#svm-lb');if(old)old.remove();var m=L[i];i
   window.addEventListener('keydown',kd,true);el.onclick=function(e){if(e.target===el)close()};$('#svm-x').onclick=close;
   $$('#svm-lb [data-svmn]').forEach(function(b){b.onclick=function(){close();svcMediaView(L,(i+ +b.dataset.svmn+L.length)%L.length)}})}
 
-/* ── ตั้งค่า › ตารางงาน › การ์ดเคส Service › ผู้เห็นเมนูเคส Service (23 พ.ย. 2569 · คำนำหน้า sva-) ──
- * พิมพ์ค้นหาชื่อ/ชื่อเล่น/รหัส → รายชื่อพร้อมรูป → กดเพิ่ม · ชิปมี × เอาออก · บันทึกแยกจากแถบบันทึกการตั้งค่า */
-var SVA={emps:[],sel:[],saved:false,dirty:false};
-function svaMount(){var b=$('#sva-box');if(!b)return;b.innerHTML='<div class="loading"><span class="spin"></span>กำลังโหลด…</div>';
-  aCall('svAccessInfo').then(function(r){SVA.emps=r.emps||[];SVA.sel=(r.codes||[]).slice();SVA.saved=!!r.saved;SVA.dirty=false;svaDraw()}).catch(function(e){b.innerHTML='<div class="alert">'+esc(e.message)+'</div>'})}
-function svaAv(e,s){return PH[e.i]?'<img class="av" data-av="'+esc(e.i)+'" src="'+esc(PH[e.i])+'" alt="" style="width:'+s+'px;height:'+s+'px;object-fit:cover">':'<span class="av" data-av="'+esc(e.i)+'" style="width:'+s+'px;height:'+s+'px;font-size:'+Math.round(s/2.6)+'px">'+esc(String(e.k||e.n).replace(/^[^0-9A-Za-z\u0E00-\u0E7F]+/,'').slice(0,2))+'</span>'}
-function svaDraw(){var b=$('#sva-box');if(!b)return;var EC={};SVA.emps.forEach(function(e){EC[e.c]=e});
-  b.innerHTML='<div class="sva"><div class="sva-h"><div><b>ผู้เห็นเมนูเคส Service</b><small>เห็นเมนูเคสและแผงรายละเอียดเคสเท่านั้น · ไม่รวมรายงาน Service (ตั้งแยกที่ช่อง ผู้เห็นรายงาน) · ผู้ดูแลระบบเห็นเสมอ</small></div><span class="badge '+(SVA.saved?'b-ok':'b-warn')+'">'+(SVA.saved?'ใช้รายชื่อนี้':'ยังไม่บันทึก · ใช้กฎเดิม')+'</span></div>'+
-    (SVA.saved?'':'<div class="faint sva-note">รายชื่อด้านล่างคือคนที่เห็นเมนูอยู่ตอนนี้ (HR · ผู้บริหาร · หัวหน้าที่จัดตารางงานได้) · ปรับแล้วกดบันทึก = เห็นเฉพาะคนในรายชื่อ</div>')+
-    '<div class="sva-chips">'+(SVA.sel.length?SVA.sel.map(function(c){var e=EC[c]||{c:c,n:'รหัส '+c,k:'',i:''};return '<span class="sva-chip">'+svaAv(e,24)+'<span>'+esc(e.k||e.n)+'</span><button type="button" data-svax="'+esc(c)+'" aria-label="เอา '+esc(e.n)+' ออก">×</button></span>'}).join(''):'<span class="faint">ยังไม่มีใคร (เห็นเฉพาะผู้ดูแลระบบ)</span>')+'</div>'+
-    '<div class="sva-add"><label class="svc-q sva-q">'+svcI('search',16)+'<input id="sva-q" type="search" placeholder="พิมพ์ชื่อ ชื่อเล่น หรือรหัสพนักงาน เพื่อเพิ่ม…" autocomplete="off" aria-label="ค้นหาพนักงาน"></label><div class="sva-ls" id="sva-ls" hidden></div></div>'+
-    '<div class="sva-act"><span class="faint" style="font-size:12.5px">'+SVA.sel.length+' คน</span><span class="sp"></span><button class="btn pri" id="sva-save"'+(SVA.dirty||!SVA.saved?'':' disabled')+'>บันทึกผู้เห็นเมนู</button></div></div>';
-  loadPhotos();var q=$('#sva-q'),ls=$('#sva-ls');
+/* ── ตั้งค่า › ตารางงาน › การ์ดเคส Service · ผู้เห็นเมนูเคส Service + ผู้เห็นรายงาน Service (23 พ.ย. 2569 · คำนำหน้า sva-) ──
+ * พิมพ์ค้นหาชื่อ/ชื่อเล่น/รหัส → รายชื่อพร้อมรูป → กดเพิ่ม · ชิปมี × เอาออก · แต่ละช่องมีปุ่มบันทึกของตัวเอง
+ * menu → svAccessSave (sv_access) · rep → saveSettings {sv_rep_access} (ช่องรหัสเดิม) */
+var SVA={emps:[],g:{}};
+var SVA_G={menu:{t:'ผู้เห็นเมนูเคส Service',d:'เห็นเมนูเคสและแผงรายละเอียดเคสเท่านั้น · ไม่รวมรายงาน · ผู้ดูแลระบบเห็นเสมอ',btn:'บันทึกผู้เห็นเมนู'},rep:{t:'ผู้เห็นรายงาน Service',d:'เห็นเมนู รายงาน › Service · ผู้ดูแลระบบเห็นเสมอ · คนอื่นไม่เห็นเมนูรายงาน',btn:'บันทึกผู้เห็นรายงาน'}};
+function svaMount(){var b=$('#sva-box');if(!b)return;b.innerHTML='<div class="loading" style="padding:16px 20px"><span class="spin"></span>กำลังโหลด…</div>';
+  aCall('svAccessInfo').then(function(r){SVA.emps=r.emps||[];SVA.g={menu:{sel:(r.codes||[]).slice(),saved:!!r.saved,dirty:false},rep:{sel:(r.rep||[]).slice(),saved:true,dirty:false}};
+    b.innerHTML='<div id="sva-menu" class="sva"></div><div id="sva-rep" class="sva"></div>';svaDraw('menu');svaDraw('rep')}).catch(function(e){b.innerHTML='<div class="alert">'+esc(e.message)+'</div>'})}
+function svaAv(e,s){return e.i&&PH[e.i]?'<img class="av" data-av="'+esc(e.i)+'" src="'+esc(PH[e.i])+'" alt="" style="width:'+s+'px;height:'+s+'px;object-fit:cover">':'<span class="av"'+(e.i?' data-av="'+esc(e.i)+'"':'')+' style="width:'+s+'px;height:'+s+'px;font-size:'+Math.round(s/2.6)+'px">'+esc(String(e.k||e.n).replace(/^[^0-9A-Za-z\u0E00-\u0E7F]+/,'').slice(0,2))+'</span>'}
+function svaDraw(k){var b=$('#sva-'+k);if(!b)return;var G=SVA.g[k],M=SVA_G[k],EC={};SVA.emps.forEach(function(e){EC[e.c]=e});
+  var badge=k==='menu'?'<span class="badge '+(G.saved?'b-ok':'b-warn')+'">'+(G.saved?'ใช้รายชื่อนี้':'ยังไม่บันทึก · ใช้กฎเดิม')+'</span>':'';
+  b.innerHTML='<div class="sva-h"><div><b>'+M.t+'</b><small>'+M.d+'</small></div>'+badge+'</div>'+
+    (k==='menu'&&!G.saved?'<div class="faint sva-note">รายชื่อด้านล่างคือคนที่เห็นเมนูอยู่ตอนนี้ (HR · ผู้บริหาร · หัวหน้าที่จัดตารางงานได้) · ปรับแล้วกดบันทึก = เห็นเฉพาะคนในรายชื่อ</div>':'')+
+    '<div class="sva-chips">'+(G.sel.length?G.sel.map(function(c){var e=EC[c]||{c:c,n:'รหัส '+c,k:'',i:''};return '<span class="sva-chip">'+svaAv(e,24)+'<span>'+esc(e.k||e.n)+'</span><button type="button" data-svax="'+esc(c)+'" aria-label="เอา '+esc(e.n)+' ออก">×</button></span>'}).join(''):'<span class="faint">ยังไม่มีใคร (เห็นเฉพาะผู้ดูแลระบบ)</span>')+'</div>'+
+    '<div class="sva-add"><label class="svc-q sva-q">'+svcI('search',16)+'<input class="sva-in" type="search" placeholder="พิมพ์ชื่อ ชื่อเล่น หรือรหัสพนักงาน เพื่อเพิ่ม…" autocomplete="off" aria-label="ค้นหาพนักงาน · '+M.t+'"></label><div class="sva-ls" hidden></div></div>'+
+    '<div class="sva-act"><span class="faint" style="font-size:12.5px">'+G.sel.length+' คน</span><span class="sp"></span><button class="btn pri sva-save"'+(G.dirty||!G.saved?'':' disabled')+'>'+M.btn+'</button></div>';
+  loadPhotos();var q=b.querySelector('.sva-in'),ls=b.querySelector('.sva-ls');
   var list=function(){var t=q.value.trim().toLowerCase();if(!t){ls.hidden=true;ls.innerHTML='';return}
-    var L=SVA.emps.filter(function(e){return SVA.sel.indexOf(e.c)<0&&(e.n+' '+e.k+' '+e.c+' '+e.p).toLowerCase().indexOf(t)>=0}).slice(0,30);
+    var L=SVA.emps.filter(function(e){return G.sel.indexOf(e.c)<0&&(e.n+' '+e.k+' '+e.c+' '+e.p).toLowerCase().indexOf(t)>=0}).slice(0,30);
     ls.hidden=false;ls.innerHTML=L.length?L.map(function(e){return '<button type="button" class="sva-o" data-svaa="'+esc(e.c)+'">'+svaAv(e,32)+'<span class="sva-on"><b>'+esc(e.n)+(e.k?' ('+esc(e.k)+')':'')+'</b><small>รหัส '+esc(e.c)+(e.p?' · '+esc(e.p):'')+'</small></span><span class="sva-plus">+ เพิ่ม</span></button>'}).join(''):'<div class="faint" style="padding:10px 12px">ไม่พบพนักงาน</div>';
-    loadPhotos();$$('#sva-ls [data-svaa]').forEach(function(o){o.onclick=function(){SVA.sel.push(o.dataset.svaa);SVA.dirty=true;svaDraw();var nq=$('#sva-q');if(nq)nq.focus()}})};
+    loadPhotos();ls.querySelectorAll('[data-svaa]').forEach(function(o){o.onclick=function(){G.sel.push(o.dataset.svaa);G.dirty=true;svaDraw(k);var nq=$('#sva-'+k+' .sva-in');if(nq)nq.focus()}})};
   q.oninput=list;q.onkeydown=function(e){if(e.key==='Escape'){q.value='';list()}};
-  $$('#sva-box [data-svax]').forEach(function(x){x.onclick=function(){SVA.sel=SVA.sel.filter(function(c){return c!==x.dataset.svax});SVA.dirty=true;svaDraw()}});
-  $('#sva-save').onclick=function(){var bt=this,go=function(){busy(bt,1);aCall('svAccessSave',SVA.sel).then(function(r){SVA.emps=r.emps||SVA.emps;SVA.sel=(r.codes||[]).slice();SVA.saved=true;SVA.dirty=false;toast('บันทึกผู้เห็นเมนูเคส Service แล้ว · '+SVA.sel.length+' คน');svaDraw()}).catch(function(e){busy(bt,0);toast(e.message,1)})};
-    if(!SVA.sel.length&&!confirm('ไม่มีใครในรายชื่อ = เห็นเฉพาะผู้ดูแลระบบ · บันทึกไหม?'))return;go()}}
+  b.querySelectorAll('[data-svax]').forEach(function(x){x.onclick=function(){G.sel=G.sel.filter(function(c){return c!==x.dataset.svax});G.dirty=true;svaDraw(k)}});
+  b.querySelector('.sva-save').onclick=function(){var bt=this;if(!G.sel.length&&!confirm('ไม่มีใครในรายชื่อ = เห็นเฉพาะผู้ดูแลระบบ · บันทึกไหม?'))return;busy(bt,1);
+    var p=k==='menu'?aCall('svAccessSave',G.sel).then(function(r){SVA.emps=r.emps||SVA.emps;G.sel=(r.codes||[]).slice()}):aCall('saveSettings',{sv_rep_access:G.sel.join(',')}).then(function(r){if(r&&r.ok===false)throw new Error(Object.values(r.errors||{}).join(' · ')||'บันทึกไม่สำเร็จ')});
+    p.then(function(){G.saved=true;G.dirty=false;toast('บันทึก'+M.t+'แล้ว · '+G.sel.length+' คน');svaDraw(k)}).catch(function(e){busy(bt,0);toast(e.message,1)})}}
