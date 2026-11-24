@@ -2291,3 +2291,9 @@ tr[data-simm2]{cursor:pointer}tr[data-simm2]:hover{background:#FAFAFB}
 .sim-chip[disabled]{opacity:.45;cursor:default}
 .sim-pk{max-width:220px;font-size:12.5px;line-height:1.35}.sim-pr{white-space:nowrap;font-weight:600}
 .btn.sim-gmb{color:var(--fg)!important}
+
+/* SIM Monitor แบบ 1 + 3 (24 พ.ย. 2569 ผู้ใช้เลือก): แท็บแผนที่ = Leaflet พื้นหลังโทนสว่าง (กรองสีภาพ OSM เดิม · ไม่เพิ่มบริการ/CSP) · แผงเบอร์ = Google Maps ฝัง */
+#sim-map .leaflet-tile-pane{filter:grayscale(.65) brightness(1.06) contrast(.92)}#sim-map{background:#F2F4F7}
+.sim-gmw{position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--line);margin:4px 0 6px;background:#F2F4F7}
+.sim-gmf{display:block;width:100%;height:220px;border:0}
+.sim-gmx{position:absolute;right:8px;bottom:8px;display:inline-flex;align-items:center;gap:6px;background:#fff;color:var(--fg)!important;text-decoration:none;font-size:12.5px;font-weight:600;border-radius:8px;padding:5px 10px;box-shadow:0 2px 8px rgba(0,0,0,.15)}
