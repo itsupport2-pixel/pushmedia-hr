@@ -2393,3 +2393,18 @@ tr[data-simm2]{cursor:pointer}tr[data-simm2]:hover{background:#FAFAFB}
 .sim-chips3{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}.sim-chips3 i{font-style:normal;font-size:11px;background:#E3F2E8;color:#1D6F42;border-radius:20px;padding:2px 8px}
 .sim-ir{font-size:12.5px;color:var(--mut);margin-top:8px}
 @media (max-width:1100px){.sim-sts{grid-template-columns:repeat(2,minmax(0,1fr))}.sim-row2m{grid-template-columns:1fr}.sim-lr{grid-template-columns:28px minmax(0,1fr) auto}.sim-lr .sim-lrn{grid-column:2/4}}
+
+/* 25 พ.ย. 2569 SIM Monitor กราฟเบอร์ไม่มีความเคลื่อนไหว (Figma หน้า 66 แบบ 2 + เส้นเฉลี่ย) · เฉพาะ .sim-ch (กราฟค่าใช้จ่าย .sim-ch2 ใช้ .sim-bars เดิม) */
+.sim-ch .sim-cht{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.sim-chav{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#6B7079;white-space:nowrap}.sim-chav i{width:16px;border-top:1.5px dashed #8A9099}
+.sim-ch .sim-plot{position:relative;margin-top:26px;border-bottom:1.5px solid #C9CDD4}
+.sim-ch .sim-gl{position:absolute;left:0;right:0;border-top:1px solid #EEF0F3}
+.sim-ch .sim-avl{position:absolute;left:0;right:0;border-top:1.5px dashed #8A9099;z-index:2;pointer-events:none}
+.sim-ch .sim-avl b{position:absolute;right:0;font-style:normal;top:-19px;font-size:11px;font-weight:600;color:#6B7079;background:#fff;padding:0 4px;border-radius:4px}
+.sim-ch .sim-bars{position:relative;z-index:1;height:auto;padding-top:0;align-items:flex-end}
+.sim-ch .sim-bc{height:auto}.sim-ch .sim-bc em{font-size:14px;font-weight:700}
+.sim-ch .sim-bc i{background:#CBD2DC;border-radius:6px 6px 0 0;max-width:56px}
+.sim-ch .sim-bc.cur i{background:#D9534F}.sim-ch .sim-bc.cur em{color:#C0392B}
+.sim-ch .sim-bx{display:flex;gap:14px;margin-top:8px}.sim-ch .sim-bx>div{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px}
+.sim-ch .sim-bx span{font-size:12px;color:var(--mut)}.sim-ch .sim-bx .cur span{color:#C0392B;font-weight:600}
+.sim-ch .sim-bx small{font-size:11.5px;font-weight:600;color:#8A9099}.sim-ch .sim-bx small.up{color:#C0392B}.sim-ch .sim-bx small.dn{color:#2E7D32}
