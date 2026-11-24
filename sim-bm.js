@@ -29,10 +29,11 @@ function simBmMain(API,K,HR,AUTO){(async function(){
       document.getElementById('pmhr-h').onclick=function(){go2().catch(function(e){err('ดึงประวัติไม่ครบ: '+(e&&e.message||e)+'<br><small>ช่วงที่ส่งแล้วบันทึกไว้แล้ว · กดปุ่มอีกครั้งเพื่อดึงต่อ</small>')})};
       if(AUTO)setTimeout(function(){document.getElementById('pmhr-h').onclick()},0);
       var day1=async function(d){var all=[];for(var st=0;st<20000;st+=1000){var p=jQuery.extend({},base,{start:st,length:1000,date_start:d,date_end:d});
-        var r=await fetch('/report/ajaxReport',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8','X-Requested-With':'XMLHttpRequest'},body:jQuery.param(p)});
-        if(!r.ok)throw new Error('HTTP '+r.status);var j;try{j=await r.json()}catch(e){throw new Error('รายงานตอบผิดรูปแบบ (หมดเวลาเข้าสู่ระบบ CMP?)')}
+        var ac=window.AbortController?new AbortController():null,tm=ac?setTimeout(function(){ac.abort()},90000):0,r;
+        try{r=await fetch('/report/ajaxReport',{method:'POST',credentials:'same-origin',signal:ac?ac.signal:undefined,headers:{'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8','X-Requested-With':'XMLHttpRequest'},body:jQuery.param(p)})}catch(e){clearTimeout(tm);throw new Error(e&&e.name==='AbortError'?'CMP ไม่ตอบภายใน 90 วินาที':String(e&&e.message||e))}
+        clearTimeout(tm);if(!r.ok)throw new Error('HTTP '+r.status);var j;try{j=await r.json()}catch(e){throw new Error('รายงานตอบผิดรูปแบบ (หมดเวลาเข้าสู่ระบบ CMP?)')}
         var L=j.data||[];all=all.concat(L);if(L.length<1000)break}return all};
-      var day=async function(d){var W=[0,2000,5000,10000],e0=null;for(var t=0;t<W.length;t++){if(W[t])await sleep(W[t]);try{return await day1(d)}catch(e){e0=e}}throw new Error('โหลดวันที่ '+d+' ไม่ได้ (ลอง 4 ครั้ง): '+(e0&&e0.message||e0))};
+      var day=async function(d){var W=[0,5000,15000,30000],e0=null;for(var t=0;t<W.length;t++){if(W[t]){show('CMP ตอบช้า/ผิดพลาดที่วันที่ '+(+d.slice(8))+' · รอแล้วลองใหม่ครั้งที่ '+(t+1)+' / '+W.length+'<div style="font-size:12px;color:#888;margin-top:6px">'+(e0&&e0.message||'')+'</div>');await sleep(W[t])}try{return await day1(d)}catch(e){e0=e}}throw new Error('โหลดวันที่ '+d+' ไม่ได้ (ลอง '+W.length+' ครั้ง): '+(e0&&e0.message||e0)+' · หน้า CMP อาจช้าอยู่ ลองใหม่ภายหลัง')};
       var go2=async function(){var run='h'+Date.now().toString(36)+Math.random().toString(36).slice(2,8),prev=null,pd='',k0=0,sum=[];
         for(var q=0;q<need.length;q++){var u=need[q],m=u.m,M={},E=[],days=0,first='',last='';
           if(pd!==addD(u.d0,-1)){prev=null;try{var c=await day(addD(u.d0,-1));if(c.length){prev={};c.forEach(function(x){var ms=txt(x.msisdn);prev[ms]={ev:txt(x.event_updated||x.event_update_date),im:txt(x.imei),nt:txt(x.event)}})}}catch(e){prev=null}}
