@@ -8,25 +8,25 @@ var SIM_TAG={nobill:'ไม่มีในบิล',review:'รอตรวจ'
 var SIM_EV={new:'เบอร์ใหม่',imei:'IMEI เปลี่ยน',net:'สถานะเครือข่ายเปลี่ยน',missing:'หายจาก CMP',back:'กลับมาใน CMP',used:'กลับมาใช้ data'};
 var SIM_TM=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
 if(location.hash==='#sim'&&typeof A!=='undefined')A.view='sim';   /* ปุ่ม "เปิดใน HR" ในแท็บ CMP · ไม่มีสิทธิ์ = กลับหน้าแรกตามเดิม */
-if(typeof SVX_TABI!=='undefined'){SVX_TABI.simov=['chart','#2F6FED'];SVX_TABI.simls=['list','#0A6C99'];SVX_TABI.simsy=['usage','#7A4FD6']}
+if(typeof SVX_TABI!=='undefined'){SVX_TABI.simov=['chart','#2F6FED'];SVX_TABI.simls=['list','#0A6C99'];SVX_TABI.simsy=['usage','#7A4FD6'];SVX_TABI.simcs=['coin','#1E7A3E'];SVX_TABI.simmp=['pin','#D97309']}
 function simPh(ms){ms=String(ms||'');if(!/^66\d{8,9}$/.test(ms))return ms;var l='0'+ms.slice(2);return l.length===10?l.slice(0,3)+'-'+l.slice(3,6)+'-'+l.slice(6):l}
 function simMon(m){var p=String(m||'').split('-');return p.length===2?SIM_TM[+p[1]-1]:m}
 function simT(t){if(!t)return '—';var m=/^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/.exec(t);return m?(+m[3])+' '+SIM_TM[+m[2]-1]+' '+(+m[1]+543)+' · '+m[4]+':'+m[5]:esc(t)}
 function simAgo(t){var m=/^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/.exec(t||'');if(!m)return '';var d=Math.floor((Date.now()-Date.parse(m[1]+'-'+m[2]+'-'+m[3]+'T'+m[4]+':'+m[5]+':00+07:00'))/864e5);return d<=0?'วันนี้':d===1?'เมื่อวาน':d+' วันก่อน'}
 function simHb(h){var x=SIM_H[h]||['—','#52525B','#F1F2F4'];return '<span class="badge sim-hb" style="color:'+x[1]+';background:'+x[2]+'">'+x[0]+'</span>'}
-function simBaht(n){return '฿'+Number(n||0).toLocaleString('th-TH')}
+function simBaht(n){n=Number(n||0);return '฿'+n.toLocaleString('th-TH',n%1?{minimumFractionDigits:2,maximumFractionDigits:2}:{maximumFractionDigits:0})}
 function simF(){return A.simF||(A.simF={tab:'ov',q:'',h:'',prov:'',tag:'',page:1})}
 function vSim(){var f=simF();
   return '<div class="ph" id="sim-ph"><div><h1 class="sim-h1"><img src="dtac-logo.png" alt="">SIM Monitor</h1><div class="sub">ตรวจเบอร์ SIM dtac (CMP) ที่ไม่ได้ใช้งาน · ข้อมูลจากปุ่มบุ๊กมาร์กในแท็บ CMP</div></div><span class="sp"></span><button class="btn" id="sim-go-sync">วิธีซิงก์</button></div>'+
-   '<div class="svx-tabs svx-tl" role="tablist" id="sim-tabs">'+svxTab('data-simt','simov','ภาพรวม',null,f.tab==='ov')+svxTab('data-simt','simls','รายการ SIM',null,f.tab==='ls')+svxTab('data-simt','simsy','ซิงก์ข้อมูล',null,f.tab==='sy')+'</div>'+
+   '<div class="svx-tabs svx-tl" role="tablist" id="sim-tabs">'+svxTab('data-simt','simov','ภาพรวม',null,f.tab==='ov')+svxTab('data-simt','simls','รายการ SIM',null,f.tab==='ls')+svxTab('data-simt','simcs','ค่าใช้จ่าย',null,f.tab==='cs')+svxTab('data-simt','simmp','แผนที่',null,f.tab==='mp')+svxTab('data-simt','simsy','ซิงก์ข้อมูล',null,f.tab==='sy')+'</div>'+
    '<div id="sim-body">'+SK('rows','กำลังโหลด…')+'</div>'}
-function bSim(){$$('[data-simt]').forEach(function(b){b.onclick=function(){var k={simov:'ov',simls:'ls',simsy:'sy'}[b.dataset.simt];simGo(k)}});
+function bSim(){$$('[data-simt]').forEach(function(b){b.onclick=function(){var k={simov:'ov',simls:'ls',simcs:'cs',simmp:'mp',simsy:'sy'}[b.dataset.simt];simGo(k)}});
   $('#sim-go-sync').onclick=function(){simGo('sy')};svxInd($('#sim-tabs'));simLoad()}
 function simGo(tab,o){var f=simF();f.tab=tab;if(o){f.h=o.h||'';f.prov=o.prov||'';f.tag=o.tag||'';f.q='';f.page=1}
-  $$('[data-simt]').forEach(function(b){var on={simov:'ov',simls:'ls',simsy:'sy'}[b.dataset.simt]===tab;b.classList.toggle('on',on);b.setAttribute('aria-selected',String(on))});svxInd($('#sim-tabs'),1);simLoad()}
+  $$('[data-simt]').forEach(function(b){var on={simov:'ov',simls:'ls',simcs:'cs',simmp:'mp',simsy:'sy'}[b.dataset.simt]===tab;b.classList.toggle('on',on);b.setAttribute('aria-selected',String(on))});svxInd($('#sim-tabs'),1);simLoad()}
 function simLoad(){var f=simF(),b=$('#sim-body'),n=A.simN=(A.simN||0)+1;if(!b)return;b.innerHTML=SK(f.tab==='ls'?'rows':'kpi','กำลังโหลด…');
-  var p=f.tab==='ov'?aCall('simOverview'):f.tab==='ls'?aCall('simList',{q:f.q,h:f.h,prov:f.prov,tag:f.tag,page:f.page}):aCall('simSync');
-  p.then(function(d){if(n!==A.simN||A.view!=='sim')return;var x=$('#sim-body');if(!x)return;if(f.tab==='ov')simOv(x,d);else if(f.tab==='ls')simLs(x,d);else simSy(x,d)}).catch(function(e){if(n!==A.simN)return;var x=$('#sim-body');if(x)x.innerHTML='<div class="alert">'+esc(e.message)+'</div>'})}
+  var p=f.tab==='ov'?aCall('simOverview'):f.tab==='ls'?aCall('simList',{q:f.q,h:f.h,prov:f.prov,tag:f.tag,page:f.page}):f.tab==='cs'?aCall('simCost'):f.tab==='mp'?aCall('simMap'):aCall('simSync');
+  p.then(function(d){if(n!==A.simN||A.view!=='sim')return;var x=$('#sim-body');if(!x)return;if(f.tab==='ov')simOv(x,d);else if(f.tab==='ls')simLs(x,d);else if(f.tab==='cs')simCs(x,d);else if(f.tab==='mp')simMp(x,d);else simSy(x,d)}).catch(function(e){if(n!==A.simN)return;var x=$('#sim-body');if(x)x.innerHTML='<div class="alert">'+esc(e.message)+'</div>'})}
 
 /* ── ภาพรวม (E1) ── */
 function simOv(b,D){if(!D.total){b.innerHTML='<section class="card state"><b>ยังไม่มีข้อมูลเบอร์</b><span>ติดตั้งปุ่มบุ๊กมาร์กแล้วกดในหน้า CMP · หรือผู้ดูแลระบบนำเข้าชีต Dtac เดิม</span><button class="btn pri" id="sim-e-sy" style="margin-top:12px">ไปหน้าซิงก์ข้อมูล</button></section>';$('#sim-e-sy').onclick=function(){simGo('sy')};return}
@@ -75,13 +75,56 @@ function simLs(b,D){var f=simF(),opt=function(v,t,cur){return '<option value="'+
   $$('[data-simpg]').forEach(function(x){x.onclick=function(){f.page=D.page+ +x.dataset.simpg;simLoad()}});
   $$('[data-simm]').forEach(function(tr){tr.onclick=function(){simOpen(tr.dataset.simm)};tr.onkeydown=function(e){if(e.key==='Enter')simOpen(tr.dataset.simm)}})}
 
+/* ── ค่าใช้จ่าย (24 พ.ย. 2569 ผู้ใช้ขอ · จากใบแจ้งหนี้ dtac ที่นำเข้า · ยอดรวม VAT) ── */
+function simPct(a,b){if(!b)return '';var p=Math.round((a-b)/b*1000)/10;return (p>0?'+':'')+p+'%'}
+function simMy(m){return simMon(m)+' '+String(+m.slice(0,4)+543).slice(2)}
+function simCs(b,D){if(!D.months.length){b.innerHTML='<section class="card state"><b>ยังไม่มีใบแจ้งหนี้</b><span>ผู้ดูแลระบบนำเข้าไฟล์ใบแจ้งหนี้ dtac (.xlsx) ที่แท็บ ซิงก์ข้อมูล</span></section>';return}
+  var M=D.months,L=M[M.length-1],P=M.length>1?M[M.length-2]:null,avg=M.reduce(function(t,x){return t+x.total},0)/M.length,G=D.groups,CH=D.changes;
+  var k=function(l,v,s,cls){return '<div class="sim-k sim-kc0'+(cls?' '+cls:'')+'"><small>'+l+'</small><b>'+v+'</b><span>'+s+'</span></div>'};
+  var kp='<div class="sim-ks sim-ks4">'+k('ค่าใช้จ่าย '+simMy(L.m),simBaht(L.total),L.n.toLocaleString('th-TH')+' เบอร์ · รวม VAT')+
+    k('เทียบเดือนก่อน',P?(L.total>=P.total?'+':'−')+simBaht(Math.abs(Math.round((L.total-P.total)*100)/100)):'—',P?simPct(L.total,P.total)+' จาก '+simMy(P.m):'มีใบแจ้งหนี้เดือนเดียว',P&&L.total>P.total?'up':'')+
+    k('เฉลี่ยต่อเดือน',simBaht(Math.round(avg*100)/100),M.length+' เดือนล่าสุด')+
+    k('จ่ายให้เบอร์ที่รอตรวจ',simBaht(D.review.t),D.review.n+' เบอร์/เดือน · ประหยัดได้ถ้าระงับ','save')+'</div>';
+  var mx=Math.max.apply(null,M.map(function(x){return x.total}).concat([1]));
+  var ch='<section class="card sim-ch"><div class="sim-cht"><div><b>ค่าใช้จ่ายรายเดือน</b><small>จากใบแจ้งหนี้ dtac · รวม VAT</small></div></div><div class="sim-bars sim-cbars">'+M.map(function(x,i){var cur=i===M.length-1;
+    return '<div class="sim-bc'+(cur?' cur cb':'')+'" title="'+esc(simMy(x.m))+' · '+x.n+' เบอร์"><em>'+(x.total>=1000?(Math.round(x.total/100)/10).toLocaleString('th-TH')+'k':Math.round(x.total))+'</em><i style="height:'+Math.max(6,Math.round(x.total/mx*120))+'px"></i><span>'+simMy(x.m)+'</span></div>'}).join('')+'</div><div class="sim-foot faint">'+M.map(function(x){return simMy(x.m)+' '+x.n+' เบอร์'}).join(' · ')+'</div></section>';
+  var gt=G.active.t+G.quiet.t+G.bad.t+G.notcmp.t||1,gr=function(c,l,g){return '<div class="sim-cg"><span class="sim-lg"><i class="'+c+'"></i>'+l+'</span><b>'+simBaht(g.t)+'</b><small>'+g.n+' เบอร์ · '+Math.round(g.t/gt*100)+'%</small></div>'};
+  var st='<section class="card"><b>ค่าใช้จ่าย '+simMy(L.m)+' ตามสถานะเบอร์ตอนนี้</b><div class="sim-tr sim-tr14"><span class="sim-seg"><i class="a" style="width:'+(G.active.t/gt*100)+'%"></i><i class="b" style="width:'+(G.quiet.t/gt*100)+'%"></i><i class="c" style="width:'+(G.bad.t/gt*100)+'%"></i><i class="d" style="width:'+(G.notcmp.t/gt*100)+'%"></i></span></div>'+
+    gr('a','ใช้งานอยู่',G.active)+gr('b','เงียบ',G.quiet)+gr('c','ไม่ใช้งาน / ออฟไลน์ / หาย',G.bad)+gr('d','ไม่อยู่ใน CMP',G.notcmp)+'</section>';
+  var pk='<section class="card"><b>แยกตามแพ็กเกจ</b><div class="tw"><table class="tbl sim-kt"><thead><tr><th>แพ็กเกจ</th><th class="r">เบอร์</th><th class="r">รวม VAT/เดือน</th></tr></thead><tbody>'+D.pkgs.slice(0,8).map(function(x){return '<tr><td>'+esc(x.pkg)+'</td><td class="r">'+x.n+'</td><td class="r">'+simBaht(x.t)+'</td></tr>'}).join('')+'</tbody></table></div></section>';
+  var cr=function(t,o,f){return '<div class="sim-chg"><div class="sim-chh"><b>'+t+'</b><span>'+o.n+' เบอร์ · '+(o.t>=0?'':'−')+simBaht(Math.abs(o.t))+'</span></div>'+(o.rows.length?o.rows.slice(0,6).map(f).join('')+(o.n>6?'<div class="faint" style="font-size:12px;padding-top:4px">และอีก '+(o.n-6)+' เบอร์</div>':''):'<div class="faint" style="font-size:12.5px">ไม่มี</div>')+'</div>'};
+  var cg=D.prev?'<section class="card"><b>เปลี่ยนแปลงจาก '+simMy(D.prev)+' → '+simMy(D.last)+'</b><div class="sim-chs">'+
+    cr('เบอร์ใหม่ในบิล',CH.add,function(r){return '<div class="sim-chr" data-simm2="'+esc(r.msisdn)+'"><span>'+esc(simPh(r.msisdn))+'</span><b>'+simBaht(r.cost)+'</b></div>'})+
+    cr('หายจากบิล',CH.gone,function(r){return '<div class="sim-chr" data-simm2="'+esc(r.msisdn)+'"><span>'+esc(simPh(r.msisdn))+'</span><b>−'+simBaht(r.cost)+'</b></div>'})+
+    cr('ค่าบริการเปลี่ยน',CH.diff,function(r){return '<div class="sim-chr" data-simm2="'+esc(r.msisdn)+'"><span>'+esc(simPh(r.msisdn))+'</span><b>'+simBaht(r.from)+' → '+simBaht(r.to)+'</b></div>'})+'</div></section>':'';
+  var tp='<section class="card"><b>ค่าบริการสูงสุด 10 เบอร์ ('+simMy(L.m)+')</b><div class="tw"><table class="tbl sim-kt"><thead><tr><th>เบอร์</th><th>สถานะ</th><th>แพ็กเกจ</th><th class="r">รวม VAT</th></tr></thead><tbody>'+D.top.map(function(r){return '<tr data-simm2="'+esc(r.msisdn)+'"><td><b>'+esc(simPh(r.msisdn))+'</b>'+(r.site?'<small class="faint" style="display:block">'+esc(r.site)+'</small>':'')+'</td><td>'+(r.h==='notcmp'?'<span class="badge b-mute">ไม่อยู่ใน CMP</span>':simHb(r.h))+'</td><td>'+esc(r.pkg)+'</td><td class="r">'+simBaht(r.cost)+'</td></tr>'}).join('')+'</tbody></table></div></section>';
+  var pmx=Math.max.apply(null,D.provs.map(function(x){return x.t}).concat([1]));
+  var pv='<section class="card"><b>แยกตามจังหวัด ('+simMy(L.m)+')</b>'+D.provs.slice(0,8).map(function(x){return '<div class="sim-cpr"><span>'+esc(x.p)+'</span><span class="sim-tr"><span class="sim-seg"><i class="e" style="width:'+(x.t/pmx*100).toFixed(1)+'%"></i></span></span><b>'+simBaht(x.t)+'</b><small>'+x.n+' เบอร์</small></div>'}).join('')+'</section>';
+  b.innerHTML=kp+'<div class="sim-row2e">'+ch+st+'</div><div class="sim-row2e">'+cg+tp+'</div><div class="sim-row2e">'+pk+pv+'</div>';
+  $$('[data-simm2]').forEach(function(x){x.onclick=function(){simOpen(x.dataset.simm2)}})}
+
+/* ── แผนที่ (24 พ.ย. 2569 ผู้ใช้ขอ · Leaflet + OpenStreetMap เดิมของรายงานลงเวลา · loadLeaflet ใน admin-report.js) ── */
+function simMp(b,D){var f=simF();f.mh=f.mh||'';
+  var cnt={};D.pts.forEach(function(p){cnt[p.h]=(cnt[p.h]||0)+1});var rv=D.pts.filter(function(p){return p.review}).length;
+  b.innerHTML='<section class="card sim-mpc"><div class="sim-mpt"><div class="sim-chips2">'+[['','ทั้งหมด',D.pts.length],['review','รอตรวจ',rv]].concat(SIM_HO.map(function(h){return [h,SIM_H[h][0],cnt[h]||0]})).map(function(x){var c=SIM_H[x[0]];return '<button class="sim-chip'+(f.mh===x[0]?' on':'')+'" data-simmh="'+x[0]+'">'+(c?'<i style="background:'+c[1]+'"></i>':x[0]==='review'?'<i style="background:#E5604F"></i>':'')+esc(x[1])+' <b>'+x[2]+'</b></button>'}).join('')+'</div><span class="sp"></span><span class="faint" style="font-size:12.5px">ไม่มีพิกัด '+D.noloc+' เบอร์ (รอ Sync เต็ม)</span></div><div id="sim-map" class="sim-map">'+SK('card','กำลังโหลดแผนที่…')+'</div></section>';
+  $$('[data-simmh]').forEach(function(x){x.onclick=function(){f.mh=x.dataset.simmh;simMp(b,D)}});
+  var pts=D.pts.filter(function(p){return !f.mh||(f.mh==='review'?p.review:p.h===f.mh)});
+  (typeof loadLeaflet==='function'?loadLeaflet():Promise.reject(new Error('โหลดแผนที่ไม่ได้'))).then(function(){var el=$('#sim-map');if(!el||A.view!=='sim')return;el.innerHTML='';
+    var m=L.map(el,{zoomControl:true,attributionControl:true});L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap'}).addTo(m);
+    var cl=L.markerClusterGroup({showCoverageOnHover:false,maxClusterRadius:40,iconCreateFunction:function(c){var ms=c.getAllChildMarkers(),bad=ms.filter(function(x){return x.options.bad}).length,n=ms.length;return L.divIcon({html:'<div class="sim-cl'+(bad?' bad':'')+'"><b>'+n+'</b>'+(bad?'<small>'+bad+'</small>':'')+'</div>',className:'',iconSize:[38,38]})}});
+    pts.forEach(function(p){var c=(SIM_H[p.h]||SIM_H.ok)[1],mk=L.circleMarker([p.lat,p.lng],{radius:7,color:'#fff',weight:2,fillColor:c,fillOpacity:.95,bad:p.h==='idle'||p.h==='missing'||p.review});
+      mk.bindPopup('<div class="sim-pop"><b>'+esc(simPh(p.msisdn))+'</b>'+simHb(p.h)+(p.site?'<div>'+esc(p.site)+'</div>':'')+'<div class="faint">'+esc(p.province||'')+(p.days!=null?' · เงียบ '+p.days+' วัน':'')+(p.cost!=null?' · '+simBaht(p.cost)+'/เดือน':'')+'</div><button class="btn sm" data-simpop="'+esc(p.msisdn)+'">ดูรายละเอียด</button></div>');cl.addLayer(mk)});
+    m.addLayer(cl);m.on('popupopen',function(e){var bt=e.popup.getElement().querySelector('[data-simpop]');if(bt)bt.onclick=function(){simOpen(bt.dataset.simpop)}});
+    if(pts.length)m.fitBounds(L.latLngBounds(pts.map(function(p){return [p.lat,p.lng]})),{padding:[30,30],maxZoom:13});else m.setView([13.75,100.5],6);
+    A.simMapObj=m;setTimeout(function(){m.invalidateSize()},50)}).catch(function(e){var el=$('#sim-map');if(el)el.innerHTML='<div class="alert">'+esc(e.message)+'</div>'})}
+
 /* ── รายละเอียดเบอร์ (E3 · แผงขวา) ── */
 function simOpen(ms){drawer(simPh(ms),SK('form','กำลังโหลด…'));aCall('simGet',{msisdn:ms}).then(function(d){var cb=$('#ov .drw .cb');if(!cb)return;
   var kv=function(k,v){return '<div class="sim-kv"><span>'+k+'</span><b>'+(v===''||v==null?'<span class="faint">—</span>':v)+'</b></div>'},C=d.cmp;
   var map=d.lat!=null&&d.lat!==''?'<a class="btn sm" target="_blank" rel="noopener" href="https://www.google.com/maps?q='+encodeURIComponent(d.lat+','+d.lng)+'">เปิดแผนที่</a>':'<span class="faint">ไม่มีพิกัด (รอ Sync เต็ม)</span>';
   cb.innerHTML='<div class="sim-dh">'+simHb(d.h)+d.tags.map(function(t){return '<span class="sim-tag t-'+t+'">'+esc(SIM_TAG[t]||t)+'</span>'}).join('')+'</div>'+
     '<h4 class="sim-sh">ข้อมูลจาก CMP</h4>'+kv('สถานะเครือข่าย',esc(d.net))+kv('อัปเดตสถานะเมื่อ',simT(d.ev_at)+(d.days!=null?' ('+d.days+' วัน)':''))+kv('usage',esc(d.usage)+(C.usage_at?' <small class="faint">ณ '+simT(C.usage_at)+'</small>':''))+(d.bill?kv('แพ็กเกจ (ใบแจ้งหนี้ '+simMon(d.bill.month)+')',esc(d.bill.pkg))+kv('ค่าบริการตามบิล',simBaht(d.bill.fee)+(d.bill.disc?' − ส่วนลด '+simBaht(-d.bill.disc):'')+' = '+simBaht(d.bill.charge)+' <small class="faint">ก่อน VAT · รวม VAT '+simBaht(Math.round(d.bill.charge*107)/100)+'</small>'):kv('ค่าบริการตามบิล','<span class="faint">ไม่มีในใบแจ้งหนี้ล่าสุด</span>'))+kv('ICCID',esc(d.iccid))+kv('IMEI',esc(d.imei)+(C.prev_imei?' <small class="faint">เดิม '+esc(C.prev_imei)+'</small>':''))+kv('อุปกรณ์',esc([d.brand,d.model].filter(Boolean).join(' ')))+kv('APN / IP',esc([C.apn,C.ip].filter(Boolean).join(' · ')))+kv('ที่ตั้ง',esc([C.tambon,C.amphoe,d.province].filter(Boolean).join(' · '))+' '+map)+(C.remarks.length?kv('หมายเหตุใน CMP',esc(C.remarks.join(' · '))):'')+
-    '<h4 class="sim-sh">6 เดือนล่าสุด</h4><div class="sim-m6l">'+d.monthly.map(function(m){return '<div><i class="sim-d'+(m.v===1?' on':m.v===0?' off':'')+'"></i><span>'+simMon(m.m)+'</span><small>'+(m.days?m.active+'/'+m.days+' วัน':'—')+'</small></div>'}).join('')+'</div>'+
+    (d.bills&&d.bills.length?'<h4 class="sim-sh">ค่าบริการตามใบแจ้งหนี้</h4><div class="sim-bh">'+d.bills.map(function(x){return '<div><span>'+simMy(x.m)+'</span><b>'+simBaht(x.cost)+'</b></div>'}).join('')+'</div>':'')+'<h4 class="sim-sh">6 เดือนล่าสุด</h4><div class="sim-m6l">'+d.monthly.map(function(m){return '<div><i class="sim-d'+(m.v===1?' on':m.v===0?' off':'')+'"></i><span>'+simMon(m.m)+'</span><small>'+(m.days?m.active+'/'+m.days+' วัน':'—')+'</small></div>'}).join('')+'</div>'+
     '<h4 class="sim-sh">ข้อมูลที่ทีมกรอก</h4><div class="sim-form">'+[['site','ไซต์ / ป้าย',d.site],['dept','แผนก',d.dept],['owner','ผู้รับผิดชอบ',d.owner],['cost','ค่าบริการ/เดือน (บาท · เว้นว่าง = ใช้ตามใบแจ้งหนี้)',d.costSrc==='manual'?d.cost:''],['note','หมายเหตุ',d.note]].map(function(x){return '<label><span>'+x[1]+'</span><input data-simf="'+x[0]+'" value="'+esc(x[2])+'"'+(x[0]==='cost'?' inputmode="decimal"':'')+(d.canEdit?'':' disabled')+'></label>'}).join('')+
     (d.site_by?'<div class="faint" style="font-size:12px">แก้ล่าสุดโดย '+esc(d.site_by)+' · '+simT(d.site_at)+'</div>':'')+(d.canEdit?'<button class="btn pri" id="sim-sv">บันทึก</button>':'')+'</div>'+
     '<h4 class="sim-sh">เหตุการณ์</h4>'+(d.events.length?'<div class="sim-evl">'+d.events.map(function(e){return '<div><small>'+simT(e.at)+'</small><b>'+esc(SIM_EV[e.type]||e.type)+'</b>'+(e.from_v||e.to_v?'<span class="faint">'+esc(e.from_v||'—')+' → '+esc(e.to_v||'—')+'</span>':'')+'</div>'}).join('')+'</div>':'<div class="faint">ยังไม่มีเหตุการณ์</div>');
