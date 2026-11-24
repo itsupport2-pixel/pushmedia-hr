@@ -2279,3 +2279,15 @@ tr[data-simm2]{cursor:pointer}tr[data-simm2]:hover{background:#FAFAFB}
 .sim-cl{width:38px;height:38px;border-radius:50%;background:rgba(10,166,232,.88);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.18);line-height:1}.sim-cl.bad{background:rgba(229,96,79,.9)}.sim-cl b{font-size:12.5px}.sim-cl small{font-size:9px}
 .sim-pop{display:flex;flex-direction:column;gap:5px;font-size:12.5px;min-width:180px}.sim-pop .btn{align-self:flex-start;margin-top:4px}
 @media (max-width:1100px){.sim-ks4{grid-template-columns:repeat(2,minmax(0,1fr))}.sim-chs{grid-template-columns:1fr}}
+
+/* SIM Monitor · 24 พ.ย. 2569 ผู้ใช้: แผนที่ไม่ทับเมนูซ้าย · ไอคอน Google Maps · ตัวกรองวันที่ · แพ็กเกจ+ราคาข้างเบอร์ */
+.sim-map{position:relative;z-index:0;isolation:isolate}
+.sim-gm{width:15px;height:auto;flex:none;display:inline-block;vertical-align:-2px}
+.sim-tbg{background:#EEF4FF!important}.sim-tbg .sim-gm{width:13px}
+.btn.sim-gmb{display:inline-flex;align-items:center;gap:6px;text-decoration:none}
+.sim-popb{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}.sim-pop .sim-popb .btn{margin-top:0}
+.sim-dt{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--mut);background:#F4F5F7;border-radius:10px;padding:4px 8px}.sim-dt.on{background:#141414;color:#fff}.sim-dt.on input{color:var(--fg)}
+.sim-dt input{font:inherit;font-size:12.5px;border:1px solid var(--line);border-radius:7px;padding:4px 6px;width:118px;background:#fff}
+.sim-chip[disabled]{opacity:.45;cursor:default}
+.sim-pk{max-width:220px;font-size:12.5px;line-height:1.35}.sim-pr{white-space:nowrap;font-weight:600}
+.btn.sim-gmb{color:var(--fg)!important}
