@@ -62,7 +62,7 @@ function simOv(b,D){if(!D.total){b.innerHTML='<section class="card state"><b>ย
     (BL.noBill?'<button type="button" class="sim-gtile" data-simtag="nobill"><span class="sim-gtl"><b>อยู่ใน CMP แต่ไม่มีในบิล</b><small>อาจเป็นเบอร์ใหม่ หรืออยู่บัญชีอื่น</small></span><span class="sim-gtr"><b>'+BL.noBill+' เบอร์</b><small>ดูรายการ ›</small></span></button>':''):
     '<div class="sim-gph"><small>ค่าบริการ</small><div class="sim-gpv sm">ยังไม่มีใบแจ้งหนี้</div><span class="faint">ผู้ดูแลระบบนำเข้าที่แท็บ ซิงก์ข้อมูล</span></div>')+
     '<div class="sim-gl"><b>ข้อมูลที่ยังไม่ครบ</b>'+gi('ยังไม่กรอกไซต์ / เจ้าของ',G.nosite,'nosite','กรอก')+gi('ยังไม่รู้ค่าบริการ',G.nocost,'',BL?'ใช้ ฿'+D.cfg.cost:'นำเข้าใบแจ้งหนี้')+gi('ไม่มีพิกัด',G.noloc,'','รอ Sync เต็ม')+gi('ไม่มี usage',G.nousage,'','รอ Sync เต็ม')+'</div></section>';
-  b.innerHTML=strip+cards+'<div class="sim-row3">'+rv+ch+evh+'</div><div class="sim-row2">'+pv+gp+'</div>';
+  b.innerHTML=strip+cards+'<div class="sim-row3">'+rv+ch+gp+'</div><div class="sim-row2">'+pv+evh+'</div>';   // 24 พ.ย. 2569 ผู้ใช้: ค่าบริการขึ้นบน · เปลี่ยนแปลงจากซิงก์ลงล่าง
   $$('[data-simh]').forEach(function(x){x.onclick=function(){simGo('ls',{h:x.dataset.simh})}});$('#sim-rv-go').onclick=function(){simGo('ls',{h:'review'})};
   $$('[data-simpv]').forEach(function(x){x.onclick=function(){simGo('ls',{h:'review',prov:x.dataset.simpv})}});$$('[data-simpvx]').forEach(function(x){x.onclick=function(){simGo('ls',{h:'review'})}});
   $$('[data-simtag]').forEach(function(x){x.onclick=function(){simGo('ls',{tag:x.dataset.simtag})}});
