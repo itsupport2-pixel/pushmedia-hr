@@ -19,36 +19,38 @@ function simBmMain(API,K,HR,AUTO){(async function(){
     var TM=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'],mn=function(m){return TM[+m.slice(5,7)-1]+' '+(+m.slice(0,4)+543)};
     /* ประวัติจากหน้า รายงาน: ทีละวัน (length 1000) → สรุปต่อเบอร์ต่อเดือน + เหตุการณ์ IMEI/เครือข่าย · เดือนที่ครบแล้วไม่ดึงซ้ำ · เดือนนี้ดึงใหม่ถึงวันนี้ */
     var hist=async function(P){
-      var dt=jQuery(jQuery.fn.dataTable.tables()[0]).DataTable(),base=(dt.ajax&&dt.ajax.params&&dt.ajax.params())||{},H={};(P.hist||[]).forEach(function(h){H[h.month]=h});
-      var td=P.today,ym=td.slice(0,7),months=[];for(var i=6;i>=0;i--){var x=new Date(ym+'-01T12:00:00Z');x.setUTCMonth(x.getUTCMonth()-i);months.push(x.toISOString().slice(0,7))}
-      var need=months.filter(function(m){var h=H[m];return m===ym?!(h&&h.last>=td):!(h&&+h.full===1)});
-      var nd=need.reduce(function(t,m){return t+(+(m===ym?td:eom(m)).slice(8))},0);
-      if(!need.length)return R0('done','ประวัติครบแล้ว'),show('<div style="color:#2E7D32;font-weight:600">ประวัติครบแล้วถึงวันนี้</div><div style="font-size:13px;color:#555;margin-top:4px">'+months.filter(function(m){return H[m]}).map(mn).join(' · ')+'</div>'+btn('pmhr-o','เปิดใน HR',true)),document.getElementById('pmhr-o').onclick=function(){window.open(HR+'#sim','_blank','noopener')};
-      show('<div style="color:#555;font-size:13px">สวัสดี '+P.who+'<br>ดึงประวัติรายวันจากหน้ารายงาน · '+need.map(mn).join(' · ')+'<br>ประมาณ '+nd+' วัน (วันละ 1 ครั้ง)</div>'+btn('pmhr-h','ดึงประวัติ '+need.length+' เดือน',true));
-      document.getElementById('pmhr-h').onclick=function(){go2().catch(function(e){err('ดึงประวัติไม่สำเร็จ: '+(e&&e.message||e)+'<br><small>กดปุ่มอีกครั้ง · เดือนที่ส่งครบแล้วไม่ต้องดึงใหม่</small>')})};
+      var dt=jQuery(jQuery.fn.dataTable.tables()[0]).DataTable(),base=(dt.ajax&&dt.ajax.params&&dt.ajax.params())||{},H={},H2={};(P.hist||[]).forEach(function(h){H[h.month]=h});(P.hist2||[]).forEach(function(h){H2[h.month+'-'+h.half]=h});
+      var td=P.today,ym=td.slice(0,7),U=[];for(var i=6;i>=0;i--){var x=new Date(ym+'-01T12:00:00Z');x.setUTCMonth(x.getUTCMonth()-i);var m=x.toISOString().slice(0,7);
+        [[1,m+'-01',m+'-15'],[2,m+'-16',eom(m)]].forEach(function(u){if(u[1]>td)return;U.push({m:m,h:u[0],d0:u[1],d1:u[2]<td?u[2]:td,full:u[2]<=td})})}
+      var need=U.filter(function(u){var o=H[u.m];if(o&&+o.full===1&&!(P.hist2||[]).some(function(z){return z.month===u.m}))return false;var h=H2[u.m+'-'+u.h];return !(h&&(+h.full===1||h.last>=td))});
+      var lab=function(u){return (+u.d0.slice(8))+'–'+(+u.d1.slice(8))+' '+mn(u.m)},nd=need.reduce(function(t,u){return t+(+u.d1.slice(8))-(+u.d0.slice(8))+1},0);
+      if(!need.length)return R0('done','ประวัติครบแล้ว'),show('<div style="color:#2E7D32;font-weight:600">ประวัติครบแล้วถึงวันนี้</div>'+btn('pmhr-o','เปิดใน HR',true)),document.getElementById('pmhr-o').onclick=function(){window.open(HR+'#sim','_blank','noopener')};
+      show('<div style="color:#555;font-size:13px">สวัสดี '+P.who+'<br>ดึงประวัติรายวันจากหน้ารายงาน ทีละครึ่งเดือน · '+need.length+' ช่วง · '+nd+' วัน<br>ส่งเสร็จช่วงไหนบันทึกทันที · ถ้าหยุดกลางทาง กดใหม่จะดึงต่อ</div>'+btn('pmhr-h','ดึงประวัติ '+need.length+' ช่วง ('+nd+' วัน)',true));
+      document.getElementById('pmhr-h').onclick=function(){go2().catch(function(e){err('ดึงประวัติไม่ครบ: '+(e&&e.message||e)+'<br><small>ช่วงที่ส่งแล้วบันทึกไว้แล้ว · กดปุ่มอีกครั้งเพื่อดึงต่อ</small>')})};
       if(AUTO)setTimeout(function(){document.getElementById('pmhr-h').onclick()},0);
-      var day=async function(d){var all=[];for(var st=0;st<20000;st+=1000){var p=jQuery.extend({},base,{start:st,length:1000,date_start:d,date_end:d});
+      var day1=async function(d){var all=[];for(var st=0;st<20000;st+=1000){var p=jQuery.extend({},base,{start:st,length:1000,date_start:d,date_end:d});
         var r=await fetch('/report/ajaxReport',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8','X-Requested-With':'XMLHttpRequest'},body:jQuery.param(p)});
-        if(!r.ok)throw new Error('อ่านรายงานไม่สำเร็จ HTTP '+r.status);var j;try{j=await r.json()}catch(e){throw new Error('รายงานตอบผิดรูปแบบ (หมดเวลาเข้าสู่ระบบ CMP? เข้าใหม่แล้วกดอีกครั้ง)')}
+        if(!r.ok)throw new Error('HTTP '+r.status);var j;try{j=await r.json()}catch(e){throw new Error('รายงานตอบผิดรูปแบบ (หมดเวลาเข้าสู่ระบบ CMP?)')}
         var L=j.data||[];all=all.concat(L);if(L.length<1000)break}return all};
+      var day=async function(d){var W=[0,2000,5000,10000],e0=null;for(var t=0;t<W.length;t++){if(W[t])await sleep(W[t]);try{return await day1(d)}catch(e){e0=e}}throw new Error('โหลดวันที่ '+d+' ไม่ได้ (ลอง 4 ครั้ง): '+(e0&&e0.message||e0))};
       var go2=async function(){var run='h'+Date.now().toString(36)+Math.random().toString(36).slice(2,8),prev=null,pd='',k0=0,sum=[];
-        for(var q=0;q<need.length;q++){var m=need[q],d0=m+'-01',d1=m===ym?td:eom(m),M={},E=[],days=0,first='',last='';
-          if(pd!==addD(d0,-1)){prev=null;var c=await day(addD(d0,-1));if(c.length){prev={};c.forEach(function(x){var ms=txt(x.msisdn);prev[ms]={ev:txt(x.event_updated||x.event_update_date),im:txt(x.imei),nt:txt(x.event)}})}}
-          for(var d=d0;d<=d1;d=addD(d,1)){k0++;show('ดึงประวัติ '+mn(m)+' · วันที่ '+(+d.slice(8))+'<div style="height:6px;background:#eee;border-radius:3px;margin-top:8px"><div style="height:6px;border-radius:3px;background:#0AA6E8;width:'+Math.min(100,Math.round(k0/nd*100))+'%"></div></div><div style="font-size:12px;color:#888;margin-top:6px">'+k0+' / '+nd+' วัน · อย่าปิดแท็บนี้</div>');
+        for(var q=0;q<need.length;q++){var u=need[q],m=u.m,M={},E=[],days=0,first='',last='';
+          if(pd!==addD(u.d0,-1)){prev=null;try{var c=await day(addD(u.d0,-1));if(c.length){prev={};c.forEach(function(x){var ms=txt(x.msisdn);prev[ms]={ev:txt(x.event_updated||x.event_update_date),im:txt(x.imei),nt:txt(x.event)}})}}catch(e){prev=null}}
+          for(var d=u.d0;d<=u.d1;d=addD(d,1)){k0++;show('ดึงประวัติ '+lab(u)+' · วันที่ '+(+d.slice(8))+'<div style="height:6px;background:#eee;border-radius:3px;margin-top:8px"><div style="height:6px;border-radius:3px;background:#0AA6E8;width:'+Math.min(100,Math.round(k0/nd*100))+'%"></div></div><div style="font-size:12px;color:#888;margin-top:6px">'+k0+' / '+nd+' วัน · ช่วงที่ '+(q+1)+' / '+need.length+' · อย่าปิดแท็บนี้</div>');
             var L=await day(d);pd=d;if(!L.length)continue;days++;if(!first)first=d;last=d;var cur={};
             L.forEach(function(x){var ms=txt(x.msisdn);if(!/^66\d{8,}$/.test(ms))return;var ev=txt(x.event_updated||x.event_update_date),im=txt(x.imei),nt=txt(x.event),ts=txt(x.timestamp)||d+' 00:00:00';cur[ms]={ev:ev,im:im,nt:nt};
               var a=M[ms]||(M[ms]={msisdn:ms,days:0,active:0});a.days++;var tT=pt(ts),eT=pt(ev),act=!isNaN(eT)&&!isNaN(tT)&&eT<=tT&&eT>tT-864e5,p=prev&&prev[ms];if(p&&p.ev!==ev)act=true;if(act)a.active++;
               if(p){if(p.im&&im&&p.im!==im)E.push({at:d,msisdn:ms,type:'imei',from:p.im,to:im});if(p.nt&&nt&&p.nt!==nt)E.push({at:d,msisdn:ms,type:'net',from:p.nt,to:nt})}});prev=cur}
           var R=Object.keys(M).map(function(k){return M[k]}),parts=Math.max(1,Math.ceil(R.length/250),Math.ceil(E.length/500));
-          for(var z=0;z<parts;z++){show('ส่งประวัติ '+mn(m)+' เข้าระบบ HR ก้อน '+(z+1)+' / '+parts+'…');var r=await post('ingest',{kind:'hist',v:2,run:run,month:m,part:z,parts:parts,rows:R.slice(z*250,(z+1)*250),events:E.slice(z*500,(z+1)*500),days:days,first:first,last:last,full:m!==ym});if(!r.ok)throw new Error(r.error)}
-          sum.push(mn(m)+' '+days+' วัน')}
-        R0('done','ดึงประวัติ '+sum.join(' · '));show('<div style="color:#2E7D32;font-weight:600">ดึงประวัติเสร็จ</div><div style="font-size:13px;color:#555;margin-top:4px">'+sum.join(' · ')+'</div>'+btn('pmhr-o','เปิดใน HR',true));document.getElementById('pmhr-o').onclick=function(){window.open(HR+'#sim','_blank','noopener')}}};
+          for(var z=0;z<parts;z++){show('ส่งประวัติ '+lab(u)+' เข้าระบบ HR ก้อน '+(z+1)+' / '+parts+'…');var r=await post('ingest',{kind:'hist',v:3,run:run,month:m,half:u.h,part:z,parts:parts,rows:R.slice(z*250,(z+1)*250),events:E.slice(z*500,(z+1)*500),days:days,first:first,last:last,full:u.full});if(!r.ok)throw new Error(r.error)}
+          sum.push(lab(u))}
+        R0('done','ดึงประวัติ '+need.length+' ช่วง ('+nd+' วัน)');show('<div style="color:#2E7D32;font-weight:600">ดึงประวัติเสร็จ · '+need.length+' ช่วง</div><div style="font-size:12.5px;color:#555;margin-top:4px">'+sum.join(' · ')+'</div>'+btn('pmhr-o','เปิดใน HR',true));document.getElementById('pmhr-o').onclick=function(){window.open(HR+'#sim','_blank','noopener')}}};
     try{
       var REP=/\/report\/?$/.test(location.pathname);
       if(/\/login/.test(location.pathname)){R0('login','ต้องเข้าสู่ระบบ CMP');return show('<div style="color:#C0392B">ยังไม่ได้เข้าสู่ระบบ CMP · เข้าสู่ระบบ (ติ๊ก ให้ฉันลงชื่อเข้าใช้เสมอ) แล้วลองใหม่</div>')}
       if(!REP&&!/\/msisdn\/?$/.test(location.pathname))return err('เปิดหน้า <b>รายการหมายเลข</b> (cmp.dtac.co.th/msisdn) เพื่อซิงก์สถานะ<br>หรือหน้า <b>รายงาน</b> (cmp.dtac.co.th/report) เพื่อดึงประวัติ<br>แล้วกดปุ่มนี้อีกครั้ง');
       if(!window.jQuery||!jQuery.fn.DataTable||!jQuery.fn.dataTable.tables()[0])return err('ไม่พบตารางในหน้านี้ · รอหน้าโหลดเสร็จแล้วกดใหม่');
-      show('กำลังตรวจกับระบบ HR…');var P;try{P=await post('plan',{v:2,auto:AUTO?1:0})}catch(e){return err('ติดต่อระบบ HR ไม่ได้ ('+e.message+')<br><small>ถ้าขึ้นทุกครั้ง แจ้งผู้ดูแลระบบ: หน้า CMP อาจไม่อนุญาตให้ส่งข้อมูลออก</small>')}
+      show('กำลังตรวจกับระบบ HR…');var P;try{P=await post('plan',{v:3,auto:AUTO?1:0})}catch(e){return err('ติดต่อระบบ HR ไม่ได้ ('+e.message+')<br><small>ถ้าขึ้นทุกครั้ง แจ้งผู้ดูแลระบบ: หน้า CMP อาจไม่อนุญาตให้ส่งข้อมูลออก</small>')}
       if(!P.ok)return err(P.error);
       if(REP)return hist(P);
       show('<div style="color:#555;font-size:13px">สวัสดี '+P.who+' · ในระบบมี '+P.count+' เบอร์<br>Sync เต็มล่าสุด: '+(P.lastFull||'ยังไม่เคย')+'</div>'+btn('pmhr-q','Sync เร็ว · สถานะทุกเบอร์ (~10 วินาที)',!P.fullDue)+btn('pmhr-f','Sync เต็ม · + usage และพิกัด (~10 นาที)'+(P.fullDue?' · ถึงรอบแล้ว':''),P.fullDue));
