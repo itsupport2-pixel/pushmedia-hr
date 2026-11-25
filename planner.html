@@ -6450,6 +6450,14 @@ function renderPlannerTeamList() {
     var deptColor = deptObj.color || 'var(--teal)';
     var teamMap  = deptMap[deptName];
     var teamOrder = Object.keys(teamMap).sort();
+    /* 25 พ.ย. 2569 ผู้ใช้: รายชื่อทีมแสดงเฉพาะทีมที่เปิดใน ตั้งค่า › ทีมที่แสดงในตารางงาน (DB.schedTeams · เรียงตามที่ลาก) แบบเดียวกับมุมมองรายการ
+     * ยังไม่เคยตั้งค่าเลยทั้งระบบ = แสดงทุกทีมเหมือนเดิม · ตั้งแล้วแต่แผนกนี้ไม่มีทีมเปิด = ไม่แสดงแผนกนี้ */
+    var _stAll = DB.schedTeams && Object.keys(DB.schedTeams).length;
+    if (_stAll) {
+      var _st = DB.schedTeams[deptName] || [];
+      teamOrder = _st.filter(function(t){ return teamMap[t]; });
+      if (!teamOrder.length) return;
+    }
 
     var teamBlocks = '';
     teamOrder.forEach(function(teamName) {
@@ -6536,7 +6544,7 @@ function renderPlannerTeamList() {
       }).join('');
 
       teamBlocks +=
-        '<div style="margin-bottom:16px;">' +
+        '<div style="margin-bottom:16px;" data-tlteam="'+escapeHtml(deptName+'::'+teamName)+'">' +
           '<div style="font-size:11px;font-weight:700;color:'+deptColor+';padding:8px 12px;background:'+deptColor+'18;border-left:3px solid '+deptColor+';border-radius:0 6px 6px 0;margin-bottom:0;">'+teamName+'</div>' +
           '<div style="overflow-x:auto;">' +
             '<table style="width:100%;border-collapse:collapse;font-size:12px;">' +
