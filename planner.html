@@ -3358,6 +3358,31 @@ function closeMobileSidebar() {
   if (bd) bd.classList.remove('show');
 }
 
+/* กล่องยืนยันแบบเดียวกับหลังบ้าน (25 พ.ย. 2569 ผู้ใช้: popup ลบงาน "pct.push.co.th says" ไม่สวย) · คืน Promise<true|false>
+ * o = { title, msg, ok: 'ลบงาน', danger: true } · Esc/กดพื้นหลัง = ยกเลิก · role="dialog" → ระบบอัปเดตข้อมูลจากคนอื่นรอจนปิด (_BUSY_SEL) */
+function niceConfirm(o) {
+  return new Promise(function (res) {
+    var old = document.getElementById('_nc-w'); if (old) old.remove();
+    var prev = document.activeElement, w = document.createElement('div'); w.id = '_nc-w';
+    w.style.cssText = 'position:fixed;inset:0;z-index:10050;background:rgba(20,20,20,.45);display:flex;align-items:center;justify-content:center;padding:16px;font-family:inherit;animation:_ncf .12s ease-out';
+    var ic = o.danger ? '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>' : '<b style="font-size:20px">?</b>';
+    w.innerHTML = '<style>@keyframes _ncf{from{opacity:0}to{opacity:1}}@keyframes _ncs{from{transform:translateY(8px) scale(.98);opacity:0}to{transform:none;opacity:1}}#_nc-w button:focus-visible{outline:2px solid #2563EB;outline-offset:2px}</style>' +
+      '<div role="dialog" aria-modal="true" aria-labelledby="_nc-t" aria-describedby="_nc-d" style="width:min(440px,100%);background:#fff;border-radius:18px;box-shadow:0 20px 50px rgba(0,0,0,.22);overflow:hidden;animation:_ncs .16s ease-out">' +
+      '<div style="padding:26px 28px 22px"><span style="width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:' + (o.danger ? '#FDECEC;color:#C62828' : '#F2F2F2;color:#141414') + '">' + ic + '</span>' +
+      '<h3 id="_nc-t" style="margin:14px 0 6px;font-size:19px;font-weight:700;color:#141414">' + escapeHtml(o.title || 'ยืนยัน') + '</h3>' +
+      (o.msg ? '<p id="_nc-d" style="margin:0;font-size:14px;line-height:1.55;color:#5A5A5A">' + escapeHtml(o.msg) + '</p>' : '') + '</div>' +
+      '<div style="display:flex;align-items:center;gap:8px;padding:16px 28px 18px;background:#FAFAFA;border-top:1px solid #EEE"><span style="flex:1"></span>' +
+      '<button type="button" data-nc="0" style="height:42px;border-radius:10px;padding:0 18px;font:600 14px inherit;font-family:inherit;background:#fff;border:1px solid #DADADA;color:#141414;cursor:pointer">ยกเลิก</button>' +
+      '<button type="button" data-nc="1" style="height:42px;border-radius:10px;padding:0 18px;font-size:14px;font-weight:600;font-family:inherit;border:0;color:#fff;background:' + (o.danger ? '#C62828' : '#141414') + ';cursor:pointer">' + escapeHtml(o.ok || 'ยืนยัน') + '</button></div></div>';
+    var done = function (v) { document.removeEventListener('keydown', kd, true); w.remove(); try { prev && prev.focus(); } catch (e) {} res(v); };
+    var kd = function (e) { if (e.key === 'Escape') { e.stopPropagation(); e.preventDefault(); done(false); } };
+    w.addEventListener('click', function (e) { if (e.target === w) done(false); });
+    document.addEventListener('keydown', kd, true); document.body.appendChild(w);
+    w.querySelectorAll('[data-nc]').forEach(function (b) { b.onclick = function () { done(b.dataset.nc === '1'); }; });
+    w.querySelector('[data-nc="0"]').focus();   // ลบ = กดพลาดไม่ได้ (โฟกัสที่ยกเลิก)
+  });
+}
+
 function openConfirmMini(msg, confirmLabel, onConfirm, destructive) {
   
   var old = document.getElementById('_confirm-mini');
@@ -11011,7 +11036,7 @@ async function updTask(id) {
 async function delTask(id) {
   const t = DB.tasks.find(x => x.id === id); if (!t) return;
   if (!canEditTask(t)) { denyAccess('คุณไม่มีสิทธิ์ลบงานนี้'); return; }
-  if (!confirm('ยืนยันการลบงานนี้?')) return;
+  if (!(await niceConfirm({ title: 'ลบงานนี้?', msg: (t.title ? 'งาน "' + t.title + '" ' : 'งานนี้ ') + 'จะถูกลบออกจากตารางงาน และกู้คืนไม่ได้', ok: 'ลบงาน', danger: true }))) return;
   const res = await apiPost('deleteTask', { id });
   if (res?.ok !== false) {
     
@@ -15820,7 +15845,7 @@ body.m-active{ overflow:hidden; }
   window.mEdDelete=async function(){
     var t=mTaskById(mEd&&mEd.id); if(!t) return;
     if(!mCanEditInfo(t)){ toast('คุณไม่มีสิทธิ์ลบงานนี้','er'); return; }
-    if(!confirm('ยืนยันการลบงาน "'+(t.title||'')+'" ?')) return;
+    if(!(await niceConfirm({ title:'ลบงานนี้?', msg:(t.title?'งาน "'+t.title+'" ':'งานนี้ ')+'จะถูกลบออกจากตารางงาน และกู้คืนไม่ได้', ok:'ลบงาน', danger:true }))) return;
     var res=null; try { res=await apiPost('deleteTask', { id:t.id }); } catch(e){ res={ok:false}; }
     if(res && res.ok===false){ toast('ลบไม่สำเร็จ','er'); return; }
     DB.tasks=(DB.tasks||[]).filter(function(x){ return x.id!==t.id; });
