@@ -2432,3 +2432,9 @@ tr[data-simm2]{cursor:pointer}tr[data-simm2]:hover{background:#FAFAFB}
 .sim-ick.ok b{color:#1E7A3E}.sim-ick.mute b{color:#8A9099}.sim-icb{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}
 @media (max-width:640px){.sim-f2{grid-template-columns:1fr}}
 .sim-f2>*,.sim-f2s>*{min-width:0}.sim-f2 input,.sim-f2s input{width:100%;box-sizing:border-box;min-width:0}
+/* 25 พ.ย. 2569: แท็กเบอร์พนักงาน + ตารางรายการ SIM ไม่ตัดบรรทัดเบอร์/ตัวเลข */
+.sim-tag.t-staff{display:inline-flex;align-items:center;gap:4px;background:#E8F1FD;color:#1D4ED8;font-weight:600}.sim-tag.t-staff .av{border-radius:50%;width:16px;height:16px;font-size:9px}
+.sim-tbl .sim-nw,.sim-tbl .sim-num,.sim-tbl td:first-child small{white-space:nowrap}
+.sim-tbl .sim-tgs{min-width:170px;max-width:260px}
+.sim-tbl .sim-pk{max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sim-tbl .sim-sp{max-width:230px}.sim-tbl .sim-sp>:not(small):not(div){display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
