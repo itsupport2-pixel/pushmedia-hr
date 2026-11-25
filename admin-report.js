@@ -18,6 +18,7 @@ function bAtt(){attTabBind();if(A.attTab==='mx')return bRepMx();if(A.attTab==='t
   var setD=function(v){var t=dIso(new Date());if(!v||v>t)v=t;if(v===A.attDate)return;A.attDate=v;render()};
   $('#att-date').onchange=function(){setD(this.value)};$('#att-prev').onclick=function(){var x=dObj(A.attDate);x.setDate(x.getDate()-1);setD(dIso(x))};
   $('#att-next').onclick=function(){var x=dObj(A.attDate);x.setDate(x.getDate()+1);setD(dIso(x))};if($('#att-today'))$('#att-today').onclick=function(){setD(dIso(new Date()))};
+  liveReg(['att','employees','leave_requests','leave_days','time_corrections','ta_requests','ta_days','shifts','holidays'],load,3000);   /* ข้อมูลสด: พนักงานลงเวลา → หน้านี้ขึ้นเอง (25 พ.ย. 2569) */
   load();
 }
 /* เวลา + สถานที่ที่ลงเวลา (เข้า/ออก) · นอกพื้นที่ = ป้ายส้ม · มีพิกัด = ลิงก์แผนที่ · HR ลงแทน/แก้ = ป้าย "แก้โดย HR" */
@@ -157,7 +158,8 @@ function bRepMx(){
   if($('#rp-team'))$('#rp-team').onchange=function(){A.rpt=this.value;drawRep()};
   var qt;$('#rp-q').oninput=function(){var v=this.value;clearTimeout(qt);qt=setTimeout(function(){A.rpq=v;drawRep()},200)};
   if($('#rp-rawimp'))$('#rp-rawimp').onclick=function(){rawImpPick(load)};
-  $('#rp-xls').onclick=function(){repCsv()};$('#rp-pdf').onclick=function(){if(!A.rpm)return;window.print()};
+  $('#rp-xls').onclick=function(){repCsv()};
+  liveReg(['att','employees','leave_requests','leave_days','time_corrections','ta_requests','ta_days','shifts','holidays'],function(){var a=A.rpa,b=A.rpb;aCall('attMatrix',a,b).then(function(d){if(a!==A.rpa||b!==A.rpb)return;A.rpm=d;drawRep()}).catch(function(){})},15000);   /* ข้อมูลสด: Matrix โหลดเงียบ (ไม่ขึ้นโครงโหลด) · ห่างกันอย่างน้อย 15 วิ (ตอนเช้าลงเวลาพร้อมกันหลายคน) */$('#rp-pdf').onclick=function(){if(!A.rpm)return;window.print()};
   if(A.rpm&&A.rpm.from===A.rpa&&A.rpm.to===A.rpb)drawRep();else load()}
 function repRows(){var d=A.rpm;if(!d)return [];var q=(A.rpq||'').trim().toLowerCase();
   var rows=d.people.filter(function(p){return (A.rpd==='all'||p.department_id===A.rpd)&&(A.rpt==='all'||p.team_id===A.rpt)&&(!q||(p.code+' '+p.name+' '+(p.nickname||'')).toLowerCase().indexOf(q)>=0)});

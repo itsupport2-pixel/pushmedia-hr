@@ -377,7 +377,7 @@ function ss(k,v){try{if(v===undefined)return JSON.parse(sessionStorage.getItem(k
 function boot(){A.fx='*';var va=ss('hr_va');if(va){if(va.exp>Date.now()&&store('hr_tok'))A.tok=va.token;else{ss('hr_va',null);ss('hr_boot',null);A.tok=store('hr_tok')}}vaBar();
   if(!A.tok)return renderLogin();var c=ss('hr_boot');
   if(c&&c.me){A.d=c;A.db=c.dash;A.dbAt=0;render()}else if(!$('#boot-sk')){$('#app').innerHTML=pmSkAdmin();pmSkWatch()}
-  aCall('adminBootstrap',A.view==='dash').then(function(d){if(!d||!d.me)throw new Error('โหลดข้อมูลไม่สำเร็จ ลองใหม่อีกครั้ง');A.d=d;try{store('hr_who',d.me.code||d.me.id||'')}catch(e){}if(d.dash){A.db=d.dash;A.dbAt=Date.now()}ss('hr_boot',d);
+  aCall('adminBootstrap',A.view==='dash').then(function(d){if(!d||!d.me)throw new Error('โหลดข้อมูลไม่สำเร็จ ลองใหม่อีกครั้ง');A.d=d;try{store('hr_who',d.me.code||d.me.id||'')}catch(e){}if(d.dash){A.db=d.dash;A.dbAt=Date.now()}ss('hr_boot',d);if(window.HRLive)HRLive.start(A.tok);
     if(!c||['dash','list'].indexOf(A.view)>=0)render();else updNav()}).catch(function(e){if(A.tok&&!c)$('#app').innerHTML='<div class="sk-fail" role="alert"><b>โหลดไม่สำเร็จ</b><span>'+esc(e.message)+'</span><button class="btn pri" data-reload>ลองใหม่</button></div>'})}
 function updNav(){var a=$('.side a[data-nav="appr"]');if(!a)return;var dot=$('#tb-bell .dot'),pn=(A.d.pendingCount||0)+A.d.linkRequests.length;if(pn&&!dot&&$('#tb-bell'))$('#tb-bell').insertAdjacentHTML('beforeend','<span class="dot"></span>');else if(!pn&&dot)dot.remove();var n=(A.d.pendingCount||0)+A.d.linkRequests.length,c=a.querySelector('.cnt');if(n){if(!c){c=document.createElement('span');c.className='cnt';a.appendChild(c)}c.textContent=n}else if(c)c.remove()}
 /* ── นำเข้าพนักงานจาก Excel (29 ต.ค. 2569 ผู้ใช้ขอ) · อ่านไฟล์ในเบราว์เซอร์ (ไม่อัปโหลดไฟล์) → ดูตัวอย่าง → ยืนยันจึงบันทึก
@@ -511,7 +511,7 @@ function render(){
   var rs=$('#rl-sc');if(rs){rs.scrollTop=A.navSc||0;rs.onscroll=function(){A.navSc=rs.scrollTop};var a0=rs.querySelector('a.on');if(a0){var ar=a0.getBoundingClientRect(),sr=rs.getBoundingClientRect();if(ar.bottom>sr.bottom||ar.top<sr.top)rs.scrollTop+=ar.top-sr.top-sr.height/2}}   // เมนูเลื่อนได้ (2 พ.ย. 2569): จำตำแหน่งเลื่อน · เมนูที่เปิดอยู่เลื่อนให้เห็นเสมอ
   $$('[data-navpar]').forEach(function(a){a.onclick=function(e){e.stopPropagation();var sd=a.closest('.side'),w=a.parentNode,o=!w.classList.contains('open');if(navHovOn()&&sd&&!sd.classList.contains('xp')){sd.classList.add('xp');o=true}   /* แถบยุบอยู่: กดเมนูแม่ = กางแถบ + เปิดเมนูย่อย */
     w.classList.toggle('open',o);a.setAttribute('aria-expanded',o);(A.subOpen||(A.subOpen={}))[a.dataset.navpar]=o;if(a.dataset.navpar==='sched')store('nav_sub',o?'1':'0')}});navHov();
-  var logout=function(){call('logout',A.tok);store('hr_tok',null);A.tok=null;try{sessionStorage.clear()}catch(e){}phClear();if(window.snForget)snForget();if(window.SN)SN.d=null;renderLogin()};
+  var logout=function(){if(window.HRLive)HRLive.stop();call('logout',A.tok);store('hr_tok',null);A.tok=null;try{sessionStorage.clear()}catch(e){}phClear();if(window.snForget)snForget();if(window.SN)SN.d=null;renderLogin()};
   $('#out2').onclick=logout;if($('#cosw'))$('#cosw').onclick=coMenu;logoTrim();
   if(A.peek){var pk=function(e){if(!A.peek||!$('.shell.peek')){document.removeEventListener('click',pk,true);document.removeEventListener('keydown',pk,true);return}if(e.type==='keydown'?e.key==='Escape':!e.target.closest('.side')){document.removeEventListener('click',pk,true);document.removeEventListener('keydown',pk,true);peekClose(navRedraw)}};setTimeout(function(){document.addEventListener('click',pk,true);document.addEventListener('keydown',pk,true)},0)}
   if(navOnly)return;   // เนื้อหาเดิมผูกปุ่มไว้แล้ว
@@ -522,9 +522,26 @@ function render(){
     document.body.appendChild(m);if($('#out'))$('#out').onclick=logout;var vb=m.querySelector('[data-um="va"]');if(vb)vb.onclick=function(){m.remove();vaPick()};var vx=m.querySelector('[data-um="vax"]');if(vx)vx.onclick=function(){vaExit()};var mb=m.querySelector('[data-um="me"]');if(mb)mb.onclick=function(){m.remove();go('profile',me.id)};
     setTimeout(function(){document.addEventListener('click',function h(){var x=$('.um');if(x)x.remove();document.removeEventListener('click',h)})},0)};
   bSearch(allowed);
+  A.live=null;   // ข้อมูลสด: หน้าที่วาดใหม่ลงทะเบียนเอง (liveReg)
   V[1]();
   setTimeout(loadPhotos,0);
 }
+/* ── ข้อมูลสด (25 พ.ย. 2569 · live.js) ──
+ * หน้าที่ต้องอัปเดตเอง เรียก liveReg(หมวด[], ฟังก์ชันโหลดเงียบ, ระยะห่างขั้นต่ำ ms) ตอนวาดหน้า · หลังบ้านบอกว่าหมวดไหนเปลี่ยน → รวม 0.8 วิ → โหลดใหม่
+ * ไม่รบกวนคนที่กำลังทำงาน: เปิดแผงขวา/กล่องยืนยัน/พิมพ์ในช่อง (ยกเว้นช่องค้นหา) หรือสลับแท็บอยู่ = รอจนว่างแล้วค่อยโหลด
+ * ตารางงาน (iframe planner) ใช้กลไก "ข้อมูลใหม่จากคนอื่น" เดิมของหน้า (_remotePending → โหลดเมื่อว่าง) */
+var LIVE_PLANNER=['jobs','job_assignments','vehicles','leave_requests','leave_days','att','employees','holidays','shifts'];
+function liveReg(t,fn,gap){A.live={v:A.view,t:t,fn:fn,gap:gap||4000,at:0,pend:false}}
+function liveBusy(){if(document.hidden)return true;if($('#ov .drw')||$('#ov .og2-drw')||$('.ask-w')||$('#ov .md')||$('#ov [role="dialog"]'))return true;var a=document.activeElement;return !!(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)&&a.type!=='search'&&!a.closest('.srch'))}
+function liveRun(){var L=A.live;clearTimeout(A.liveT);if(!L||!L.pend||L.v!==A.view)return;
+  if(liveBusy()){A.liveT=setTimeout(liveRun,3000);return}
+  var w=L.at+L.gap-Date.now();if(w>0){A.liveT=setTimeout(liveRun,w);return}
+  L.pend=false;L.at=Date.now();try{L.fn()}catch(e){}}
+function liveHit(cats){
+  try{if(window.PLK&&PLK.fr&&cats.some(function(c){return LIVE_PLANNER.indexOf(c)>=0})){var w=PLK.fr.contentWindow;if(w){w._remotePending=true;if(PLK.shown&&typeof w._applyRemoteIfIdle==='function')w._applyRemoteIfIdle()}}}catch(e){}
+  var L=A.live;if(!L||L.v!==A.view||!cats.some(function(c){return L.t.indexOf(c)>=0}))return;
+  L.pend=true;clearTimeout(A.liveT);A.liveT=setTimeout(liveRun,800)}
+if(window.HRLive){HRLive.onChange=liveHit;document.addEventListener('visibilitychange',function(){if(!document.hidden&&A.live&&A.live.pend)liveRun()})}
 /* เมนูย่อ (30 ต.ค. 2569 ผู้ใช้ขอ): กดเมนูที่มีเมนูย่อย → A.peek = เมนูนั้น → วาดเมนูเต็มลอยทับหน้า · เลือก / กดนอกเมนู / Esc → เลื่อนกลับแล้วค่อยไปหน้าที่เลือก */
 function peekClose(then){var sh=$('.shell.peek');A.peek=null;if(!sh)return then();sh.classList.add('peek-out');setTimeout(then,matchMedia('(prefers-reduced-motion: reduce)').matches?0:190)}
 function navWide(){return false}   /* 23 พ.ย. 2569: เอาปุ่มปักเมนูเต็มออก (ผู้ใช้สั่ง) · ค่าเดิม hr_nav ในเครื่องไม่ใช้แล้ว · มือถือใช้ .mnav */

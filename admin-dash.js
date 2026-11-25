@@ -7,7 +7,8 @@
 function clockOffBar(){return isHR()&&A.d.clockOff?'<div class="note-b" role="status" style="margin-bottom:14px"><b>ระบบยังปิดรับการลงเวลาอยู่</b> · พนักงานกดลงเวลาในแอปไม่ได้ · ก่อนเริ่มใช้จริงให้เปิดที่ ตั้งค่า › เวลาทำงาน</div>':''}
 function vDash(){var nm=String(A.d.me.nickname||A.d.me.name||'').split(' ')[0];return clockOffBar()+'<div class="ph"><div><h1>'+(A.d.me.id==='admin'?'ภาพรวม':'สวัสดี คุณ'+esc(nm))+'</h1><div class="sub" id="db-sub">'+SKi('240px')+'</div></div><span class="sp"></span><button class="btn" id="db-re">รีเฟรช</button></div><div id="db-body">'+SK('kpi','กำลังโหลด…')+'</div>'}
 function bDash(){var load=function(force){aCall('hrDashboard',!!force).then(function(d){A.db=d;A.dbAt=Date.now();var w=(A.fxAt||0)+2600-Date.now();if(w>0)setTimeout(drawDash,w);else drawDash()}).catch(function(e){if($('#db-body')&&!A.db)$('#db-body').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})};
-  $('#db-re').onclick=function(){$('#db-sub').textContent='กำลังรีเฟรช…';fxArm('dash');load(true)};if(A.db)drawDash();if(!A.db||Date.now()-(A.dbAt||0)>60000)load()}
+  $('#db-re').onclick=function(){$('#db-sub').textContent='กำลังรีเฟรช…';fxArm('dash');load(true)};
+  liveReg(['att','employees','leave_requests','leave_days','time_corrections','ta_requests','ta_days','shifts','holidays','jobs','job_assignments','msg_jobs'],function(){load(true)},15000);   /* ข้อมูลสด (25 พ.ย. 2569) · คำนวณใหม่ห่างกันอย่างน้อย 15 วิ */if(A.db)drawDash();if(!A.db||Date.now()-(A.dbAt||0)>60000)load()}
 function drawDash(){if(!$('#db-body'))return;var d=A.db,k=d.kpi,dt=new Date(d.date+'T12:00:00'),TD=['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'],TM=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
   if(d.lead){drawLead(d);return}
   $('#db-sub').textContent='ขอบเขตข้อมูล: '+d.scope+(coCur()?' · '+(((A.d.companies||[]).filter(function(c){return c.id===coCur()})[0]||{}).short||''):'')+' · '+TD[dt.getDay()]+' '+dt.getDate()+' '+TM[dt.getMonth()]+' '+(dt.getFullYear()+543)+' · อัปเดต '+new Date().toTimeString().slice(0,5)+' น.';
@@ -98,6 +99,7 @@ function ofBind(k,redraw,every){var w=$('#ofs-'+k);if(!w)return;var s=ofSt(k);
 function ofOk(k,dept,team){var s=ofSt(k);return (s.d==='all'||dept===s.d)&&(s.t==='all'||team===s.t)}
 function bAppr(){A.apTab=A.apTab||'pending';A.apType=A.apType||'all';
   ofBind('ap',drawAppr);
+  liveReg(['leave_requests','leave_days','leave_changes','ta_requests','time_corrections','workflows','flow_jobs','employees'],loadAppr,4000);   /* ข้อมูลสด (25 พ.ย. 2569) · loadAppr ไม่วาดซ้ำถ้าข้อมูลเท่าเดิม */
   $('#ap-rg').onclick=function(){var b=this;dpRange(b,{a:A.apa,b:A.apb,max:dIso(new Date())},function(a,z){A.apa=a;A.apb=z;b.querySelector('span').textContent=rngTxt(a,z);A.apFor=null;$('#ap-body').innerHTML=''+SK('rows','กำลังโหลด…')+'';loadAppr()})};if(A.ap&&A.apFor===A.apTab)drawAppr();loadAppr()}
 function loadAppr(){var t=A.apTab,rg=A.apa?A.apa+'..'+A.apb:'';aCall('approvalCenter',t==='no'||t==='cancel'?'done':t,rg).then(function(d){if(t!==A.apTab)return;var j=JSON.stringify(d),same=A.apJ===j&&A.apFor===t&&A.apRg===rg&&$('#ap-body')&&!$('#ap-body .loading');A.ap=d;A.apFor=t;A.apJ=j;A.apRg=rg;if(same)return;drawAppr()})/* 18 พ.ย. 2569 ผู้ใช้: กดกระดิ่งแล้วเหมือนโหลด 2 รอบ → ข้อมูลที่จำไว้ขึ้นก่อน ถ้าโหลดใหม่แล้วเหมือนเดิม ไม่วาดซ้ำ */.catch(function(e){if($('#ap-body'))$('#ap-body').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})}
 function drawAppr(){if(!$('#ap-body'))return;var d=A.ap,k=d.kpi,T=A.apType;
