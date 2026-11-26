@@ -2461,3 +2461,5 @@ tr[data-simm2]{cursor:pointer}tr[data-simm2]:hover{background:#FAFAFB}
 .ms-lp{width:12px;height:12px;border-radius:6px;background:#1A8A4A;display:inline-block}.ms-lp.o{background:#fff;border:2px solid #1A8A4A;box-sizing:border-box}
 .ms-ll{width:22px;height:0;border-top:3px solid #1F5FBF;display:inline-block}.ms-ll.d{border-top-style:dashed;opacity:.7}
 .ms-gt{display:inline-block;font-size:11.5px;font-weight:600;padding:1px 8px;border-radius:99px;background:#F4F4F5;color:#52525B}.ms-gt.ok{background:#E8F5E9;color:#1A6B3A}.ms-gt.no{background:#FDECEA;color:#B42318}
+/* 26 พ.ย. 2569 ผู้ใช้ (ภาพหน้าจอ): แผนที่งานเมสเซนเจอร์ทับเมนูซ้ายตอนกาง → แบบเดียวกับ .sim-map */
+#ms-map{position:relative;z-index:0;isolation:isolate}
