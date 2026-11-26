@@ -108,7 +108,14 @@ document.addEventListener("click",e=>{const t=e.target.closest("[data-mday],[dat
     <label class="mphoto"><input type="file" accept="image/*" capture="environment" id="mdph" class="vh"><span id="mdpv">${ic("clip")}${j.photo_need?"ถ่ายรูปยืนยัน (จำเป็น)":"แนบรูปยืนยัน (ไม่บังคับ)"}</span></label>
     ${fl("mdnt","หมายเหตุ",`<input class="inp" id="mdnt" maxlength="200" placeholder="เช่น ฝากไว้กับ รปภ.">`)}<button class="btn pri mgreen" data-mdook="${d.mdone}" ${j.photo_need?"disabled":""}>ยืนยันส่งเสร็จ</button><button class="btn out" data-dclose>ยกเลิก</button>`);
     $("#mdph").onchange=ev=>{const f=ev.target.files[0];if(!f)return;msgShrink(f).then(u=>{S.mph=u;$("#mdpv").innerHTML=`<img src="${u}" alt="">`;$("[data-mdook]").disabled=false}).catch(er=>toast(er.message))};S.mph=null;return}
-  if(d.mdook){t.disabled=true;t.textContent="กำลังบันทึก…";msgGps().then(g=>api("msgDone",d.mdook,{photo:S.mph||"",note:($("#mdnt")||{}).value||"",lat:g.lat,lng:g.lng})).then(()=>{$("#ov").innerHTML="";toast("บันทึกส่งเสร็จแล้ว");S.mph=null;msgDone_(no)}).catch(er=>{t.disabled=false;t.textContent="ยืนยันส่งเสร็จ";toast(er.message)});return}
+  if(d.mdook){/* 26 พ.ย. 2569 ผู้ใช้: แผนที่ต้องมีจุดที่กดส่งเสร็จ → หาตำแหน่งไม่ได้ให้บอกก่อน · ลองใหม่ / บันทึกโดยไม่มีพิกัด (ไม่บังคับ) */
+    const nog=d.nogps==="1",send=g=>api("msgDone",d.mdook,{photo:S.mph||"",note:($("#mdnt")||{}).value||"",lat:g.lat,lng:g.lng}).then(()=>{$("#ov").innerHTML="";toast("บันทึกส่งเสร็จแล้ว");S.mph=null;msgDone_(no)});
+    const back=er=>{t.disabled=false;t.textContent=nog?"บันทึกโดยไม่มีพิกัด":"ยืนยันส่งเสร็จ";toast(er.message)};
+    t.disabled=true;t.textContent=nog?"กำลังบันทึก…":"กำลังหาตำแหน่ง…";
+    if(nog){send({}).catch(back);return}
+    msgGps().then(g=>{if(g.lat!=null){t.textContent="กำลังบันทึก…";return send(g)}
+      t.disabled=false;t.textContent="ลองหาตำแหน่งอีกครั้ง";if(!$("#mdng"))t.insertAdjacentHTML("beforebegin",`<div class="cap" id="mdng" style="color:#B42318;text-align:center">หาตำแหน่งไม่ได้ · เปิด Location ของเครื่อง และอนุญาตให้ LINE ใช้ตำแหน่ง แล้วกดลองอีกครั้ง</div>`);
+      if(!$("[data-nogps]"))t.insertAdjacentHTML("afterend",`<button class="btn out" data-mdook="${d.mdook}" data-nogps="1">บันทึกโดยไม่มีพิกัด</button>`)}).catch(back);return}
   if(d.mfail){msgReason(d.mfail,1);return}if(d.mcan){msgReason(d.mcan,0);return}
   if(d.mrsok){const [id,f]=d.mrsok.split("|"),v=$("#mrs").value.trim();if(!v)return;t.disabled=true;api("msgCancel",id,v,f==="1").then(()=>{$("#ov").innerHTML="";toast(f==="1"?"บันทึกส่งไม่สำเร็จแล้ว":"ยกเลิกงานแล้ว · แจ้งกลุ่มแล้ว");msgDone_(no)}).catch(er=>{t.disabled=false;toast(er.message)});return}
   if(d.masg){const go=M=>sheet(`<h3>มอบหมายเมสเซนเจอร์</h3>${(M.messengers||[]).map(x=>`<button class="mrow" data-masgto="${d.masg}|${x.id}"><span>${esc(x.name)}</span></button>`).join("")||`<span class="cap">ยังไม่มีพนักงานตำแหน่ง Messenger</span>`}<button class="btn out" data-dclose>ยกเลิก</button>`);S.mmeta?go(S.mmeta):api("msgMeta").then(m=>{S.mmeta=m;go(m)}).catch(er=>toast(er.message));return}
