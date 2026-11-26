@@ -80,11 +80,22 @@ function bMsMap(){$$('[data-msd]').forEach(function(b){b.onclick=function(){var 
     P.forEach(function(x){if(x.p&&(!x.g||msKm(x.g,x.p)>0.03))pin(x,x.p,true);if(x.g){pin(x,x.g,false);if(x.p&&msKm(x.g,x.p)>0.03)L.polyline([x.p,x.g],{color:'#A1A1AA',weight:1.5,dashArray:'3 5'}).addTo(m)}});
     var G=P.filter(function(x){return x.g}).sort(function(a,b){return String(a.j.done_at||'').localeCompare(String(b.j.done_at||''))}),W=P.filter(function(x){return !x.g&&x.p&&x.j.st!=='done'&&x.j.st!=='cancel'&&x.j.st!=='fail'});
     var gl=G.map(function(x){return x.g}),wl=(gl.length?[gl[gl.length-1]]:[]).concat(W.map(function(x){return x.p}));
-    if(gl.length>1)L.polyline(gl,{color:'#1F5FBF',weight:3.5}).addTo(m);if(wl.length>1)L.polyline(wl,{color:'#1F5FBF',weight:3,dashArray:'6 6',opacity:.7}).addTo(m);
     m.fitBounds(all,{padding:[40,40],maxZoom:15});var km=0;for(var i=1;i<gl.length;i++)km+=msKm(gl[i-1],gl[i]);
-    var tx=G.length?'เส้นทางจริง '+G.length+' จุด ตามเวลาที่กดส่งเสร็จ'+(G.length>1?' · ระยะทางตรงรวม ~'+km.toFixed(1)+' กม. (ถนนจริงมากกว่านี้)':''):'ยังไม่มีงานที่กดส่งเสร็จพร้อม GPS · แสดงปลายทางตามเวลานัด';
-    var nog=J.filter(function(j){return j.st==='done'&&!msPts(j).g}).length;if(nog)tx+=' · ส่งเสร็จแต่ไม่มี GPS '+nog+' งาน';
-    if($('#ms-dist'))$('#ms-dist').textContent=tx}).catch(function(e){el.innerHTML='<div class="alert">'+esc(e.message)+'</div>'})}
+    var nog=J.filter(function(j){return j.st==='done'&&!msPts(j).g}).length,tail=nog?' · ส่งเสร็จแต่ไม่มี GPS '+nog+' งาน':'',dt=$('#ms-dist');
+    var say=function(r){if(!dt)return;dt.textContent=(G.length?'เส้นทางจริง '+G.length+' จุด ตามเวลาที่กดส่งเสร็จ'+(G.length>1?(r?' · ตามถนน ~'+r.km.toFixed(1)+' กม. · ขับรถ ~'+msMin(r.sec):r===false?' · ระยะทางตรง ~'+km.toFixed(1)+' กม. · ดึงเส้นทางตามถนนไม่ได้':' · กำลังหาเส้นทางตามถนน…'):''):'ยังไม่มีงานที่กดส่งเสร็จพร้อม GPS · แสดงปลายทางตามเวลานัด')+tail};
+    /* 26 พ.ย. 2569 ผู้ใช้: "เส้นต้องวิ่งตามถนน ไม่ใช่ขีดเส้นตรง" → OSRM แบบระบบ Logix เดิม (router.project-osrm.org · ฟรี ไม่มี key) · ไม่ได้ = เส้นตรงเดิม */
+    var draw=function(pts,st){if(pts.length<2)return Promise.resolve(null);return msRoad(pts).then(function(r){if(!el.isConnected)return r;L.polyline(r?r.ll:pts,st).addTo(m);return r})};
+    say(null);draw(gl,{color:'#1F5FBF',weight:4}).then(function(r){say(gl.length>1?(r||false):null)});draw(wl,{color:'#1F5FBF',weight:3,dashArray:'6 6',opacity:.7})}).catch(function(e){el.innerHTML='<div class="alert">'+esc(e.message)+'</div>'})}
+function msMin(s){var n=Math.round(s/60);return n<60?n+' นาที':Math.floor(n/60)+' ชม. '+(n%60)+' นาที'}
+/* เส้นทางตามถนนจาก OSRM · ครั้งละ ≤ 25 จุด (ต่อช่วงกัน) · จำผลไว้ในหน้า · หมดเวลา 8 วินาที → null (ใช้เส้นตรง) */
+var MS_RD={};
+function msRoad(pts){var key=pts.map(function(p){return p[0].toFixed(5)+','+p[1].toFixed(5)}).join(';');if(MS_RD[key]!==undefined)return Promise.resolve(MS_RD[key]);
+  var parts=[];for(var i=0;i<pts.length-1;i+=24)parts.push(pts.slice(i,Math.min(pts.length,i+25)));
+  return Promise.all(parts.map(function(q){var c=typeof AbortController==='function'?new AbortController():null,t=setTimeout(function(){if(c)c.abort()},8000);
+    return fetch('https://router.project-osrm.org/route/v1/driving/'+q.map(function(p){return (+p[1]).toFixed(6)+','+(+p[0]).toFixed(6)}).join(';')+'?overview=full&geometries=geojson&steps=false',c?{signal:c.signal}:{})
+      .then(function(r){clearTimeout(t);return r.ok?r.json():null}).then(function(d){var rt=d&&d.code==='Ok'&&d.routes&&d.routes[0];return rt?{ll:rt.geometry.coordinates.map(function(c){return [c[1],c[0]]}),km:rt.distance/1000,sec:rt.duration}:null}).catch(function(){clearTimeout(t);return null})}))
+  .then(function(R){if(R.some(function(x){return !x}))return null;   // ไม่จำความล้มเหลว → วาดใหม่ลองอีกครั้ง
+    return MS_RD[key]={ll:[].concat.apply([],R.map(function(x){return x.ll})),km:R.reduce(function(a,x){return a+x.km},0),sec:R.reduce(function(a,x){return a+x.sec},0)}})}
 /* รายงานรายเดือน */
 function msRepBody(){return msRep().replace('<div class="tools ms-tools">'+msMonthBar()+'</div>','')}   /* 14 พ.ย. 2569: สรุปรายงานแสดงบนแท็บรายการงานและรายงาน (ไม่ซ้ำแถบเดือน) */
 function msRep(){var J=A.mj.jobs||[],done=J.filter(function(j){return j.st==='done'}),cf=J.filter(function(j){return j.st==='cancel'||j.st==='fail'});
