@@ -5,7 +5,7 @@
  *   ช่องอื่นเป็นกติกาในโค้ด แสดงอย่างเดียว (ล็อก) · ช่องตามรายชื่อ กดแล้วไปแท็บ ตามเมนู
  * แท็บ ตามเมนู: รายชื่อพิเศษ 8 รายการ · บันทึกด้วยฟังก์ชันเดิมของแต่ละเมนู (เซิร์ฟเวอร์ตรวจสิทธิ์เดิม)
  * คลาสใหม่ขึ้นต้น prm- · ฟังก์ชันขึ้นต้น prm */
-var PRM_R=[['employee','พนักงาน','ข้อมูลตัวเอง','#64748B'],['lead','หัวหน้าทีม','คนในทีม','#0EA5E9'],['manager','หัวหน้าแผนก','ทุกทีมในแผนก','#6366F1'],['exec','ผู้บริหาร','ทั้งบริษัท','#A855F7'],['hr','HR','ทั้งบริษัท','#EC4899'],['admin','ผู้ดูแลระบบ','ทั้งบริษัท','#141414']];
+var PRM_R=[['employee','พนักงาน','ข้อมูลตัวเอง','#64748B'],['lead','หัวหน้าทีม','คนในทีม','#0EA5E9'],['manager','หัวหน้าแผนก','ทุกทีมในแผนก','#6366F1'],['exec','ผู้บริหาร','ทั้งบริษัท · ระดับผู้ดูแลระบบ','#A855F7'],['hr','HR','ทั้งบริษัท','#EC4899'],['admin','ผู้ดูแลระบบ','ทั้งบริษัท','#141414']];
 var PRM_OPT={emp:['self','team','dept','all'],att:['none','self','team','dept','all'],leave:['none','self','team','dept','all'],approve:['none','team','dept','all'],edit:['none','self','team','dept','all'],sched:['none','team','dept','all'],asset:['none','self','team','dept','all']};
 var PRM_SC={none:'—',self:'ตัวเอง',team:'ทีม',dept:'แผนก',all:'ทั้งหมด'};
 var PRM_DEF={employee:'self',lead:'team',manager:'dept',exec:'all'};
@@ -14,37 +14,37 @@ var PRM_L={sim:{n:'SIM Monitor',ic:'dtac',d:'เห็นเมนู SIM Monito
   sv:{n:'เคส Service',ic:'codex',d:'เห็นเมนูเคส Service · ลงตารางงานจากเคส',who:'ผู้ดูแลระบบเสมอ',ed:'hr',by:'c',src:'ตั้งค่า › ตารางงาน › เคส Service'},
   svrep:{n:'รายงาน Service',ic:'usage',d:'ดูรายงาน Service แบบผู้บริหาร',who:'ผู้ดูแลระบบเสมอ',ed:'hr',by:'c',src:'ตั้งค่า › ตารางงาน › เคส Service'},
   lm:{n:'ส่งประกาศ',ic:'mega',d:'ส่ง LINE ถึงพนักงาน แผนก และกลุ่ม · ดูประวัติการส่ง',who:'ผู้ดูแลระบบเสมอ',ed:'admin',by:'i',src:'ส่งประกาศ › ผู้มีสิทธิ์',max:30},
-  pay:{n:'เงินเดือน',ic:'wallet',d:'งวดเงินเดือน สลิป PEAK · ข้อมูลอ่อนไหว',who:'บัญชีผู้ดูแลระบบเสมอ · HR ไม่ได้อัตโนมัติ',ed:'admin',by:'i',src:'ตั้งค่า › บทบาทและสิทธิ์ › เงินเดือน',max:30},
+  pay:{n:'เงินเดือน',ic:'wallet',d:'งวดเงินเดือน สลิป PEAK · ข้อมูลอ่อนไหว',who:'บัญชีผู้ดูแลระบบ (รหัสผ่าน) เสมอ · บทบาท HR ผู้บริหาร ผู้ดูแลระบบ ไม่ได้อัตโนมัติ',ed:'admin',by:'i',src:'ตั้งค่า › บทบาทและสิทธิ์ › เงินเดือน',max:30},
   map:{n:'แผนที่การลงเวลา',ic:'rep',d:'เห็นแผนที่ลงเวลาทั้งบริษัท',who:'ผู้ดูแลระบบ และผู้บริหารเสมอ',ed:'admin',by:'i',src:'รายงาน › แผนที่'},
   msgadm:{n:'ผู้จัดงานเมสเซนเจอร์',ic:'msgr',d:'มอบหมาย แก้ ยกเลิกงานเมสเซนเจอร์',who:'HR ผู้ดูแลระบบ ผู้บริหารเสมอ',ed:'hr',by:'i',src:'งานเมสเซนเจอร์ › ตั้งค่า'},
   msgstaff:{n:'เมสเซนเจอร์ · รับงาน',ic:'msgr',d:'รับงานส่งของ · ขึ้นในรายชื่อมอบหมาย',who:'ทุกคนที่ตำแหน่ง Messenger',ed:'hr',by:'i',src:'งานเมสเซนเจอร์ › ตั้งค่า'}};
 /* แถว: ic = ไอคอนเมนูจริง (ic() ใน admin-core.js) · v/e = 6 บทบาท · m:เรื่อง = จากตารางบทบาท (กดได้) · L = ได้เสมอ · 0 = ไม่ได้ (ล็อก) · - = ไม่มีสิทธิ์นี้ · l:รายชื่อ */
 var PRM_ROWS=[['ภาพรวม'],
   {n:'ภาพรวม Dashboard',ic:'dash',d:'ตัวเลขตามข้อมูลที่เห็น',v:'L L L L L L',e:'- - - - - -'},
-  {n:'ชุมชน',ic:'chat',d:'แก้ = ดูแลโพสต์ ปักหมุด ลบโพสต์คนอื่น',v:'L L L L L L',e:'0 0 0 0 L L'},
-  {n:'ศูนย์อนุมัติ · ใบลา',ic:'check',d:'แก้ = อนุมัติ · ผู้อนุมัติจริงมาจากผังองค์กร',v:'- - - - - -',e:'m:approve m:approve m:approve m:approve L L'},
+  {n:'ชุมชน',ic:'chat',d:'แก้ = ดูแลโพสต์ ปักหมุด ลบโพสต์คนอื่น',v:'L L L L L L',e:'0 0 0 L L L'},
+  {n:'ศูนย์อนุมัติ · ใบลา',ic:'check',d:'แก้ = อนุมัติ · ผู้อนุมัติจริงมาจากผังองค์กร',v:'- - - - - -',e:'m:approve m:approve m:approve L L L'},
   ['พนักงาน'],
-  {n:'พนักงาน · การอบรม',ic:'emp',d:'แก้ = ข้อมูลส่วนตัว ตำแหน่ง เวลาทำงาน · เพิ่ม ลาออก เปลี่ยนบทบาท = HR',v:'m:emp m:emp m:emp m:emp L L',e:'m:edit m:edit m:edit m:edit L L'},
-  {n:'ลงเวลา',ic:'clock',d:'แก้ = คำขอแก้เวลาแทนพนักงาน',v:'m:att m:att m:att m:att L L',e:'0 0 0 0 L L'},
-  {n:'การลา',ic:'leave',d:'แก้ = แก้โควตาการลา · ยื่นลาของตัวเองได้ทุกคน',v:'m:leave m:leave m:leave m:leave L L',e:'0 0 0 0 L L'},
-  {n:'ตารางงาน',ic:'cal',d:'ดู = ทุกคนเห็นทั้งหมด · แก้ = เพิ่ม แก้ ลบงาน',v:'L L L L L L',e:'m:sched m:sched m:sched m:sched L L'},
+  {n:'พนักงาน · การอบรม',ic:'emp',d:'แก้ = ข้อมูลส่วนตัว ตำแหน่ง เวลาทำงาน · เพิ่ม ลาออก เปลี่ยนบทบาท = HR',v:'m:emp m:emp m:emp L L L',e:'m:edit m:edit m:edit L L L'},
+  {n:'ลงเวลา',ic:'clock',d:'แก้ = คำขอแก้เวลาแทนพนักงาน',v:'m:att m:att m:att L L L',e:'0 0 0 L L L'},
+  {n:'การลา',ic:'leave',d:'แก้ = แก้โควตาการลา · ยื่นลาของตัวเองได้ทุกคน',v:'m:leave m:leave m:leave L L L',e:'0 0 0 L L L'},
+  {n:'ตารางงาน',ic:'cal',d:'ดู = ทุกคนเห็นทั้งหมด · แก้ = เพิ่ม แก้ ลบงาน',v:'L L L L L L',e:'m:sched m:sched m:sched L L L'},
   {n:'Confirmed',ic:'box',d:'ยืนยันงานปิดโปรเจกต์',v:'0 0 L L L L',e:'- - - - - -'},
   {n:'งานเมสเซนเจอร์',ic:'msgr',d:'ดู = ขอใช้ + งานของตัวเอง · แก้ = จัดงาน มอบหมาย',v:'L L L L L L',e:'l:msgadm l:msgadm l:msgadm L L L'},
   {n:'เคส Service',ic:'codex',d:'เห็นเมนู · ลงตารางงานจากเคส',v:'l:sv l:sv l:sv l:sv l:sv L',e:'- - - - - -'},
   {n:'รายงาน Service',ic:'usage',d:'รายงานแบบผู้บริหาร',v:'l:svrep l:svrep l:svrep l:svrep l:svrep L',e:'- - - - - -'},
-  {n:'LINE Photo Archive',ic:'gdrive',d:'แก้ = ตั้งค่าบอทเก็บรูป',v:'L L L L L L',e:'0 0 0 0 L L'},
-  {n:'ทรัพย์สิน',ic:'box',d:'แก้ = อนุมัติ นำเข้า เปิดรอบตรวจสอบ',v:'m:asset m:asset m:asset m:asset L L',e:'0 0 0 0 L L'},
+  {n:'LINE Photo Archive',ic:'gdrive',d:'แก้ = ตั้งค่าบอทเก็บรูป',v:'L L L L L L',e:'0 0 0 L L L'},
+  {n:'ทรัพย์สิน',ic:'box',d:'แก้ = อนุมัติ นำเข้า เปิดรอบตรวจสอบ',v:'m:asset m:asset m:asset L L L',e:'0 0 0 L L L'},
   {n:'SIM Monitor',ic:'dtac',d:'แก้ = เปิดใช้งานคำขอเบิก SIM · ข้อมูลเบอร์',v:'l:sim l:sim l:sim l:sim l:sim L',e:'l:sim l:sim l:sim l:sim l:sim L'},
   {n:'คำขอเบิก SIM',ic:'dtac',d:'ยื่นได้ทุกคน · อนุมัติ = คนที่ผู้ยื่นเลือก',v:'L L L L L L',e:'- - - - - -'},
-  {n:'เงินเดือน',ic:'wallet',d:'งวดเงินเดือน สลิป PEAK · ต้องยืนยันรหัส',v:'l:pay l:pay l:pay l:pay l:pay L',e:'l:pay l:pay l:pay l:pay l:pay L'},
+  {n:'เงินเดือน',ic:'wallet',d:'งวดเงินเดือน สลิป PEAK · ต้องยืนยันรหัส',v:'l:pay l:pay l:pay l:pay l:pay l:pay',e:'l:pay l:pay l:pay l:pay l:pay l:pay'},
   ['องค์กรและระบบ'],
-  {n:'โครงสร้างองค์กร',ic:'org',d:'แผนก ทีม ตำแหน่ง ลำดับอนุมัติ',v:'0 0 0 0 L L',e:'0 0 0 0 L L'},
+  {n:'โครงสร้างองค์กร',ic:'org',d:'แผนก ทีม ตำแหน่ง ลำดับอนุมัติ',v:'0 0 0 L L L',e:'0 0 0 L L L'},
   {n:'รายงาน',ic:'rep',d:'ตามข้อมูลที่เห็น',v:'0 0 L L L L',e:'- - - - - -'},
   {n:'แผนที่การลงเวลา',ic:'rep',d:'เห็นทั้งบริษัท',v:'l:map l:map l:map L l:map L',e:'- - - - - -'},
   {n:'ส่งประกาศ',ic:'mega',d:'ดู = ประวัติการส่ง · แก้ = ส่ง LINE',v:'l:lm l:lm l:lm l:lm l:lm L',e:'l:lm l:lm l:lm l:lm l:lm L'},
-  {n:'กลุ่ม LINE',ic:'chat',d:'',v:'0 0 0 L L L',e:'0 0 0 0 L L'},
-  {n:'ตั้งค่าระบบ · Audit Log · การใช้งาน',ic:'set',d:'ข้อมูลอ่อนไหว · HR และผู้ดูแลระบบเท่านั้น',v:'0 0 0 0 L L',e:'0 0 0 0 L L'},
-  {n:'บันทึก error',ic:'bug',d:'',v:'0 0 0 L 0 L',e:'0 0 0 0 0 L'}];
+  {n:'กลุ่ม LINE',ic:'linelogo',d:'',v:'0 0 0 L L L',e:'0 0 0 L L L'},
+  {n:'ตั้งค่าระบบ · Audit Log · การใช้งาน',ic:'set',d:'ข้อมูลอ่อนไหว · HR ผู้บริหาร ผู้ดูแลระบบ',v:'0 0 0 L L L',e:'0 0 0 L L L'},
+  {n:'บันทึก error',ic:'bug',d:'',v:'0 0 0 L 0 L',e:'0 0 0 L 0 L'}];
 var PRM_SECC={'ภาพรวม':'#64748B','พนักงาน':'#0EA5E9','องค์กรและระบบ':'#6366F1'};
 function prmS(){return A.prmS||(A.prmS={tab:'role',f:'all',q:''})}
 function prmLoad(){var el=$('#prm-root');if(!el)return;el.innerHTML=SK('rows','กำลังโหลด…');
@@ -52,13 +52,15 @@ function prmLoad(){var el=$('#prm-root');if(!el)return;el.innerHTML=SK('rows','�
 function prmList(k){return ((A.prmX&&A.prmX.lists)||[]).filter(function(x){return x.k===k})[0]||{people:[]}}
 function prmDef(a,r){var o=PRM_OPT[a],d=PRM_DEF[r];if(o.indexOf(d)>=0)return d;return o.filter(function(x){return x!=='none'})[0]}
 /* ค่าของช่อง · คืน {t:'m'|'L'|'0'|'-'|'l', on, sc, a, r, chg, k} */
-function prmCell(spec,ri){var r=PRM_R[ri][0];if(spec.indexOf('m:')===0){var a=spec.slice(2),v=A.prmM[a][r],o=A.prmX.matrix[a][r];return {t:'m',a:a,r:r,on:v!=='none',sc:v,chg:v!==o,def:prmDef(a,r)}}
+function prmCell(spec,ri){var r=PRM_R[ri][0];if(spec.indexOf('m:')===0&&r==='exec')return {t:'L'};   /* ผู้บริหาร = ระดับผู้ดูแลระบบ (Auth.js ROLE_RANK · isHR_) · ช่องในตารางบทบาทไม่มีผล */
+  if(spec.indexOf('m:')===0){var a=spec.slice(2),v=A.prmM[a][r],o=A.prmX.matrix[a][r];return {t:'m',a:a,r:r,on:v!=='none',sc:v,chg:v!==o,def:prmDef(a,r)}}
   if(spec.indexOf('l:')===0){var k=spec.slice(2);return {t:'l',k:k,n:prmList(k).people.length,unset:!!prmList(k).unset}}return {t:spec}}
-function prmBox(c,kind){var col=kind==='v'?'prm-v':'prm-e';
+function prmBox(c,kind){return '<span class="prm-slot">'+prmBox0(c,kind)+'</span>'}   /* ทุกช่องกว้างเท่ากัน ตรงแนวเดียวกัน (27 พ.ย. 2569 ผู้ใช้: ทับซ้อน ไม่เป็นระเบียบ) */
+function prmBox0(c,kind){var col=kind==='v'?'prm-v':'prm-e';
   if(c.t==='-')return '<span class="prm-na" aria-label="ไม่มีสิทธิ์นี้"></span>';
   if(c.t==='L')return '<span class="prm-ck prm-lk" title="ได้เสมอ ปรับไม่ได้">'+PRM_CK+'</span>';
   if(c.t==='0')return '<span class="prm-ck prm-off" title="ไม่ได้ · กติกาในระบบ ปรับไม่ได้"></span>';
-  if(c.t==='l')return '<button class="prm-lp" data-prml="'+c.k+'" title="ได้เฉพาะคนในรายชื่อ · กดเพื่อแก้รายชื่อ"><i></i>'+(c.unset?'กติกาเดิม':c.n+' คน')+'</button>';
+  if(c.t==='l')return '<button class="prm-lp" data-prml="'+c.k+'" title="ได้เฉพาะคนในรายชื่อ '+(c.unset?'· ยังใช้กติกาเดิม':c.n+' คน')+' · กดเพื่อแก้รายชื่อ">'+(c.unset?'เดิม':c.n+' คน')+'</button>';
   var tag=c.on&&c.sc!==c.def?'<select class="prm-sc'+(c.chg?' chg':'')+'" data-prmsc="'+c.a+'|'+c.r+'" aria-label="ขอบเขต">'+PRM_OPT[c.a].filter(function(x){return x!=='none'}).map(function(x){return '<option value="'+x+'"'+(x===c.sc?' selected':'')+'>'+PRM_SC[x]+'</option>'}).join('')+'</select>':'';
   return '<span class="prm-cw"><button class="prm-ck '+col+(c.on?' on':'')+(c.chg?' chg':'')+'" data-prmm="'+c.a+'|'+c.r+'" role="checkbox" aria-checked="'+c.on+'" aria-label="'+(kind==='v'?'ดู':'แก้')+'">'+(c.on?PRM_CK:'')+'</button>'+tag+'</span>'}
 var PRM_CK='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';

@@ -2578,3 +2578,12 @@ tr[data-simm2]{cursor:pointer}tr[data-simm2]:hover{background:#FAFAFB}
 .prm-top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:0}.prm-top .faint{font-size:12.5px}
 .prm-t{min-width:900px}.prm-mc{width:250px}.prm-rc{width:96px;padding:10px 4px!important}.prm-pair>*{width:38px}.prm-ve em{width:38px}.prm-m{gap:10px}.prm-m small{font-size:11.5px}
 .prm-sc0{padding:12px 14px 14px}.prm-sc0>b{font-size:22px}
+.prm-ic .svc-nic,.prm-ic img{filter:none!important;opacity:1!important}.prm-ic svg.lpa-nic{width:20px;height:20px}.prm-ic svg.svc-nic{width:20px;height:20px}
+/* จัดแนวช่อง (27 พ.ย. 2569 รอบ 2): ทุกช่อง = กรอบ 50px ตรงกลาง · ป้ายขอบเขตลอยใต้ช่อง ไม่ดันความสูงแถว */
+.prm-pair{display:inline-flex;gap:2px;align-items:center;justify-content:center}.prm-pair>*{width:auto}
+.prm-slot{width:50px;height:30px;display:inline-flex;align-items:center;justify-content:center;position:relative;flex:none}
+.prm-slot .prm-ck{width:22px!important;height:22px;flex:none}.prm-slot .prm-na{width:10px!important;display:block}
+.prm-cw{display:contents}.prm-slot .prm-sc{position:absolute;top:28px;left:50%;transform:translateX(-50%);z-index:1;font-size:10px;padding:0 2px;max-width:52px;height:16px;line-height:16px}
+.prm-lp{padding:3px 8px;font-size:11px}.prm-lp i{display:none}
+.prm-rc{width:108px!important}.prm-ve{gap:2px}.prm-ve em{width:50px!important}.prm-t{min-width:920px}.prm-t td.prm-rc{padding:14px 2px!important}
+.prm-rc{width:98px!important}.prm-slot{width:46px}.prm-ve em{width:46px!important}.prm-t{min-width:840px}.prm-mc{width:236px}.prm-lp{padding:3px 6px;font-size:10.5px}
