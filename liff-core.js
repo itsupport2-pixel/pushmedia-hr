@@ -27,7 +27,7 @@ function post(fn,a,n){const ac=typeof AbortController!=="undefined"?new AbortCon
 function call(fn,...a){return post(fn,a,0)
   .then(r=>r.text()).then(t=>{let j;try{j=JSON.parse(t)}catch(e){throw new Error("เชื่อมต่อเซิร์ฟเวอร์ไม่สำเร็จ ลองใหม่อีกครั้ง")}if(!j.ok)throw new Error(j.error);return j.r})}
 /* เก็บในเครื่อง (ต่อผู้ใช้/เครื่อง): session token 24 ชม. + ข้อมูลหน้าหลักล่าสุด → เปิดแอปครั้งถัดไปแสดงทันที แล้วค่อยอัปเดต */
-const LS={k:x=>"pmhr_"+(VA?"va":(DEV||""))+"_"+x,get(x){try{return JSON.parse(localStorage.getItem(this.k(x)))}catch(e){return null}},set(x,v){try{localStorage.setItem(this.k(x),JSON.stringify(v))}catch(e){}},del(x){try{localStorage.removeItem(this.k(x))}catch(e){}}};
+const LS={k:x=>"pmhr_"+(VA?"va"+String(VA).replace(/[^0-9a-z]/gi,"").slice(0,12):(DEV||""))+"_"+x,get(x){try{return JSON.parse(localStorage.getItem(this.k(x)))}catch(e){return null}},set(x,v){try{localStorage.setItem(this.k(x),JSON.stringify(v))}catch(e){}},del(x){try{localStorage.removeItem(this.k(x))}catch(e){}}};
 function setTok(t){S.tok=t;if(t)LS.set("tok",t);else{["tok","today","leave"].forEach(x=>LS.del(x))}}
 /* ระบบสำรองการลงเวลา (26 ต.ค. 2569): ระบบหลักขัดข้อง → ส่งไป Apps Script (CFG.backup) ยืนยันตัวตนด้วย LINE · นำเข้าระบบหลักอัตโนมัติภายหลัง */
 const DOWN_RE=/เชื่อมต่อเซิร์ฟเวอร์|ระบบขัดข้องชั่วคราว|D1_ERROR|exceeded/;

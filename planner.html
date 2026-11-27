@@ -1862,6 +1862,8 @@ function _SK(k,t){var b=function(w,h,c){return '<i'+(c?' class="'+c+'"':'')+' st
  * ที่เก็บข้อมูลในเบราว์เซอร์ใส่คำนำหน้าทุกคีย์ (WTM จริงอยู่โดเมนเดียวกัน) · ยกเว้น hr_tok = การเข้าสู่ระบบของหลังบ้าน */
 (function () {
   var tok = ''; try { tok = JSON.parse(localStorage.getItem('hr_tok') || 'null') || ''; } catch (e) {}
+  /* 27 พ.ย. 2569: ดูในมุมมองของพนักงาน (sessionStorage hr_va) = ใช้ token มุมมอง · เดิมใช้บัญชีจริงของ HR → ตารางงานในมุมมองไม่ตรงกับที่พนักงานเห็น */
+  try { var va = JSON.parse(sessionStorage.getItem('hr_va') || 'null'); if (tok && va && va.token && va.exp > Date.now()) tok = va.token; } catch (e) {}
   window.__HR = { tok: tok, cu: null };
   var pre = 'pmwtm:' + String(tok).slice(0, 10) + ':', P = Storage.prototype, g = P.getItem, st = P.setItem, rm = P.removeItem;
   var k = function (x) { x = String(x); return x === 'hr_tok' ? x : pre + x; };

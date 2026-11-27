@@ -5,7 +5,8 @@
 var SN = { d: null, off: 0, dept: 'all', pm: 'all', att: true, ver: '', att2: {}, busy: 0, old: false, oldTasks: false };
 /* ค่าเริ่มต้น (20 พ.ย. 2569 ผู้ใช้): ระบบจริง = หน้าเดิม · dev / เครื่องทดสอบ = หน้าใหม่ · เลือกเองได้ด้วยปุ่ม ลองหน้าใหม่ / หน้าเดิม (sn_on = 1 / 0) */
 function snDef() { var a = String(typeof API === 'string' ? API : ''); return /-dev[.\/]|^\/api$/.test(a); }
-function snOn() { try { var v = localStorage.getItem('sn_on'); return v === '1' ? true : v === '0' ? false : snDef(); } catch (e) { return snDef(); } }
+function snOn() { if (window.ss && ss('hr_va')) return snDef();   /* 27 พ.ย. 2569: ดูในมุมมอง = หน้าที่พนักงานเห็นจริง (ไม่ใช้ค่าที่ HR เลือกไว้ในเครื่อง) */
+  try { var v = localStorage.getItem('sn_on'); return v === '1' ? true : v === '0' ? false : snDef(); } catch (e) { return snDef(); } }
 function snSet(on) { try { localStorage.setItem('sn_on', on ? '1' : '0'); } catch (e) {} SN.old = false; render(); }
 function vSched() { if (snOn() && !SN.old && !SN.d && !(window.ss && ss('hr_va'))) snRestore(); return snOn() && !SN.old ? '<div id="sn-root">' + (SN.d ? '' : snSkel()) + '</div>' : (A.d && A.d.me && (isHR() || A.d.me.role === 'admin') ? snTry() : '') + vPlanner(); }
 function bSched() { if (snOn() && !SN.old && !SN.d && !(window.ss && ss('hr_va'))) snRestore(); var tb = $('#sn-tryb'); if (tb) tb.onclick = function () { if (snOn()) { SN.old = false; render(); } else snSet(1); }; if (!snOn() || SN.old) return; if (SN.d) { snDraw(); snCheck(); } else snLoad(); }
