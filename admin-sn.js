@@ -40,7 +40,9 @@ function snHolStrict(ds) { return new Date(ds + 'T00:00:00').getDay() === 0 || S
 function snMoney(n) { return Number(n).toLocaleString('th-TH') + '฿'; }
 function snPhoto(p) { if (!/^hrphoto:/.test(p || '')) return /^https:\/\//.test(p || '') ? p : ''; var a = String(API || ''); return /^https:\/\//.test(a) ? a.replace(/\/+$/, '') + '/photo/' + p.slice(8) : ''; }
 function snDates() { var t = new Date(), mon = new Date(t); mon.setDate(t.getDate() - ((t.getDay() + 6) % 7) + SN.off * 7); var L = []; for (var i = 0; i < 7; i++) { var d = new Date(mon); d.setDate(mon.getDate() + i); L.push(d); } return L; }
-function snScope() { var cu = SN.d.cu || {}; if (cu.hr || cu.admin || acc('att') === 'all') return 'all'; return acc('att') === 'dept' ? 'dept' : 'team'; }
+/* 27 พ.ย. 2569 ผู้ใช้: ตารางงานในเว็บทุกคนดูได้ทั้งหมด · เพิ่ม/แก้ตามแถว "จัดตารางงาน" (เซิร์ฟเวอร์ส่งมาใน cu.menuPermsRaw = planner:all:<แก้>) */
+function snScope() { return 'all'; }
+function snEditSc() { var cu = SN.d.cu || {}; if (cu.hr || cu.admin) return 'all'; var m = /planner:[a-z]+:([a-z]+)/.exec(cu.menuPermsRaw || ''); return m ? m[1] : 'none'; }
 function snDepts() { var sc = snScope(), cu = SN.d.cu || {}; return SN.d.depts.filter(function (d) { if (sc !== 'all' && d.name !== cu.dept) return false; var st = SN.d.schedTeams[d.name]; return st && st.length; }); }
 function snTeamsOf(dn) { var L = SN.d.schedTeams[dn] || [], cu = SN.d.cu || {}; return snScope() === 'team' ? L.filter(function (t) { return t === cu.team; }) : L; }
 function snCostGrants(tasks, dss) {   // เบี้ยวันหยุด / ต่างจังหวัด คนละครั้งต่อวัน (เหมือน _rpComputeCostGrants)
@@ -86,7 +88,7 @@ function snDraw() {
   var tdAT = td >= from && td <= to ? AT : snAttFor(td, td), ppl = {}, noIn = 0, lvJob = 0;
   d.tasks.forEach(function (t) { var ts = snNorm(t.start), te = snNorm(t.end || t.start); if (!ts || td < ts || td > te) return; if (SN.dept !== 'all' && t.deptName !== SN.dept) return; snMembersOn(t, td).forEach(function (c) { ppl[c] = 1; }); });
   Object.keys(ppl).forEach(function (c) { if (tdAT.lv[c + '::' + td]) lvJob++; else if (!tdAT.att[c + '::' + td]) noIn++; });
-  var g = snCostGrants(d.tasks.filter(inWeek), dss), cu = d.cu || {}, canAdd = cu.hr || cu.admin || acc('att') !== 'self';
+  var g = snCostGrants(d.tasks.filter(inWeek), dss), cu = d.cu || {}, canAdd = snEditSc() !== 'none';
   var fmtR = function (a, b) { var o = { day: 'numeric', month: 'short' }; return a.toLocaleDateString('th-TH', o) + ' – ' + b.toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: '2-digit' }); };
   var chip = function (k, l, n) { return '<button class="sn-chip' + (SN.dept === k ? ' on' : '') + '" data-snd="' + esc(k) + '">' + esc(l) + ' <span>' + n + '</span></button>'; };
   var cnt = function (dn) { return wk.filter(function (t) { return dn === 'all' || t.deptName === dn; }).length; };
@@ -145,7 +147,7 @@ function snDay(dt, ds, show, AT, g, td) {
     return h + '</tr>';
   }).join('');
 }
-function snCanAdd(dn, tn) { var cu = SN.d.cu || {}; if (cu.hr || cu.admin) return true; var sc = acc('att'); return sc === 'all' || (sc === 'dept' && dn === cu.dept) || (sc === 'team' && dn === cu.dept && tn === cu.team); }
+function snCanAdd(dn, tn) { var cu = SN.d.cu || {}; var sc = snEditSc(); return sc === 'all' || (sc === 'dept' && dn === cu.dept) || (sc === 'team' && dn === cu.dept && tn === cu.team); }
 function snBind() {
   $$('[data-snd]').forEach(function (b) { b.onclick = function () { SN.dept = b.dataset.snd; snDraw(); }; });
   $$('[data-snp]').forEach(function (b) { b.onclick = function () { SN.pm = SN.pm === b.dataset.snp ? 'all' : b.dataset.snp; snDraw(); }; });

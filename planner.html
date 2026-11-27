@@ -1969,6 +1969,7 @@ const ACCESS_LEVELS = {
   editor_team_view_all    : { lbl: 'แก้ไขทีมตัวเอง · ดูได้ทั้งหมด',                  color: '#7C3AED', bg: '#EDE9FE' },
   editor_dept             : { lbl: 'แก้ไขได้ — แผนกตัวเอง',                           color: '#D97706', bg: '#FEF3C7' },
   editor_dept_view_all    : { lbl: 'แก้ไขแผนกตัวเอง · ดูได้ทั้งหมด',                 color: '#D97706', bg: '#FEF3C7' },
+  editor_all              : { lbl: 'แก้ไขได้ — ทั้งหมด',                              color: '#D97706', bg: '#FEF3C7' },
   super_admin             : { lbl: 'Admin — ทำได้ทุกอย่าง',                            color: '#DC2626', bg: '#FEE2E2' },
 };
 
@@ -1983,6 +1984,7 @@ const CAPS = {
   editor_team_view_all  : { scope:'all',  editScope:'team', viewTask:true, createTask:true,  editOwnTeam:true,  editOwnDept:false, editAll:false, manageUsers:false, manageHol:false },
   editor_dept           : { scope:'dept', editScope:'dept', viewTask:true, createTask:true,  editOwnTeam:true,  editOwnDept:true,  editAll:false, manageUsers:false, manageHol:false },
   editor_dept_view_all  : { scope:'all',  editScope:'dept', viewTask:true, createTask:true,  editOwnTeam:true,  editOwnDept:true,  editAll:false, manageUsers:false, manageHol:false },
+  editor_all            : { scope:'all',  editScope:'all',  viewTask:true, createTask:true,  editOwnTeam:true,  editOwnDept:true,  editAll:true,  manageUsers:false, manageHol:false },   /* 27 พ.ย. 2569: จัดตารางงาน = ทั้งหมด แต่ไม่ใช่ HR/admin → แก้ทุกงานได้ ไม่เห็นเมนูจัดการผู้ใช้/วันหยุด */
   super_admin           : { scope:'all',  editScope:'all',  viewTask:true, createTask:true,  editOwnTeam:true,  editOwnDept:true,  editAll:true,  manageUsers:true,  manageHol:true  },
 };
 
@@ -2007,7 +2009,7 @@ const SCOPE_RANK = { none:0, team:1, dept:2, all:3 };
 function buildAccessLevel(viewScope, editScope) {
   if (SCOPE_RANK[editScope] > SCOPE_RANK[viewScope]) editScope = viewScope;
   if (!viewScope || viewScope === 'none') return 'no_access'; 
-  if (editScope === 'all')  return 'super_admin';
+  if (editScope === 'all')  return DB.cu && DB.cu.hr ? 'super_admin' : 'editor_all';
   if (viewScope === 'team') return editScope === 'team' ? 'editor_team' : 'viewer_team';
   if (viewScope === 'dept') {
     if (editScope === 'dept') return 'editor_dept';
@@ -14523,7 +14525,7 @@ function _hideLineLoading() {
     if (ok && H.cu) {
       var c = H.cu, emp = (DB.employees || []).find(function (e) { return e.code === c.code; }) || null, mp = parseMenuPerms(c.menuPermsRaw);
       DB.cu = { code: c.code, name: emp ? emp.name : c.name, nickname: emp ? emp.nickname : c.nickname, email: '', photo: emp ? emp.photo : '', accessLevel: 'viewer_team',
-        menuPerms: mp, dept: c.dept, team: c.team, emp: emp || { code: c.code, menuPerms: mp, dept: c.dept, team: c.team, accessLevel: 'viewer_team' } };
+        menuPerms: mp, dept: c.dept, team: c.team, hr: !!c.hr, emp: emp || { code: c.code, menuPerms: mp, dept: c.dept, team: c.team, accessLevel: 'viewer_team' } };
       if (emp) { emp.menuPerms = mp; emp.accessLevel = 'viewer_team'; }
     }
     if (ok && !H.cu) DB.cu = null;
