@@ -7,11 +7,11 @@ var FLOW={lead:'หัวหน้าทีม',lead_dept:'หัวหน้า
 var LVS={wait:['รอหัวหน้า','b-warn'],mgr:['รอขั้นที่ 2','b-warn'],hr:['รอ HR','b-warn'],ok:['อนุมัติแล้ว','b-ok'],chg:['ขอยกเลิก','b-info'],back:['ส่งกลับแก้ไข','b-warn'],no:['ไม่อนุมัติ','b-bad'],cancel:['ยกเลิก','b-mute']};
 /* แท็บในเมนูการลา (31 ต.ค. 2569 ผู้ใช้ขอ · Figma "รายงาน · 4 ลาล่วงหน้า"): คำขอลา | ลาล่วงหน้า */
 function lvTabs(on){var tab=function(k,l){return '<button type="button" data-lvt="'+k+'"'+(on===k?' aria-pressed="true"':'')+'>'+l+'</button>'};
-  return '<div class="rp-tabs" role="group" aria-label="การลา">'+tab('req','คำขอลา')+tab('adv','ลาล่วงหน้า')+'</div>'}
+  return '<div class="rp-tabs" role="group" aria-label="การลา">'+tab('req','คำขอลา')+tab('adv','ลาล่วงหน้า')+(typeof lqCanSee==='function'&&lqCanSee()?tab('quota','โควตาการลา'):'')+'</div>'}
 function lvTabBind(){$$('[data-lvt]').forEach(function(b){b.onclick=function(){if((A.lvTab||'req')===b.dataset.lvt)return;A.lvTab=b.dataset.lvt;fxArm('lv');render()}})}
-function vLv(){if(A.lvTab==='adv')return vLva();if(A.lva===undefined){var tm=dpPresets(dIso(new Date())).filter(function(x){return x[0]==='tm'})[0];A.lva=tm[2];A.lvb=tm[3]}// ค่าเริ่มต้น = เดือนปัจจุบัน
+function vLv(){if(A.lvTab==='adv')return vLva();if(A.lvTab==='quota'&&typeof lqCanSee==='function'&&lqCanSee())return vLvq();if(A.lva===undefined){var tm=dpPresets(dIso(new Date())).filter(function(x){return x[0]==='tm'})[0];A.lva=tm[2];A.lvb=tm[3]}// ค่าเริ่มต้น = เดือนปัจจุบัน
   return '<div class="ph"><div><h1>การลา</h1><div class="sub" id="lv-sub">'+SKi('200px')+'</div></div><span class="sp"></span>'+ofSel('lv')+dpBtn('lv-rg',A.lva,A.lvb)+'<button class="btn" id="lv-re">รีเฟรช</button></div>'+lvTabs('req')+'<div id="lv-body">'+SK('rows')+'</div>'}
-function bLv(){lvTabBind();if(A.lvTab==='adv')return bLva();var load=function(){var t=dIso(new Date());
+function bLv(){lvTabBind();if(A.lvTab==='adv')return bLva();if(A.lvTab==='quota'&&typeof lqCanSee==='function'&&lqCanSee())return bLvq();var load=function(){var t=dIso(new Date());
     // ลาล่วงหน้า = ใบลาที่เริ่มหลังวันนี้ · ดึงแยก ไม่ขึ้นกับช่วงวันที่เลือก (ช่วงวันเลือกได้ถึงวันนี้เท่านั้น)
     Promise.all([aCall('leaveAdminList','all',A.lva?A.lva+'..'+A.lvb:''),aCall('leaveAdminList','all',dAdd(t,1)+'..9999-12-31')]).then(function(x){A.lvd=x[0];A.lvfut=x[1];A.lvadv=x[1].filter(function(r){return r.date_from>t&&r.status!=='no'&&r.status!=='cancel'});drawLv()}).catch(function(e){if($('#lv-body'))$('#lv-body').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})};
   ofBind('lv',drawLv);$('#lv-re').onclick=function(){fxArm('lv');load()};liveReg(['leave_requests','leave_days','leave_changes','employees'],load,4000);   /* ข้อมูลสด (25 พ.ย. 2569) */$('#lv-rg').onclick=function(){var b=this;dpRange(b,{a:A.lva,b:A.lvb,max:dIso(new Date())},function(a,z){A.lva=a;A.lvb=z;b.querySelector('span').textContent=rngTxt(a,z);load()})};load()}
