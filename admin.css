@@ -2589,3 +2589,16 @@ tr[data-simm2]{cursor:pointer}tr[data-simm2]:hover{background:#FAFAFB}
 .prm-rc{width:98px!important}.prm-slot{width:46px}.prm-ve em{width:46px!important}.prm-t{min-width:840px}.prm-mc{width:236px}.prm-lp{padding:3px 6px;font-size:10.5px}
 .prm-t{min-width:780px}.prm-mc{width:214px}.prm-rc{width:94px!important}.prm-slot{width:44px}.prm-ve em{width:44px!important}
 .prm-t{table-layout:fixed;width:100%;min-width:760px}.prm-t .prm-mc{width:auto}.prm-t th.prm-rc,.prm-t td.prm-rc{width:96px!important}
+
+/* แท็บย่อยคำขอเบิก SIM ในเมนู SIM Monitor (28 พ.ย. 2569) */
+.sq-subt{display:flex;gap:6px;margin:0 0 12px;flex-wrap:wrap}.sq-sb{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;font:inherit;font-size:13px;font-weight:600;color:#3F3F46;cursor:pointer}.sq-sb span{background:#F2F2F5;border-radius:999px;padding:0 7px;font-size:11px}.sq-sb.on{background:#141414;border-color:#141414;color:#fff}.sq-sb.on span{background:rgba(255,255,255,.2);color:#fff}
+
+/* แผงสิทธิ์ › ตามคน (28 พ.ย. 2569) */
+.prm-uq{width:340px}.prm-up{padding:0;overflow:hidden}.prm-uh{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid #F0F0F3}.prm-uh b{display:block;font-size:16px}.prm-uh small{display:block;font-size:12px;color:#8C8C93}
+.prm-ut{width:100%;border-collapse:collapse}.prm-ut th,.prm-ut td{padding:9px 16px;border-bottom:1px solid #F0F0F3;font-size:13px;text-align:left}.prm-ut thead th{background:#FAFAFB;font-size:12px;color:#6B6B73}.prm-ut th:nth-child(n+2),.prm-ut td:nth-child(n+2){width:150px}.prm-ut td:nth-child(3){width:260px}
+.prm-ut .prm-sec td{background:#F7F7F9;font-weight:700;font-size:12.5px;padding:7px 16px}.prm-ut tr.prm-own td{background:#FFFBEB}.prm-ut tr.prm-chg td{background:#FEF3C7}
+.prm-yes{color:#16A34A;font-weight:600}.prm-no{color:#A1A1AA}
+.prm-seg3{display:inline-flex;border:1px solid #DADADF;border-radius:9px;overflow:hidden}.prm-seg3 button{border:0;background:#fff;padding:5px 10px;font:inherit;font-size:12px;cursor:pointer;color:#52525B}.prm-seg3 button+button{border-left:1px solid #EEE}.prm-seg3 button.on{background:#141414;color:#fff}.prm-seg3 button[data-v="0"].on{background:#C0392B}.prm-seg3 button[data-v="1"].on{background:#16A34A}
+.prm-usv{display:flex;gap:10px;padding:14px 20px;background:#FAFAFB;position:sticky;bottom:0}.prm-usv input{flex:1;border:1px solid #DADADF;border-radius:10px;padding:9px 12px;font:inherit;font-size:13px}
+
+.prm-subr .prm-m{padding-left:22px}.prm-subr .prm-ic{width:26px;height:26px}.prm-subr .prm-ic img{width:15px;height:15px}.prm-subr .prm-m b{font-size:13px;font-weight:500}.prm-subr td{padding-top:7px!important;padding-bottom:7px!important}

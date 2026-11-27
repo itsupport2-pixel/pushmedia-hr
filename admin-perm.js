@@ -35,8 +35,14 @@ var PRM_ROWS=[['ภาพรวม'],
   {n:'รายงาน Service',ic:'usage',d:'รายงานแบบผู้บริหาร · หรือตามรายชื่อ',v:'p:svcr.v p:svcr.v p:svcr.v p:svcr.v p:svcr.v L',e:'- - - - - -'},
   {n:'LINE Photo Archive',ic:'gdrive',d:'แก้ = ตั้งค่าบอทเก็บรูป',v:'p:lpa.v p:lpa.v p:lpa.v p:lpa.v p:lpa.v L',e:'p:lpa.e p:lpa.e p:lpa.e p:lpa.e p:lpa.e L'},
   {n:'ทรัพย์สิน',ic:'box',d:'แก้ = อนุมัติ นำเข้า เครื่องมือ รอบตรวจสอบ',v:'m:asset m:asset m:asset L L L',e:'p:asset.e p:asset.e p:asset.e p:asset.e p:asset.e L'},
-  {n:'SIM Monitor',ic:'dtac',d:'เห็นเมนู = เปิดใช้งานคำขอเบิก SIM ได้ · หรือตามรายชื่อ',v:'p:sim.v p:sim.v p:sim.v p:sim.v p:sim.v L',e:'- - - - - -'},
-  {n:'คำขอเบิก SIM',ic:'dtac',d:'ยื่นคำขอ · อนุมัติ = คนที่ผู้ยื่นเลือก',v:'p:simr.v p:simr.v p:simr.v p:simr.v p:simr.v L',e:'- - - - - -'},
+  {n:'SIM Monitor',ic:'dtac',d:'เห็นแท็บข้อมูลเบอร์ + เปิดใช้งานคำขอเบิก SIM · หรือตามรายชื่อ · แท็บย่อยตั้งด้านล่าง',v:'p:sim.v p:sim.v p:sim.v p:sim.v p:sim.v L',e:'- - - - - -'},
+  {n:'แท็บ ภาพรวม',ic:'dtac',sub:1,d:'สรุปสถานะเบอร์ ค่าบริการ',v:'p:sim.t.ov p:sim.t.ov p:sim.t.ov p:sim.t.ov p:sim.t.ov L',e:'- - - - - -'},
+  {n:'แท็บ รายการ SIM',ic:'dtac',sub:1,d:'รายการเบอร์ แก้ข้อมูลไซต์',v:'p:sim.t.ls p:sim.t.ls p:sim.t.ls p:sim.t.ls p:sim.t.ls L',e:'- - - - - -'},
+  {n:'แท็บ ใช้ภายในองค์กร',ic:'dtac',sub:1,d:'เบอร์ของพนักงาน กลุ่ม แท็ก',v:'p:sim.t.in p:sim.t.in p:sim.t.in p:sim.t.in p:sim.t.in L',e:'- - - - - -'},
+  {n:'แท็บ ค่าใช้จ่าย',ic:'dtac',sub:1,d:'ใบแจ้งหนี้ ค่าบริการรายเดือน',v:'p:sim.t.cs p:sim.t.cs p:sim.t.cs p:sim.t.cs p:sim.t.cs L',e:'- - - - - -'},
+  {n:'แท็บ แผนที่',ic:'dtac',sub:1,d:'ตำแหน่งเบอร์',v:'p:sim.t.mp p:sim.t.mp p:sim.t.mp p:sim.t.mp p:sim.t.mp L',e:'- - - - - -'},
+  {n:'แท็บ ซิงก์ข้อมูล',ic:'dtac',sub:1,d:'ปุ่มบุ๊กมาร์ก CMP นำเข้า คีย์',v:'p:sim.t.sy p:sim.t.sy p:sim.t.sy p:sim.t.sy p:sim.t.sy L',e:'- - - - - -'},
+  {n:'แท็บ คำขอเบิก SIM',ic:'dtac',sub:1,d:'ยื่นคำขอ · ทุกคนเห็นได้แม้ไม่มีสิทธิ์ SIM Monitor',v:'p:simr.v p:simr.v p:simr.v p:simr.v p:simr.v L',e:'- - - - - -'},
   {n:'เงินเดือน',ic:'wallet',d:'งวดเงินเดือน สลิป PEAK · หรือตามรายชื่อ',v:'p:pay.v p:pay.v p:pay.v p:pay.v p:pay.v L',e:'- - - - - -'},
   ['องค์กรและระบบ'],
   {n:'โครงสร้างองค์กร',ic:'org',d:'แผนก ทีม ตำแหน่ง ลำดับอนุมัติ',v:'p:org.v p:org.v p:org.v p:org.v p:org.v L',e:'p:org.e p:org.e p:org.e p:org.e p:org.e L'},
@@ -74,10 +80,10 @@ function prmChanges(){var d=A.prmX,out=[];Object.keys(d.matrix).forEach(function
 var PRM_AN={emp:'พนักงาน › ดู',edit:'พนักงาน › แก้',att:'ลงเวลา › ดู',leave:'การลา › ดู',approve:'ศูนย์อนุมัติ › อนุมัติ',sched:'ตารางงาน › แก้',asset:'ทรัพย์สิน › ดู'};
 function prmRoleN(r){return (A.prmX.roles||{})[r]||0}
 function prmDraw(){var el=$('#prm-root');if(!el||!A.prmX)return;var S=prmS(),d=A.prmX;
-  var tabs='<div class="prm-tabs" role="tablist">'+[['role','check','ตามบทบาท',''],['menu','dash','ตามเมนู',String(d.lists.length)]].map(function(t){return '<button role="tab" class="'+(S.tab===t[0]?'on':'')+'" data-prmt="'+t[0]+'" aria-selected="'+(S.tab===t[0])+'">'+ic(t[1])+t[2]+(t[3]?'<span class="prm-tn">'+t[3]+'</span>':'')+'</button>'}).join('')+'</div>';
+  var tabs='<div class="prm-tabs" role="tablist">'+[['role','check','ตามบทบาท',''],['menu','dash','ตามเมนู',String(d.lists.length)],['user','emp','ตามคน',String((d.users||[]).length||'')]].map(function(t){return '<button role="tab" class="'+(S.tab===t[0]?'on':'')+'" data-prmt="'+t[0]+'" aria-selected="'+(S.tab===t[0])+'">'+ic(t[1])+t[2]+(t[3]?'<span class="prm-tn">'+t[3]+'</span>':'')+'</button>'}).join('')+'</div>';
   el.innerHTML='<div class="prm-top">'+tabs+'<span class="faint">ติ๊กว่าแต่ละบทบาท ดู หรือ แก้ เมนูไหนได้ · ขอบเขตข้อมูลตามบทบาท · เซิร์ฟเวอร์ตรวจซ้ำทุกคำสั่ง</span></div><div id="prm-body"></div>';
   $$('[data-prmt]').forEach(function(b){b.onclick=function(){S.tab=b.dataset.prmt;prmDraw()}});
-  if(S.tab==='menu')prmMenu();else prmRole()}
+  if(S.tab==='menu')prmMenu();else if(S.tab==='user')prmUser();else prmRole()}
 function prmCount(ri){var v=0,e=0,n=0;PRM_ROWS.forEach(function(x){if(Array.isArray(x))return;n++;var cv=prmCell(x.v.split(' ')[ri],ri),ce=prmCell(x.e.split(' ')[ri],ri);if(cv.t==='L'||((cv.t==='m'||cv.t==='p')&&cv.on))v++;if(ce.t==='L'||((ce.t==='m'||ce.t==='p')&&ce.on))e++});return {v:v,e:e,n:n}}
 function prmRole(){var S=prmS(),b=$('#prm-body'),ch=prmChanges(),pc=prmPChanges();
   var sum='<section class="card prm-sum"><div class="prm-sh"><b>สรุปสิทธิ์ตามบทบาท</b><span class="sp"></span><span class="prm-lg"><i class="prm-bv"></i>ดูได้</span><span class="prm-lg"><i class="prm-be"></i>แก้ได้</span><span class="faint">นับเฉพาะที่ได้ทั้งบทบาท ไม่นับตามรายชื่อ</span></div><div class="prm-sr">'+
@@ -91,7 +97,7 @@ function prmRole(){var S=prmS(),b=$('#prm-body'),ch=prmChanges(),pc=prmPChanges(
   var head='<thead><tr><th class="prm-mc">เมนู<small>ติ๊ก = ได้ · ช่องสีเทา = ได้เสมอ ปรับไม่ได้ · ขอบเขตข้อมูลตามบทบาท · รายชื่อพิเศษดูแท็บ ตามเมนู</small></th>'+PRM_R.map(function(r){return '<th class="prm-rc"><span class="prm-rn"><i style="background:'+r[3]+'"></i>'+r[1]+'</span><span class="prm-ve"><em class="prm-tv">ดู</em><em class="prm-te">แก้</em></span></th>'}).join('')+'</tr></thead>';
   var body='<tbody>'+rows.map(function(x){if(Array.isArray(x)){var n=PRM_ROWS.slice(PRM_ROWS.indexOf(x)+1).findIndex(function(y){return Array.isArray(y)});n=n<0?PRM_ROWS.length-PRM_ROWS.indexOf(x)-1:n;return '<tr class="prm-sec"><td colspan="7"><i style="background:'+PRM_SECC[x[0]]+'"></i>'+x[0]+'<span>'+n+' เมนู</span></td></tr>'}
     var vs=x.v.split(' '),es=x.e.split(' '),anyChg=false,cells=PRM_R.map(function(r,i){var cv=prmCell(vs[i],i),ce=prmCell(es[i],i);if(cv.chg||ce.chg)anyChg=true;return '<td class="prm-rc"><span class="prm-pair">'+prmBox(cv,'v')+prmBox(ce,'e')+'</span></td>'}).join('');
-    return '<tr class="'+(anyChg?'prm-chg':'')+'"><td class="prm-mc"><span class="prm-m"><span class="prm-ic">'+ic(x.ic)+'</span><span><b>'+esc(x.n)+(isOv(x)&&A.prmX.overrides.length?'<em class="prm-bo">ข้อยกเว้นรายคน · ดูด้านล่าง</em>':'')+'</b>'+(x.d?'<small>'+esc(x.d)+'</small>':'')+'</span></span></td>'+cells+'</tr>'}).join('')+'</tbody>';
+    return '<tr class="'+(anyChg?'prm-chg':'')+(x.sub?' prm-subr':'')+'"><td class="prm-mc"><span class="prm-m"><span class="prm-ic">'+ic(x.ic)+'</span><span><b>'+esc(x.n)+(isOv(x)&&A.prmX.overrides.length?'<em class="prm-bo">ข้อยกเว้นรายคน · ดูด้านล่าง</em>':'')+'</b>'+(x.d?'<small>'+esc(x.d)+'</small>':'')+'</span></span></td>'+cells+'</tr>'}).join('')+'</tbody>';
   var all=prmAllChanges(),bar=all.length?'<div class="prm-save"><i></i><span><b>ยังไม่บันทึก '+all.length+' ช่อง</b><small>'+all.slice(0,3).map(function(c){return c[0]+': '+c[1]+' → '+c[2]}).join(' · ')+(all.length>3?' · …':'')+'</small></span><button class="btn" id="prm-rs">ยกเลิก</button><button class="btn pri" id="prm-sv">ตรวจก่อนบันทึก ›</button></div>':'';
   b.innerHTML=sum+tool+'<section class="card prm-card"><div class="prm-tw"><table class="prm-t">'+head+body+'</table></div></section>'+bar;
   $('#prm-q').oninput=function(){var p=this.selectionStart;S.q=this.value;prmRole();var q=$('#prm-q');q.focus();try{q.setSelectionRange(p,p)}catch(e){}};
@@ -143,3 +149,28 @@ function prmEdit(k){var L=PRM_L[k],x=prmList(k);if(!prmCan(k)){toast('ราย�
     else if(k==='lm')call=aCall('lmAccessSave',sel);else if(k==='pay')call=aCall('payAccessSave',sel);else if(k==='map')call=aCall('saveMapAccess',sel);
     else if(k==='msgadm')call=aCall('saveSettings',{msg_admins:sel.join(',')});else if(k==='msgstaff')call=aCall('saveSettings',{msg_staff:sel.join(',')});
     busy(btn,1);call.then(function(){closeD();toast('บันทึกรายชื่อ '+L.n+' แล้ว');return aCall('permOverview')}).then(function(d){if(d){A.prmX.lists=d.lists;prmDraw()}}).catch(function(e){busy(btn,0);toast(e.message,1)})}}
+
+/* แท็บ ตามคน (28 พ.ย. 2569 ผู้ใช้: "ตั้งค่าการเข้าถึงของแต่ละคน ในแต่ละเมนูได้") · permUserGet / permUserSave (Perm.js)
+ * ทุกข้อเลือก ตามบทบาท / ได้ / ไม่ได้ · ทับค่าของบทบาทเฉพาะคนนี้ · ต้องใส่เหตุผล · Audit Log */
+function prmUser(){var b=$('#prm-body'),d=A.prmX,S=prmS(),txt=function(e){return e.n+' · '+e.c+(e.p?' · '+e.p:'')};
+  b.innerHTML='<div class="prm-note">'+ic('help')+'<span>ตั้งสิทธิ์เฉพาะคน ทับค่าของบทบาท · เช่น พนักงานคนหนึ่งช่วยจัดผังแผนก หรือไม่ให้ HR บางคนเห็นเงินเดือน · ผู้ดูแลระบบได้ทุกข้อเสมอ</span></div>'+
+   '<div class="prm-tool"><label class="prm-q prm-uq">'+ic('search')+'<input id="prm-uin" list="prm-uemps" placeholder="ค้นชื่อ ชื่อเล่น รหัส แล้วเลือก"></label><datalist id="prm-uemps">'+d.emps.map(function(e){return '<option value="'+esc(txt(e))+'">'}).join('')+'</datalist>'+
+   ((d.users||[]).length?'<span class="faint">มีสิทธิ์รายคน:</span>'+d.users.map(function(u){return '<button class="prm-fc'+(S.uid===u.i?' on':'')+'" data-prmu="'+esc(u.i)+'">'+esc(u.n)+'<span>'+u.keys.length+'</span></button>'}).join(''):'<span class="faint">ยังไม่มีใครมีสิทธิ์รายคน</span>')+'</div><div id="prm-ub"></div>';
+  var pick=function(id){S.uid=id;$('#prm-ub').innerHTML=SK('rows','กำลังโหลด…');aCall('permUserGet',id).then(prmUDraw).catch(function(e){$('#prm-ub').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})};
+  var inp=$('#prm-uin');inp.onchange=function(){var v=inp.value.trim(),e=d.emps.filter(function(x){return txt(x)===v})[0];if(e)pick(e.i)};
+  $$('[data-prmu]').forEach(function(x){x.onclick=function(){pick(x.dataset.prmu)}});
+  if(S.uid)pick(S.uid)}
+var PRM_RN={employee:'พนักงาน',lead:'หัวหน้าทีม',manager:'หัวหน้าแผนก',exec:'ผู้บริหาร',hr:'HR',admin:'ผู้ดูแลระบบ'};
+function prmUDraw(x){var el=$('#prm-ub');if(!el)return;A.prmU={x:x,ch:{}};var e=x.emp,P=x.perm,keys=Object.keys(P);
+  var grp=function(n){return String(n).split(/ · | › /)[0]},last='';
+  el.innerHTML='<section class="card prm-up"><div class="prm-uh">'+prmAv({i:e.id,n:e.name},44)+'<span><b>'+esc(e.name)+'</b><small>รหัส '+esc(e.code||'')+' · บทบาท '+esc(PRM_RN[e.role]||e.role)+'</small></span><span class="sp"></span><span class="prm-lg"><i class="prm-bv"></i>ตามบทบาท</span><span class="prm-lg"><i class="prm-da"></i>ตั้งเฉพาะคนนี้</span></div>'+
+    (e.role==='admin'?'<div class="prm-tip"><b>ผู้ดูแลระบบได้ทุกข้อเสมอ</b><span>ตั้งสิทธิ์รายคนไม่มีผล</span></div>':'')+
+    '<table class="prm-ut"><thead><tr><th>สิทธิ์</th><th>ตามบทบาท</th><th>ตั้งเฉพาะคนนี้</th><th>ผลจริง</th></tr></thead><tbody>'+keys.map(function(k){var p=P[k],g=grp(p.n),h='';if(g!==last){last=g;h='<tr class="prm-sec"><td colspan="4">'+esc(g)+'</td></tr>'}
+      var sel=p.lock?'<span class="faint">ล็อก</span>':'<span class="prm-seg3" data-prmuk="'+k+'">'+[['','ตามบทบาท'],['1','ได้'],['0','ไม่ได้']].map(function(o){var on=(p.own===null&&o[0]==='')||(p.own===true&&o[0]==='1')||(p.own===false&&o[0]==='0');return '<button data-v="'+o[0]+'" class="'+(on?'on':'')+'">'+o[1]+'</button>'}).join('')+'</span>';
+      return h+'<tr class="'+(p.own!==null?'prm-own':'')+'"><td>'+esc(String(p.n).split(/ · | › /).slice(1).join(' · ')||p.n)+'</td><td>'+(p.role?'<span class="prm-yes">ได้</span>':'<span class="prm-no">ไม่ได้</span>')+'</td><td>'+sel+'</td><td data-prmeff="'+k+'">'+(p.eff?'<span class="prm-yes">ได้</span>':'<span class="prm-no">ไม่ได้</span>')+'</td></tr>'}).join('')+'</tbody></table>'+
+    '<div class="prm-usv"><input id="prm-ur" placeholder="เหตุผล · บันทึกใน Audit Log · เช่น ช่วยจัดผังแผนกชั่วคราว"><button class="btn pri" id="prm-uok" disabled>บันทึกสิทธิ์ของคนนี้</button></div></section>';
+  $$('[data-prmuk]').forEach(function(w){var k=w.dataset.prmuk;w.querySelectorAll('button').forEach(function(bt){bt.onclick=function(){w.querySelectorAll('button').forEach(function(z){z.classList.toggle('on',z===bt)});var v=bt.dataset.v,nv=v===''?null:v==='1';
+    if(nv===P[k].own)delete A.prmU.ch[k];else A.prmU.ch[k]=nv;var eff=nv===null?P[k].role:nv;$('[data-prmeff="'+k+'"]').innerHTML=eff?'<span class="prm-yes">ได้</span>':'<span class="prm-no">ไม่ได้</span>';
+    w.closest('tr').classList.toggle('prm-chg',k in A.prmU.ch);$('#prm-uok').disabled=!Object.keys(A.prmU.ch).length}})});
+  $('#prm-uok').onclick=function(){var btn=this,r=$('#prm-ur').value.trim(),ch=A.prmU.ch;if(!r){toast('ใส่เหตุผล',1);$('#prm-ur').focus();return}
+    busy(btn,1);aCall('permUserSave',e.id,ch,r).then(function(y){toast('บันทึกสิทธิ์ของ '+e.name+' แล้ว · มีผลเมื่อคนนั้นโหลดหน้าใหม่');return aCall('permOverview').then(function(d){A.prmX.users=d.users;prmDraw()})}).catch(function(er){busy(btn,0);toast(er.message,1)})}}

@@ -13,9 +13,12 @@ function sqKb(n){n=+n||0;return n>=1048576?(n/1048576).toFixed(1)+' MB':Math.max
 function sqF(){return A.sqF||(A.sqF={box:'mine',q:''})}
 function sqEmpTxt(e){return e.n+' · '+e.c+(e.p?' · '+e.p:'')}
 function sqPeople(){return A.sqPP?Promise.resolve(A.sqPP):aCall('srPeopleList').then(function(d){A.sqPP=d.emps;return d.emps})}
-function vSq(){
+/* 28 พ.ย. 2569 ผู้ใช้: คำขอเบิก SIM อยู่เมนูเดียวกับ SIM Monitor (แท็บ คำขอเบิก SIM) · emb = วาดในแท็บ · sqGo = กลับมาหน้ารายการคำขอ */
+function sqGo(){if(A.view==='sim')simGo('rq');else go('simr')}
+function vSq(emb){
   if(A.sqEd)return '<div id="sq-root">'+SK('rows','กำลังโหลด…')+'</div>';
   var f=sqF();
+  if(emb)return '<div class="sq-bar"><label class="sq-q">'+ic('search')+'<input id="sq-q" placeholder="ค้นหาเลขคำขอ โปรเจกต์ ลูกค้า ผู้ยื่น" value="'+esc(f.q)+'"></label><span class="sp"></span><button class="btn pri" id="sq-new">+ ขอเบิก SIM</button></div><div class="sq-subt" role="tablist" id="sq-tabs"></div><div id="sq-body">'+SK('rows','กำลังโหลด…')+'</div>';
   return '<div class="ph"><div><h1>คำขอเบิก SIM</h1><div class="sub">ขอเปิดเบอร์ SIM dtac สำหรับโปรเจกต์ · ส่งผู้ตรวจ / ผู้อนุมัติ · ผู้รับผิดชอบ SIM เปิดใช้งานทีละจุด</div></div><span class="sp"></span><button class="btn pri" id="sq-new">'+ic('plus')+' ขอเบิก SIM</button></div>'+
    '<div class="svx-tabs svx-tl" role="tablist" id="sq-tabs"></div>'+
    '<div class="sq-bar"><label class="sq-q">'+ic('search')+'<input id="sq-q" placeholder="ค้นหาเลขคำขอ โปรเจกต์ ลูกค้า ผู้ยื่น" value="'+esc(f.q)+'"></label></div><div id="sq-body">'+SK('rows','กำลังโหลด…')+'</div>'}
@@ -28,7 +31,7 @@ function bSq(){
 function sqTabs(){var b=A.sqB,f=sqF(),n=b.n||{},T=[['sqm','mine','คำขอของฉัน',n.mine],['sqt','todo','รออนุมัติ',n.todo]];
   if(b.me.sim)T.push(['sqq','queue','คิวเปิดใช้งาน',n.queue],['sqa','all','ทั้งหมด',null]);
   if(!T.some(function(x){return x[1]===f.box}))f.box='mine';
-  $('#sq-tabs').innerHTML=T.map(function(x){return svxTab('data-sqt',x[0],x[2],x[3]||null,f.box===x[1])}).join('');
+  $('#sq-tabs').innerHTML=A.view==='sim'?T.map(function(x){return '<button class="sq-sb'+(f.box===x[1]?' on':'')+'" data-sqt="'+x[0]+'">'+esc(x[2])+(x[3]?'<span>'+x[3]+'</span>':'')+'</button>'}).join(''):T.map(function(x){return svxTab('data-sqt',x[0],x[2],x[3]||null,f.box===x[1])}).join('');
   $$('[data-sqt]').forEach(function(btn){btn.onclick=function(){f.box={sqm:'mine',sqt:'todo',sqq:'queue',sqa:'all'}[btn.dataset.sqt];sqTabs();sqLoad()}})}
 function sqLoad(){var f=sqF(),el=$('#sq-body');if(!el)return;el.innerHTML=SK('rows');
   aCall('srList',{box:f.box,q:f.q}).then(function(d){if(!$('#sq-body'))return;A.sqL=d.rows;sqDraw()}).catch(function(e){el.innerHTML='<div class="alert">'+esc(e.message)+'</div>'})}
@@ -88,7 +91,7 @@ function sqAct(d){var r=d.r,cb=$('.drw .cb'),td=dIso(new Date());
     busy(b,1);aCall('srActivate',{id:r.id,pts:pts}).then(function(x){toast('บันทึกเปิดใช้งาน '+pts.length+' จุดแล้ว');sqDet(x);sqRefresh()}).catch(function(e){busy(b,0);toast(e.message,1)})}}
 
 /* ── ฟอร์มขอเบิก 4 ขั้น (เต็มหน้า · จอ 1.2–1.5) ── */
-function sqEdit(id){A.sqEd={id:id||'',step:1,f:null};go('simr')}
+function sqEdit(id){A.sqEd={id:id||'',step:1,f:null};sqGo()}
 function sqBlank(){var me=A.sqB.me;return {kind:'new',proj_mode:'new',proj_no:'',project:'',customer:'',proj_years:'',purpose:'',owner_id:me.id==='admin'?'':me.id,n_est:1,pkg:'',need_date:'',detail:'',ma_start:'',ma_end:'',ma_value:'',steps:[{r:'approve',i:''}],pts:[{province:'',device:'',pkg:'',need_date:'',note:''}],files:[],no:'',st:'draft'}}
 function sqEdBoot(){var E=A.sqEd,root=$('#sq-root');
   Promise.all([A.sqB?Promise.resolve(A.sqB):aCall('srBoot'),sqPeople(),E.id&&!E.f?aCall('srGet',{id:E.id}):Promise.resolve(null)]).then(function(x){A.sqB=x[0];
@@ -104,12 +107,12 @@ function sqEdDraw(){var E=A.sqEd,f=E.f,s=E.step,root=$('#sq-root');if(!root)retu
    '<section class="card sq-card" id="sq-form">'+[sqS1,sqS2,sqS3,sqS4][s-1]()+'</section>'+
    '<div class="sq-foot"><button class="btn" id="sq-prev"'+(s===1?' disabled':'')+'>‹ ย้อนกลับ</button><span class="sp"></span><button class="btn" id="sq-save">บันทึกร่าง</button>'+(s<4?'<button class="btn pri" id="sq-next">ถัดไป ›</button>':'<button class="btn pri" id="sq-submit">ส่งคำขอ</button>')+'</div>'+sqEmpOpts();
   [sqB1,sqB2,sqB3,sqB4][s-1]();
-  $('#sq-x').onclick=function(){A.sqEd=null;go('simr')};
+  $('#sq-x').onclick=function(){A.sqEd=null;sqGo()};
   $$('[data-sqgo]').forEach(function(b){b.onclick=function(){sqRead();E.step=+b.dataset.sqgo;sqEdDraw()}});
   $('#sq-prev').onclick=function(){sqRead();E.step=Math.max(1,s-1);sqEdDraw()};
   if($('#sq-next'))$('#sq-next').onclick=function(){sqRead();var m=sqStepErr(s);if(m){toast(m,1);return}if(s===3){var b=this;busy(b,1);sqSave().then(function(){E.step=4;sqEdDraw()}).catch(function(e){busy(b,0);toast(e.message,1)});return}E.step=s+1;sqEdDraw()};   /* เข้าขั้น 4 = บันทึกร่างก่อน เพื่อให้เห็นผลตรวจก่อนส่ง */
   $('#sq-save').onclick=function(){sqRead();sqSave().then(function(){toast('บันทึกร่างแล้ว');sqEdDraw()}).catch(function(e){toast(e.message,1)})};
-  if($('#sq-submit'))$('#sq-submit').onclick=function(){var b=this;sqRead();busy(b,1);sqSave().then(function(){return aCall('srSubmit',{id:E.id})}).then(function(x){toast('ส่งคำขอ '+x.r.no+' แล้ว');A.sqEd=null;A.sqF=null;go('simr');setTimeout(function(){sqOpen(x.r.id)},300)}).catch(function(e){busy(b,0);toast(e.message,1);sqEdDraw()})}}
+  if($('#sq-submit'))$('#sq-submit').onclick=function(){var b=this;sqRead();busy(b,1);sqSave().then(function(){return aCall('srSubmit',{id:E.id})}).then(function(x){toast('ส่งคำขอ '+x.r.no+' แล้ว');A.sqEd=null;A.sqF=null;sqGo();setTimeout(function(){sqOpen(x.r.id)},300)}).catch(function(e){busy(b,0);toast(e.message,1);sqEdDraw()})}}
 function sqStepErr(s){var f=A.sqEd.f;if(s===1){if(!f.proj_no)return 'ใส่เลขที่ Project';if(!f.project)return 'ใส่ชื่อโปรเจกต์'}if(s===2){if(!f.pts.length)return 'เพิ่มจุดติดตั้งอย่างน้อย 1 จุด';var i=f.pts.findIndex(function(p){return !p.province});if(i>=0)return 'จุดที่ '+(i+1)+' ยังไม่ใส่จังหวัด'}if(s===3&&!f.ma_end)return 'ใส่วันสิ้นสุด MA';return ''}
 function sqSave(){var E=A.sqEd,f=E.f;return aCall('srSave',Object.assign({id:E.id||undefined},f,{files:undefined,no:undefined,st:undefined})).then(function(x){E.id=x.r.id;f.no=x.r.no;f.st=x.r.st;f.files=x.r.files;E.pr=x.problems;return x})}
 function sqV(id){var e=$('#'+id);return e?e.value:''}
