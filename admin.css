@@ -2463,3 +2463,8 @@ tr[data-simm2]{cursor:pointer}tr[data-simm2]:hover{background:#FAFAFB}
 .ms-gt{display:inline-block;font-size:11.5px;font-weight:600;padding:1px 8px;border-radius:99px;background:#F4F4F5;color:#52525B}.ms-gt.ok{background:#E8F5E9;color:#1A6B3A}.ms-gt.no{background:#FDECEA;color:#B42318}
 /* 26 พ.ย. 2569 ผู้ใช้ (ภาพหน้าจอ): แผนที่งานเมสเซนเจอร์ทับเมนูซ้ายตอนกาง → แบบเดียวกับ .sim-map */
 #ms-map{position:relative;z-index:0;isolation:isolate}
+
+/* 27 พ.ย. 2569 ภาพรวมงานเมสเซนเจอร์: การ์ดกดได้ (msPick) */
+.ms-pk{cursor:pointer;transition:background .15s,box-shadow .15s}.ms-pk:hover{background:var(--sf2)}.kpi.ms-pk:hover{box-shadow:0 0 0 1px var(--ink-3,#999) inset}.ms-pk:focus-visible{outline:2px solid var(--ink,#111);outline-offset:-2px}
+.ms-pkl{border:1px solid var(--line);border-radius:12px;overflow:hidden}.ms-pki{display:grid;grid-template-columns:118px 1fr auto;gap:12px;align-items:center;padding:12px 14px;border-top:1px solid var(--line);cursor:pointer}.ms-pki:first-child{border-top:0}.ms-pki:hover{background:var(--sf2)}.ms-pki:focus-visible{outline:2px solid var(--ink,#111);outline-offset:-2px}
+.ms-pkm,.ms-pkc{display:flex;flex-direction:column;gap:2px;min-width:0;font-size:12.5px}.ms-pkm b,.ms-pkc b{font-size:14px}.ms-pkc span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
