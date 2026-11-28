@@ -78,7 +78,8 @@ var PAGE_PERM={org:'org.e',set:'set.e',asset:'asset.e',list:'empadm.e',profile:'
 function permC(k){var me=A.d&&A.d.me;if(!me)return false;if(me.role==='admin'||me.id==='admin')return true;return !!(me.perm&&me.perm[k])}
 function isHR(){var me=A.d&&A.d.me;if(!me)return false;var k=PAGE_PERM[A.view];if(k&&me.perm&&k in me.perm)return permC(k);return isHRrole()}   // + ผู้บริหาร = เท่า admin (2 พ.ย. 2569)
 /* ขอบเขตตามสิทธิ์ (เซิร์ฟเวอร์ส่งมาใน me.access และตรวจซ้ำทุกคำสั่ง) · emp att leave approve edit → none self team dept all */
-function acc(a){if(isHRrole())return 'all';var x=A.d&&A.d.me.access;return x&&x[a]||(a==='approve'||a==='edit'?'none':'self')}
+function acc(a){var me0=A.d&&A.d.me;if(me0&&(me0.role==='admin'||me0.id==='admin'))return 'all';if(isHRrole()&&!(me0.access&&me0.access[a]))return 'all';   /* 28 พ.ย. 2569: HR / ผู้บริหาร ตามขอบเขตที่ตั้ง (role_scope · เซิร์ฟเวอร์ส่ง me.access) */
+  var x=A.d&&A.d.me.access;return x&&x[a]||(a==='approve'||a==='edit'?'none':'self')}
 function inSc(e,sc){var me=A.d.me;if(!e)return false;if(sc==='all')return true;if(e.id===me.id)return sc!=='none';if(sc==='dept')return !!me.department_id&&e.department_id===me.department_id;if(sc==='team')return !!me.team_id&&e.team_id===me.team_id;return false}
 function canEdit(e){return isHRrole()||inSc(e,acc('edit'))}
 function selfOnly(){return !isHRrole()&&A.d.me.id!=='admin'&&acc('emp')==='self'}

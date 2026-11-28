@@ -5,7 +5,7 @@
  *   ช่องอื่นเป็นกติกาในโค้ด แสดงอย่างเดียว (ล็อก) · ช่องตามรายชื่อ กดแล้วไปแท็บ ตามเมนู
  * แท็บ ตามเมนู: รายชื่อพิเศษ 8 รายการ · บันทึกด้วยฟังก์ชันเดิมของแต่ละเมนู (เซิร์ฟเวอร์ตรวจสิทธิ์เดิม)
  * คลาสใหม่ขึ้นต้น prm- · ฟังก์ชันขึ้นต้น prm */
-var PRM_R=[['employee','พนักงาน','ข้อมูลตัวเอง','#64748B'],['lead','หัวหน้าทีม','คนในทีม','#0EA5E9'],['manager','หัวหน้าแผนก','ทุกทีมในแผนก','#6366F1'],['exec','ผู้บริหาร','ทั้งบริษัท · ระดับผู้ดูแลระบบ','#A855F7'],['hr','HR','ทั้งบริษัท','#EC4899'],['admin','ผู้ดูแลระบบ','ทั้งบริษัท','#141414']];
+var PRM_R=[['employee','พนักงาน','ข้อมูลตัวเอง','#64748B'],['lead','หัวหน้าทีม','คนในทีม','#0EA5E9'],['manager','หัวหน้าแผนก','ทุกทีมในแผนก','#6366F1'],['exec','ผู้บริหาร','ทั้งบริษัท · ปรับได้','#A855F7'],['hr','HR','ทั้งบริษัท · ปรับได้','#EC4899'],['admin','ผู้ดูแลระบบ','ทั้งบริษัท','#141414']];
 var PRM_OPT={emp:['self','team','dept','all'],att:['none','self','team','dept','all'],leave:['none','self','team','dept','all'],approve:['none','team','dept','all'],edit:['none','self','team','dept','all'],sched:['none','team','dept','all'],asset:['none','self','team','dept','all']};
 var PRM_SC={none:'—',self:'ตัวเอง',team:'ทีม',dept:'แผนก',all:'ทั้งหมด'};
 var PRM_DEF={employee:'self',lead:'team',manager:'dept',exec:'all'};
@@ -22,19 +22,19 @@ var PRM_L={sim:{n:'SIM Monitor',ic:'dtac',d:'เห็นเมนู SIM Monito
 var PRM_ROWS=[['ภาพรวม'],
   {n:'ภาพรวม Dashboard',ic:'dash',d:'ตัวเลขตามข้อมูลที่เห็น',v:'p:dash.v p:dash.v p:dash.v p:dash.v p:dash.v L',e:'- - - - - -'},
   {n:'ชุมชน',ic:'chat',d:'แก้ = ดูแลโพสต์ ปักหมุด ลบโพสต์คนอื่น',v:'p:cb.v p:cb.v p:cb.v p:cb.v p:cb.v L',e:'p:cb.e p:cb.e p:cb.e p:cb.e p:cb.e L'},
-  {n:'ศูนย์อนุมัติ · ใบลา',ic:'check',d:'แก้ = อนุมัติ · ผู้อนุมัติจริงมาจากผังองค์กร',v:'- - - - - -',e:'m:approve m:approve m:approve L L L'},
+  {n:'ศูนย์อนุมัติ · ใบลา',ic:'check',d:'แก้ = อนุมัติ · ผู้อนุมัติจริงมาจากผังองค์กร',v:'- - - - - -',e:'m:approve m:approve m:approve m:approve m:approve L'},
   ['พนักงาน'],
-  {n:'พนักงาน · การอบรม',ic:'emp',d:'ดู = ขอบเขตตามบทบาท · แก้ = ข้อมูลส่วนตัว ตำแหน่ง เวลาทำงาน',v:'m:emp m:emp m:emp L L L',e:'m:edit m:edit m:edit L L L'},
+  {n:'พนักงาน · การอบรม',ic:'emp',d:'ดู = ขอบเขตตามบทบาท · แก้ = ข้อมูลส่วนตัว ตำแหน่ง เวลาทำงาน',v:'m:emp m:emp m:emp m:emp m:emp L',e:'m:edit m:edit m:edit m:edit m:edit L'},
   {n:'จัดการพนักงาน',ic:'emp',d:'เพิ่ม นำเข้า เลขบัตร บัญชี การอบรม เชื่อม LINE',v:'- - - - - -',e:'p:empadm.e p:empadm.e p:empadm.e p:empadm.e p:empadm.e L'},
-  {n:'ลงเวลา',ic:'clock',d:'แก้ = แก้เวลา นำเข้า อนุมัติเครื่อง',v:'m:att m:att m:att L L L',e:'p:att.e p:att.e p:att.e p:att.e p:att.e L'},
-  {n:'การลา',ic:'leave',d:'แก้ = แก้โควตา ลบใบลา รับทราบ · ยื่นลาเองได้ทุกคน',v:'m:leave m:leave m:leave L L L',e:'p:lv.e p:lv.e p:lv.e p:lv.e p:lv.e L'},
-  {n:'ตารางงาน',ic:'cal',d:'ดู = ทุกคนเห็นทั้งหมด · แก้ = เพิ่ม แก้ ลบงาน',v:'L L L L L L',e:'m:sched m:sched m:sched L L L'},
+  {n:'ลงเวลา',ic:'clock',d:'แก้ = แก้เวลา นำเข้า อนุมัติเครื่อง',v:'m:att m:att m:att m:att m:att L',e:'p:att.e p:att.e p:att.e p:att.e p:att.e L'},
+  {n:'การลา',ic:'leave',d:'แก้ = แก้โควตา ลบใบลา รับทราบ · ยื่นลาเองได้ทุกคน',v:'m:leave m:leave m:leave m:leave m:leave L',e:'p:lv.e p:lv.e p:lv.e p:lv.e p:lv.e L'},
+  {n:'ตารางงาน',ic:'cal',d:'ดู = ทุกคนเห็นทั้งหมด · แก้ = เพิ่ม แก้ ลบงาน',v:'L L L L L L',e:'m:sched m:sched m:sched m:sched m:sched L'},
   {n:'Confirmed',ic:'box',d:'ยืนยันงานปิดโปรเจกต์',v:'p:conf.v p:conf.v p:conf.v p:conf.v p:conf.v L',e:'- - - - - -'},
   {n:'งานเมสเซนเจอร์',ic:'msgr',d:'ดู = ขอใช้ทุกคน · แก้ = จัดงาน มอบหมาย · หรือตามรายชื่อ',v:'L L L L L L',e:'p:msg.e p:msg.e p:msg.e p:msg.e p:msg.e L'},
   {n:'เคส Service',ic:'codex',d:'เห็นเมนู · หรือตามรายชื่อ',v:'p:svc.v p:svc.v p:svc.v p:svc.v p:svc.v L',e:'- - - - - -'},
   {n:'รายงาน Service',ic:'usage',d:'รายงานแบบผู้บริหาร · หรือตามรายชื่อ',v:'p:svcr.v p:svcr.v p:svcr.v p:svcr.v p:svcr.v L',e:'- - - - - -'},
   {n:'LINE Photo Archive',ic:'gdrive',d:'แก้ = ตั้งค่าบอทเก็บรูป',v:'p:lpa.v p:lpa.v p:lpa.v p:lpa.v p:lpa.v L',e:'p:lpa.e p:lpa.e p:lpa.e p:lpa.e p:lpa.e L'},
-  {n:'ทรัพย์สิน',ic:'box',d:'แก้ = อนุมัติ นำเข้า เครื่องมือ รอบตรวจสอบ',v:'m:asset m:asset m:asset L L L',e:'p:asset.e p:asset.e p:asset.e p:asset.e p:asset.e L'},
+  {n:'ทรัพย์สิน',ic:'box',d:'แก้ = อนุมัติ นำเข้า เครื่องมือ รอบตรวจสอบ',v:'m:asset m:asset m:asset m:asset m:asset L',e:'p:asset.e p:asset.e p:asset.e p:asset.e p:asset.e L'},
   {n:'SIM Monitor',ic:'dtac',d:'เห็นแท็บข้อมูลเบอร์ + เปิดใช้งานคำขอเบิก SIM · หรือตามรายชื่อ · แท็บย่อยตั้งด้านล่าง',v:'p:sim.v p:sim.v p:sim.v p:sim.v p:sim.v L',e:'- - - - - -'},
   {n:'แท็บ ภาพรวม',ic:'dtac',sub:1,d:'สรุปสถานะเบอร์ ค่าบริการ',v:'p:sim.t.ov p:sim.t.ov p:sim.t.ov p:sim.t.ov p:sim.t.ov L',e:'- - - - - -'},
   {n:'แท็บ รายการ SIM',ic:'dtac',sub:1,d:'รายการเบอร์ แก้ข้อมูลไซต์',v:'p:sim.t.ls p:sim.t.ls p:sim.t.ls p:sim.t.ls p:sim.t.ls L',e:'- - - - - -'},
@@ -57,11 +57,11 @@ var PRM_ROWS=[['ภาพรวม'],
 var PRM_SECC={'ภาพรวม':'#64748B','พนักงาน':'#0EA5E9','องค์กรและระบบ':'#6366F1'};
 function prmS(){return A.prmS||(A.prmS={tab:'role',f:'all',q:''})}
 function prmLoad(){var el=$('#prm-root');if(!el)return;el.innerHTML=SK('rows','กำลังโหลด…');
-  aCall('permOverview').then(function(d){A.prmX=d;A.prmM=JSON.parse(JSON.stringify(d.matrix));A.prmP={};prmDraw()}).catch(function(e){if($('#prm-root'))$('#prm-root').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})}
+  aCall('permOverview').then(function(d){A.prmX=d;A.prmM=JSON.parse(JSON.stringify(d.matrix));A.prmP={};A.prmRS={};prmDraw()}).catch(function(e){if($('#prm-root'))$('#prm-root').innerHTML='<div class="alert">'+esc(e.message)+'</div>'})}
 function prmList(k){return ((A.prmX&&A.prmX.lists)||[]).filter(function(x){return x.k===k})[0]||{people:[]}}
 function prmDef(a,r){var o=PRM_OPT[a],d=PRM_DEF[r];if(o.indexOf(d)>=0)return d;return o.filter(function(x){return x!=='none'})[0]}
 /* ค่าของช่อง · คืน {t:'m'|'L'|'0'|'-'|'l', on, sc, a, r, chg, k} */
-function prmCell(spec,ri){var r=PRM_R[ri][0];if(spec.indexOf('m:')===0&&r==='exec')return {t:'L'};   /* ผู้บริหาร = ระดับผู้ดูแลระบบ (Auth.js ROLE_RANK · isHR_) · ช่องในตารางบทบาทไม่มีผล */
+function prmCell(spec,ri){var r=PRM_R[ri][0];if(spec.indexOf('m:')===0&&(r==='exec'||r==='hr')){var a0=spec.slice(2),RS=A.prmRS||{},o0=((A.prmX.roleScope||{})[r]||{})[a0]||'all',v0=RS[r]&&RS[r][a0]?RS[r][a0]:o0;return {t:'m',a:a0,r:r,on:v0!=='none',sc:v0,chg:v0!==o0,def:'all',rs:1}}   /* HR / ผู้บริหาร: ขอบเขตจาก role_scope (ค่าเริ่มต้น ทั้งหมด · 28 พ.ย. 2569) */
   if(spec.indexOf('m:')===0){var a=spec.slice(2),v=A.prmM[a][r],o=A.prmX.matrix[a][r];return {t:'m',a:a,r:r,on:v!=='none',sc:v,chg:v!==o,def:prmDef(a,r)}}
   if(spec.indexOf('p:')===0){var k=spec.slice(2),T=(A.prmX.perm||{})[k];if(!T)return {t:'-'};var c=T.roles[r];if(c.lock)return {t:'L'};var cur=A.prmP&&A.prmP[k]&&typeof A.prmP[k][r]==='boolean'?A.prmP[k][r]:c.on;return {t:'p',k:k,r:r,on:cur,chg:cur!==c.on}}
   if(spec.indexOf('l:')===0){var k=spec.slice(2);return {t:'l',k:k,n:prmList(k).people.length,unset:!!prmList(k).unset}}return {t:spec}}
@@ -72,8 +72,8 @@ function prmBox0(c,kind){var col=kind==='v'?'prm-v':'prm-e';
   if(c.t==='0')return '<span class="prm-ck prm-off" title="ไม่ได้ · กติกาในระบบ ปรับไม่ได้"></span>';
   if(c.t==='p')return '<button class="prm-ck '+col+(c.on?' on':'')+(c.chg?' chg':'')+'" data-prmp="'+c.k+'|'+c.r+'" role="checkbox" aria-checked="'+c.on+'" aria-label="'+(kind==='v'?'ดู':'แก้')+'">'+(c.on?PRM_CK:'')+'</button>';
   if(c.t==='l')return '<button class="prm-lp" data-prml="'+c.k+'" title="ได้เฉพาะคนในรายชื่อ '+(c.unset?'· ยังใช้กติกาเดิม':c.n+' คน')+' · กดเพื่อแก้รายชื่อ">'+(c.unset?'เดิม':c.n+' คน')+'</button>';
-  var tag=c.on&&c.sc!==c.def?'<select class="prm-sc'+(c.chg?' chg':'')+'" data-prmsc="'+c.a+'|'+c.r+'" aria-label="ขอบเขต">'+PRM_OPT[c.a].filter(function(x){return x!=='none'}).map(function(x){return '<option value="'+x+'"'+(x===c.sc?' selected':'')+'>'+PRM_SC[x]+'</option>'}).join('')+'</select>':'';
-  return '<span class="prm-cw"><button class="prm-ck '+col+(c.on?' on':'')+(c.chg?' chg':'')+'" data-prmm="'+c.a+'|'+c.r+'" role="checkbox" aria-checked="'+c.on+'" aria-label="'+(kind==='v'?'ดู':'แก้')+'">'+(c.on?PRM_CK:'')+'</button>'+tag+'</span>'}
+  var tag=c.on&&c.sc!==c.def?'<select class="prm-sc'+(c.chg?' chg':'')+'" data-'+(c.rs?'prmrss':'prmsc')+'="'+c.a+'|'+c.r+'" aria-label="ขอบเขต">'+PRM_OPT[c.a].filter(function(x){return x!=='none'}).map(function(x){return '<option value="'+x+'"'+(x===c.sc?' selected':'')+'>'+PRM_SC[x]+'</option>'}).join('')+'</select>':'';
+  return '<span class="prm-cw"><button class="prm-ck '+col+(c.on?' on':'')+(c.chg?' chg':'')+'" data-'+(c.rs?'prmrs':'prmm')+'="'+c.a+'|'+c.r+'" role="checkbox" aria-checked="'+c.on+'" aria-label="'+(kind==='v'?'ดู':'แก้')+'">'+(c.on?PRM_CK:'')+'</button>'+tag+'</span>'}
 var PRM_CK='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 function prmPChanges(){var out=[];Object.keys(A.prmP||{}).forEach(function(k){Object.keys(A.prmP[k]).forEach(function(r){var T=A.prmX.perm[k];if(T&&T.roles[r].on!==A.prmP[k][r])out.push({k:k,r:r,to:A.prmP[k][r]})})});return out}
 function prmChanges(){var d=A.prmX,out=[];Object.keys(d.matrix).forEach(function(a){Object.keys(d.matrix[a]).forEach(function(r){if(d.matrix[a][r]!==A.prmM[a][r])out.push({a:a,r:r,from:d.matrix[a][r],to:A.prmM[a][r]})})});return out}
@@ -106,18 +106,24 @@ function prmRole(){var S=prmS(),b=$('#prm-body'),ch=prmChanges(),pc=prmPChanges(
     if(v!=='none'){if(PRM_OPT[a].indexOf('none')<0){toast('ดูข้อมูลพนักงานปิดไม่ได้ · อย่างน้อยเห็นข้อมูลตัวเอง',1);return}A.prmM[a][r]='none'}else{var o=A.prmX.matrix[a][r];A.prmM[a][r]=o!=='none'?o:prmDef(a,r)}prmRole()}});
   $$('[data-prmsc]').forEach(function(x){x.onclick=function(e){e.stopPropagation()};x.onchange=function(){var p=x.dataset.prmsc.split('|');A.prmM[p[0]][p[1]]=x.value;prmRole()}});
   $$('[data-prml]').forEach(function(x){x.onclick=function(){prmEdit(x.dataset.prml)}});
+  var rsSet=function(a,r,v){var o=((A.prmX.roleScope||{})[r]||{})[a]||'all';A.prmRS=A.prmRS||{};A.prmRS[r]=A.prmRS[r]||{};if(v===o)delete A.prmRS[r][a];else A.prmRS[r][a]=v;prmRole()};
+  $$('[data-prmrs]').forEach(function(x){x.onclick=function(){var p=x.dataset.prmrs.split('|'),a=p[0],r=p[1],o=((A.prmX.roleScope||{})[r]||{})[a]||'all',v=A.prmRS&&A.prmRS[r]&&A.prmRS[r][a]?A.prmRS[r][a]:o;
+    if(v!=='none'){if(a==='emp'){toast('ดูข้อมูลพนักงานปิดไม่ได้ · อย่างน้อยเห็นข้อมูลตัวเอง',1);return}rsSet(a,r,'none')}else rsSet(a,r,o!=='none'?o:'all')}});
+  $$('[data-prmrss]').forEach(function(x){x.onclick=function(e){e.stopPropagation()};x.onchange=function(){var p=x.dataset.prmrss.split('|');rsSet(p[0],p[1],x.value)}});
   $$('[data-prmp]').forEach(function(x){x.onclick=function(){var p=x.dataset.prmp.split('|'),k=p[0],r=p[1],T=A.prmX.perm[k].roles[r],cur=A.prmP[k]&&typeof A.prmP[k][r]==='boolean'?A.prmP[k][r]:T.on;A.prmP[k]=A.prmP[k]||{};A.prmP[k][r]=!cur;if(A.prmP[k][r]===T.on)delete A.prmP[k][r];prmRole()}});
-  if($('#prm-rs'))$('#prm-rs').onclick=function(){A.prmM=JSON.parse(JSON.stringify(A.prmX.matrix));A.prmP={};prmRole()};
+  if($('#prm-rs'))$('#prm-rs').onclick=function(){A.prmM=JSON.parse(JSON.stringify(A.prmX.matrix));A.prmP={};A.prmRS={};prmRole()};
   if($('#prm-sv'))$('#prm-sv').onclick=prmConfirm}
 /* ตรวจก่อนบันทึก (Figma จอ 4) · บอกว่าใครได้/เสียอะไร · จำนวนคน = คนในบทบาทนั้น (ไม่รวมข้อยกเว้นรายคน) */
 /* รายการเปลี่ยนทั้ง 2 แบบ (ตารางบทบาท + แผงสิทธิ์) · [ชื่อ › บทบาท · คน, จาก, เป็น] */
+function prmRSChanges(){var out=[],RS=A.prmRS||{};Object.keys(RS).forEach(function(r){Object.keys(RS[r]).forEach(function(a){var o=((A.prmX.roleScope||{})[r]||{})[a]||'all';if(RS[r][a]!==o)out.push({a:a,r:r,from:o,to:RS[r][a]})})});return out}
 function prmAllChanges(){var rn=function(r){var x=PRM_R.filter(function(y){return y[0]===r})[0];return x?x[1]:r};
-  return prmChanges().map(function(c){return [PRM_AN[c.a]+' › '+rn(c.r)+' · '+prmRoleN(c.r)+' คน',PRM_SC[c.from],PRM_SC[c.to]]}).concat(prmPChanges().map(function(c){return [A.prmX.perm[c.k].n+' › '+rn(c.r)+' · '+prmRoleN(c.r)+' คน',c.to?'ไม่ได้':'ได้',c.to?'ได้':'ไม่ได้']}))}
+  return prmChanges().concat(prmRSChanges()).map(function(c){return [PRM_AN[c.a]+' › '+rn(c.r)+' · '+prmRoleN(c.r)+' คน',PRM_SC[c.from],PRM_SC[c.to]]}).concat(prmPChanges().map(function(c){return [A.prmX.perm[c.k].n+' › '+rn(c.r)+' · '+prmRoleN(c.r)+' คน',c.to?'ไม่ได้':'ได้',c.to?'ได้':'ไม่ได้']}))}
 function prmConfirm(){var L=prmAllChanges();if(!L.length)return;
   ask({tone:'warn',title:'บันทึกการเปลี่ยนสิทธิ์ '+L.length+' รายการ?',desc:'มีผลทันทีเมื่อคนนั้นโหลดหน้าใหม่ · บันทึกใน Audit Log · การลงเวลาไม่เกี่ยว',list:L,
     buttons:[{k:'no',label:'กลับไปแก้'},{k:'ok',label:'บันทึก '+L.length+' รายการ',cls:'pri'}]}).then(function(k){if(k!=='ok')return;var btn=$('#prm-sv');busy(btn,1);
     var jobs=[];if(prmChanges().length)jobs.push(aCall('saveAccessMatrix',A.prmM).then(function(r){A.prmX.matrix=r.matrix;A.prmM=JSON.parse(JSON.stringify(r.matrix));if(A.acx){A.acx.matrix=r.matrix;A.acm=JSON.parse(JSON.stringify(r.matrix))}}));
     if(prmPChanges().length)jobs.push(aCall('permSave',A.prmP).then(function(r){A.prmX.perm=r.table;A.prmP={}}));
+    if(prmRSChanges().length)jobs.push(aCall('roleScopeSave',A.prmRS).then(function(r){A.prmX.roleScope=r.roleScope;A.prmRS={}}));
     Promise.all(jobs).then(function(){toast('บันทึกสิทธิ์แล้ว · มีผลเมื่อผู้ใช้โหลดหน้าใหม่');prmRole()}).catch(function(e){busy(btn,0);toast(e.message,1)})})}
 /* แท็บ ตามเมนู · รายชื่อพิเศษ */
 function prmCan(k){var L=PRM_L[k];return L.ed==='admin'?!!A.prmX.admin:true}
